@@ -19,38 +19,18 @@ class DefaultFirebaseOptions {
     if (kIsWeb) {
       return web;
     }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        throw UnsupportedError(
-          'Android is not supported for this project.',
-        );
-      case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'iOS is not supported for this project.',
-        );
-      case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'macOS is not supported for this project.',
-        );
-      case TargetPlatform.windows:
-        throw UnsupportedError(
-          'Windows is not supported for this project.',
-        );
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'Linux is not supported for this project.',
-        );
-      default:
-        return web; // Fallback for web
-    }
+    // Mobile/Desktop platforms removed for web-only focus
+    throw UnsupportedError(
+      'Platform ${defaultTargetPlatform} is not supported for this web project.',
+    );
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC1M-oliyZ2ST3hqD8tWJR6oVisFKqlN-0',
-    appId: '1:154036412101:web:76f6a60e2de27277381aac',
-    messagingSenderId: '154036412101',
-    projectId: 'bizagent-pro-2026',
-    authDomain: 'bizagent-pro-2026.firebaseapp.com',
-    storageBucket: 'bizagent-pro-2026.firebasestorage.app',
+    apiKey: 'AIzaSyDZcQ0RbF69p_uA1irgr7-hDkZPF95nSAQ',
+    appId: '1:542280140779:web:572f4edccd696c9f373bae',
+    messagingSenderId: '542280140779',
+    projectId: 'bizagent-live-2026',
+    authDomain: 'bizagent-live-2026.firebaseapp.com',
+    storageBucket: 'bizagent-live-2026.firebasestorage.app',
   );
 }
