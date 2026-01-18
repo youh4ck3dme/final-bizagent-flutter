@@ -27,9 +27,9 @@
     "platforms": {
       "dart": {
         "lib/firebase_options.dart": {
-          "projectId": "bizagent-pwa-1768727460",
+          "projectId": "bizagent-pro-2026",
           "configurations": {
-            "web": "1:281469028938:web:38afb73801c6d0803434b3"
+            "web": "1:154036412101:web:76f6a60e2de27277381aac"
           }
         }
       }
