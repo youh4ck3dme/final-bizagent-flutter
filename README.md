@@ -84,6 +84,15 @@ Aplikácia je optimalizovaná pre **PWA** (Progressive Web App). Nasadenie na Fi
 
 Kompletný sprievodca nasadením je v [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
+## ⚙️ Konfigurácia (Firebase & AI)
+
+Pre plnú funkcionalitu (Auth, Cloud Storage, AI Tools) je potrebná konfigurácia:
+
+1. **Firebase**: Nastavte pomocou `flutterfire configure`.
+2. **Gemini API**: Pre AI generátor emailov.
+
+👉 **[Detailný návod na nastavenie Firebase a Gemini API](docs/FIREBASE_GEMINI.md)**
+
 ## 📖 Documentation
 
 | Document | Description |

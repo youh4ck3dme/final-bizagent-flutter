@@ -1,84 +1,72 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+import '../../../../core/config/api_config.dart';
 
 final aiEmailServiceProvider = Provider<AiEmailService>((ref) {
   return AiEmailService();
 });
 
 class AiEmailService {
+  late final GenerativeModel? _model;
+
+  AiEmailService() {
+    if (ApiConfig.hasGeminiKey) {
+      _model = GenerativeModel(
+        model: ApiConfig.geminiModel,
+        apiKey: ApiConfig.geminiApiKey,
+      );
+    } else {
+      _model = null;
+    }
+  }
+
   Future<String> generateEmail({
     required String type,
     required String tone,
     required String context,
   }) async {
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 2));
+    // Ak nemáme API key, vrátime inštrukciu pre developera/užívateľa
+    if (_model == null) {
+      return '⚠️ Gemini API kľúč chýba.\n\nPre aktiváciu AI funkcií:\n1. Získajte kľúč na aistudio.google.com\n2. Nastavte GEMINI_API_KEY (viď firebase_gemini_setup.md)';
+    }
 
     if (context.isEmpty) {
       return 'Prosím, zadajte kontext pre vygenerovanie e-mailu.';
     }
 
-    // Mock response generation based on type
+    try {
+      final prompt = _buildPrompt(type, tone, context);
+      final response = await _model!.generateContent([Content.text(prompt)]);
+      
+      return response.text ?? 'Nepodarilo sa vygenerovať odpoveď (prázdny text).';
+    } catch (e) {
+      return 'Chyba pri komunikácii s AI: $e';
+    }
+  }
+
+  String _buildPrompt(String type, String tone, String context) {
+    return '''
+Úloha: Napíš profesionálny firemný e-mail v slovenskom jazyku.
+
+Parametre:
+- Typ správy: $_getReadableType(type)
+- Tón komunikácie: $tone
+- Kontext/Detaily: "$context"
+
+Požiadavky:
+- Použij spisovnú slovenčinu.
+- Dodržuj štruktúru: Oslovenie, Jadro správy, Záver, Podpis.
+- Buď stručný ale zdvorilý.
+- Ak ide o upomienku, buď profesionálny.
+    ''';
+  }
+
+  String _getReadableType(String type) {
     switch (type) {
-      case 'reminder':
-        return _generateReminder(tone, context);
-      case 'quote':
-        return _generateQuote(tone, context);
-      case 'intro':
-        return _generateIntro(tone, context);
-      default:
-        return 'Nepodporovaný typ e-mailu.';
+      case 'reminder': return 'Upomienka k platbe';
+      case 'quote': return 'Cenová ponuka';
+      case 'intro': return 'Predstavenie služieb';
+      default: return type;
     }
-  }
-
-  String _generateReminder(String tone, String context) {
-    if (tone == 'formal') {
-      return '''
-Vážený klient,
-
-dovoľujeme si Vás upozorniť na neuhradenú faktúru, ktorej splatnosť vypršala. 
-
-Detaily: $context
-
-Prosíme o úhradu čo najskôr. V prípade, že ste platbu už zrealizovali, ignorujte prosím túto správu.
-
-S pozdravom,
-Váš tím
-''';
-    } else {
-      return '''
-Ahoj,
-
-len priateľské pripomenutie k neuhradenej faktúre: $context.
-
-Asi sa na to v návale práce zabudlo, budem rád ak sa na to pozrieš keď budeš mať chvíľu.
-
-Vďaka!
-''';
-    }
-  }
-
-  String _generateQuote(String tone, String context) {
-    return '''
-Dobrý deň,
-
-na základe Vášho dopytu ($context) Vám posielame nezáväznú cenovú ponuku.
-
-Sme pripravení začať pracovať ihneď po schválení.
-
-S pozdravom,
-BizAgent
-''';
-  }
-
-  String _generateIntro(String tone, String context) {
-    return '''
-Dobrý deň,
-
-rád by som Vám predstavil naše služby v oblasti: $context.
-
-Verím, že by sme vedeli nájsť priestor na vzájomnú spoluprácu.
-
-S pozdravom,
-''';
   }
 }
