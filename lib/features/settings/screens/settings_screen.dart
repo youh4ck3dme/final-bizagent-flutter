@@ -1,0 +1,218 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
+import '../models/user_settings_model.dart';
+
+class SettingsScreen extends ConsumerStatefulWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  final _formKey = GlobalKey<FormState>();
+  
+  late TextEditingController _nameController;
+  late TextEditingController _addressController;
+  late TextEditingController _icoController;
+  late TextEditingController _dicController;
+  late TextEditingController _icDphController;
+  late TextEditingController _ibanController;
+  late TextEditingController _swiftController;
+
+  @override
+  void initState() {
+    super.initState();
+    final settings = ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+    _nameController = TextEditingController(text: settings.companyName);
+    _addressController = TextEditingController(text: settings.companyAddress);
+    _icoController = TextEditingController(text: settings.companyIco);
+    _dicController = TextEditingController(text: settings.companyDic);
+    _icDphController = TextEditingController(text: settings.companyIcDph);
+    _ibanController = TextEditingController(text: settings.bankAccount);
+    _swiftController = TextEditingController(text: settings.swift);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _icoController.dispose();
+    _dicController.dispose();
+    _icDphController.dispose();
+    _ibanController.dispose();
+    _swiftController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final current = ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+    final updated = current.copyWith(
+      companyName: _nameController.text,
+      companyAddress: _addressController.text,
+      companyIco: _icoController.text,
+      companyDic: _dicController.text,
+      companyIcDph: _icDphController.text,
+      bankAccount: _ibanController.text,
+      swift: _swiftController.text,
+    );
+
+    await ref.read(settingsControllerProvider.notifier).updateSettings(updated);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nastavenia uložené')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final settingsAsync = ref.watch(settingsProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Nastavenia'),
+        actions: [
+          IconButton(onPressed: _save, icon: const Icon(Icons.save)),
+        ],
+      ),
+      body: settingsAsync.when(
+        data: (settings) => Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              _buildSectionTitle('Firma'),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Obchodné meno'),
+                validator: (v) => v!.isEmpty ? 'Povinné' : null,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _addressController,
+                decoration: const InputDecoration(labelText: 'Adresa sídla'),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _icoController,
+                      decoration: const InputDecoration(labelText: 'IČO'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _dicController,
+                      decoration: const InputDecoration(labelText: 'DIČ'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _icDphController,
+                decoration: const InputDecoration(labelText: 'IČ DPH'),
+              ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                title: const Text('Platca DPH'),
+                value: settings.isVatPayer,
+                onChanged: (val) {
+                  ref.read(settingsControllerProvider.notifier).updateVatPayer(val);
+                },
+              ),
+              const Divider(height: 32),
+              _buildSectionTitle('Bankové údaje'),
+              TextFormField(
+                controller: _ibanController,
+                decoration: const InputDecoration(labelText: 'IBAN'),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _swiftController,
+                decoration: const InputDecoration(labelText: 'SWIFT / BIC'),
+              ),
+              const Divider(height: 32),
+              _buildSectionTitle('Aplikácia'),
+              ListTile(
+                title: const Text('Téma aplikácie'),
+                trailing: const Icon(Icons.brightness_6),
+                subtitle: Text(ref.watch(themeProvider).name.toUpperCase()),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Vyberte tému'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: const Text('Systémová'),
+                            onTap: () {
+                              ref.read(themeProvider.notifier).setTheme(ThemeMode.system);
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Svetlá'),
+                            onTap: () {
+                              ref.read(themeProvider.notifier).setTheme(ThemeMode.light);
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Tmavá'),
+                            onTap: () {
+                              ref.read(themeProvider.notifier).setTheme(ThemeMode.dark);
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Jazyk'),
+                trailing: const Text('Slovenčina'),
+                onTap: () {},
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: _save,
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+                child: const Text('Uložiť zmeny'),
+              ),
+            ],
+          ),
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Chyba: $err')),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.blueGrey,
+          letterSpacing: 1.1,
+        ),
+      ),
+    );
+  }
+}

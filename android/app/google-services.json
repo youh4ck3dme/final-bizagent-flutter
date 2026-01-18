@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "82290952332",
+    "project_id": "apia-3fd55",
+    "storage_bucket": "apia-3fd55.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82290952332:android:555fd6080966a84db253a9",
+        "android_client_info": {
+          "package_name": "com.bizagent.bizagent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlvaPtCt45z-1y7EQC4mtVjcMMhyb4xgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
