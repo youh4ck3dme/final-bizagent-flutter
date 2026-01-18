@@ -189,6 +189,16 @@ ExportScreen
 - **Obsahuje:** IBAN, amount, VS, message
 - **Package:** `qr_flutter`
 
+### OCR & Intelligence Service
+- **CategorizationService**: Inteligentná auto-kategorizácia na základe regex pravidiel a kľúčových slov dodávateľov.
+- **Matched Patterns**: 80+ overených slovenských a medzinárodných značiek.
+- **OCR Integration**: Plynulý prechod od extrakcie textu k návrhu kategórie.
+
+### Analytics & Charting
+- **Package**: `fl_chart`
+- **Typy**: PieChart (rozdelenie nákladov), BarChart (denný/mesačný trend).
+- **Logika**: Real-time agregácia dát z `expensesProvider` pomocou Riverpod state managementu.
+
 ### Tax Calculation Service
 - **Per-line VAT rounding** (podľa SR legislatívy)
 - **Supports:** 0%, 10%, 20% VAT rates
@@ -207,6 +217,9 @@ invoices/{userId}
 
 expenses/{userId}
   └── expenses/{expenseId}
+
+receipts/ (Firebase Storage)
+  └── users/{userId}/receipts/{fileName}
 
 invoice_numbering/{userId}
   └── state (dokument - počítadlo faktúr)
