@@ -10,11 +10,11 @@ void main() {
       SharedPreferences.setMockInitialValues({});
     });
 
-    test('Initial state is system', () {
+    test('Initial state is light', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      expect(container.read(themeProvider), ThemeMode.system);
+      expect(container.read(themeProvider), ThemeMode.light);
     });
 
     test('setTheme updates state and saves to prefs', () async {

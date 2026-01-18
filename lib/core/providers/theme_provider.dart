@@ -7,7 +7,7 @@ final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
 });
 
 class ThemeNotifier extends StateNotifier<ThemeMode> {
-  ThemeNotifier() : super(ThemeMode.system) {
+  ThemeNotifier() : super(ThemeMode.light) {
     _loadTheme();
   }
 
