@@ -4,7 +4,7 @@ import '../models/invoice_model.dart';
 import 'invoices_repository.dart';
 
 final invoicesProvider = StreamProvider<List<InvoiceModel>>((ref) {
-  final user = ref.watch(authStateProvider).value;
+  final user = ref.watch(authStateProvider).valueOrNull;
   if (user == null) return Stream.value([]);
   return ref.watch(invoicesRepositoryProvider).watchInvoices(user.id);
 });
@@ -20,7 +20,7 @@ class InvoicesController extends StateNotifier<AsyncValue<void>> {
   InvoicesController(this._ref) : super(const AsyncValue.data(null));
 
   Future<void> addInvoice(InvoiceModel invoice) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
@@ -29,7 +29,7 @@ class InvoicesController extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<void> updateInvoice(InvoiceModel invoice) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
@@ -38,7 +38,7 @@ class InvoicesController extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<void> updateStatus(String invoiceId, InvoiceStatus status) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
@@ -48,7 +48,7 @@ class InvoicesController extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<void> deleteInvoice(String invoiceId) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();

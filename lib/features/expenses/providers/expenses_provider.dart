@@ -4,7 +4,7 @@ import '../models/expense_model.dart';
 import 'expenses_repository.dart';
 
 final expensesProvider = StreamProvider<List<ExpenseModel>>((ref) {
-  final user = ref.watch(authStateProvider).value;
+  final user = ref.watch(authStateProvider).valueOrNull;
   if (user == null) return Stream.value([]);
   return ref.watch(expensesRepositoryProvider).watchExpenses(user.id);
 });
@@ -20,7 +20,7 @@ class ExpensesController extends StateNotifier<AsyncValue<void>> {
   ExpensesController(this._ref) : super(const AsyncValue.data(null));
 
   Future<void> addExpense(ExpenseModel expense) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
@@ -29,7 +29,7 @@ class ExpensesController extends StateNotifier<AsyncValue<void>> {
   }
 
   Future<void> deleteExpense(String expenseId) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
