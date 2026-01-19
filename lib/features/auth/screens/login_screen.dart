@@ -87,45 +87,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Center(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                              width: 140,
-                              height: 140,
-                              child:
-                                  Image.asset('assets/icons/bizagent_logo.png'),
-                            ),
-                            // Cyber-Diode "Iskra" Effect
-                            AnimatedBuilder(
-                              animation: _glowAnimation,
-                              builder: (context, child) {
-                                return Container(
-                                  width: 4,
-                                  height: 4,
-                                  margin: const EdgeInsets.only(
-                                      bottom: 4, right: 2), // Adjust for 'B'
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.red.withValues(alpha: 0.9),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            Colors.red.withValues(alpha: 0.6),
-                                        blurRadius: _glowAnimation.value,
-                                        spreadRadius: _glowAnimation.value / 2,
-                                      ),
-                                      BoxShadow(
-                                        color:
-                                            Colors.red.withValues(alpha: 0.4),
-                                        blurRadius: _glowAnimation.value * 2,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                        child: SizedBox(
+                          width: 280, // 2x larger (was 140)
+                          height: 280,
+                          child: Image.asset('assets/icon/app_icon_1024.png'), // New Fusion Icon
                         ),
                       ),
                     ),
@@ -134,11 +99,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                color: const Color(0xFF0F172A), // Slate 900
                               ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 52), // Increased spacing by +20px (was 32)
                     TextFormField(
                       controller: _emailController,
                       decoration: const InputDecoration(
