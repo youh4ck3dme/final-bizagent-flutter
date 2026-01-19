@@ -124,32 +124,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Top left logo
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 16,
-              left: 24,
-              child: _FadeIn(
-                delay: const Duration(milliseconds: 200),
-                child: Image.asset(
-                  'assets/icons/icoatlas-logo.png',
-                  width: 50,
-                  height: 50,
-                ),
-              ),
-            ),
-            // Top right logo
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 16,
-              right: 24,
-              child: _FadeIn(
-                delay: const Duration(milliseconds: 400),
-                child: Image.asset(
-                  'assets/icons/bizagent_logo.png',
-                  width: 50,
-                  height: 50,
-                ),
-              ),
-            ),
             // Decorative background circles
             Positioned(
               top: -100,
@@ -171,6 +145,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    _FadeIn(
+                      delay: const Duration(milliseconds: 200),
+                      child: Image.asset(
+                        'assets/icons/icoatlas-logo.png',
+                        width: 150,
+                        height: 150,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     Container(
                       width: 120,
                       height: 120,

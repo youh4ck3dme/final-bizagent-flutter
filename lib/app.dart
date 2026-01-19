@@ -42,34 +42,10 @@ class BizAgentApp extends ConsumerWidget {
         themeMode: themeMode,
         routerConfig: router,
         builder: (context, child) {
-          return Stack(
+          return Column(
             children: [
-              Column(
-                children: [
-                  const OfflineBanner(),
-                  if (child != null) Expanded(child: child),
-                ],
-              ),
-              // Top left logo (IcoAtlas)
-              Positioned(
-                top: 20,
-                left: 20,
-                child: Image.asset(
-                  'assets/icons/icoatlas-logo.png',
-                  width: 120,
-                  height: 120,
-                ),
-              ),
-              // Top right logo (BizAgent)
-              Positioned(
-                top: 20,
-                right: 20,
-                child: Image.asset(
-                  'assets/icons/bizagent_logo.png',
-                  width: 120,
-                  height: 120,
-                ),
-              ),
+              const OfflineBanner(),
+              if (child != null) Expanded(child: child),
             ],
           );
         },
