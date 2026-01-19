@@ -149,7 +149,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         const Center(child: CircularProgressIndicator())
                       else if (revenueAsync.hasError || profitAsync.hasError)
                         Text(context.t(AppStr.errorGeneric))
-                      else
+                      else if (revenueAsync.value != null && profitAsync.value != null)
                         _buildExecutiveDashboard(
                           context,
                           revenueAsync.value!,
