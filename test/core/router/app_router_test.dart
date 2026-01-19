@@ -29,6 +29,8 @@ class MockAuthRepository implements AuthRepository {
   @override
   Future<UserModel?> signUp(String email, String password) async => null;
   @override
+  Future<UserModel?> signInWithGoogle() async => null;
+  @override
   Future<UserModel?> signInAnonymously() async => null;
   @override
   Future<void> signOut() async {}
@@ -172,7 +174,8 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.pumpAndSettle();
+      // Use deterministic pump to avoid infinite animation timeout on LoginScreen
+      await tester.pump(const Duration(seconds: 2));
 
       final router = container.read(routerProvider);
       expect(router.state.uri.path, '/login');
@@ -219,7 +222,8 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      await tester.pumpAndSettle();
+      // Use deterministic pump to avoid potential animation timeouts on Dashboard
+      await tester.pump(const Duration(seconds: 2));
 
       final router = container.read(routerProvider);
       expect(router.state.uri.path, '/dashboard');

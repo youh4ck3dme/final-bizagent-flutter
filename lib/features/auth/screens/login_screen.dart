@@ -10,16 +10,34 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLogin = true;
 
+  late AnimationController _pulseController;
+  late Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
+    _glowAnimation = Tween<double>(begin: 2.0, end: 12.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -66,14 +84,51 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Center(
-                      child: SizedBox(
-                        width: 120,
-                        height: 120,
-                        child: Image.asset('assets/icons/bizagent_logo.png'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Center(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 140,
+                              height: 140,
+                              child:
+                                  Image.asset('assets/icons/bizagent_logo.png'),
+                            ),
+                            // Cyber-Diode "Iskra" Effect
+                            AnimatedBuilder(
+                              animation: _glowAnimation,
+                              builder: (context, child) {
+                                return Container(
+                                  width: 4,
+                                  height: 4,
+                                  margin: const EdgeInsets.only(
+                                      bottom: 4, right: 2), // Adjust for 'B'
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red.withValues(alpha: 0.9),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Colors.red.withValues(alpha: 0.6),
+                                        blurRadius: _glowAnimation.value,
+                                        spreadRadius: _glowAnimation.value / 2,
+                                      ),
+                                      BoxShadow(
+                                        color:
+                                            Colors.red.withValues(alpha: 0.4),
+                                        blurRadius: _glowAnimation.value * 2,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 16),
                     Text(
                       _isLogin ? 'Vitajte späť' : 'Vytvoriť účet',
                       style:
@@ -145,6 +200,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton(
+                      onPressed: authState.isLoading
+                          ? null
+                          : () async {
+                              await ref
+                                  .read(authControllerProvider.notifier)
+                                  .signInWithGoogle();
+                            },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: const BorderSide(color: Color(0xFFE5E7EB)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        backgroundColor: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: Image.asset('assets/icons/google_g.png'),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Prihlásiť sa cez Google',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF1F2937),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextButton(

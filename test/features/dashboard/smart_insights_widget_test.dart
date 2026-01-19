@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:bizagent/features/analytics/models/expense_insight_model.dart';
 import 'package:bizagent/features/analytics/providers/expense_insights_provider.dart';
 import 'package:bizagent/features/dashboard/widgets/smart_insights_widget.dart';
+import 'package:bizagent/core/i18n/l10n.dart';
+import 'package:bizagent/shared/widgets/biz_shimmer.dart';
 
 void main() {
   group('SmartInsightsWidget', () {
@@ -18,14 +20,17 @@ void main() {
             expenseInsightsProvider.overrideWith((ref) => completer.future),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: SmartInsightsWidget(),
+            home: L10n(
+              locale: AppLocale.sk,
+              child: Scaffold(
+                body: SmartInsightsWidget(),
+              ),
             ),
           ),
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(BizShimmer), findsOneWidget);
     });
 
     testWidgets('should display insight card when data is available',
@@ -49,8 +54,11 @@ void main() {
             expenseInsightsProvider.overrideWith((ref) => mockInsights),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: SmartInsightsWidget(),
+            home: L10n(
+              locale: AppLocale.sk,
+              child: Scaffold(
+                body: SmartInsightsWidget(),
+              ),
             ),
           ),
         ),
@@ -84,8 +92,11 @@ void main() {
             expenseInsightsProvider.overrideWith((ref) => mockInsights),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: SmartInsightsWidget(),
+            home: L10n(
+              locale: AppLocale.sk,
+              child: Scaffold(
+                body: SmartInsightsWidget(),
+              ),
             ),
           ),
         ),
@@ -117,8 +128,11 @@ void main() {
             expenseInsightsProvider.overrideWith((ref) => mockInsights),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: SmartInsightsWidget(),
+            home: L10n(
+              locale: AppLocale.sk,
+              child: Scaffold(
+                body: SmartInsightsWidget(),
+              ),
             ),
           ),
         ),
@@ -136,8 +150,11 @@ void main() {
             expenseInsightsProvider.overrideWith((ref) => []),
           ],
           child: const MaterialApp(
-            home: Scaffold(
-              body: SmartInsightsWidget(),
+            home: L10n(
+              locale: AppLocale.sk,
+              child: Scaffold(
+                body: SmartInsightsWidget(),
+              ),
             ),
           ),
         ),
@@ -186,8 +203,11 @@ void main() {
           overrides: [
             expenseInsightsProvider.overrideWith((ref) => mockInsights),
           ],
-          child: MaterialApp.router(
-            routerConfig: router,
+          child: L10n(
+            locale: AppLocale.sk,
+            child: MaterialApp.router(
+              routerConfig: router,
+            ),
           ),
         ),
       );

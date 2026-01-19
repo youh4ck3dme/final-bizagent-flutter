@@ -93,127 +93,159 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(invoicesProvider);
-          ref.invalidate(expensesProvider);
-          await Future.wait([
-            ref.read(invoicesProvider.future),
-            ref.read(expensesProvider.future),
-          ]);
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= 900;
+          final isTablet = constraints.maxWidth >= 600 && constraints.maxWidth < 900;
+          
+          final double padding = isDesktop ? 32.0 : 16.0;
+          final int crossAxisCount = isDesktop ? 4 : (isTablet ? 3 : 2);
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(invoicesProvider);
+              ref.invalidate(expensesProvider);
+              await Future.wait([
+                ref.read(invoicesProvider.future),
+                ref.read(expensesProvider.future),
+              ]);
+            },
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(padding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ahoj, ${user?.displayName ?? 'Používateľ'}!',
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(context.t(AppStr.spdDisclaimer),
+                          style: TextStyle(
+                              color: Theme.of(context).textTheme.bodySmall?.color)),
+                      const SizedBox(height: 24),
+    
+                      // First-run banner
+                      if (!(invoicesAsync.isLoading || expensesAsync.isLoading) &&
+                          !(invoicesAsync.hasError || expensesAsync.hasError) &&
+                          (invoicesAsync.value?.isEmpty ?? true) &&
+                          (expensesAsync.value?.isEmpty ?? true))
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: SmartDashboardEmptyState(key: _dashboardKey),
+                        ),
+    
+                      // Overdue Alerts
+                      if (invoicesAsync.value != null)
+                        _buildOverdueAlert(context, invoicesAsync.value!),
+    
+                      // Financial Summary (Responsive Grid)
+                      if (revenueAsync.isLoading || profitAsync.isLoading)
+                        const Center(child: CircularProgressIndicator())
+                      else if (revenueAsync.hasError || profitAsync.hasError)
+                        Text(context.t(AppStr.errorGeneric))
+                      else
+                        _buildExecutiveDashboard(
+                          context,
+                          revenueAsync.value!,
+                          profitAsync.value!,
+                          expensesAsync.value ?? [],
+                          crossAxisCount: crossAxisCount, // Dynamic Column Count
+                        ),
+    
+                      const SizedBox(height: 24),
+                      // AI Insights
+                      const SmartInsightsWidget(),
+    
+                      // Tax Widget
+                      const DashboardTaxWidget(),
+    
+                      const SizedBox(height: 32),
+    
+                      // Quick Actions
+                      BizSectionHeader(title: context.t(AppStr.quickActions)),
+                      const SizedBox(height: 16),
+                      
+                      // Using Wrap for responsive Quick Actions on large screens
+                      if (isDesktop)
+                        Wrap(
+                          spacing: 16,
+                          runSpacing: 16,
+                          children: [
+                            SizedBox(width: 300, child: _buildActionTile(context, title: context.t(AppStr.invoiceTitle), subtitle: 'Nová faktúra pre klienta', icon: Icons.add_circle_outline, color: Colors.blue, onTap: () => context.push('/create-invoice'), widgetKey: _invoiceKey)),
+                            SizedBox(width: 300, child: _buildActionTile(context, title: context.t(AppStr.magicScan), subtitle: context.t(AppStr.magicScanSubtitle), icon: Icons.auto_awesome, color: Colors.purple, onTap: () => context.push('/ai-tools'), widgetKey: _scanKey)),
+                            SizedBox(width: 300, child: _buildActionTile(context, title: 'Pridať výdavok', subtitle: 'Evidencia nákladov', icon: Icons.shopping_bag_outlined, color: Colors.orange, onTap: () => context.push('/create-expense'))),
+                            SizedBox(width: 300, child: _buildActionTile(context, title: 'Import bank CSV', subtitle: 'Automatické párovanie faktúr', icon: Icons.upload_file, color: Colors.teal, onTap: () => context.push('/bank-import'))),
+                            SizedBox(width: 300, child: _buildActionTile(context, title: 'Export pre účtovníka', subtitle: 'Zostava faktúr a výdavkov', icon: Icons.download, color: Colors.indigo, onTap: () => context.push('/export'))),
+                          ],
+                        )
+                      else
+                        Column(
+                          children: [
+                            _buildActionTile(
+                              context,
+                              title: context.t(AppStr.invoiceTitle),
+                              subtitle: 'Nová faktúra pre klienta',
+                              icon: Icons.add_circle_outline,
+                              color: Colors.blue,
+                              onTap: () => context.push('/create-invoice'),
+                              widgetKey: _invoiceKey,
+                            ),
+                            _buildActionTile(
+                              context,
+                              title: context.t(AppStr.magicScan),
+                              subtitle: context.t(AppStr.magicScanSubtitle),
+                              icon: Icons.auto_awesome,
+                              color: Colors.purple,
+                              onTap: () => context.push('/ai-tools'),
+                              widgetKey: _scanKey,
+                            ),
+                            _buildActionTile(
+                              context,
+                              title: 'Pridať výdavok',
+                              subtitle: 'Evidencia nákladov',
+                              icon: Icons.shopping_bag_outlined,
+                              color: Colors.orange,
+                              onTap: () => context.push('/create-expense'),
+                            ),
+                            _buildActionTile(
+                              context,
+                              title: 'Import bank CSV',
+                              subtitle: 'Automatické párovanie faktúr',
+                              icon: Icons.upload_file,
+                              color: Colors.teal,
+                              onTap: () => context.push('/bank-import'),
+                            ),
+                            _buildActionTile(
+                              context,
+                              title: 'Export pre účtovníka',
+                              subtitle: 'Zostava faktúr a výdavkov',
+                              icon: Icons.download,
+                              color: Colors.indigo,
+                              onTap: () => context.push('/export'),
+                            ),
+                          ],
+                        ),
+    
+                      const SizedBox(height: 32),
+                      // Recent Invoices
+                      const BizSectionHeader(title: 'Posledné faktúry'),
+                      const SizedBox(height: 16),
+                      if (invoicesAsync.value != null)
+                        ...invoicesAsync.value!.take(5).map(
+                            (invoice) => _buildRecentInvoiceTile(context, invoice)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Ahoj, ${user?.displayName ?? 'Používateľ'}!',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Text(context.t(AppStr.spdDisclaimer),
-                  style: TextStyle(
-                      color: Theme.of(context).textTheme.bodySmall?.color)),
-              const SizedBox(height: 24),
-
-              // First-run banner (when user has no data yet)
-              if (!(invoicesAsync.isLoading || expensesAsync.isLoading) &&
-                  !(invoicesAsync.hasError || expensesAsync.hasError) &&
-                  (invoicesAsync.value?.isEmpty ?? true) &&
-                  (expensesAsync.value?.isEmpty ?? true))
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  // Assign Key to Smart Empty State
-                  child: SmartDashboardEmptyState(key: _dashboardKey),
-                ),
-
-              // Overdue Alerts
-              if (invoicesAsync.value != null)
-                _buildOverdueAlert(context, invoicesAsync.value!),
-
-              // Financial Summary (New 6-Card Executive Layout)
-              if (revenueAsync.isLoading || profitAsync.isLoading)
-                const Center(child: CircularProgressIndicator())
-              else if (revenueAsync.hasError || profitAsync.hasError)
-                Text(context.t(AppStr.errorGeneric))
-              else
-                _buildExecutiveDashboard(
-                  context,
-                  revenueAsync.value!,
-                  profitAsync.value!,
-                  expensesAsync.value ?? [],
-                ),
-
-              const SizedBox(height: 24),
-              // AI Insights
-              const SmartInsightsWidget(),
-
-              // Tax Widget (Thermometer + Deadlines)
-              const DashboardTaxWidget(),
-
-              const SizedBox(height: 32),
-
-              // Quick Actions
-              BizSectionHeader(title: context.t(AppStr.quickActions)),
-              const SizedBox(height: 16),
-              _buildActionTile(
-                context,
-                title: context.t(AppStr.invoiceTitle),
-                subtitle: 'Nová faktúra pre klienta',
-                icon: Icons.add_circle_outline,
-                color: Colors.blue,
-                onTap: () => context.push('/create-invoice'),
-                // Assign Key to Invoice Action
-                widgetKey: _invoiceKey,
-              ),
-              _buildActionTile(
-                context,
-                title: context.t(AppStr.magicScan),
-                subtitle: context.t(AppStr.magicScanSubtitle),
-                icon: Icons.auto_awesome,
-                color: Colors.purple,
-                onTap: () => context.push('/ai-tools'),
-                // Assign Key to Scan Action
-                widgetKey: _scanKey,
-              ),
-              _buildActionTile(
-                context,
-                title: 'Pridať výdavok',
-                subtitle: 'Evidencia nákladov',
-                icon: Icons.shopping_bag_outlined,
-                color: Colors.orange,
-                onTap: () => context.push('/create-expense'),
-              ),
-              _buildActionTile(
-                context,
-                title: 'Import bank CSV',
-                subtitle: 'Automatické párovanie faktúr',
-                icon: Icons.upload_file,
-                color: Colors.teal,
-                onTap: () => context.push('/bank-import'),
-              ),
-              _buildActionTile(
-                context,
-                title: 'Export pre účtovníka',
-                subtitle: 'Zostava faktúr a výdavkov',
-                icon: Icons.download,
-                color: Colors.indigo,
-                onTap: () => context.push('/export'),
-              ),
-
-              const SizedBox(height: 32),
-              // Recent Invoices
-              const BizSectionHeader(title: 'Posledné faktúry'),
-              const SizedBox(height: 16),
-              if (invoicesAsync.value != null)
-                ...invoicesAsync.value!.take(5).map(
-                    (invoice) => _buildRecentInvoiceTile(context, invoice)),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -277,13 +309,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildExecutiveDashboard(BuildContext context, RevenueMetrics revenue,
-      ProfitMetrics profit, List<dynamic> expenses) {
+      ProfitMetrics profit, List<dynamic> expenses, {int crossAxisCount = 2}) {
     final totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
 
     return Column(
       children: [
         GridView.count(
-          crossAxisCount: 2,
+          crossAxisCount: crossAxisCount, // Use dynamic count
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 12,

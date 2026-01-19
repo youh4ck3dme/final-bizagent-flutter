@@ -16,7 +16,9 @@ void main() {
       expect(find.text('BizAgent', skipOffstage: false), findsOneWidget);
 
       // Check subtitle
-      expect(find.textContaining('Váš inteligentný AI asistent', skipOffstage: false),
+      expect(
+          find.textContaining('Váš inteligentný AI asistent',
+              skipOffstage: false),
           findsOneWidget);
 
       // Check for LinearProgressIndicator

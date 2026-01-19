@@ -1,9 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check ownership
+    // Helper functions
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
+    }
+    
+    function isValidInvoice() {
+      let data = request.resource.data;
+      return data.clientName is string && data.clientName.size() > 0
+             && data.totalAmount is number && data.totalAmount >= 0
+             && data.items is list;
+    }
+    
+    function isValidExpense() {
+      let data = request.resource.data;
+      return data.description is string && data.description.size() > 0
+             && data.amount is number && data.amount >= 0;
     }
 
     // User Settings
@@ -11,22 +24,24 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
 
-    // Invoices
+    // Invoices - Strict Schema Validation
     match /invoices/{userId}/{document=**} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isValidInvoice();
     }
     
-    // Expenses
+    // Expenses - Strict Schema Validation
     match /expenses/{userId}/{document=**} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isValidExpense();
     }
     
-    // Receipt Storage metadata if needed (optional)
+    // Receipt Storage metadata
     match /receipts/{userId}/{document=**} {
       allow read, write: if isOwner(userId);
     }
     
-    // Global numbering state - only user specific
+    // Global numbering state
     match /invoice_numbering/{userId}/{document=**} {
       allow read, write: if isOwner(userId);
     }

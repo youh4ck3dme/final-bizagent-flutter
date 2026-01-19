@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
@@ -9,7 +8,8 @@ class AppTheme {
         seedColor: const Color(0xFF2563EB),
         brightness: Brightness.light,
       ),
-      textTheme: GoogleFonts.interTextTheme(),
+      // Use native platform fonts (SF Pro / Roboto) for maximum sharpness
+      typography: Typography.material2021(platform: TargetPlatform.iOS), 
       appBarTheme: const AppBarTheme(
         centerTitle: true,
         elevation: 0,
@@ -31,7 +31,8 @@ class AppTheme {
         seedColor: const Color(0xFF2563EB),
         brightness: Brightness.dark,
       ),
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
+      // Use native platform fonts (SF Pro / Roboto)
+      typography: Typography.material2021(platform: TargetPlatform.iOS),
     );
   }
 }

@@ -179,73 +179,83 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center, // Centered alignment
-        children: [
-          // SVG Illustration Container
-          SizedBox(
-            height: 300,
-            child: Stack(
-              alignment: Alignment.center,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center, // Centered alignment
               children: [
-                // Glow effect behind SVG
-                Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: content.accentColor.withValues(alpha: 0.1),
-                    boxShadow: [
-                      BoxShadow(
-                        color: content.accentColor.withValues(alpha: 0.1),
-                        blurRadius: 60,
-                        spreadRadius: 20,
+                const SizedBox(height: 20),
+                // SVG Illustration Container
+                SizedBox(
+                  height: 300,
+                  width: constraints.maxWidth,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Glow effect behind SVG
+                      Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: content.accentColor.withValues(alpha: 0.1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: content.accentColor.withValues(alpha: 0.1),
+                              blurRadius: 60,
+                              spreadRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SvgPicture.asset(
+                        content.svgPath,
+                        height: 280,
+                        // width property removed to allow flexible width in small screens
+                        fit: BoxFit.contain, 
+                        placeholderBuilder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
                       ),
                     ],
                   ),
                 ),
-                SvgPicture.asset(
-                  content.svgPath,
-                  height: 280,
-                  width: 280,
-                  placeholderBuilder: (context) =>
-                      const Center(child: CircularProgressIndicator()),
+                const SizedBox(height: 48),
+
+                // Title
+                Text(
+                  content.title,
+                  textAlign: TextAlign.center, // Center text
+                  style: GoogleFonts.outfit(
+                    fontSize: 42,
+                    height: 1.1,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF111827),
+                    letterSpacing: -1.0,
+                  ),
                 ),
+                const SizedBox(height: 24),
+
+                // Description
+                Text(
+                  content.description,
+                  textAlign: TextAlign.center, // Center text
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    height: 1.6,
+                    color: const Color(0xFF4B5563),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-          const SizedBox(height: 48),
-
-          // Title
-          Text(
-            content.title,
-            textAlign: TextAlign.center, // Center text
-            style: GoogleFonts.outfit(
-              fontSize: 42,
-              height: 1.1,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF111827),
-              letterSpacing: -1.0,
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // Description
-          Text(
-            content.description,
-            textAlign: TextAlign.center, // Center text
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              height: 1.6,
-              color: const Color(0xFF4B5563),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
+        );
+      }
     );
   }
 }

@@ -14,6 +14,7 @@ import '../services/categorization_service.dart';
 import '../services/receipt_storage_service.dart';
 import '../widgets/category_selector.dart';
 import '../../../core/services/analytics_service.dart';
+import '../../auth/providers/auth_repository.dart';
 
 class CreateExpenseScreen extends ConsumerStatefulWidget {
   final String? initialText;

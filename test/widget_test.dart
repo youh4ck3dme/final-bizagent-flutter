@@ -32,6 +32,8 @@ class MockAuthRepository implements AuthRepository {
   @override
   Future<UserModel?> signUp(String email, String password) async => currentUser;
   @override
+  Future<UserModel?> signInWithGoogle() async => currentUser;
+  @override
   Future<UserModel?> signInAnonymously() async => currentUser;
   @override
   Future<void> signOut() async {}
@@ -108,7 +110,8 @@ void main() {
     await tester.pump();
     // Allow for redirect to Dashboard
     await tester.pump(const Duration(milliseconds: 100));
-    await tester.pumpAndSettle();
+    // Dashboard has shimmer animation which is infinite, use pump(Duration)
+    await tester.pump(const Duration(seconds: 2));
 
     // Verify that Dashboard is shown.
     expect(find.text('Dashboard'), findsWidgets);

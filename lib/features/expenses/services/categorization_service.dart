@@ -12,6 +12,7 @@ class CategorizationService {
   final FirebaseFirestore _firestore;
 
   CategorizationService(this._firestore);
+
   /// Navrhne kategóriu na základe názvu dodávateľa
   /// Vracia tuple (kategória, confidence 0-100)
   (ExpenseCategory, int) suggestCategory(String vendorName) {

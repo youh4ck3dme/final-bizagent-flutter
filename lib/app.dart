@@ -6,27 +6,40 @@ import 'core/router/app_router.dart';
 
 import 'core/i18n/l10n.dart';
 
-import 'shared/widgets/offline_banner.dart';
 import 'core/services/review_service.dart';
 import 'features/notifications/services/notification_service.dart';
 import 'features/notifications/services/notification_scheduler.dart';
 
-class BizAgentApp extends ConsumerWidget {
+class BizAgentApp extends ConsumerStatefulWidget {
   const BizAgentApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-    final themeMode = ref.watch(themeProvider);
+  ConsumerState<BizAgentApp> createState() => _BizAgentAppState();
+}
 
+class _BizAgentAppState extends ConsumerState<BizAgentApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeServices();
+  }
+
+  void _initializeServices() {
     // Initialize Review Monitoring
     ref.read(reviewServiceProvider).monitorMilestones();
 
     // Initialize Notifications
     ref.read(notificationServiceProvider).init().then((_) {
+      if (!mounted) return;
       ref.read(notificationServiceProvider).requestPermissions();
       ref.read(notificationSchedulerProvider).scheduleAllAlerts();
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return L10n(
       locale: AppLocale.sk,
@@ -42,12 +55,8 @@ class BizAgentApp extends ConsumerWidget {
         themeMode: themeMode,
         routerConfig: router,
         builder: (context, child) {
-          return Column(
-            children: [
-              const OfflineBanner(),
-              if (child != null) Expanded(child: child),
-            ],
-          );
+          if (child != null) return child;
+          return const SizedBox.shrink();
         },
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:bizagent/features/expenses/models/expense_category.dart';
 import 'package:bizagent/features/expenses/services/categorization_service.dart';
 
@@ -6,7 +7,8 @@ void main() {
   late CategorizationService service;
 
   setUp(() {
-    service = CategorizationService();
+    final firestore = FakeFirebaseFirestore();
+    service = CategorizationService(firestore);
   });
 
   group('CategorizationService - Doprava', () {

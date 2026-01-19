@@ -51,6 +51,31 @@ class CacheService {
     }
   }
 
+  Future<void> fullReset() async {
+    debugPrint('🚀 [CACHE] STARTING FULL RESET...');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      debugPrint('✅ [CACHE] SharedPreferences cleared.');
+
+      if (!kIsWeb) {
+        final tempDir = await getTemporaryDirectory();
+        await _clearDirectory(tempDir);
+        
+        final docDir = await getApplicationDocumentsDirectory();
+        await _clearDirectory(docDir);
+      } else {
+        // On web, we can't easily clear IndexedDB from here without specific packages 
+        // like 'drift' or 'hive'. But we can clear standard image cache.
+        PaintingBinding.instance.imageCache.clear();
+        debugPrint('✅ [CACHE] Web image cache cleared.');
+      }
+      debugPrint('🏁 [CACHE] FULL RESET COMPLETE.');
+    } catch (e) {
+      debugPrint('❌ [CACHE] Full reset failed: $e');
+    }
+  }
+
   Future<void> _clearDirectory(Directory dir) async {
     try {
       if (await dir.exists()) {

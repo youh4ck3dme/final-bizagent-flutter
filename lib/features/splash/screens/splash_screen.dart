@@ -219,8 +219,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                                   minHeight: 6,
                                   backgroundColor: cs.primaryContainer
                                       .withValues(alpha: 0.2),
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      cs.primary),
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(cs.primary),
                                 ),
                               ),
                               const SizedBox(height: 16),

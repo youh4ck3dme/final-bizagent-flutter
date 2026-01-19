@@ -5,8 +5,8 @@ const { defineSecret } = require("firebase-functions/params");
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
 // Model configuration
-// UPDEJT: Prejdené na 2.5 flash lite (safe do 2026)
-const MODEL_NAME = "gemini-2.5-flash-lite";
+// UPDEJT: Prejdené na 2.0 flash (stable model)
+const MODEL_NAME = "gemini-2.0-flash";
 
 /**
  * Generuje profesionálny e-mail na základe kontextu.

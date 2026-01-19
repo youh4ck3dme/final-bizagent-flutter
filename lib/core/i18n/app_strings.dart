@@ -246,7 +246,8 @@ class AppStringsSK {
     AppStr.looksGood: "Vyzerá to dobre.",
     AppStr.invalidFormat: "Skontrolujte formát.",
     AppStr.missingField: "Doplňte prosím.",
-    AppStr.offlineTitle: "Ste v offline režime. Zmeny sa zosynchronizujú neskôr.",
+    AppStr.offlineTitle:
+        "Ste v offline režime. Zmeny sa zosynchronizujú neskôr.",
 
     // Badges
     AppStr.badgeOk: "OK",

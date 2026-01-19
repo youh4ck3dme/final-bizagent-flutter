@@ -39,6 +39,21 @@ class OcrService {
   }
 
   Future<ParsedReceipt?> scanReceipt(ImageSource source) async {
+    // 1. Web Guard
+    if (kIsWeb) {
+      debugPrint('⚠️ OCR is not supported on Web (ML Kit limitation).');
+      // Return dummy receipt to prevent UI freeze/crash, or handle as error
+      // Ideally show a Snackar, but here we just return safe empty/dummy data
+      // so the app continues flow (e.g. user fills manually).
+      return ParsedReceipt(
+        originalText:
+            "OCR skenovanie nie je dostupné vo webovej verzii.\nProsím, vyplňte údaje ručne alebo použite mobilnú aplikáciu.",
+        totalAmount: null,
+        date: null,
+        vendorId: null,
+      );
+    }
+
     try {
       await _ensureInitialized();
 

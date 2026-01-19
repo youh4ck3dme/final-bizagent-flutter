@@ -1,0 +1,651 @@
+00:00 +0: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart                                                                                  00:01 +0: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart                                                                                  00:01 +0: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests Initial state is light                                              00:01 +1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests Initial state is light                                              00:01 +1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests setTheme updates state and saves to prefs                           00:01 +2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests setTheme updates state and saves to prefs                           00:01 +2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests Loads dark mode from prefs on initialization                        00:01 +2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests Loads dark mode from prefs on initialization                        
+  Skip: Async initialization timing issue
+00:01 +2 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/providers/theme_provider_test.dart: ThemeProvider Tests Loads dark mode from prefs on initialization                     00:01 +2 ~1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/utils/csv_test.dart                                                                                              00:01 +2 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/utils/csv_test.dart: CSV escapes commas and quotes                                                                       00:01 +3 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/utils/csv_test.dart: CSV escapes commas and quotes                                                                       00:01 +3 ~1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/tax_calculation_service_test.dart                                                                       00:01 +3 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/tax_calculation_service_test.dart: VAT line rounding (20%)                                                      00:01 +4 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/tax_calculation_service_test.dart: VAT line rounding (20%)                                                      00:01 +4 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/tax_calculation_service_test.dart: Totals sum using per-line rounded VAT                                        00:01 +5 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/tax_calculation_service_test.dart: Totals sum using per-line rounded VAT                                        00:01 +5 ~1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/invoice_numbering_service_test.dart                                                                     00:01 +5 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/invoice_numbering_service_test.dart: allocates from reserved block pool                                         00:01 +6 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/invoice_numbering_service_test.dart: allocates from reserved block pool                                         00:01 +6 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/invoice_numbering_service_test.dart: formats padded numbering                                                   00:01 +7 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/invoice_numbering_service_test.dart: formats padded numbering                                                   00:01 +7 ~1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart                                                                            00:01 +7 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart: QrPaymentService normalizes IBAN                                                  00:01 +8 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart: QrPaymentService normalizes IBAN                                                  00:01 +8 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart: QrPaymentService validates likely SK IBAN                                         00:01 +9 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart: QrPaymentService validates likely SK IBAN                                         00:01 +9 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart: QrPaymentService builds EPC payload with required lines                           00:01 +10 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/qr_payment_service_test.dart: QrPaymentService builds EPC payload with required lines                          00:01 +10 ~1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/pay_by_square_service_test.dart                                                                        00:01 +10 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/pay_by_square_service_test.dart: PayBySquareService generateString returns non-empty string                    00:01 +11 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/pay_by_square_service_test.dart: PayBySquareService generateString returns non-empty string                    00:01 +11 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/pay_by_square_service_test.dart: PayBySquareService generateString handles optional fields                     00:02 +11 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/services/pay_by_square_service_test.dart: PayBySquareService generateString handles optional fields                     00:02 +12 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/router_paths_smoke_test.dart: app_router.dart contains expected paths for bank-import and export                 00:02 +13 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/router_paths_smoke_test.dart: app_router.dart contains expected paths for bank-import and export                 00:02 +13 ~1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart                                                                                     00:02 +13 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Stays on /splash when auth is loading                             00:02 +14 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/settings/settings_screen_lookup_test.dart: SettingsScreen populates fields after IČO lookup                         00:02 +14 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /onboarding when not seen                            
+unhandled element <filter/>; Picture key: Svg loader
+00:02 +15 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/settings/settings_screen_lookup_test.dart: SettingsScreen populates fields after IČO lookup                         00:02 +16 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/settings/settings_screen_lookup_test.dart: SettingsScreen populates fields after IČO lookup                         00:03 +16 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/settings/settings_screen_lookup_test.dart: SettingsScreen populates fields after IČO lookup                         00:03 +17 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +18 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +19 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +20 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +21 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +22 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +23 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +24 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +25 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +26 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:03 +27 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:04 +27 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:04 +28 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:04 +29 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    00:04 +29 ~1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding    
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+pumpAndSettle timed out
+
+When the exception was thrown, this was the stack:
+#0      WidgetTester.pumpAndSettle.<anonymous closure> (package:flutter_test/src/widget_tester.dart:717:11)
+<asynchronous suspension>
+#1      TestAsyncUtils.guard.<anonymous closure> (package:flutter_test/src/test_async_utils.dart:130:27)
+<asynchronous suspension>
+#2      main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart:175:7)
+<asynchronous suspension>
+#3      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#4      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  Redirects to /login when not authenticated and seen onboarding
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:04 +29 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding [E]
+  Test failed. See exception logs above.
+  The test description was: Redirects to /login when not authenticated and seen onboarding
+  
+
+To run this test again: /Users/youh4ck3dme/flutter/bin/cache/dart-sdk/bin/dart test /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart -p vm --plain-name 'AppRouter Redirect Tests Redirects to /login when not authenticated and seen onboarding'
+00:04 +30 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +31 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +32 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +33 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +34 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +35 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +36 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +37 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +38 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +39 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +40 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +41 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +42 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +43 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +44 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +45 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +46 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +47 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +48 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +49 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +50 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +51 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +52 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +53 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +54 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +55 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +56 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +57 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +58 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +59 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +60 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +61 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +62 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +63 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +64 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +65 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +66 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +67 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +68 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +69 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +70 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +71 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +72 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +73 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +74 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +75 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +76 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +77 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +78 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/core/router/app_router_test.dart: AppRouter Redirect Tests Redirects to /dashboard when authenticated                     00:04 +78 ~1 -1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/tax_thermometer_service_test.dart                                                                    00:04 +78 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/tax_thermometer_service_test.dart: TaxThermometerService calculates turnover for last 12 months correctly    00:04 +79 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/tax_thermometer_service_test.dart: TaxThermometerService calculates turnover for last 12 months correctly    00:04 +79 ~1 -1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart                                                                  00:04 +79 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen displays title                                  00:04 +80 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen displays title                                  00:04 +81 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen displays title                                  00:05 +81 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen displays title                                  00:05 +82 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen displays title                                  00:05 +82 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen shows loading indicator                         00:05 +83 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/tax/cashflow_analytics_screen_test.dart: CashflowAnalyticsScreen shows loading indicator                         00:05 +83 ~1 -1: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart                                                                00:05 +83 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display loading state                      00:05 +83 ~1 -1: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display loading state                      
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type "CircularProgressIndicator": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:28:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart line 28
+The test description was:
+  should display loading state
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:05 +83 ~1 -2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display loading state [E]                  
+  Test failed. See exception logs above.
+  The test description was: should display loading state
+  
+00:05 +83 ~1 -2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    
+To run this test again: /Users/youh4ck3dme/flutter/bin/cache/dart-sdk/bin/dart test /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart -p vm --plain-name 'SmartInsightsWidget should display loading state'
+00:05 +84 ~1 -2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:05 +85 ~1 -2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:05 +86 ~1 -2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:05 +86 ~1 -2: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display insight card when data is available
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building _InsightCard(dirty, dependencies:
+[InheritedCupertinoTheme, _InheritedTheme, _LocalizationsScope-[GlobalKey#4e258]]):
+L10n not found. Wrap app with L10n.
+'package:bizagent/core/i18n/l10n.dart':
+Failed assertion: line 18 pos 12: 'result != null'
+
+The relevant error-causing widget was:
+  _InsightCard
+  _InsightCard:file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/lib/features/dashboard/widgets/smart_insights_widget.dart:26:18
+
+When the exception was thrown, this was the stack:
+#2      L10n.of (package:bizagent/core/i18n/l10n.dart:18:12)
+#3      L10nX.t (package:bizagent/core/i18n/l10n.dart:34:32)
+#4      _InsightCard.build (package:bizagent/features/dashboard/widgets/smart_insights_widget.dart:97:41)
+#5      StatelessElement.build (package:flutter/src/widgets/framework.dart:5892:49)
+#6      ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5820:15)
+#7      Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#8      ComponentElement._firstBuild (package:flutter/src/widgets/framework.dart:5802:5)
+#9      ComponentElement.mount (package:flutter/src/widgets/framework.dart:5796:5)
+...     Normal element mounting (36 frames)
+#45     Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#46     MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#47     MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (364 frames)
+#411    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#412    MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#413    MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (471 frames)
+#884    _UncontrolledProviderScopeElement.mount (package:flutter_riverpod/src/framework.dart:315:11)
+...     Normal element mounting (9 frames)
+#893    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#894    Element.updateChild (package:flutter/src/widgets/framework.dart:4053:20)
+#895    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#896    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#897    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#898    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#899    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#900    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#901    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#902    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#903    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#904    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#905    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#906    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#907    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#908    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#909    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#910    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#911    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#912    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#913    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#914    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#915    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#916    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#917    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#918    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#919    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#920    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#921    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#922    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#923    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#924    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#925    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#926    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#927    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#928    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#929    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#930    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#931    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#932    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#933    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#934    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#935    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#936    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#937    _RawViewElement._updateChild (package:flutter/src/widgets/view.dart:481:16)
+#938    _RawViewElement.update (package:flutter/src/widgets/view.dart:568:5)
+#939    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#940    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#941    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#942    StatelessElement.update (package:flutter/src/widgets/framework.dart:5898:5)
+#943    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#944    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#945    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#946    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#947    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#948    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#949    RootElement._rebuild (package:flutter/src/widgets/binding.dart:1782:16)
+#950    RootElement.update (package:flutter/src/widgets/binding.dart:1760:5)
+#951    RootElement.performRebuild (package:flutter/src/widgets/binding.dart:1774:7)
+#952    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#953    BuildScope._tryRebuild (package:flutter/src/widgets/framework.dart:2750:15)
+#954    BuildScope._flushDirtyElements (package:flutter/src/widgets/framework.dart:2807:11)
+#955    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3111:18)
+#956    AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:1506:19)
+#957    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:495:5)
+#958    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1434:15)
+#959    SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1347:9)
+#960    AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1335:9)
+#963    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#964    AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1324:27)
+#965    WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#968    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#969    WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#970    main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:46:20)
+#971    testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#972    TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 7 frames from class _AssertionError, dart:async, and package:stack_trace)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Test Insight": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:61:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart line 61
+The test description was:
+  should display insight card when data is available
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:05 +86 ~1 -3: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display insight card when data is available [E]
+  Test failed. See exception logs above.
+  The test description was: should display insight card when data is available
+  
+
+To run this test again: /Users/youh4ck3dme/flutter/bin/cache/dart-sdk/bin/dart test /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart -p vm --plain-name 'SmartInsightsWidget should display insight card when data is available'
+00:06 +87 ~1 -3: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +87 ~1 -3: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display high priority badge for high priority insights
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building _InsightCard(dirty, dependencies:
+[InheritedCupertinoTheme, _InheritedTheme, _LocalizationsScope-[GlobalKey#de33d]]):
+L10n not found. Wrap app with L10n.
+'package:bizagent/core/i18n/l10n.dart':
+Failed assertion: line 18 pos 12: 'result != null'
+
+The relevant error-causing widget was:
+  _InsightCard
+  _InsightCard:file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/lib/features/dashboard/widgets/smart_insights_widget.dart:26:18
+
+When the exception was thrown, this was the stack:
+#2      L10n.of (package:bizagent/core/i18n/l10n.dart:18:12)
+#3      L10nX.t (package:bizagent/core/i18n/l10n.dart:34:32)
+#4      _InsightCard.build (package:bizagent/features/dashboard/widgets/smart_insights_widget.dart:97:41)
+#5      StatelessElement.build (package:flutter/src/widgets/framework.dart:5892:49)
+#6      ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5820:15)
+#7      Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#8      ComponentElement._firstBuild (package:flutter/src/widgets/framework.dart:5802:5)
+#9      ComponentElement.mount (package:flutter/src/widgets/framework.dart:5796:5)
+...     Normal element mounting (36 frames)
+#45     Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#46     MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#47     MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (364 frames)
+#411    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#412    MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#413    MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (471 frames)
+#884    _UncontrolledProviderScopeElement.mount (package:flutter_riverpod/src/framework.dart:315:11)
+...     Normal element mounting (9 frames)
+#893    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#894    Element.updateChild (package:flutter/src/widgets/framework.dart:4053:20)
+#895    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#896    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#897    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#898    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#899    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#900    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#901    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#902    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#903    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#904    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#905    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#906    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#907    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#908    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#909    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#910    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#911    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#912    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#913    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#914    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#915    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#916    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#917    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#918    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#919    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#920    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#921    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#922    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#923    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#924    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#925    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#926    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#927    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#928    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#929    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#930    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#931    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#932    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#933    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#934    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#935    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#936    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#937    _RawViewElement._updateChild (package:flutter/src/widgets/view.dart:481:16)
+#938    _RawViewElement.update (package:flutter/src/widgets/view.dart:568:5)
+#939    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#940    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#941    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#942    StatelessElement.update (package:flutter/src/widgets/framework.dart:5898:5)
+#943    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#944    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#945    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#946    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#947    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#948    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#949    RootElement._rebuild (package:flutter/src/widgets/binding.dart:1782:16)
+#950    RootElement.update (package:flutter/src/widgets/binding.dart:1760:5)
+#951    RootElement.performRebuild (package:flutter/src/widgets/binding.dart:1774:7)
+#952    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#953    BuildScope._tryRebuild (package:flutter/src/widgets/framework.dart:2750:15)
+#954    BuildScope._flushDirtyElements (package:flutter/src/widgets/framework.dart:2807:11)
+#955    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3111:18)
+#956    AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:1506:19)
+#957    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:495:5)
+#958    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1434:15)
+#959    SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1347:9)
+#960    AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1335:9)
+#963    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#964    AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1324:27)
+#965    WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#968    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#969    WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#970    main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:81:20)
+#971    testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#972    TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 7 frames from class _AssertionError, dart:async, and package:stack_trace)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "DÔLEŽITÉ": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:95:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart line 95
+The test description was:
+  should display high priority badge for high priority insights
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +87 ~1 -4: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display high priority badge for high priority insights [E]
+  Test failed. See exception logs above.
+  The test description was: should display high priority badge for high priority insights
+  
+
+To run this test again: /Users/youh4ck3dme/flutter/bin/cache/dart-sdk/bin/dart test /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart -p vm --plain-name 'SmartInsightsWidget should display high priority badge for high priority insights'
+00:06 +87 ~1 -4: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +87 ~1 -4: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display potential savings when available   
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building _InsightCard(dirty, dependencies:
+[InheritedCupertinoTheme, _InheritedTheme, _LocalizationsScope-[GlobalKey#630e6]]):
+L10n not found. Wrap app with L10n.
+'package:bizagent/core/i18n/l10n.dart':
+Failed assertion: line 18 pos 12: 'result != null'
+
+The relevant error-causing widget was:
+  _InsightCard
+  _InsightCard:file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/lib/features/dashboard/widgets/smart_insights_widget.dart:26:18
+
+When the exception was thrown, this was the stack:
+#2      L10n.of (package:bizagent/core/i18n/l10n.dart:18:12)
+#3      L10nX.t (package:bizagent/core/i18n/l10n.dart:34:32)
+#4      _InsightCard.build (package:bizagent/features/dashboard/widgets/smart_insights_widget.dart:97:41)
+#5      StatelessElement.build (package:flutter/src/widgets/framework.dart:5892:49)
+#6      ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5820:15)
+#7      Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#8      ComponentElement._firstBuild (package:flutter/src/widgets/framework.dart:5802:5)
+#9      ComponentElement.mount (package:flutter/src/widgets/framework.dart:5796:5)
+...     Normal element mounting (36 frames)
+#45     Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#46     MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#47     MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (364 frames)
+#411    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#412    MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#413    MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (471 frames)
+#884    _UncontrolledProviderScopeElement.mount (package:flutter_riverpod/src/framework.dart:315:11)
+...     Normal element mounting (9 frames)
+#893    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#894    Element.updateChild (package:flutter/src/widgets/framework.dart:4053:20)
+#895    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#896    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#897    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#898    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#899    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#900    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#901    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#902    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#903    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#904    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#905    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#906    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#907    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#908    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#909    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#910    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#911    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#912    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#913    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#914    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#915    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#916    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#917    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#918    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#919    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#920    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#921    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#922    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#923    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#924    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#925    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#926    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#927    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#928    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#929    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#930    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#931    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#932    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#933    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#934    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#935    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#936    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#937    _RawViewElement._updateChild (package:flutter/src/widgets/view.dart:481:16)
+#938    _RawViewElement.update (package:flutter/src/widgets/view.dart:568:5)
+#939    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#940    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#941    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#942    StatelessElement.update (package:flutter/src/widgets/framework.dart:5898:5)
+#943    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#944    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#945    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#946    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#947    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#948    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#949    RootElement._rebuild (package:flutter/src/widgets/binding.dart:1782:16)
+#950    RootElement.update (package:flutter/src/widgets/binding.dart:1760:5)
+#951    RootElement.performRebuild (package:flutter/src/widgets/binding.dart:1774:7)
+#952    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#953    BuildScope._tryRebuild (package:flutter/src/widgets/framework.dart:2750:15)
+#954    BuildScope._flushDirtyElements (package:flutter/src/widgets/framework.dart:2807:11)
+#955    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3111:18)
+#956    AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:1506:19)
+#957    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:495:5)
+#958    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1434:15)
+#959    SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1347:9)
+#960    AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1335:9)
+#963    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#964    AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1324:27)
+#965    WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#968    TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#969    WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#970    main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:114:20)
+#971    testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#972    TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 7 frames from class _AssertionError, dart:async, and package:stack_trace)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Možná úspora: 150.00 €": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:128:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart line 128
+The test description was:
+  should display potential savings when available
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +87 ~1 -5: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should display potential savings when available [E]
+  Test failed. See exception logs above.
+  The test description was: should display potential savings when available
+  
+
+To run this test again: /Users/youh4ck3dme/flutter/bin/cache/dart-sdk/bin/dart test /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart -p vm --plain-name 'SmartInsightsWidget should display potential savings when available'
+00:06 +88 ~1 -5: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +89 ~1 -5: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +90 ~1 -5: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +91 ~1 -5: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +91 ~1 -5: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should be tappable and navigate on tap            
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building _InsightCard(dirty, dependencies:
+[InheritedCupertinoTheme, _InheritedTheme, _LocalizationsScope-[GlobalKey#b5bc4]]):
+L10n not found. Wrap app with L10n.
+'package:bizagent/core/i18n/l10n.dart':
+Failed assertion: line 18 pos 12: 'result != null'
+
+The relevant error-causing widget was:
+  _InsightCard
+  _InsightCard:file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/lib/features/dashboard/widgets/smart_insights_widget.dart:26:18
+
+When the exception was thrown, this was the stack:
+#2      L10n.of (package:bizagent/core/i18n/l10n.dart:18:12)
+#3      L10nX.t (package:bizagent/core/i18n/l10n.dart:34:32)
+#4      _InsightCard.build (package:bizagent/features/dashboard/widgets/smart_insights_widget.dart:97:41)
+#5      StatelessElement.build (package:flutter/src/widgets/framework.dart:5892:49)
+#6      ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5820:15)
+#7      Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#8      ComponentElement._firstBuild (package:flutter/src/widgets/framework.dart:5802:5)
+#9      ComponentElement.mount (package:flutter/src/widgets/framework.dart:5796:5)
+...     Normal element mounting (36 frames)
+#45     Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#46     MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#47     MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (370 frames)
+#417    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#418    MultiChildRenderObjectElement.inflateWidget (package:flutter/src/widgets/framework.dart:7269:36)
+#419    MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7285:32)
+...     Normal element mounting (506 frames)
+#925    _UncontrolledProviderScopeElement.mount (package:flutter_riverpod/src/framework.dart:315:11)
+...     Normal element mounting (9 frames)
+#934    Element.inflateWidget (package:flutter/src/widgets/framework.dart:4590:20)
+#935    Element.updateChild (package:flutter/src/widgets/framework.dart:4053:20)
+#936    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#937    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#938    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#939    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#940    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#941    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#942    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#943    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#944    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#945    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#946    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#947    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#948    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#949    _InheritedNotifierElement.update (package:flutter/src/widgets/inherited_notifier.dart:108:11)
+#950    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#951    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#952    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#953    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#954    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#955    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#956    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#957    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#958    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#959    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#960    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#961    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#962    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#963    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#964    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#965    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#966    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#967    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#968    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#969    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#970    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#971    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#972    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#973    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#974    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#975    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#976    ProxyElement.update (package:flutter/src/widgets/framework.dart:6152:5)
+#977    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#978    _RawViewElement._updateChild (package:flutter/src/widgets/view.dart:481:16)
+#979    _RawViewElement.update (package:flutter/src/widgets/view.dart:568:5)
+#980    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#981    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#982    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#983    StatelessElement.update (package:flutter/src/widgets/framework.dart:5898:5)
+#984    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#985    ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5844:16)
+#986    StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5985:11)
+#987    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#988    StatefulElement.update (package:flutter/src/widgets/framework.dart:6010:5)
+#989    Element.updateChild (package:flutter/src/widgets/framework.dart:4037:15)
+#990    RootElement._rebuild (package:flutter/src/widgets/binding.dart:1782:16)
+#991    RootElement.update (package:flutter/src/widgets/binding.dart:1760:5)
+#992    RootElement.performRebuild (package:flutter/src/widgets/binding.dart:1774:7)
+#993    Element.rebuild (package:flutter/src/widgets/framework.dart:5532:7)
+#994    BuildScope._tryRebuild (package:flutter/src/widgets/framework.dart:2750:15)
+#995    BuildScope._flushDirtyElements (package:flutter/src/widgets/framework.dart:2807:11)
+#996    BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3111:18)
+#997    AutomatedTestWidgetsFlutterBinding.drawFrame (package:flutter_test/src/binding.dart:1506:19)
+#998    RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:495:5)
+#999    SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1434:15)
+#1000   SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1347:9)
+#1001   AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1335:9)
+#1004   TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#1005   AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1324:27)
+#1006   WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:598:22)
+#1009   TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#1010   WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:595:27)
+#1011   main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:184:20)
+#1012   testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:29)
+<asynchronous suspension>
+#1013   TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 7 frames from class _AssertionError, dart:async, and package:stack_trace)
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The finder "Found 0 widgets with text "Tappable Insight": []" (used in a call to "tap()") could not
+find any matching widgets.
+
+When the exception was thrown, this was the stack:
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2013:7)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1865:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1045:7)
+#3      main.<anonymous closure>.<anonymous closure> (file:///Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart:198:20)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  should be tappable and navigate on tap
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:06 +91 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart: SmartInsightsWidget should be tappable and navigate on tap [E]        
+  Test failed. See exception logs above.
+  The test description was: should be tappable and navigate on tap
+  
+
+To run this test again: /Users/youh4ck3dme/flutter/bin/cache/dart-sdk/bin/dart test /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/smart_insights_widget_test.dart -p vm --plain-name 'SmartInsightsWidget should be tappable and navigate on tap'
+00:06 +92 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_first_run_banner_test.dart: ... shows first-run banner when invoices & expenses are empty    00:06 +92 ~1 -6: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_quick_actions_test.dart                                                              00:06 +92 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_quick_actions_test.dart: Dashboard shows 5 quick action tiles when empty state is active     00:07 +92 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_quick_actions_test.dart: Dashboard shows 5 quick action tiles when empty state is active     00:07 +93 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_quick_actions_test.dart: Dashboard shows 5 quick action tiles when empty state is active     00:07 +94 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_quick_actions_test.dart: Dashboard shows 5 quick action tiles when empty state is active     00:07 +95 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/dashboard/dashboard_quick_actions_test.dart: Dashboard shows 5 quick action tiles when empty state is active     00:07 +96 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/ai_tools/ai_tools_screen_test.dart: AiToolsScreen displays parsed receipt data                                   00:07 +97 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/ai_tools/ai_email_generator_test.dart: AiEmailGeneratorScreen generates text on button press                     00:07 +98 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/export/export_auth_guard_test.dart: BizAuthRequired navigates to /login on button tap                            00:07 +99 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/export/export_auth_guard_test.dart: BizAuthRequired navigates to /login on button tap                            00:07 +100 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/export/export_auth_guard_test.dart: BizAuthRequired navigates to /login on button tap                           00:07 +100 ~1 -6: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_scheduler_test.dart                                                 00:07 +100 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_scheduler_test.dart: ... schedule alerts for sent invoices and tax deadlines00:07 +101 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_scheduler_test.dart: ... schedule alerts for sent invoices and tax deadlines00:08 +101 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_scheduler_test.dart: ... schedule alerts for sent invoices and tax deadlines00:08 +101 ~1 -6: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_service_test.dart                                                   00:08 +101 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_service_test.dart: init should initialize the plugin and timezones          00:08 +102 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_service_test.dart: init should initialize the plugin and timezones          00:08 +102 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_service_test.dart: showNotification should call plugin show                 00:08 +103 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/notifications/services/notification_service_test.dart: showNotification should call plugin show                 00:08 +103 ~1 -6: loading /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart                                                            00:08 +103 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ... should return demo insights when API key is empty             00:08 +104 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ... should return demo insights when API key is empty             00:08 +104 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should return empty list for empty expenses00:08 +105 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should return empty list for empty expenses00:08 +105 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should handle expenses with categories     00:08 +105 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should handle expenses with categories     
+Error generating insights: API key not valid. Please pass a valid API key.
+00:08 +106 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_provider_test.dart: ... should provide insights when expenses are available          00:08 +107 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +108 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +109 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +110 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +111 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +112 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +113 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +113 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 
+Error generating insights: API key not valid. Please pass a valid API key.
+00:08 +114 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should process expenses without categories 00:08 +114 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ... should limit expenses to last 50 for analysis                 00:08 +114 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/features/analytics/expense_insights_service_test.dart: ExpenseInsightsService should limit expenses to last 50 for analysis
+Error generating insights: API key not valid. Please pass a valid API key.
+00:08 +115 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/widget_test.dart: App smoke test                                                                                         00:09 +115 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/widget_test.dart: App smoke test                                                                                         00:09 +116 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/widget_test.dart: App smoke test                                                                                         00:09 +117 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/widget_test.dart: App smoke test                                                                                         00:09 +118 ~1 -6: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/test/widget_test.dart: App smoke test                                                                                         00:09 +118 ~1 -6: Some tests failed.                                                                                                                                                                   

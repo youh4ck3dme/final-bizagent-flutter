@@ -9,113 +9,62 @@
 
 > Kompletné riešenie pre faktúry, výdavky a accounting - špeciálne navrhnuté pre slovenský trh.
 
-## ✨ Features
+## ✨ Features (Elite Release 2026)
 
-### 📄 Faktúry
-- ✅ Automatické číslovanie (YYYY/XXX formát)
-- ✅ QR platba na faktúre (EPC-QR kód)
-- ✅ PDF export
-- ✅ Podpora DPH (0%, 10%, 20%)
-- ✅ Variabilný symbol z čísla faktúry
-- ✅ Real-time sync (Firebase ready)
+### 🚀 Production Ready PWA
+- ✅ **Offline-First:** Práca bez internetu s automatickou synchronizáciou.
+- ✅ **Installable:** Podpora pre PWA inštaláciu (Manifest, Shortcuts).
+- ✅ **Clean URLs:** Profesionálne URL bez hash fragmentov (`/dashboard` vs `/#/dashboard`).
+- ✅ **Performance:** Start < 1s (CanvasKit + Asset Caching).
+
+### 🔐 Bezpečnosť & Auth
+- ✅ **Google Sign-In:** Oficiálna integrácia cez Firebase Auth (One-Tap ready).
+- ✅ **Secure Data:** Strict Firestore Schema Validation rules.
+- ✅ **Safe Storage:** Validácia nahrávaných súborov (Max 10MB, Images Only).
+
+### 📄 Faktúry & Financie
+- ✅ **Automatické číslovanie:** (YYYY/XXX formát)
+- ✅ **Smart QR:** Generovanie EPC-QR kódov pre okamžitú platbu.
+- ✅ **PDF Export:** Profesionálne PDF faktúry.
+- ✅ **Dashboard:** Interaktívne grafy, "Magic Scan" a smart prehľady.
 
 ### 💰 Výdavky & Intelligence
-- ✅ **Auto-kategorizácia**: Inteligentné priraďovanie kategórií (35+) s vysokou presnosťou.
-- ✅ **Expense Analytics**: Vizualizácia výdavkov pomocou koláčových a stĺpcových grafov.
-- ✅ **OCR skenovanie**: Automatické rozpoznávanie sumy a dodávateľa z bločkov (ML Kit).
-- ✅ **Receipt Viewer**: Full-screen prehliadač s interaktívnym zoomom.
-- ✅ **Pokročilé Filtre**: Filtrovanie podľa kategórií, dátumu a sumy + rôzne možnosti zoradenia.
-- ✅ **Cloud Storage**: Bezpečné ukladanie účteniek do Firebase Storage.
+- ✅ **Auto-kategorizácia:** AI priraďovanie kategórií.
+- ✅ **Expense Analytics:** Vizualizácia výdavkov v čase.
+- ✅ **OCR skenovanie:** Automatické vyčítanie dát z bločkov.
 
-### 🏦 Bank Import
-- ✅ CSV import z banky
-- ✅ Automatické párovanie faktúr
-- ✅ Smart matching (VS + suma)
-- ✅ Podpora SK bánk
+## 🛠️ Tech Stack & Architecture
 
-## 🛠️ Tech Stack
+- **Framework:** Flutter 3.x (Web: CanvasKit)
+- **State Management:** Riverpod 2.6.1 (Architecture: Riverpod Generator)
+- **Cloud:** Firebase (Auth, Firestore, Storage, Hosting, Functions)
+- **UI:** Custom "Elite" Design System (Pulse animations, Shimmers)
 
-- **Framework:** Flutter 3.x
-- **State Management:** Riverpod 2.6.1
-- **Navigation:** GoRouter 17.0.1
-- **Backend:** Firebase (Auth, Firestore, Storage, Hosting)
-- **Charts:** fl_chart 0.69.0
-- **OCR:** google_mlkit_text_recognition
-- **Architecture:** Clean Architecture
+## 🚀 Deployment (Elite PWA)
 
-## 🚀 Run Dev
+Aplikácia je optimalizovaná pre **PWA** s rendererom CanvasKit pre maximálny výkon.
 
-Ensure you have your environment set up and dependencies installed (`flutter pub get`).
-
+**1. Production Build:**
 ```bash
-# Web
-flutter run -d chrome
-
-# Android
-flutter run -d android
-
-# iOS
-flutter run -d ios
+flutter build web --release \
+  --web-renderer canvaskit \
+  --pwa-strategy offline-first \
+  --dart-define=FLUTTER_WEB_USE_SKIA=true
 ```
 
-## 🧪 Testing
-
-Maintain code quality and verify functionality:
-
+**2. Deploy to Firebase:**
 ```bash
-# Run unit and widget tests
-flutter test
-
-# Static analysis
-flutter analyze
+firebase deploy --only hosting
 ```
 
-## 🔐 Auth & Cloud Sync
-
-Aplikácia je plne integrovaná s **Firebase Auth**, čo umožňuje bezpečné ukladanie dát a synchronizáciu medzi zariadeniami. Dátumy, faktúry aj nahrané účtenky sú bezpečne uložené v Cloude, prioritne pre slovenský trh a legislatívu.
-
-## 🚀 Deployment (Web)
-
-Aplikácia je optimalizovaná pre **PWA** (Progressive Web App). Nasadenie na Firebase Hosting:
-
-1. `flutterfire configure` (prepojenie s projektom)
-2. `flutter build web --release`
-3. `firebase deploy --only hosting`
-
-Kompletný sprievodca nasadením je v [DEPLOYMENT.md](docs/DEPLOYMENT.md).
-
-## ⚙️ Konfigurácia (Firebase & AI)
-
-Pre plnú funkcionalitu (Auth, Cloud Storage, AI Tools) je potrebná konfigurácia:
-
-1. **Firebase**: Nastavte pomocou `flutterfire configure`.
-2. **Gemini API**: Pre AI generátor emailov.
-
-👉 **[Detailný návod na nastavenie Firebase a Gemini API](docs/FIREBASE_GEMINI.md)**
-
-## 📖 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Clean architecture & Riverpod patterns |
-| [SETUP.md](docs/SETUP.md) | Dev environment setup |
-| [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Store release guides |
-| [TESTING.md](docs/TESTING.md) | Test strategy & coverage |
-
-## 🏗️ Project Structure
-
-```
-lib/
-├── core/              # Core utilities, theme, router
-├── features/         # Feature modules (auth, invoices, expenses, etc.)
-├── shared/          # Shared widgets & models
-└── main.dart        # Entry point
-```
+**3. Verification:**
+- Skontrolujte `LightHouse` skóre (Current target: >90).
+- Overte offline funkčnosť cez Chrome DevTools.
 
 ## 📱 Platform Support
 
-- ✅ **Web:** Production ready (Primary)
-- 🚧 **Android/iOS:** Beta (Mobile optimization in progress)
+- ✅ **Web (PWA):** Elite Production Ready (Chrome, Safari, Edge)
+- 🚧 **Mobile (Native):** Android/iOS ready (via Capacitor/Flutter Native)
 - 🔜 **Desktop:** Planned
 
 ## 📄 License

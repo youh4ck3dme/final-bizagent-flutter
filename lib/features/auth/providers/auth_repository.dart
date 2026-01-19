@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_model.dart';
 
@@ -103,6 +104,47 @@ class AuthRepository {
         photoUrl: user.photoURL,
         isAnonymous: user.isAnonymous,
       );
+      _authStateController.add(userModel);
+      return userModel;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> signInWithGoogle() async {
+    try {
+      final googleSignIn = GoogleSignIn.instance;
+      
+      // Initialize if not already done
+      await googleSignIn.initialize();
+      
+      // Use authenticate() for mobile platforms
+      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
+      
+      if (googleUser == null) {
+        // User canceled the sign-in
+        return null;
+      }
+
+      final googleAuth = googleUser.authentication;
+      
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final result = await _auth.signInWithCredential(credential);
+      final user = result.user;
+
+      if (user == null) return null;
+
+      final userModel = UserModel(
+        id: user.uid,
+        email: user.email ?? '',
+        displayName: user.displayName,
+        photoUrl: user.photoURL,
+        isAnonymous: user.isAnonymous,
+      );
+
       _authStateController.add(userModel);
       return userModel;
     } catch (e) {
