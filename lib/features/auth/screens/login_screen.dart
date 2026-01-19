@@ -20,6 +20,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   late AnimationController _pulseController;
   late Animation<double> _glowAnimation;
 
+  late AnimationController _rotationController;
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +29,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
+
+    _rotationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
 
     _glowAnimation = Tween<double>(begin: 2.0, end: 12.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
@@ -38,174 +45,102 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     _emailController.dispose();
     _passwordController.dispose();
     _pulseController.dispose();
+    _rotationController.dispose();
     super.dispose();
   }
 
-  void _submit() async {
-    if (_formKey.currentState!.validate()) {
-      final authController = ref.read(authControllerProvider.notifier);
-      if (_isLogin) {
-        await authController.signIn(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
-        );
-      } else {
-        await authController.signUp(
-          _emailController.text.trim(),
-          _passwordController.text.trim(),
-        );
-      }
-    }
-  }
+  // ... existing code ...
 
-  @override
-  Widget build(BuildContext context) {
-    ref.listen<AsyncValue<void>>(authControllerProvider, (previous, next) {
-      if (next.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error.toString())),
-        );
-      }
-    });
-
-    final authState = ref.watch(authControllerProvider);
-
-    return Scaffold(
-      // backgroundColor: removed to use Theme (Fusion Off-White)
-      body: Stack(
-        children: [
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Center(
-                        child: SizedBox(
-                          width: 280, // 2x larger (was 140)
-                          height: 280,
-                          child: Image.asset('assets/icon/app_icon_1024.png'), // New Fusion Icon
-                        ),
-                      ),
-                    ),
-                    Text(
-                      _isLogin ? 'Vitajte späť' : 'Vytvoriť účet',
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF0F172A), // Slate 900
-                              ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 52), // Increased spacing by +20px (was 32)
-                    TextFormField(
-                      controller: _emailController,
-                      autofillHints: const [AutofillHints.email], // Fixes browser warning
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Prosím zadajte email';
-                        }
-                        final emailRegex =
-                            RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                        if (!emailRegex.hasMatch(value)) {
-                          return 'Neplatný email formát';
-                        }
-                        return null;
-                      },
-                    ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passwordController,
-                      autofillHints: const [AutofillHints.password], // Fixes browser warning
-                      decoration: const InputDecoration(
-                        labelText: 'Heslo',
-                        prefixIcon: Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(),
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.length < 6) {
-                          return 'Heslo musí mať aspoň 6 znakov';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: authState.isLoading ? null : _submit,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: const Color(0xFF2563EB),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: authState.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                    // Google Sign In with Neon Orbit Effect
+                    Center(
+                      child: SizedBox(
+                        height: 54, // Slightly larger than button for the glow
+                        width: double.infinity,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // 1. Rotating Neon Gradient
+                            AnimatedBuilder(
+                              animation: _rotationController,
+                              builder: (context, child) {
+                                return Transform.rotate(
+                                  angle: _rotationController.value * 2 * 3.14159,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      gradient: const SweepGradient(
+                                        colors: [
+                                          Color(0xFF4285F4), // Google Blue
+                                          Color(0xFFDB4437), // Google Red
+                                          Color(0xFFF4B400), // Google Yellow
+                                          Color(0xFF0F9D58), // Google Green
+                                          Color(0xFF4285F4), // Closing Loop
+                                        ],
+                                        stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFF4285F4).withOpacity(0.4),
+                                          blurRadius: 12,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            // 2. The Button (White Overlay)
+                            Container(
+                              margin: const EdgeInsets.all(2), // 2px border width
+                              decoration: BoxDecoration(
                                 color: Colors.white,
+                                borderRadius: BorderRadius.circular(10), // Slightly smaller radius
                               ),
-                            )
-                          : Text(
-                              _isLogin ? 'Prihlásiť sa' : 'Registrovať',
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              child: OutlinedButton(
+                                onPressed: authState.isLoading
+                                    ? null
+                                    : () async {
+                                        await ref
+                                            .read(authControllerProvider.notifier)
+                                            .signInWithGoogle();
+                                      },
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  side: BorderSide.none, // Hide default border
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor: Colors.transparent, // Let Container color show
+                                  minimumSize: const Size(double.infinity, 50),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        height: 24,
+                                        width: 24,
+                                        child: Image.asset('assets/icons/google_g.png'),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      'Prihlásiť sa cez Google',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF1F2937),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                    ),
-                    const SizedBox(height: 16),
-                    OutlinedButton(
-                      onPressed: authState.isLoading
-                          ? null
-                          : () async {
-                              await ref
-                                  .read(authControllerProvider.notifier)
-                                  .signInWithGoogle();
-                            },
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: const BorderSide(color: Color(0xFFE5E7EB)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          ],
                         ),
-                        backgroundColor: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: Image.asset('assets/icons/google_g.png'),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Prihlásiť sa cez Google',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF1F2937),
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
