@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/company_info.dart';
 
@@ -25,8 +26,7 @@ class CompanyLookupService {
       return CompanyInfo.fromMap(map);
     } catch (e) {
       // In production, log to Crashlytics
-      // ignore: avoid_print
-      print('Error looking up company: $e');
+      debugPrint('Error looking up company: $e');
       return null;
     }
   }

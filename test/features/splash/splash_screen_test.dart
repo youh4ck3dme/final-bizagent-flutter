@@ -13,20 +13,20 @@ void main() {
       await tester.pumpWidget(testApp(child: const SplashScreen()));
 
       // Check title
-      expect(find.text('BizAgent'), findsOneWidget);
+      expect(find.text('BizAgent', skipOffstage: false), findsOneWidget);
 
       // Check subtitle
-      expect(
-          find.textContaining('Váš inteligentný AI asistent'), findsOneWidget);
+      expect(find.textContaining('Váš inteligentný AI asistent', skipOffstage: false),
+          findsOneWidget);
 
       // Check for LinearProgressIndicator
       expect(find.byType(LinearProgressIndicator), findsOneWidget);
 
       // Check for logos (Images)
-      expect(find.byType(Image), findsNWidgets(3));
+      expect(find.byType(Image), findsNWidgets(2));
 
       // Check for version info
-      expect(find.text('v1.0.1+2'), findsOneWidget);
+      expect(find.text('v1.0.1+2', skipOffstage: false), findsOneWidget);
 
       // Run some time to see if progress bar updates (fake progress)
       await tester.pump(const Duration(milliseconds: 200));

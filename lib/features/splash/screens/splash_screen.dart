@@ -33,6 +33,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
 
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.03).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 1.0, curve: Curves.easeInOut),
+      ),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _animationController.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _animationController.forward();
+        }
+      });
+
     _animationController.forward();
 
     // Start progress animation
@@ -139,88 +152,95 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               opacity: _opacityAnimation,
               child: ScaleTransition(
                 scale: _pulseAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _FadeIn(
-                      delay: const Duration(milliseconds: 200),
-                      child: Image.asset(
-                        'assets/icons/icoatlas-logo.png',
-                        width: 150,
-                        height: 150,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      width: 120,
-                      height: 120,
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: cs.surface,
-                        borderRadius: BorderRadius.circular(32),
-                        boxShadow: [
-                          BoxShadow(
-                            color: cs.primary.withValues(alpha: 0.1),
-                            blurRadius: 40,
-                            offset: const Offset(0, 20),
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _FadeIn(
+                          delay: const Duration(milliseconds: 200),
+                          child: Image.asset(
+                            'assets/icons/icoatlas-logo.png',
+                            width: 150,
+                            height: 150,
                           ),
-                        ],
-                      ),
-                      child: Image.asset(
-                        'assets/icons/bizagent_logo.png',
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Text(
-                      'BizAgent',
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          width: 120,
+                          height: 120,
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: cs.surface,
+                            borderRadius: BorderRadius.circular(32),
+                            boxShadow: [
+                              BoxShadow(
+                                color: cs.primary.withValues(alpha: 0.1),
+                                blurRadius: 40,
+                                offset: const Offset(0, 20),
+                              ),
+                            ],
+                          ),
+                          child: Image.asset(
+                            'assets/icons/bizagent_logo.png',
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Text(
+                          'BizAgent',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: -1.0,
                                 color: cs.onSurface,
                               ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Váš inteligentný AI asistent',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: cs.onSurfaceVariant,
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
-                    const SizedBox(height: 64),
-                    SizedBox(
-                      width: 200,
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: LinearProgressIndicator(
-                              value: _p,
-                              minHeight: 6,
-                              backgroundColor:
-                                  cs.primaryContainer.withValues(alpha: 0.2),
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(cs.primary),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Pripravujeme prostredie...',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(
-                                  color: cs.onSurfaceVariant
-                                      .withValues(alpha: 0.6),
-                                  letterSpacing: 0.5,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Váš inteligentný AI asistent',
+                          textAlign: TextAlign.center,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                        ),
+                        const SizedBox(height: 64),
+                        SizedBox(
+                          width: 200,
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: LinearProgressIndicator(
+                                  value: _p,
+                                  minHeight: 6,
+                                  backgroundColor: cs.primaryContainer
+                                      .withValues(alpha: 0.2),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      cs.primary),
                                 ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Pripravujeme prostredie...',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium
+                                    ?.copyWith(
+                                      color: cs.onSurfaceVariant
+                                          .withValues(alpha: 0.6),
+                                      letterSpacing: 0.5,
+                                    ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
