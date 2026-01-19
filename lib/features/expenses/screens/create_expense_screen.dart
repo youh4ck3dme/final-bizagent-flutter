@@ -36,7 +36,6 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
   ExpenseCategory? _selectedCategory;
   ExpenseCategory? _suggestedCategory;
   int? _suggestionConfidence;
-  final _categorizationService = CategorizationService();
   String? _scannedReceiptPath;
 
   @override
@@ -55,19 +54,26 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
     _vendorController.addListener(_onVendorChanged);
   }
 
-  void _onVendorChanged() {
+  void _onVendorChanged() async {
     if (_vendorController.text.length >= 3) {
-      final (category, confidence) =
-          _categorizationService.suggestCategory(_vendorController.text);
-      setState(() {
-        _suggestedCategory = category;
-        _suggestionConfidence = confidence;
+      final user = ref.read(authStateProvider).value;
+      if (user == null) return;
 
-        // Auto-select if confidence is high and no category selected yet
-        if (confidence >= 85 && _selectedCategory == null) {
-          _selectedCategory = category;
-        }
-      });
+      final (category, confidence) = await ref
+          .read(categorizationServiceProvider)
+          .suggestCategoryWithHistory(_vendorController.text, userId: user.id);
+
+      if (mounted) {
+        setState(() {
+          _suggestedCategory = category;
+          _suggestionConfidence = confidence;
+
+          // Auto-select if confidence is high and no category selected yet
+          if (confidence >= 85 && _selectedCategory == null) {
+            _selectedCategory = category;
+          }
+        });
+      }
     }
   }
 

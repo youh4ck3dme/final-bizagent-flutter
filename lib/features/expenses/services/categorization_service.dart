@@ -1,8 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/expense_category.dart';
+
+final categorizationServiceProvider = Provider<CategorizationService>((ref) {
+  return CategorizationService(FirebaseFirestore.instance);
+});
 
 /// Servis pre automatickú kategorizáciu výdavkov
 /// Používa regex pravidlá pre rozpoznanie dodávateľa a návrh kategórie
 class CategorizationService {
+  final FirebaseFirestore _firestore;
+
+  CategorizationService(this._firestore);
   /// Navrhne kategóriu na základe názvu dodávateľa
   /// Vracia tuple (kategória, confidence 0-100)
   (ExpenseCategory, int) suggestCategory(String vendorName) {
@@ -399,20 +408,41 @@ class CategorizationService {
 
   /// Získa históriu kategórií pre daného dodávateľa
   /// (Pre budúce učenie sa z histórie používateľa)
-  Future<ExpenseCategory?> getHistoricalCategory(String vendorName) async {
-    // TODO: Implementovať dotaz do Firestore
-    // SELECT category FROM expenses WHERE vendorName = ? GROUP BY category ORDER BY COUNT(*) DESC LIMIT 1
-    return null;
+  Future<ExpenseCategory?> getHistoricalCategory(String vendorName,
+      {required String userId}) async {
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('expenses')
+        .where('vendorName', isEqualTo: vendorName)
+        .limit(5)
+        .get();
+
+    if (snapshot.docs.isEmpty) return null;
+
+    final counts = <ExpenseCategory, int>{};
+    for (final doc in snapshot.docs) {
+      final categoryStr = doc.data()['category'] as String?;
+      final category = expenseCategoryFromString(categoryStr);
+      if (category != null) {
+        counts[category] = (counts[category] ?? 0) + 1;
+      }
+    }
+
+    if (counts.isEmpty) return null;
+
+    return counts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
   }
 
   /// Kombinuje AI návrh s historickými dátami
-  Future<(ExpenseCategory, int)> suggestCategoryWithHistory(
-      String vendorName) async {
+  Future<(ExpenseCategory, int)> suggestCategoryWithHistory(String vendorName,
+      {required String userId}) async {
     // Najprv skús AI návrh
     final (aiCategory, aiConfidence) = suggestCategory(vendorName);
 
     // Potom skús historické dáta
-    final historicalCategory = await getHistoricalCategory(vendorName);
+    final historicalCategory =
+        await getHistoricalCategory(vendorName, userId: userId);
 
     // Ak sa zhodujú, zvýš confidence
     if (historicalCategory != null && historicalCategory == aiCategory) {
