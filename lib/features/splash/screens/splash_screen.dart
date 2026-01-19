@@ -119,145 +119,76 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              cs.surface,
-              cs.primaryContainer.withValues(alpha: 0.1),
-              cs.surface,
-            ],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // 0. Unified Global Background
+          Image.asset(
+            'assets/images/background_fusion.jpg',
+            fit: BoxFit.cover,
           ),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // Decorative background circles
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: cs.primary.withValues(alpha: 0.03),
-                ),
-              ),
-            ),
 
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: ScaleTransition(
-                scale: _pulseAnimation,
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _FadeIn(
-                          delay: const Duration(milliseconds: 200),
-                          child: Image.asset(
-                            'assets/icons/icoatlas-logo.png',
-                            width: 150,
-                            height: 150,
+          // 1. Content
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FadeTransition(
+                  opacity: _opacityAnimation,
+                  child: ScaleTransition(
+                    scale: _pulseAnimation,
+                    child: Container(
+                      width: 140, // Slightly larger
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(35),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF2563EB).withOpacity(0.2),
+                            blurRadius: 30,
+                            offset: const Offset(0, 10),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          width: 120,
-                          height: 120,
-                          padding: const EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: cs.surface,
-                            borderRadius: BorderRadius.circular(32),
-                            boxShadow: [
-                              BoxShadow(
-                                color: cs.primary.withValues(alpha: 0.1),
-                                blurRadius: 40,
-                                offset: const Offset(0, 20),
-                              ),
-                            ],
-                          ),
-                          child: Image.asset(
-                            'assets/icons/bizagent_logo.png',
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        Text(
-                          'BizAgent',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: -1.0,
-                                color: cs.onSurface,
-                              ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Váš inteligentný AI asistent',
-                          textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: cs.onSurfaceVariant,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                        ),
-                        const SizedBox(height: 64),
-                        SizedBox(
-                          width: 200,
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: LinearProgressIndicator(
-                                  value: _p,
-                                  minHeight: 6,
-                                  backgroundColor: cs.primaryContainer
-                                      .withValues(alpha: 0.2),
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(cs.primary),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Pripravujeme prostredie...',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(
-                                      color: cs.onSurfaceVariant
-                                          .withValues(alpha: 0.6),
-                                      letterSpacing: 0.5,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      child: Image.asset('assets/icon/app_icon_1024.png'), // Use main app icon
                     ),
                   ),
                 ),
-              ),
-            ),
-
-            Positioned(
-              bottom: 48,
-              child: Text(
-                'v1.0.1+2',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: cs.onSurfaceVariant.withValues(alpha: 0.4),
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 2.0,
+                const SizedBox(height: 40),
+                // Minimalist Loader
+                SizedBox(
+                  width: 160,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: _p,
+                      minHeight: 4,
+                      backgroundColor: Colors.white.withOpacity(0.3),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
                     ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Version info (kept discrete)
+          Positioned(
+            bottom: 40,
+            child: Text(
+              'v1.0.1+2',
+              style: GoogleFonts.inter(
+                color: const Color(0xFF64748B).withOpacity(0.6),
+                fontSize: 12,
+                letterSpacing: 1.5,
+                fontWeight: FontWeight.w500,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

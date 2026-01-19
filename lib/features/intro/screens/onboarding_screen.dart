@@ -62,9 +62,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent, // Transparent to show background if needed, but Stack covers it
       body: Stack(
+        fit: StackFit.expand, // Ensure background covers entire screen
         children: [
+          // 0. Unified Global Background
+          Image.asset(
+            'assets/images/background_fusion.jpg',
+            fit: BoxFit.cover,
+          ),
+
           // Content
           SafeArea(
             child: Column(
