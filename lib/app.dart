@@ -50,24 +50,24 @@ class BizAgentApp extends ConsumerWidget {
                   if (child != null) Expanded(child: child),
                 ],
               ),
-              // Top left logo
+              // Top left logo (IcoAtlas)
               Positioned(
-                top: 10,
-                left: 10,
+                top: 20,
+                left: 20,
                 child: Image.asset(
                   'assets/icons/icoatlas-logo.png',
-                  width: 40,
-                  height: 40,
+                  width: 120,
+                  height: 120,
                 ),
               ),
-              // Top right logo
+              // Top right logo (BizAgent)
               Positioned(
-                top: 10,
-                right: 10,
+                top: 20,
+                right: 20,
                 child: Image.asset(
                   'assets/icons/bizagent_logo.png',
-                  width: 40,
-                  height: 40,
+                  width: 120,
+                  height: 120,
                 ),
               ),
             ],
