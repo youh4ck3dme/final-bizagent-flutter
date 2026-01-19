@@ -23,3 +23,10 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Android Signing Keys (SECURE)
+android/key.properties
+android/app/upload-keystore.jks
+key.properties
+**/*.jks
+**/*.keystore

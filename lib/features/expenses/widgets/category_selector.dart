@@ -76,10 +76,10 @@ class _CategorySelectorState extends State<CategorySelector> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: category.color.withOpacity(0.1),
+        color: category.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: category.color.withOpacity(0.3),
+          color: category.color.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -253,20 +253,20 @@ class _CategorySelectorState extends State<CategorySelector> {
         decoration: BoxDecoration(
           color: isSelected
               ? category.color
-              : category.color.withOpacity(0.1),
+              : category.color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? category.color
                 : isSuggested
-                    ? category.color.withOpacity(0.5)
+                    ? category.color.withValues(alpha: 0.5)
                     : Colors.transparent,
             width: isSelected ? 3 : (isSuggested ? 2 : 1),
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: category.color.withOpacity(0.3),
+                    color: category.color.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),

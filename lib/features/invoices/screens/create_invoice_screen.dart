@@ -10,6 +10,9 @@ import '../services/invoice_numbering_service.dart';
 import '../data/firestore_invoice_numbering_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../shared/utils/biz_snackbar.dart';
+import '../../../core/services/analytics_service.dart';
+
 
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   const CreateInvoiceScreen({super.key});
@@ -85,12 +88,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
   void _addItem(bool isVatPayer) {
     if (_itemDescController.text.isEmpty || _itemPriceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vyplňte popis a cenu'),
-          duration: Duration(seconds: 1),
-        ),
-      );
+      BizSnackbar.showError(context, 'Vyplňte popis a cenu');
       return;
     }
 
@@ -112,13 +110,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       _itemVatRate = isVatPayer ? 0.20 : 0.0;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Položka pridaná: $itemDesc'),
-        duration: const Duration(milliseconds: 800),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    BizSnackbar.showInfo(context, 'Položka pridaná: $itemDesc');
   }
 
   void _removeItem(int index) {
@@ -136,9 +128,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   Future<void> _saveInvoice() async {
     if (!_formKey.currentState!.validate()) return;
     if (_items.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pridajte aspoň jednu položku')),
-      );
+      BizSnackbar.showError(context, 'Pridajte aspoň jednu položku');
       return;
     }
 
@@ -169,47 +159,17 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     try {
       await ref.read(invoicesControllerProvider.notifier).addInvoice(invoice);
 
-      if (mounted) {
-        // Show success dialog
-        await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Dialog(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.green, size: 64),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Faktúra vytvorená!',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text('Číslo: ${invoice.number}'),
-                  Text(
-                    NumberFormat.currency(symbol: '€')
-                        .format(invoice.totalAmount),
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+      // Track created
+      ref.read(analyticsServiceProvider).logInvoiceCreated(invoice.totalAmount);
 
-        // Auto-close after delay
-        await Future.delayed(const Duration(milliseconds: 1500));
-        if (mounted) Navigator.of(context).pop();
-        if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+
+        BizSnackbar.showSuccess(context, 'Faktúra $number úspešne vytvorená!');
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Chyba pri ukladaní: $e')),
-        );
+        BizSnackbar.showError(context, 'Chyba pri ukladaní: $e');
       }
     }
   }

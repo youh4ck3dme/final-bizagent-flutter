@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/platform_image_provider.dart';
+import '../../../../shared/utils/biz_snackbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../../core/services/ocr_service.dart';
+import '../../../core/services/ai_ocr_service.dart';
+
 import '../models/expense_model.dart';
 import '../models/expense_category.dart';
 import '../providers/expenses_provider.dart';
 import '../services/categorization_service.dart';
 import '../services/receipt_storage_service.dart';
 import '../widgets/category_selector.dart';
+import '../../../core/services/analytics_service.dart';
+
 
 class CreateExpenseScreen extends ConsumerStatefulWidget {
   final String? initialText;
@@ -85,40 +91,60 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
 
   Future<void> _scanReceipt() async {
     final ocrService = ref.read(ocrServiceProvider);
+    final aiOcrService = ref.read(aiOcrServiceProvider);
+    final analytics = ref.read(analyticsServiceProvider);
+    
+    // Track start
+    analytics.logScanStarted();
+    
     final result = await ocrService.scanReceipt(ImageSource.camera);
 
     if (result != null && mounted) {
+      analytics.logScanSuccess(result.vendorId ?? 'unknown');
+      
       setState(() {
         _scannedReceiptPath = result.imagePath; // Save image path
         _descController.text = result.originalText;
-        if (result.totalAmount != null) {
-          _amountController.text = result.totalAmount!;
-        }
-        if (result.vendorId != null) {
-          _vendorController.text = result.vendorId!;
-          // Trigger auto-categorization
-          _onVendorChanged();
-        }
-        if (result.date != null) {
-          // Try parsing the date string from OCR
-          try {
-            if (result.date!.contains('.')) {
-              final parts = result.date!.split('.');
-              if (parts.length == 3) {
-                _date = DateTime(int.parse(parts[2]), int.parse(parts[1]),
-                    int.parse(parts[0]));
-              }
-            } else if (result.date!.contains('-')) {
-              _date = DateTime.parse(result.date!);
-            }
-          } catch (e) {
-            debugPrint('Failed to parse OCR date: ${result.date}');
-          }
-        }
+
+        
+        // Initial quick regex parse
+        if (result.totalAmount != null) _amountController.text = result.totalAmount!;
+        if (result.vendorId != null) _vendorController.text = result.vendorId!;
+        if (result.date != null) _tryParseDate(result.date!);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Údaje načítané z bločku')),
-      );
+
+      // Show "Refining with AI" feedback
+      // Show "Refining with AI" feedback
+      BizSnackbar.showInfo(context, 'Upravujeme údaje pomocou AI...');
+
+      // AI Refinement
+      final refined = await aiOcrService.refineWithAi(result.originalText, imagePath: result.imagePath);
+      
+      if (refined != null && mounted) {
+        setState(() {
+          if (refined.totalAmount != null) _amountController.text = refined.totalAmount!;
+          if (refined.vendorId != null) _vendorController.text = refined.vendorId!;
+          if (refined.date != null) _tryParseDate(refined.date!);
+          _onVendorChanged();
+        });
+        
+        BizSnackbar.showSuccess(context, 'Údaje úspešne spracované cez Gemini AI');
+      }
+    }
+  }
+
+  void _tryParseDate(String dateStr) {
+    try {
+      if (dateStr.contains('.')) {
+        final parts = dateStr.split('.');
+        if (parts.length == 3) {
+          _date = DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+        }
+      } else if (dateStr.contains('-')) {
+        _date = DateTime.parse(dateStr);
+      }
+    } catch (e) {
+      debugPrint('Failed to parse date: $dateStr');
     }
   }
   
@@ -192,54 +218,21 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
 
       await ref.read(expensesControllerProvider.notifier).addExpense(expense);
 
-      if (mounted) {
-        // Show success dialog
-        await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Dialog(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.green, size: 64),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Výdavok pridaný!',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(expense.vendorName),
-                  Text(
-                    NumberFormat.currency(symbol: '€').format(expense.amount),
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  if (_selectedCategory != null) ...[
-                    const SizedBox(height: 8),
-                    Chip(
-                      avatar: Icon(_selectedCategory!.icon, size: 16),
-                      label: Text(_selectedCategory!.displayName),
-                      backgroundColor: _selectedCategory!.color.withOpacity(0.2),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        );
+      // Track created
+      ref.read(analyticsServiceProvider).logExpenseCreated(
+            expense.amount,
+            expense.category?.name ?? 'other',
+          );
 
-        // Auto-close after delay
-        await Future.delayed(const Duration(milliseconds: 1500));
-        if (mounted) Navigator.of(context).pop();
-        if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+
+        // Show success snackbar instead of dialog for better flow
+        BizSnackbar.showSuccess(context, 'Výdavok úspešne pridaný!');
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Chyba: $e')),
-        );
+        BizSnackbar.showError(context, 'Chyba: $e');
       }
     } finally {
       if (mounted) {
@@ -273,102 +266,259 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Scan Button
-            ElevatedButton.icon(
-              onPressed: _scanReceipt,
-              icon: const Icon(Icons.camera_alt),
-              label: const Text('Skenovať bloček'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16),
-                backgroundColor: Colors.orange.shade100,
-                foregroundColor: Colors.orange.shade900,
+            // 1. Receipt Preview & Scan Button Area
+            if (_scannedReceiptPath != null) ...[
+              Container(
+                height: 200,
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.grey.shade100,
+                  border: Border.all(color: Colors.grey.shade300),
+                  image: DecorationImage(
+                    image: getPlatformImage(_scannedReceiptPath!),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    // Gradient overlay for text legibility
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Retake button
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: TextButton.icon(
+                        onPressed: _scanReceipt,
+                        icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
+                        label: const Text('Preskenovať', style: TextStyle(color: Colors.white)),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white.withValues(alpha: 0.2),
+                        ),
+                      ),
+                    ),
+                    // AI Trust Badge
+                     Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF7C3AED), // Royal Purple
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF7C3AED).withValues(alpha: 0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.auto_awesome, color: Colors.amber, size: 14),
+                            SizedBox(width: 6),
+                            Text(
+                              'Gemini AI',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
+            ] else
+              // Scan Button (Default State)
+              Container(
+                margin: const EdgeInsets.only(bottom: 24),
+                child: ElevatedButton.icon(
+                  onPressed: _scanReceipt,
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Text('Skenovať bloček (AI)'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    backgroundColor: const Color(0xFFEFF6FF), // Light Blue
+                    foregroundColor: const Color(0xFF2563EB), // Primary Blue
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: const BorderSide(color: Color(0xFFBFDBFE)),
+                    ),
+                  ),
+                ),
+              ),
 
+             // 2. Form Fields with "Verified" visuals
+            
             TextFormField(
               controller: _vendorController,
-              decoration:
-                  const InputDecoration(labelText: 'Obchod / Dodávateľ'),
+              decoration: InputDecoration(
+                labelText: 'Obchod / Dodávateľ',
+                prefixIcon: const Icon(Icons.store_outlined),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                filled: true,
+                fillColor: _vendorController.text.isNotEmpty && _scannedReceiptPath != null 
+                    ? const Color(0xFFF0FDF4) // Green tint if populated
+                    : Colors.white,
+              ),
               validator: (v) => v!.isEmpty ? 'Povinné pole' : null,
             ),
             const SizedBox(height: 16),
 
-            TextFormField(
-              controller: _amountController,
-              decoration: const InputDecoration(labelText: 'Suma (€)'),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              validator: (v) {
-                if (v == null || v.isEmpty) return 'Povinné pole';
-                if (double.tryParse(v.replaceAll(',', '.')) == null) {
-                  return 'Neplatná suma';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            InputDecorator(
-              decoration: const InputDecoration(labelText: 'Dátum'),
-              child: InkWell(
-                onTap: () async {
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: _date,
-                    firstDate: DateTime(2020),
-                    lastDate: DateTime.now(),
-                  );
-                  if (picked != null) {
-                    setState(() => _date = picked);
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(DateFormat('dd.MM.yyyy').format(_date)),
-                    const Icon(Icons.calendar_today),
-                  ],
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _amountController,
+                    decoration: InputDecoration(
+                      labelText: 'Suma (€)',
+                      prefixIcon: const Icon(Icons.euro),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      filled: true,
+                       fillColor: _amountController.text.isNotEmpty && _scannedReceiptPath != null 
+                          ? const Color(0xFFF0FDF4) 
+                          : Colors.white,
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Povinné pole';
+                      if (double.tryParse(v.replaceAll(',', '.')) == null) {
+                        return 'Neplatná suma';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-              ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Dátum',
+                      prefixIcon: const Icon(Icons.calendar_today_outlined),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _date,
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime.now(),
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: ColorScheme.light(
+                                  primary: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
+                        if (picked != null) {
+                          setState(() => _date = picked);
+                        }
+                      },
+                      child: Text(
+                        DateFormat('dd.MM.yyyy').format(_date),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             
             // Category Selector
-            InputDecorator(
-              decoration: const InputDecoration(labelText: 'Kategória'),
-              child: InkWell(
-                onTap: _showCategorySelector,
+            InkWell(
+              onTap: _showCategorySelector,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (_selectedCategory != null)
-                      Row(
-                        children: [
-                          Icon(
-                            _selectedCategory!.icon,
-                            color: _selectedCategory!.color,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(_selectedCategory!.displayName),
-                          if (_selectedCategory == _suggestedCategory && _suggestionConfidence != null)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Icon(
-                                Icons.auto_awesome,
-                                size: 16,
-                                color: _selectedCategory!.color,
+                    const Icon(Icons.category_outlined, color: Colors.grey),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _selectedCategory != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Kategória', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(
+                                    _selectedCategory!.icon,
+                                    color: _selectedCategory!.color,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _selectedCategory!.displayName,
+                                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                                  ),
+                                  if (_selectedCategory == _suggestedCategory && _suggestionConfidence != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.amber.withValues(alpha: 0.2),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.auto_awesome, size: 12, color: Colors.amber),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '$_suggestionConfidence%',
+                                              style: TextStyle(
+                                                fontSize: 10, 
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.amber.shade800
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                            ),
-                        ],
-                      )
-                    else
-                      Text(
-                        'Vybrať kategóriu',
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                    const Icon(Icons.arrow_forward_ios, size: 16),
+                            ],
+                          )
+                        : const Text('Vybrať kategóriu', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
                   ],
                 ),
               ),
@@ -377,15 +527,16 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
 
             TextFormField(
               controller: _descController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Popis / Text bločku',
                 alignLabelWithHint: true,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                prefixIcon: const Icon(Icons.description_outlined),
               ),
-              maxLines: 5,
+              maxLines: 3,
             ),
           ],
         ),
-      ),
-    );
+      ),    );
   }
 }

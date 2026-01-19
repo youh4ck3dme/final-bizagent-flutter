@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/theme_provider.dart';
 import '../providers/settings_provider.dart';
 import '../models/user_settings_model.dart';
+import '../../../shared/utils/biz_snackbar.dart';
+import '../../../core/services/company_lookup_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -21,6 +23,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late TextEditingController _icDphController;
   late TextEditingController _ibanController;
   late TextEditingController _swiftController;
+  bool _isLookingUp = false;
 
   @override
   void initState() {
@@ -63,9 +66,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     await ref.read(settingsControllerProvider.notifier).updateSettings(updated);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nastavenia uložené')),
-      );
+      BizSnackbar.showSuccess(context, 'Nastavenia úspešne uložené');
+    }
+  }
+
+  Future<void> _lookupCompany() async {
+    final ico = _icoController.text.trim();
+    if (ico.isEmpty) {
+      BizSnackbar.showInfo(context, 'Zadajte IČO');
+      return;
+    }
+
+    setState(() => _isLookingUp = true);
+    try {
+      final service = ref.read(companyLookupServiceProvider);
+      final company = await service.lookup(ico);
+
+      if (mounted) {
+        if (company != null) {
+          setState(() {
+            _nameController.text = company.name;
+            _addressController.text = company.address;
+            if (company.dic != null) _dicController.text = company.dic!;
+            if (company.icDph != null) _icDphController.text = company.icDph!;
+          });
+          BizSnackbar.showSuccess(context, 'Našli sme: ${company.name}');
+        } else {
+          BizSnackbar.showError(context, 'Firmu s týmto IČO sme nenašli.');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        BizSnackbar.showError(context, 'Chyba pri hľadaní: $e');
+      }
+    } finally {
+      if (mounted) setState(() => _isLookingUp = false);
     }
   }
 
@@ -104,7 +139,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _icoController,
-                      decoration: const InputDecoration(labelText: 'IČO'),
+                      decoration: InputDecoration(
+                        labelText: 'IČO',
+                        suffixIcon: _isLookingUp
+                            ? const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : IconButton(
+                                icon: const Icon(Icons.search),
+                                tooltip: 'Vyhľadať firmu (Automaticky)',
+                                onPressed: _lookupCompany,
+                              ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),

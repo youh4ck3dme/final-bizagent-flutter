@@ -53,6 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Center(
@@ -65,8 +66,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Icon(Icons.business_center,
-                        size: 80, color: Color(0xFF2563EB)),
+                    Center(
+                      child: SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: Image.asset('assets/icons/bizagent_logo.png'),
+                      ),
+                    ),
+
                     const SizedBox(height: 16),
                     Text(
                       _isLogin ? 'Vitajte späť' : 'Vytvoriť účet',
@@ -154,25 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : 'Už máte účet? Prihláste sa',
                       ),
                     ),
-                    if (_isLogin) ...[
-                      const Divider(height: 32),
-                      OutlinedButton.icon(
-                        onPressed: authState.isLoading
-                            ? null
-                            : () {
-                                _emailController.text = 'youh4ck3dme@gmail.com';
-                                _passwordController.text = 'password123';
-                                _submit();
-                              },
-                        icon: const Icon(Icons.bug_report),
-                        label: const Text('DEBUG: Fake Login'),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          side: const BorderSide(color: Colors.orange),
-                          foregroundColor: Colors.orange,
-                        ),
-                      ),
-                    ],
+
                   ],
                 ),
               ),

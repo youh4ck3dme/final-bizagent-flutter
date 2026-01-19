@@ -4,6 +4,7 @@ class UserModel {
   final String? displayName;
   final String? photoUrl;
   final bool isSuperAdmin;
+  final bool isAnonymous;
 
   const UserModel({
     required this.id,
@@ -11,6 +12,7 @@ class UserModel {
     this.displayName,
     this.photoUrl,
     this.isSuperAdmin = false,
+    this.isAnonymous = false,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -20,6 +22,7 @@ class UserModel {
       displayName: map['displayName'],
       photoUrl: map['photoUrl'],
       isSuperAdmin: map['isSuperAdmin'] ?? false,
+      isAnonymous: map['isAnonymous'] ?? false,
     );
   }
 
@@ -30,6 +33,7 @@ class UserModel {
       'displayName': displayName,
       'photoUrl': photoUrl,
       'isSuperAdmin': isSuperAdmin,
+      'isAnonymous': isAnonymous,
     };
   }
 }

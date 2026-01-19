@@ -38,6 +38,7 @@ class AuthRepository {
         id: user.uid,
         email: user.email ?? '',
         displayName: user.displayName,
+        isAnonymous: user.isAnonymous,
       );
     }
     _authStateController.add(_currentUser);
@@ -55,6 +56,7 @@ class AuthRepository {
           email: user.email ?? '',
           displayName: user.displayName,
           photoUrl: user.photoURL,
+          isAnonymous: user.isAnonymous,
         );
       }
       _authStateController.add(_currentUser);
@@ -65,29 +67,6 @@ class AuthRepository {
   UserModel? get currentUser => _currentUser;
 
   Future<UserModel?> signIn(String email, String password) async {
-    if (email == 'test@test.com' ||
-        email == 'admin@bizagent.com' ||
-        email == 'youh4ck3dme@gmail.com') {
-      String displayName = 'Test User';
-      String? photoUrl;
-
-      if (email == 'youh4ck3dme@gmail.com') {
-        displayName = 'Youh4ck3dme';
-        photoUrl =
-            'https://ui-avatars.com/api/?name=Y&background=2563EB&color=fff';
-      }
-
-      _currentUser = UserModel(
-        id: 'fake-id-123',
-        email: email,
-        displayName: displayName,
-        photoUrl: photoUrl,
-        isSuperAdmin: email == 'youh4ck3dme@gmail.com',
-      );
-      _authStateController.add(_currentUser);
-      return _currentUser;
-    }
-
     try {
       final result = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -100,6 +79,7 @@ class AuthRepository {
         email: user.email ?? '',
         displayName: user.displayName,
         photoUrl: user.photoURL,
+        isAnonymous: user.isAnonymous,
       );
       _authStateController.add(userModel);
       return userModel;
@@ -121,6 +101,26 @@ class AuthRepository {
         email: user.email ?? '',
         displayName: user.displayName,
         photoUrl: user.photoURL,
+        isAnonymous: user.isAnonymous,
+      );
+      _authStateController.add(userModel);
+      return userModel;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> signInAnonymously() async {
+    try {
+      final result = await _auth.signInAnonymously();
+      final user = result.user;
+      if (user == null) return null;
+      final userModel = UserModel(
+        id: user.uid,
+        email: '', // Anonymous users don't have email
+        displayName: 'Demo User',
+        photoUrl: null,
+        isAnonymous: true,
       );
       _authStateController.add(userModel);
       return userModel;

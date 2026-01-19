@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, TargetPlatform;
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -19,11 +19,33 @@ class DefaultFirebaseOptions {
     if (kIsWeb) {
       return web;
     }
-    // Mobile/Desktop platforms removed for web-only focus
-    throw UnsupportedError(
-      'Platform ${defaultTargetPlatform} is not supported for this web project.',
-    );
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        return ios;
+      default:
+        throw UnsupportedError(
+          'Platform ${defaultTargetPlatform} is not supported.',
+        );
+    }
   }
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyBgjWn54uyCL6YBtsqPCkWpatrwy306rZM',
+    appId: '1:542280140779:android:4c205b8194929083373bae',
+    messagingSenderId: '542280140779',
+    projectId: 'bizagent-live-2026',
+    storageBucket: 'bizagent-live-2026.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAiaG9ycdPjAfIivv-zGfCsGH8NAdaY9Xw',
+    appId: '1:542280140779:ios:5f400713be240f95373bae',
+    messagingSenderId: '542280140779',
+    projectId: 'bizagent-live-2026',
+    storageBucket: 'bizagent-live-2026.firebasestorage.app',
+  );
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDZcQ0RbF69p_uA1irgr7-hDkZPF95nSAQ',

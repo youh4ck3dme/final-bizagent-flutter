@@ -1,7 +1,8 @@
-// lib/shared/widgets/biz_buttons.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BizPrimaryButton extends StatelessWidget {
+
   const BizPrimaryButton({
     super.key,
     required this.label,
@@ -18,7 +19,12 @@ class BizPrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilledButton(
-      onPressed: isLoading ? null : onPressed,
+      onPressed: isLoading || onPressed == null
+          ? null
+          : () {
+              HapticFeedback.lightImpact();
+              onPressed!();
+            },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -264,7 +264,7 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
         color: Colors.grey.shade50,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: expense.category?.color.withOpacity(0.1) ?? Colors.grey.shade200,
+            backgroundColor: expense.category?.color.withValues(alpha: 0.1) ?? Colors.grey.shade200,
             child: Icon(
               expense.category?.icon ?? Icons.question_mark,
               color: expense.category?.color ?? Colors.grey,

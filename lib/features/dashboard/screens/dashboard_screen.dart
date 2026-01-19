@@ -1,27 +1,79 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart'; // For SchedulerBinding
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // For tracking tutorial view
+
 import '../../auth/providers/auth_repository.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../expenses/providers/expenses_provider.dart';
 import '../../invoices/providers/invoices_provider.dart';
 import '../../invoices/models/invoice_model.dart';
-import '../widgets/upcoming_tax_widget.dart';
+import '../widgets/dashboard_tax_widget.dart';
+import '../providers/revenue_provider.dart';
+import '../providers/profit_provider.dart';
 import '../../../core/i18n/l10n.dart';
 import '../../../core/i18n/app_strings.dart';
 import '../../../shared/widgets/biz_card.dart';
 import '../../../shared/widgets/biz_section_header.dart';
+import '../widgets/smart_dashboard_empty_state.dart';
+import '../widgets/smart_insights_widget.dart';
+import '../../../core/services/tutorial_service.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  // Global Keys for Tutorial
+  final GlobalKey _dashboardKey = GlobalKey();
+  final GlobalKey _scanKey = GlobalKey();
+  final GlobalKey _invoiceKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // Schedule tutorial check after layout
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _checkAndShowTutorial();
+    });
+  }
+
+  Future<void> _checkAndShowTutorial() async {
+    final user = ref.read(authStateProvider).valueOrNull;
+    if (user == null) return;
+
+    // Show tutorial if user is Anonymous (Demo) OR if it's a fresh install check
+    // Ideally we use SharedPreferences to check if tutorial was already shown
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenTutorial = prefs.getBool('hasSeenTutorial_${user.id}') ?? false;
+
+    if (!hasSeenTutorial && (user.isAnonymous)) {
+      if (!mounted) return;
+      TutorialService.showDashboardTutorial(
+        context: context,
+        dashboardKey: _dashboardKey,
+        scanKey: _scanKey,
+        invoiceKey: _invoiceKey,
+        onFinish: () {
+          prefs.setBool('hasSeenTutorial_${user.id}', true);
+        },
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final user = ref.watch(authStateProvider).valueOrNull;
     final invoicesAsync = ref.watch(invoicesProvider);
     final expensesAsync = ref.watch(expensesProvider);
+    final revenueAsync = ref.watch(revenueMetricsProvider);
+    final profitAsync = ref.watch(profitMetricsProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -68,29 +120,38 @@ class DashboardScreen extends ConsumerWidget {
 
               // First-run banner (when user has no data yet)
               if (!(invoicesAsync.isLoading || expensesAsync.isLoading) &&
-                  !(invoicesAsync.hasError || expensesAsync.hasError))
-                _buildFirstRunBanner(
-                  context,
-                  invoices: invoicesAsync.value ?? const [],
-                  expenses: expensesAsync.value ?? const [],
+                  !(invoicesAsync.hasError || expensesAsync.hasError) &&
+                  (invoicesAsync.value?.isEmpty ?? true) &&
+                  (expensesAsync.value?.isEmpty ?? true))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  // Assign Key to Smart Empty State
+                  child: SmartDashboardEmptyState(key: _dashboardKey),
                 ),
 
               // Overdue Alerts
               if (invoicesAsync.value != null)
                 _buildOverdueAlert(context, invoicesAsync.value!),
 
-              // Financial Summary
-              if (invoicesAsync.isLoading || expensesAsync.isLoading)
+              // Financial Summary (New 6-Card Executive Layout)
+              if (revenueAsync.isLoading || profitAsync.isLoading)
                 const Center(child: CircularProgressIndicator())
-              else if (invoicesAsync.hasError || expensesAsync.hasError)
+              else if (revenueAsync.hasError || profitAsync.hasError)
                 Text(context.t(AppStr.errorGeneric))
               else
-                _buildFinancials(context, invoicesAsync.value ?? [],
-                    expensesAsync.value ?? []),
+                _buildExecutiveDashboard(
+                  context, 
+                  revenueAsync.value!, 
+                  profitAsync.value!,
+                  expensesAsync.value ?? [],
+                ),
 
               const SizedBox(height: 24),
-              // Tax Widget
-              const UpcomingTaxWidget(),
+              // AI Insights
+              const SmartInsightsWidget(),
+
+              // Tax Widget (Thermometer + Deadlines)
+              const DashboardTaxWidget(),
 
               const SizedBox(height: 32),
 
@@ -104,14 +165,18 @@ class DashboardScreen extends ConsumerWidget {
                 icon: Icons.add_circle_outline,
                 color: Colors.blue,
                 onTap: () => context.push('/create-invoice'),
+                // Assign Key to Invoice Action
+                widgetKey: _invoiceKey, 
               ),
               _buildActionTile(
                 context,
-                title: 'Skenovať bloček',
-                subtitle: 'AI vyčítanie údajov',
-                icon: Icons.document_scanner_outlined,
+                title: '✨ Magic Scan',
+                subtitle: 'AI vyčítanie a automatické vyplnenie',
+                icon: Icons.auto_awesome,
                 color: Colors.purple,
                 onTap: () => context.push('/ai-tools'),
+                 // Assign Key to Scan Action
+                widgetKey: _scanKey,
               ),
               _buildActionTile(
                 context,
@@ -210,48 +275,77 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildFinancials(
-      BuildContext context, List<InvoiceModel> invoices, List<dynamic> expenses) {
-    double totalIncome = 0;
-    for (var i in invoices) {
-      totalIncome += i.totalAmount;
-    }
-
-    double totalExpenses = 0;
-    for (var e in expenses) {
-      totalExpenses += e.amount;
-    }
+  Widget _buildExecutiveDashboard(
+      BuildContext context, RevenueMetrics revenue, ProfitMetrics profit, List<dynamic> expenses) {
+    
+    final totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
 
     return Column(
       children: [
-        Row(
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1.5,
           children: [
             _buildSummaryCard(
               context,
-              title: context.t(AppStr.incomeTotal),
-              amount: NumberFormat.currency(symbol: '€').format(totalIncome),
+              title: 'Príjmy (Celkovo)',
+              amount: NumberFormat.currency(symbol: '€').format(revenue.totalRevenue),
               color: Colors.green,
-              icon: Icons.trending_up,
+              icon: Icons.account_balance_wallet_outlined,
             ),
-            const SizedBox(width: 16),
             _buildSummaryCard(
               context,
-              title: context.t(AppStr.expensesTotal),
+              title: 'Čistý Zisk',
+              amount: NumberFormat.currency(symbol: '€').format(profit.profit),
+              color: Colors.blue,
+              icon: Icons.savings_outlined,
+              subtitle: 'Marža: ${(profit.profitMargin * 100).toStringAsFixed(1)}%',
+            ),
+            _buildSummaryCard(
+              context,
+              title: 'Neuhradené',
+              amount: NumberFormat.currency(symbol: '€').format(revenue.unpaidAmount),
+              color: Colors.orange,
+              icon: Icons.pending_actions_outlined,
+              subtitle: '${revenue.overdueCount} po lehote',
+            ),
+            _buildSummaryCard(
+              context,
+              title: 'Výdavky',
               amount: NumberFormat.currency(symbol: '€').format(totalExpenses),
               color: Colors.red,
-              icon: Icons.trending_down,
+              icon: Icons.shopping_cart_outlined,
+            ),
+            _buildSummaryCard(
+              context,
+              title: 'Tento mesiac',
+              amount: NumberFormat.currency(symbol: '€').format(revenue.thisMonthRevenue),
+              color: Colors.teal,
+              icon: Icons.calendar_today_outlined,
+              subtitle: 'Zisk: ${NumberFormat.currency(symbol: '€').format(profit.thisMonthProfit)}',
+            ),
+            _buildSummaryCard(
+              context,
+              title: 'Priemerná faktúra',
+              amount: NumberFormat.currency(symbol: '€').format(revenue.averageInvoiceValue),
+              color: Colors.indigo,
+              icon: Icons.bar_chart_outlined,
             ),
           ],
         ),
         const SizedBox(height: 24),
 
         // Pie Chart
-        if (totalIncome > 0 || totalExpenses > 0)
+        if (revenue.totalRevenue > 0 || totalExpenses > 0)
           GestureDetector(
             onTap: () => context.push('/analytics'),
             child: BizCard(
               child: Column(children: [
-              Text(context.t(AppStr.periodLabel),
+              Text('Pomer Príjmy vs Výdavky',
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 16),
               SizedBox(
@@ -261,8 +355,8 @@ class DashboardScreen extends ConsumerWidget {
                     sections: [
                       PieChartSectionData(
                         color: Colors.green,
-                        value: totalIncome,
-                        title: '', // Too small
+                        value: revenue.totalRevenue,
+                        title: '', 
                         radius: 50,
                       ),
                       PieChartSectionData(
@@ -313,28 +407,40 @@ class DashboardScreen extends ConsumerWidget {
     required String amount,
     required Color color,
     required IconData icon,
+    String? subtitle,
   }) {
-    return Expanded(
-      child: BizCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color),
-            const SizedBox(height: 12),
-            Text(title,
-                style: TextStyle(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                    fontSize: 13)),
-            const SizedBox(height: 4),
-            FittedBox(
-              child: Text(
-                amount,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+    return BizCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, color: color, size: 20),
+              if (subtitle != null)
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: color.withValues(alpha: 0.8),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(title,
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodySmall?.color,
+                  fontSize: 12)),
+          const SizedBox(height: 4),
+          FittedBox(
+            child: Text(
+              amount,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -346,8 +452,10 @@ class DashboardScreen extends ConsumerWidget {
     required IconData icon,
     required Color color,
     required VoidCallback onTap,
+    Key? widgetKey, // Added Key support
   }) {
     return Card(
+      key: widgetKey, // Assign Key here
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: CircleAvatar(
@@ -358,65 +466,6 @@ class DashboardScreen extends ConsumerWidget {
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: onTap,
-      ),
-    );
-  }
-
-  Widget _buildFirstRunBanner(
-    BuildContext context, {
-    required List<dynamic> invoices,
-    required List<dynamic> expenses,
-  }) {
-    final isEmpty = invoices.isEmpty && expenses.isEmpty;
-    if (!isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: BizCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.auto_awesome, size: 22),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Začni za 30 sekúnd',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Vytvor prvú faktúru alebo pridaj výdavok. BizAgent ti začne počítať prehľad hneď.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => context.push('/create-invoice'),
-                    icon: const Icon(Icons.receipt_long),
-                    label: const Text('Vytvoriť faktúru'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => context.push('/create-expense'),
-                    icon: const Icon(Icons.shopping_bag_outlined),
-                    label: const Text('Pridať výdavok'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -3,12 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bizagent/features/ai_tools/screens/ai_email_generator_screen.dart';
+import 'package:bizagent/features/ai_tools/providers/ai_email_service.dart';
+
+
+class MockAiEmailService implements AiEmailService {
+  @override
+  Future<String> generateEmail({
+    required String type,
+    required String tone,
+    required String context,
+  }) async {
+    if (context.isEmpty) {
+      return 'Prosím, zadajte kontext pre vygenerovanie e-mailu.';
+    }
+    return 'Vážený klient, posielame Vám faktúru...';
+  }
+
+
+}
 
 void main() {
   testWidgets('AiEmailGeneratorScreen generates text on button press', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
+      ProviderScope(
+        overrides: [
+          aiEmailServiceProvider.overrideWithValue(MockAiEmailService()),
+        ],
+        child: const MaterialApp(
           home: AiEmailGeneratorScreen(),
         ),
       ),
@@ -35,8 +56,11 @@ void main() {
 
   testWidgets('AiEmailGeneratorScreen validates empty context', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
+      ProviderScope(
+        overrides: [
+          aiEmailServiceProvider.overrideWithValue(MockAiEmailService()),
+        ],
+        child: const MaterialApp(
           home: AiEmailGeneratorScreen(),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as path;
@@ -45,7 +46,7 @@ class ReceiptStorageService {
       return downloadUrl;
 
     } catch (e) {
-      print('Error uploading receipt: $e');
+      debugPrint('Error uploading receipt: $e');
       rethrow;
     }
   }
@@ -55,7 +56,7 @@ class ReceiptStorageService {
       final ref = _storage.refFromURL(downloadUrl);
       await ref.delete();
     } catch (e) {
-      print('Error deleting receipt: $e');
+      debugPrint('Error deleting receipt: $e');
       // Don't rethrow, just log. It's not critical if delete fails.
     }
   }

@@ -16,17 +16,16 @@ void main() {
       expect(find.text('BizAgent'), findsOneWidget);
       
       // Check subtitle
-      expect(find.textContaining('AI Business Assistant'), findsOneWidget);
+      expect(find.textContaining('Váš inteligentný AI asistent'), findsOneWidget);
 
       // Check for LinearProgressIndicator
       expect(find.byType(LinearProgressIndicator), findsOneWidget);
 
-      // Check for logo (SvgPicture)
-      // Note: In tests SvgPicture might render as a limited widget but we check it's in the tree
-      expect(find.bySemanticsLabel('BizAgent logo'), findsOneWidget);
+      // Check for logos (Images)
+      expect(find.byType(Image), findsNWidgets(3));
       
       // Check for version info
-      expect(find.text('v1.0.0'), findsOneWidget);
+      expect(find.text('v1.0.1+2'), findsOneWidget);
 
       // Run some time to see if progress bar updates (fake progress)
       await tester.pump(const Duration(milliseconds: 200));

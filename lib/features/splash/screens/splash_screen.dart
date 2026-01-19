@@ -1,33 +1,49 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../features/auth/providers/auth_repository.dart';
+import '../../../features/intro/providers/onboarding_provider.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   double _p = 0.06;
   Timer? _t;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
 
   @override
   void initState() {
     super.initState();
-    // Fake progress: rýchlo do 90%, potom drží
-    _t = Timer.periodic(const Duration(milliseconds: 80), (_) {
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+
+    _animationController.forward();
+
+    // Start progress animation
+    _t = Timer.periodic(const Duration(milliseconds: 60), (_) {
       if (!mounted) return;
       setState(() {
-        if (_p < 0.90) {
-          _p += (0.90 - _p) * 0.06;
-        } else {
-          _t?.cancel();
-          // GoRouter handles redirection based on auth & onboarding state
-          // so we just trigger a refresh of the router location
-          context.go('/dashboard'); 
+        if (_p < 0.95) {
+          _p += (1.0 - _p) * 0.04;
         }
       });
     });
@@ -36,112 +52,232 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void dispose() {
     _t?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authStateProvider);
+    final onboardingState = ref.watch(onboardingProvider);
+
+    // Listen to auth state changes and redirect accordingly
+    ref.listen(authStateProvider, (previous, next) {
+      if (!mounted) return;
+
+      next.when(
+        data: (user) {
+          // Auth loaded successfully
+          if (user != null) {
+            // User is logged in, check onboarding
+            final seenOnboarding = onboardingState.valueOrNull ?? false;
+            if (!seenOnboarding) {
+              context.go('/onboarding');
+            } else {
+              context.go('/dashboard');
+            }
+          } else {
+            // No user, go to login
+            context.go('/login');
+          }
+        },
+        error: (error, stack) {
+          // Auth error, go to login
+          context.go('/login');
+        },
+        loading: () {
+          // Still loading, stay on splash
+        },
+      );
+    });
+
+    // Also listen to onboarding changes
+    ref.listen(onboardingProvider, (previous, next) {
+      if (!mounted || authState.isLoading) return;
+
+      final user = authState.valueOrNull;
+      if (user != null) {
+        final seenOnboarding = next.valueOrNull ?? false;
+        if (!seenOnboarding) {
+          context.go('/onboarding');
+        } else {
+          context.go('/dashboard');
+        }
+      }
+    });
+
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      body: SizedBox.expand(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              cs.surface,
+              cs.primaryContainer.withValues(alpha: 0.1),
+              cs.surface,
+            ],
+          ),
+        ),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 400),
-                  child: Card(
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                      side: BorderSide(
-                        color: cs.outlineVariant.withValues(alpha: 0.5),
-                        width: 1,
+            // Top left logo
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              left: 24,
+              child: _FadeIn(
+                delay: const Duration(milliseconds: 200),
+                child: Image.asset(
+                  'assets/icons/icoatlas-logo.png',
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+            ),
+            // Top right logo
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              right: 24,
+              child: _FadeIn(
+                delay: const Duration(milliseconds: 400),
+                child: Image.asset(
+                  'assets/icons/bizagent_logo.png',
+                  width: 50,
+                  height: 50,
+                ),
+              ),
+            ),
+            // Decorative background circles
+            Positioned(
+              top: -100,
+              right: -100,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: cs.primary.withValues(alpha: 0.03),
+                ),
+              ),
+            ),
+            
+            FadeTransition(
+              opacity: _opacityAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 120,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: cs.surface,
+                        borderRadius: BorderRadius.circular(32),
+                        boxShadow: [
+                          BoxShadow(
+                            color: cs.primary.withValues(alpha: 0.1),
+                            blurRadius: 40,
+                            offset: const Offset(0, 20),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/icons/bizagent_logo.png',
                       ),
                     ),
-                    color: cs.surfaceContainerLowest,
-                    child: Padding(
-                      padding: const EdgeInsets.all(32.0),
+                    const SizedBox(height: 32),
+                    Text(
+                      'BizAgent',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -1.0,
+                            color: cs.onSurface,
+                          ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Váš inteligentný AI asistent',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: cs.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
+                    const SizedBox(height: 64),
+                    SizedBox(
+                      width: 200,
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: cs.primaryContainer.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/icons/bizagent_logo.svg',
-                              semanticsLabel: 'BizAgent logo',
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: _p,
+                              minHeight: 6,
+                              backgroundColor: cs.primaryContainer.withValues(alpha: 0.2),
+                              valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 16),
                           Text(
-                            'BizAgent',
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: -0.5,
+                            'Pripravujeme prostredie...',
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                                  letterSpacing: 0.5,
                                 ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'AI Business Assistant pre SZČO',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: cs.onSurfaceVariant,
-                                ),
-                          ),
-                          const SizedBox(height: 32),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: LinearProgressIndicator(
-                                  value: _p,
-                                  minHeight: 8,
-                                  backgroundColor: cs.surfaceContainerHigh,
-                                  valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Center(
-                                child: Text(
-                                  'Pripravujeme vaše dáta...',
-                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                        color: cs.onSurfaceVariant.withValues(alpha: 0.7),
-                                      ),
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
+            
             Positioned(
-              bottom: 32,
+              bottom: 48,
               child: Text(
-                'v1.0.0',
+                'v1.0.1+2',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: cs.onSurfaceVariant.withValues(alpha: 0.5),
-                      fontWeight: FontWeight.bold,
+                      color: cs.onSurfaceVariant.withValues(alpha: 0.4),
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 2.0,
                     ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _FadeIn extends StatelessWidget {
+  final Widget child;
+  final Duration delay;
+
+  const _FadeIn({required this.child, required this.delay});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOut,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 20 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: child,
     );
   }
 }

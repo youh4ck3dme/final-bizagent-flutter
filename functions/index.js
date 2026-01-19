@@ -4,43 +4,192 @@ const { defineSecret } = require("firebase-functions/params");
 
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
-exports.generateEmail = onCall({ secrets: [geminiApiKey] }, async (request) => {
+// Model configuration
+// UPDEJT: Prejdené na 2.5 flash lite (safe do 2026)
+const MODEL_NAME = "gemini-2.5-flash-lite";
+
+/**
+ * Generuje profesionálny e-mail na základe kontextu.
+ */
+exports.generateEmail = onCall({ 
+  secrets: [geminiApiKey],
+  cors: true // TODO: Pre produkciu zmeň na ["https://bizagent-live-2026.web.app"]
+}, async (request) => {
   if (!request.auth) {
     throw new HttpsError('unauthenticated', 'Funkcia musí byť volaná prihláseným používateľom.');
   }
 
   const { type, tone, context } = request.data;
-  
   if (!context) {
     throw new HttpsError('invalid-argument', 'Chýba parameter "context".');
   }
 
   const apiKey = geminiApiKey.value();
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-
-  const prompt = `
-Úloha: Napíš profesionálny firemný e-mail v slovenskom jazyku.
-
-Parametre:
-- Typ správy: ${type}
-- Tón komunikácie: ${tone}
-- Kontext/Detaily: "${context}"
-
-Požiadavky:
-- Použij spisovnú slovenčinu.
-- Dodržuj štruktúru: Oslovenie, Jadro správy, Záver, Podpis (ako [Meno/Firma]).
-- Buď stručný ale zdvorilý.
-- Nevymýšľaj si fakty, ktoré nie sú v kontexte.
-`;
+  if (!apiKey) {
+    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný (chýba API kľúč).');
+  }
 
   try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: MODEL_NAME,
+      systemInstruction: "Si profesionálny biznis asistent pre slovenských podnikateľov. Tvojou úlohou je písať e-maily, ktoré sú gramaticky správne, slušné a vecne presné podľa zadaného kontextu. Používaj spisovnú slovenčinu a profesionálne formátovanie."
+    });
+
+    const prompt = `Napíš ${type} e-mail v ${tone} tóne. Kontext: ${context}`;
+    
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    return { text: text };
+    return { text: result.response.text() };
+
   } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    throw new HttpsError('internal', 'Chyba pri generovaní obsahu cez AI.');
+    console.error("Gemini Email Error:", error);
+    if (error.status === 403 || error.message.includes('API key')) {
+      throw new HttpsError('permission-denied', 'Neplatný API kľúč pre AI službu.');
+    }
+    throw new HttpsError('internal', 'Chyba pri generovaní e-mailu: ' + error.message);
+  }
+});
+
+/**
+ * Parsuje text z bločku pomocou AI pre presnejšie dáta.
+ */
+exports.analyzeReceipt = onCall({ 
+  secrets: [geminiApiKey],
+  cors: true 
+}, async (request) => {
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'Prístup odmietnutý.');
+  }
+
+  const { text } = request.data;
+  if (!text) {
+    throw new HttpsError('invalid-argument', 'Chýba text na analýzu.');
+  }
+
+  const apiKey = geminiApiKey.value();
+  if (!apiKey) {
+    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný.');
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: MODEL_NAME,
+      systemInstruction: `Si expert na analýzu slovenských pokladničných dokladov. 
+      Z extrahovaného textu vytiahni údaje do čistého JSONu v tejto štruktúre:
+      {
+        "vendor_name": "Názov obchodu",
+        "ico": "XXXXXXXX (ak existuje)",
+        "date": "YYYY-MM-DD",
+        "total": 0.0,
+        "currency": "EUR",
+        "address": {
+          "street": "Ulica",
+          "street_number": "Číslo",
+          "psc": "PSČ",
+          "city": "Mesto"
+        },
+        "confidence": 0.9 (odhad istoty)
+      }
+      Ak údaj nevieš nájsť, nechaj ho null.`
+    });
+
+    const result = await model.generateContent(`Analyzuj text:\n\n${text}`);
+    const jsonString = result.response.text().replace(/```json|```/g, '').trim();
+    
+    return JSON.parse(jsonString);
+  } catch (error) {
+    console.error("Gemini Receipt Error:", error);
+    throw new HttpsError('internal', 'Chyba pri analýze dokladu: ' + error.message);
+  }
+});
+
+/**
+ * Hľadá firmu podľa IČO.
+ * Používa Slovensko.Digital API (ak je kľúč) alebo Mock dáta pre demo.
+ */
+const slovenskoDigitalKey = defineSecret("SLOVENSKO_DIGITAL_API_KEY");
+
+exports.lookupCompany = onCall({ 
+  secrets: [slovenskoDigitalKey],
+  cors: true 
+}, async (request) => {
+  // Allow unauthenticated for onboarding flow (strictly rate limited in prod)
+  // For now, allow it to speed up "Magic Setup"
+  
+  const { ico } = request.data;
+  if (!ico) {
+    throw new HttpsError('invalid-argument', 'Chýba IČO.');
+  }
+
+  // 1. Try Mock Data (For Demo "Wow" Effect without API Key)
+  const MOCK_DB = {
+    '36396567': { // Google Slovakia
+      name: 'Google Slovakia, s. r. o.',
+      ico: '36396567',
+      dic: '2020102636',
+      icDph: 'SK2020102636',
+      address: 'Karadžičova 8/A, Bratislava 821 08'
+    },
+    '35757442': { // O2 Slovakia
+      name: 'O2 Slovakia, s.r.o.',
+      ico: '35757442',
+      dic: '2020216748',
+      icDph: 'SK2020216748',
+      address: 'Einsteinova 24, Bratislava 851 01'
+    },
+    '46113177': { // SkyToll
+      name: 'SkyToll, a. s.',
+      ico: '46113177',
+      dic: '2023247964',
+      icDph: 'SK2023247964',
+      address: 'Lamačská cesta 3/B, Bratislava 841 04'
+    }
+  };
+
+  const apiKey = slovenskoDigitalKey.value();
+
+  // Ak nemáme kľúč alebo je to známe testovacie IČO, vráť mock
+  if (!apiKey || MOCK_DB[ico]) {
+    console.log("Using Mock/Fallback for IČO:", ico);
+    if (MOCK_DB[ico]) return MOCK_DB[ico];
+    
+    // Ak nemáme kľúč a nie je v mocku:
+    if (!apiKey) {
+       // Return empty or throw? Better to return null to let UI handle "Not Found"
+       return null;
+    }
+  }
+
+  // 2. Real API Call (Slovensko.Digital)
+  try {
+    const response = await fetch(`https://autoform.ekosystem.slovensko.digital/api/corporate_bodies/search?q=ico:${ico}`, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+       console.error("SD API Error:", response.status, await response.text());
+       return null;
+    }
+
+    const data = await response.json();
+    if (!data || data.length === 0) return null;
+
+    const company = data[0];
+    // Map to our simplified format
+    return {
+      name: company.name,
+      ico: company.cin, // CIN = IČO
+      dic: company.tin, // TIN = DIČ
+      icDph: company.v_tin, // V_TIN = IČ DPH
+      address: `${company.formatted_address}`
+    };
+
+  } catch (error) {
+    console.error("Lookup Error:", error);
+    throw new HttpsError('internal', 'Chyba pri hľadaní firmy.');
   }
 });

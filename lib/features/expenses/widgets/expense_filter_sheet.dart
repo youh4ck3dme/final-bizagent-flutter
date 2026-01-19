@@ -231,7 +231,7 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                           color: isSelected ? Colors.white : Colors.black87,
                           fontSize: 12,
                         ),
-                        backgroundColor: category.color.withOpacity(0.1),
+                        backgroundColor: category.color.withValues(alpha: 0.1),
                         checkmarkColor: Colors.white,
                       );
                     }).toList(),

@@ -8,10 +8,13 @@ import 'package:bizagent/features/expenses/providers/expenses_provider.dart';
 import 'package:bizagent/features/auth/providers/auth_repository.dart';
 import 'package:bizagent/core/i18n/l10n.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() {
   testWidgets(
       'Dashboard shows first-run banner when invoices & expenses are empty',
       (tester) async {
+    SharedPreferences.setMockInitialValues({}); // Mock SP for TutorialService check
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -33,11 +36,17 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    // Banner headline (unique to first-run banner)
-    expect(find.textContaining('Začni'), findsOneWidget);
+    // Verify Smart Dashboard Empty State is present
+    expect(find.text('Vitajte v BizAgent!'), findsOneWidget);
+    expect(find.text('Pripravte svoju firmu na úspech'), findsOneWidget);
 
-    // CTA buttons exist (may appear in banner + quick actions, so use findsAtLeast)
-    expect(find.textContaining('Vytvoriť'), findsAtLeastNWidgets(1));
-    expect(find.textContaining('Pridať'), findsAtLeastNWidgets(1));
+    // Verify Checklist Items
+    expect(find.text('Nastaviť firemné údaje'), findsOneWidget);
+    expect(find.text('Vytvoriť prvú faktúru'), findsOneWidget);
+    expect(find.text('Pridať prvý výdavok'), findsOneWidget);
+
+    // Verify Icons exist
+    expect(find.byIcon(Icons.rocket_launch_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.business), findsOneWidget);
   });
 }

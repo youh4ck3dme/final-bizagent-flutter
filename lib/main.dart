@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/services/cache_service.dart';
 import 'firebase_options.dart';
 import 'app.dart';
 
@@ -11,6 +14,9 @@ void main() async {
 
   final bindingStart = DateTime.now();
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Light Cache Cleanup (Non-disruptive)
+  await CacheService().performLightCleanup();
   debugPrint(
       '⏱️  [PERF] Binding initialized: ${DateTime.now().difference(bindingStart).inMilliseconds}ms');
 
@@ -19,6 +25,21 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    // Enable Firestore offline persistence
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
+
+    // Initial Performance Monitoring
+    try {
+      await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+      debugPrint('⏱️  [PERF] Performance monitoring enabled');
+    } catch (e) {
+      debugPrint('⚠️ [PERF] Failed to enable performance monitoring: $e');
+    }
+
     debugPrint(
         '⏱️  [PERF] Firebase initialized: ${DateTime.now().difference(firebaseStart).inMilliseconds}ms');
   } catch (e) {

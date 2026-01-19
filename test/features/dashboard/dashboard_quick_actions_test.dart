@@ -41,8 +41,8 @@ void main() {
     expect(find.text('Nová faktúra pre klienta'), findsOneWidget);
 
     // 2. Skenovať bloček
-    expect(find.text('Skenovať bloček'), findsOneWidget);
-    expect(find.text('AI vyčítanie údajov'), findsOneWidget);
+    expect(find.text('✨ Magic Scan'), findsOneWidget);
+    expect(find.text('AI vyčítanie a automatické vyplnenie'), findsOneWidget);
 
     // 3. Pridať výdavok
     expect(find.text('Pridať výdavok'),

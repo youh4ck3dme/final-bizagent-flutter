@@ -37,35 +37,7 @@ class InvoicesRepository {
           .map((doc) => InvoiceModel.fromMap(doc.data(), doc.id))
           .toList();
 
-      if (invoices.isEmpty) {
-        // Return mock data for a better "first impression"
-        yield [
-          InvoiceModel(
-            id: 'mock-1',
-            userId: userId,
-            number: 'Faktúra 2026001',
-            clientName: 'Google Slovakia s.r.o.',
-            dateIssued: DateTime(2026, 1, 10),
-            dateDue: DateTime(2026, 1, 24),
-            totalAmount: 1500.0,
-            items: [],
-            status: InvoiceStatus.paid,
-          ),
-          InvoiceModel(
-            id: 'mock-2',
-            userId: userId,
-            number: 'Faktúra 2026002',
-            clientName: 'Freelance Hub s.r.o.',
-            dateIssued: DateTime(2026, 1, 15),
-            dateDue: DateTime(2026, 1, 29),
-            totalAmount: 850.50,
-            items: [],
-            status: InvoiceStatus.sent,
-          ),
-        ];
-      } else {
-        yield invoices;
-      }
+      yield invoices;
     }
   }
 

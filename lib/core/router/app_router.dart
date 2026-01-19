@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
+
 import '../../features/splash/screens/splash_screen.dart';
 import '../../features/invoices/screens/invoices_screen.dart';
 import '../../features/expenses/screens/expenses_screen.dart';
 import '../../features/expenses/screens/expense_analytics_screen.dart';
 import '../../features/expenses/screens/receipt_viewer_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
+import '../../features/expenses/screens/expense_detail_screen.dart';
 import '../../features/ai_tools/screens/ai_tools_screen.dart';
+
 import '../../features/ai_tools/screens/ai_email_generator_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/providers/auth_repository.dart';
@@ -20,22 +24,30 @@ import '../../features/invoices/screens/pdf_preview_screen.dart';
 import '../../features/tax/screens/cashflow_analytics_screen.dart';
 import '../../features/intro/screens/onboarding_screen.dart';
 import '../../features/invoices/models/invoice_model.dart';
+import '../../features/expenses/models/expense_model.dart';
 import '../../features/expenses/screens/create_expense_screen.dart';
+
 import '../../features/bank_import/screens/bank_import_screen.dart';
 import '../../features/export/screens/export_screen.dart';
 import '../../shared/widgets/scaffold_with_navbar.dart';
 import '../../shared/widgets/biz_auth_required.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final firebaseAnalyticsProvider = Provider((ref) => FirebaseAnalytics.instance);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
   final onboardingState = ref.watch(onboardingProvider);
+  final analytics = ref.watch(firebaseAnalyticsProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
+    observers: [
+      FirebaseAnalyticsObserver(analytics: analytics),
+    ],
     redirect: (context, state) {
+
       final path = state.uri.path;
 
       // 1. Loading states
@@ -171,7 +183,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                         const ExpenseAnalyticsScreen(),
                   ),
                   GoRoute(
+                    path: 'detail',
+                    builder: (context, state) {
+                      final expense = state.extra as ExpenseModel;
+                      return ExpenseDetailScreen(expense: expense);
+                    },
+                  ),
+                  GoRoute(
                     path: 'receipt-viewer',
+
                     parentNavigatorKey: _rootNavigatorKey,
                     builder: (context, state) {
                       final extras = state.extra as Map<String, dynamic>;

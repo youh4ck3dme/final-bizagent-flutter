@@ -1,0 +1,83 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:bizagent/features/expenses/providers/expenses_repository.dart';
+import 'package:bizagent/features/expenses/models/expense_model.dart';
+import 'package:bizagent/features/expenses/models/expense_category.dart';
+
+void main() {
+  group('ExpensesRepository', () {
+    late FakeFirebaseFirestore fakeFirestore;
+    late ExpensesRepository repository;
+    const userId = 'test-user-123';
+
+    setUp(() {
+      fakeFirestore = FakeFirebaseFirestore();
+      repository = ExpensesRepository(fakeFirestore);
+    });
+
+    final dummyExpense = ExpenseModel(
+      id: 'expense-1',
+      userId: userId,
+      vendorName: 'Test Vendor',
+      description: 'Office Supplies',
+      amount: 50.0,
+      date: DateTime(2023, 10, 1),
+      category: ExpenseCategory.officeSupplies,
+      categorizationConfidence: 90,
+    );
+
+    test('addExpense adds document to Firestore', () async {
+      await repository.addExpense(userId, dummyExpense);
+
+      final snapshot = await fakeFirestore
+          .collection('users')
+          .doc(userId)
+          .collection('expenses')
+          .get();
+
+      expect(snapshot.docs.length, 1);
+      final data = snapshot.docs.first.data();
+      expect(data['vendorName'], 'Test Vendor');
+      expect(data['category'], 'officeSupplies');
+    });
+
+    test('deleteExpense removes document', () async {
+      // Add initial
+      await fakeFirestore
+          .collection('users')
+          .doc(userId)
+          .collection('expenses')
+          .doc(dummyExpense.id)
+          .set(dummyExpense.toMap());
+
+      await repository.deleteExpense(userId, dummyExpense.id);
+
+      final snapshot = await fakeFirestore
+          .collection('users')
+          .doc(userId)
+          .collection('expenses')
+          .get();
+
+      expect(snapshot.docs.length, 0);
+    });
+
+    test('watchExpenses emits updates from Firestore', () async {
+      // Expect empty then 1 item
+      expectLater(
+        repository.watchExpenses(userId),
+        emitsInOrder([
+          isEmpty,
+          isA<List<ExpenseModel>>().having((l) => l.length, 'length', 1),
+        ]),
+      );
+
+      // Add expense triggers stream
+      await Future.delayed(Duration.zero);
+      await fakeFirestore
+          .collection('users')
+          .doc(userId)
+          .collection('expenses')
+          .add(dummyExpense.toMap());
+    });
+  });
+}

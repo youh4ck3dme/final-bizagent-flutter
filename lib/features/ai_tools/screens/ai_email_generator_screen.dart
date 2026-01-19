@@ -98,7 +98,7 @@ class _AiEmailGeneratorScreenState
                 child: Column(
                   children: [
                     DropdownButtonFormField<String>(
-                      value: _selectedType,
+                      initialValue: _selectedType,
                       decoration: const InputDecoration(
                         labelText: 'Typ e-mailu',
                         border: OutlineInputBorder(),
@@ -113,7 +113,7 @@ class _AiEmailGeneratorScreenState
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      value: _selectedTone,
+                      initialValue: _selectedTone,
                       decoration: const InputDecoration(
                         labelText: 'Tón komunikácie',
                         border: OutlineInputBorder(),

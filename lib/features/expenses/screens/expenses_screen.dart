@@ -283,9 +283,9 @@ class ExpensesScreen extends ConsumerWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
           onTap: () {
-            // TODO: Navigate to detail screen
-            // context.push('/expenses/detail', extra: expense);
+             context.push('/expenses/detail', extra: expense);
           },
+
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -294,7 +294,7 @@ class ExpensesScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: category.color.withOpacity(0.1),
+                    color: category.color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(category.icon, color: category.color, size: 24),

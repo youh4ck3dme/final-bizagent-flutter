@@ -1,5 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart' deferred as ml show TextRecognizer, TextRecognitionScript, InputImage;
 import 'package:image_picker/image_picker.dart';
 
 final ocrServiceProvider = Provider<OcrService>((ref) {
@@ -23,21 +24,32 @@ class ParsedReceipt {
 }
 
 class OcrService {
-  final _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-  final _picker = ImagePicker();
+  // Use dynamic to avoid "Deferred types can't be used in variable declarations" error
+  dynamic _textRecognizer; 
+  ImagePicker? _picker;
+
+  Future<void> _ensureInitialized() async {
+    if (_textRecognizer == null) {
+      await ml.loadLibrary();
+      _textRecognizer = ml.TextRecognizer(script: ml.TextRecognitionScript.latin);
+    }
+    _picker ??= ImagePicker();
+  }
 
   Future<ParsedReceipt?> scanReceipt(ImageSource source) async {
     try {
-      final pickedFile = await _picker.pickImage(source: source);
+      await _ensureInitialized();
+
+      final pickedFile = await _picker!.pickImage(source: source);
       if (pickedFile == null) return null;
 
-      final inputImage = InputImage.fromFilePath(pickedFile.path);
-      final recognizedText = await _textRecognizer.processImage(inputImage);
+      final inputImage = ml.InputImage.fromFilePath(pickedFile.path);
+      final recognizedText = await _textRecognizer!.processImage(inputImage);
       final text = recognizedText.text;
 
       return parseReceipt(text, imagePath: pickedFile.path);
     } catch (e) {
-      print('Error scanning receipt: $e');
+      debugPrint('Error scanning receipt: $e');
       return null;
     }
   }
@@ -98,6 +110,6 @@ class OcrService {
   }
 
   void dispose() {
-    _textRecognizer.close();
+    _textRecognizer?.close();
   }
 }

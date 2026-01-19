@@ -10,6 +10,7 @@ import '../../../shared/widgets/biz_card.dart';
 import '../../../shared/widgets/biz_buttons.dart';
 import '../../../shared/widgets/biz_progress_list.dart';
 import '../../../shared/widgets/biz_section_header.dart';
+import '../../../shared/utils/biz_snackbar.dart';
 import '../models/export_models.dart';
 import '../providers/export_provider.dart';
 
@@ -49,6 +50,15 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<ExportState>(exportProvider, (previous, next) {
+      if (previous?.result == null && next.result != null) {
+        BizSnackbar.showSuccess(context, 'Export bol úspešne vygenerovaný!');
+      }
+      if (next.error != null && previous?.error != next.error) {
+        BizSnackbar.showError(context, 'Chyba pri generovaní exportu: ${next.error}');
+      }
+    });
+
     final st = ref.watch(exportProvider);
     final ctrl = ref.read(exportProvider.notifier);
 

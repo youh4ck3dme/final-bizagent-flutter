@@ -92,6 +92,8 @@ class InvoiceModel {
   final String? pdfUrl;
   final String? variableSymbol; // Added
   final String? constantSymbol; // Added
+  final DateTime? paymentDate;
+  final String? paymentMethod;
   final bool isNumberProvisional; // Added for offline numbering
 
   InvoiceModel({
@@ -111,6 +113,8 @@ class InvoiceModel {
     this.pdfUrl,
     this.variableSymbol,
     this.constantSymbol,
+    this.paymentDate,
+    this.paymentMethod,
     this.isNumberProvisional = false,
   });
 
@@ -152,6 +156,10 @@ class InvoiceModel {
       pdfUrl: map['pdfUrl'],
       variableSymbol: map['variableSymbol'],
       constantSymbol: map['constantSymbol'],
+      paymentDate: map['paymentDate'] != null
+          ? DateTime.parse(map['paymentDate'])
+          : null,
+      paymentMethod: map['paymentMethod'],
       isNumberProvisional: map['isNumberProvisional'] ?? false,
     );
   }
@@ -173,6 +181,8 @@ class InvoiceModel {
       'pdfUrl': pdfUrl,
       'variableSymbol': variableSymbol,
       'constantSymbol': constantSymbol,
+      'paymentDate': paymentDate?.toIso8601String(),
+      'paymentMethod': paymentMethod,
       'isNumberProvisional': isNumberProvisional,
     };
   }

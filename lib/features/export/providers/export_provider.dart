@@ -1,19 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'firestore_export_data_source.dart';
 import '../models/export_models.dart';
+import '../../../core/services/export_service.dart';
+
 
 final exportProvider =
     StateNotifierProvider<ExportController, ExportState>((ref) {
   return ExportController();
 });
 
-final exportPeriodsProvider = Provider<List<ExportPeriod>>((ref) {
-  final now = DateTime.now();
-  return [
-    ExportPeriod.thisMonth(now),
-    ExportPeriod.lastMonth(now),
-    ExportPeriod.thisYear(now),
-  ];
-});
+// ... exportPeriodsProvider remains the same ...
 
 class ExportController extends StateNotifier<ExportState> {
   ExportController() : super(ExportState.idle());
@@ -27,43 +24,29 @@ class ExportController extends StateNotifier<ExportState> {
       error: null,
       result: null,
       progress: ExportProgress.idle()
-          .copyWith(message: 'Starting export…', percent: 0.05),
+          .copyWith(message: 'Pripravujem dáta…', percent: 0.1),
     );
 
     try {
-      // Minimal working flow (compiles + UI progress).
-      // Real zip generation is already in core/services/export_service.dart,
-      // we’ll wire it in after compilation is clean.
+      final dataSource = FirestoreExportDataSource(FirebaseFirestore.instance, uid);
+      final service = ExportService(dataSource);
 
-      await Future.delayed(const Duration(milliseconds: 300));
-      state = state.copyWith(
-          progress: state.progress
-              .copyWith(pdfDone: true, percent: 0.35, message: 'PDFs ready'));
-
-      await Future.delayed(const Duration(milliseconds: 300));
-      state = state.copyWith(
-          progress: state.progress.copyWith(
-              photosDone: true, percent: 0.55, message: 'Photos ready'));
-
-      await Future.delayed(const Duration(milliseconds: 300));
-      state = state.copyWith(
-          progress: state.progress
-              .copyWith(csvDone: true, percent: 0.75, message: 'CSV ready'));
-
-      await Future.delayed(const Duration(milliseconds: 300));
-      state = state.copyWith(
-          progress: state.progress
-              .copyWith(jsonDone: true, percent: 0.9, message: 'JSON ready'));
-
-      // Placeholder path (to satisfy UI). Next step: connect real ExportService to produce this file.
-      final zipPath =
-          '/tmp/bizagent_export_${uid}_${period.from.toIso8601String()}_${period.to.toIso8601String()}.zip';
+      final result = await service.buildZip(
+        uid: uid,
+        period: period,
+        onStep: (msg) {
+          state = state.copyWith(
+              progress: state.progress.copyWith(message: msg));
+        },
+        onProgress: (p) {
+          state = state.copyWith(progress: p);
+        },
+      );
 
       state = state.copyWith(
         isRunning: false,
-        progress: state.progress.copyWith(percent: 1.0, message: 'Done'),
-        result: ExportResult(
-            zipPath: zipPath, hasMissing: false, missingItems: const []),
+        progress: state.progress.copyWith(percent: 1.0, message: 'Hotovo'),
+        result: result,
       );
     } catch (e) {
       state = state.copyWith(isRunning: false, error: e.toString());

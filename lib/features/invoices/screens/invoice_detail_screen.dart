@@ -7,6 +7,9 @@ import '../../../core/services/pdf_service.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../models/invoice_model.dart';
 import '../providers/invoices_provider.dart';
+import '../../../core/services/analytics_service.dart';
+import 'package:share_plus/share_plus.dart';
+
 
 class InvoiceDetailScreen extends ConsumerWidget {
   final InvoiceModel invoice;
@@ -18,6 +21,17 @@ class InvoiceDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          if (invoice.status == InvoiceStatus.sent || invoice.status == InvoiceStatus.overdue)
+            IconButton(
+              icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+              tooltip: 'Označiť ako uhradenú',
+              onPressed: () {
+                ref.read(invoicesControllerProvider.notifier).updateStatus(invoice.id, InvoiceStatus.paid);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Faktúra bola označená ako uhradená'))
+                );
+              },
+            ),
           PopupMenuButton<InvoiceStatus>(
             icon: const Icon(Icons.edit_note),
             tooltip: 'Zmeniť stav',
@@ -60,6 +74,22 @@ class InvoiceDetailScreen extends ConsumerWidget {
             },
           ),
           IconButton(
+            icon: const Icon(Icons.qr_code_2),
+            tooltip: 'Zdieľať platobné údaje',
+            onPressed: () {
+              ref.read(analyticsServiceProvider).logQrShared();
+              final amount = NumberFormat.currency(symbol: '€').format(invoice.totalAmount);
+              // ignore: deprecated_member_use
+              Share.share(
+                'Prosím o úhradu faktúry ${invoice.number} v sume $amount. '
+                'Variabilný symbol: ${invoice.variableSymbol}. '
+                'Môžete použiť PAY by square QR kód v prílohe faktúry.',
+                subject: 'Podklady k platbe - ${invoice.number}',
+              );
+            },
+          ),
+          IconButton(
+
             icon: const Icon(Icons.delete),
             onPressed: () {
               showDialog(
@@ -130,6 +160,30 @@ class InvoiceDetailScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
+            // Payment Info (New)
+            if (invoice.status == InvoiceStatus.paid)
+              Card(
+                color: Colors.green.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.verified, color: Colors.green),
+                          const SizedBox(width: 12),
+                          const Text('Informácie o úhrade', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                        ],
+                      ),
+                      const Divider(),
+                      _buildPaymentRow('Dátum úhrady', invoice.paymentDate != null ? DateFormat('dd.MM.yyyy').format(invoice.paymentDate!) : 'Neuvedený'),
+                      _buildPaymentRow('Spôsob úhrady', invoice.paymentMethod ?? 'Prevodom'),
+                    ],
+                  ),
+                ),
+              ),
+            if (invoice.status == InvoiceStatus.paid) const SizedBox(height: 16),
+
             // Dates
             Row(
               children: [
@@ -189,6 +243,19 @@ class InvoiceDetailScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
       ),
     );
   }
