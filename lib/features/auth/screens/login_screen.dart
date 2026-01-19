@@ -106,6 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     const SizedBox(height: 52), // Increased spacing by +20px (was 32)
                     TextFormField(
                       controller: _emailController,
+                      autofillHints: const [AutofillHints.email], // Fixes browser warning
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         prefixIcon: Icon(Icons.email_outlined),
@@ -127,6 +128,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
+                      autofillHints: const [AutofillHints.password], // Fixes browser warning
                       decoration: const InputDecoration(
                         labelText: 'Heslo',
                         prefixIcon: Icon(Icons.lock_outline),
