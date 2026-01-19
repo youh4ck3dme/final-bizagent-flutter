@@ -71,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      // backgroundColor: removed to use Theme (Fusion Off-White)
       body: Stack(
         children: [
           Center(
