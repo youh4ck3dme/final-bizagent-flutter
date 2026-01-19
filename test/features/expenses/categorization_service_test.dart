@@ -87,7 +87,8 @@ void main() {
 
   group('CategorizationService - Komunikácia', () {
     test('rozpozná Orange ako telefón', () {
-      final (category, confidence) = service.suggestCategory('Orange Slovensko');
+      final (category, confidence) =
+          service.suggestCategory('Orange Slovensko');
       expect(category, ExpenseCategory.phone);
       expect(confidence, greaterThanOrEqualTo(90));
     });
@@ -157,21 +158,26 @@ void main() {
 
   group('CategorizationService - Poistenie', () {
     test('rozpozná poisťovňu', () {
-      final (category, _) = service.suggestCategory('Allianz Slovenská poisťovňa');
-      expect(category, isIn([
-        ExpenseCategory.healthInsurance,
-        ExpenseCategory.carInsurance,
-        ExpenseCategory.liabilityInsurance,
-      ]));
+      final (category, _) =
+          service.suggestCategory('Allianz Slovenská poisťovňa');
+      expect(
+          category,
+          isIn([
+            ExpenseCategory.healthInsurance,
+            ExpenseCategory.carInsurance,
+            ExpenseCategory.liabilityInsurance,
+          ]));
     });
 
     test('rozpozná poistenie auta', () {
-      final (category, _) = service.suggestCategory('Kooperativa Auto poistenie');
+      final (category, _) =
+          service.suggestCategory('Kooperativa Auto poistenie');
       expect(category, ExpenseCategory.carInsurance);
     });
 
     test('rozpozná zdravotné poistenie', () {
-      final (category, _) = service.suggestCategory('Union zdravotná poisťovňa');
+      final (category, _) =
+          service.suggestCategory('Union zdravotná poisťovňa');
       expect(category, ExpenseCategory.healthInsurance);
     });
   });
@@ -183,7 +189,8 @@ void main() {
     });
 
     test('rozpozná právne služby', () {
-      final (category, _) = service.suggestCategory('Advokátska kancelária Novák');
+      final (category, _) =
+          service.suggestCategory('Advokátska kancelária Novák');
       expect(category, ExpenseCategory.legal);
     });
 
@@ -200,7 +207,8 @@ void main() {
 
   group('CategorizationService - Prevádzkové náklady', () {
     test('rozpozná nájom', () {
-      final (category, _) = service.suggestCategory('Prenájom priestorov Bratislava');
+      final (category, _) =
+          service.suggestCategory('Prenájom priestorov Bratislava');
       expect(category, ExpenseCategory.rent);
     });
 
@@ -210,7 +218,8 @@ void main() {
     });
 
     test('rozpozná vodu', () {
-      final (category, _) = service.suggestCategory('BVS Vodárenská spoločnosť');
+      final (category, _) =
+          service.suggestCategory('BVS Vodárenská spoločnosť');
       expect(category, ExpenseCategory.water);
     });
 
@@ -242,7 +251,8 @@ void main() {
     });
 
     test('neznámy dodávateľ vráti Other s nízkou istotou', () {
-      final (category, confidence) = service.suggestCategory('Neznámy dodávateľ XYZ');
+      final (category, confidence) =
+          service.suggestCategory('Neznámy dodávateľ XYZ');
       expect(category, ExpenseCategory.other);
       expect(confidence, lessThan(50));
     });

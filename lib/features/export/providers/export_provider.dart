@@ -4,7 +4,6 @@ import 'firestore_export_data_source.dart';
 import '../models/export_models.dart';
 import '../../../core/services/export_service.dart';
 
-
 final exportProvider =
     StateNotifierProvider<ExportController, ExportState>((ref) {
   return ExportController();
@@ -28,15 +27,16 @@ class ExportController extends StateNotifier<ExportState> {
     );
 
     try {
-      final dataSource = FirestoreExportDataSource(FirebaseFirestore.instance, uid);
+      final dataSource =
+          FirestoreExportDataSource(FirebaseFirestore.instance, uid);
       final service = ExportService(dataSource);
 
       final result = await service.buildZip(
         uid: uid,
         period: period,
         onStep: (msg) {
-          state = state.copyWith(
-              progress: state.progress.copyWith(message: msg));
+          state =
+              state.copyWith(progress: state.progress.copyWith(message: msg));
         },
         onProgress: (p) {
           state = state.copyWith(progress: p);

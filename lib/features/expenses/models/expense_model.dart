@@ -7,16 +7,16 @@ class ExpenseModel {
   final String description;
   final double amount;
   final DateTime date;
-  
+
   // Kategorizácia
   final ExpenseCategory? category;
   final int? categorizationConfidence; // 0-100
-  
+
   // Správa účteniek
-  final List<String> receiptUrls;      // Viacero obrázkov
-  final String? thumbnailUrl;          // Miniatura prvého obrázku
-  final DateTime? receiptScannedAt;    // Kedy naskenované
-  final bool isOcrVerified;            // Používateľ potvrdil OCR dáta
+  final List<String> receiptUrls; // Viacero obrázkov
+  final String? thumbnailUrl; // Miniatura prvého obrázku
+  final DateTime? receiptScannedAt; // Kedy naskenované
+  final bool isOcrVerified; // Používateľ potvrdil OCR dáta
 
   ExpenseModel({
     required this.id,
@@ -43,8 +43,8 @@ class ExpenseModel {
       date: DateTime.parse(map['date']),
       category: expenseCategoryFromString(map['category']),
       categorizationConfidence: map['categorizationConfidence'],
-      receiptUrls: map['receiptUrls'] != null 
-          ? List<String>.from(map['receiptUrls']) 
+      receiptUrls: map['receiptUrls'] != null
+          ? List<String>.from(map['receiptUrls'])
           : [],
       thumbnailUrl: map['thumbnailUrl'],
       receiptScannedAt: map['receiptScannedAt'] != null
@@ -92,7 +92,8 @@ class ExpenseModel {
       amount: amount ?? this.amount,
       date: date ?? this.date,
       category: category ?? this.category,
-      categorizationConfidence: categorizationConfidence ?? this.categorizationConfidence,
+      categorizationConfidence:
+          categorizationConfidence ?? this.categorizationConfidence,
       receiptUrls: receiptUrls ?? this.receiptUrls,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       receiptScannedAt: receiptScannedAt ?? this.receiptScannedAt,

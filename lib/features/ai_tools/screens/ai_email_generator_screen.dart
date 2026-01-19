@@ -55,7 +55,7 @@ class _AiEmailGeneratorScreenState
 
   Future<void> _saveAsTemplate() async {
     if (_generatedEmail.isEmpty) return;
-    
+
     // Simulate saving
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Uložené medzi šablóny (Simulácia)')),
@@ -145,7 +145,8 @@ class _AiEmailGeneratorScreenState
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
                               )
                             : const Icon(Icons.auto_awesome),
                         label: const Text('Generovať E-mail'),

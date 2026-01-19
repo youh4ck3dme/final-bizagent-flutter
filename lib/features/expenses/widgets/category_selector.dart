@@ -31,7 +31,8 @@ class _CategorySelectorState extends State<CategorySelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // AI Suggestion Banner
-        if (widget.suggestedCategory != null && widget.suggestionConfidence != null)
+        if (widget.suggestedCategory != null &&
+            widget.suggestionConfidence != null)
           _buildSuggestionBanner(),
 
         const SizedBox(height: 16),
@@ -290,7 +291,8 @@ class _CategorySelectorState extends State<CategorySelector> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 11,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w500,
                       color: isSelected ? Colors.white : category.color,
                     ),
                     maxLines: 2,

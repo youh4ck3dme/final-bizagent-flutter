@@ -10,7 +10,6 @@ import '../providers/invoices_provider.dart';
 import '../../../core/services/analytics_service.dart';
 import 'package:share_plus/share_plus.dart';
 
-
 class InvoiceDetailScreen extends ConsumerWidget {
   final InvoiceModel invoice;
 
@@ -21,15 +20,17 @@ class InvoiceDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          if (invoice.status == InvoiceStatus.sent || invoice.status == InvoiceStatus.overdue)
+          if (invoice.status == InvoiceStatus.sent ||
+              invoice.status == InvoiceStatus.overdue)
             IconButton(
               icon: const Icon(Icons.check_circle_outline, color: Colors.green),
               tooltip: 'Označiť ako uhradenú',
               onPressed: () {
-                ref.read(invoicesControllerProvider.notifier).updateStatus(invoice.id, InvoiceStatus.paid);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Faktúra bola označená ako uhradená'))
-                );
+                ref
+                    .read(invoicesControllerProvider.notifier)
+                    .updateStatus(invoice.id, InvoiceStatus.paid);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Faktúra bola označená ako uhradená')));
               },
             ),
           PopupMenuButton<InvoiceStatus>(
@@ -78,7 +79,8 @@ class InvoiceDetailScreen extends ConsumerWidget {
             tooltip: 'Zdieľať platobné údaje',
             onPressed: () {
               ref.read(analyticsServiceProvider).logQrShared();
-              final amount = NumberFormat.currency(symbol: '€').format(invoice.totalAmount);
+              final amount = NumberFormat.currency(symbol: '€')
+                  .format(invoice.totalAmount);
               // ignore: deprecated_member_use
               Share.share(
                 'Prosím o úhradu faktúry ${invoice.number} v sume $amount. '
@@ -89,7 +91,6 @@ class InvoiceDetailScreen extends ConsumerWidget {
             },
           ),
           IconButton(
-
             icon: const Icon(Icons.delete),
             onPressed: () {
               showDialog(
@@ -172,17 +173,27 @@ class InvoiceDetailScreen extends ConsumerWidget {
                         children: [
                           const Icon(Icons.verified, color: Colors.green),
                           const SizedBox(width: 12),
-                          const Text('Informácie o úhrade', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                          const Text('Informácie o úhrade',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green)),
                         ],
                       ),
                       const Divider(),
-                      _buildPaymentRow('Dátum úhrady', invoice.paymentDate != null ? DateFormat('dd.MM.yyyy').format(invoice.paymentDate!) : 'Neuvedený'),
-                      _buildPaymentRow('Spôsob úhrady', invoice.paymentMethod ?? 'Prevodom'),
+                      _buildPaymentRow(
+                          'Dátum úhrady',
+                          invoice.paymentDate != null
+                              ? DateFormat('dd.MM.yyyy')
+                                  .format(invoice.paymentDate!)
+                              : 'Neuvedený'),
+                      _buildPaymentRow(
+                          'Spôsob úhrady', invoice.paymentMethod ?? 'Prevodom'),
                     ],
                   ),
                 ),
               ),
-            if (invoice.status == InvoiceStatus.paid) const SizedBox(height: 16),
+            if (invoice.status == InvoiceStatus.paid)
+              const SizedBox(height: 16),
 
             // Dates
             Row(

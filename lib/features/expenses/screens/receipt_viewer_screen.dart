@@ -23,7 +23,8 @@ class ReceiptViewerScreen extends StatelessWidget {
       } else {
         // Download first to share
         final tempDir = await getTemporaryDirectory();
-        final path = '${tempDir.path}/receipt_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final path =
+            '${tempDir.path}/receipt_${DateTime.now().millisecondsSinceEpoch}.jpg';
         await Dio().download(imageUrl, path);
         // ignore: deprecated_member_use
         await Share.shareXFiles([XFile(path)], text: 'Bloček z BizAgent');
@@ -38,7 +39,8 @@ class ReceiptViewerScreen extends StatelessWidget {
   Future<void> _download(BuildContext context) async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
-      final fileName = 'BizAgent_Blocek_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fileName =
+          'BizAgent_Blocek_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final savePath = '${appDir.path}/$fileName';
 
       if (isLocal) {
@@ -75,7 +77,6 @@ class ReceiptViewerScreen extends StatelessWidget {
           ),
         ],
       ),
-
       body: Center(
         child: InteractiveViewer(
           minScale: 0.5,
@@ -102,7 +103,8 @@ class ReceiptViewerScreen extends StatelessWidget {
                       return const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.broken_image, color: Colors.white, size: 64),
+                          Icon(Icons.broken_image,
+                              color: Colors.white, size: 64),
                           SizedBox(height: 16),
                           Text(
                             'Obrázok sa nepodarilo načítať',

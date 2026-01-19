@@ -12,12 +12,13 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
   double _p = 0.06;
   Timer? _t;
   late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
+  late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
@@ -26,10 +27,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
     );
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -137,11 +134,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 ),
               ),
             ),
-            
+
             FadeTransition(
               opacity: _opacityAnimation,
               child: ScaleTransition(
-                scale: _scaleAnimation,
+                scale: _pulseAnimation,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -176,11 +173,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                     const SizedBox(height: 32),
                     Text(
                       'BizAgent',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -1.0,
-                            color: cs.onSurface,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: -1.0,
+                                color: cs.onSurface,
+                              ),
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -201,15 +199,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                             child: LinearProgressIndicator(
                               value: _p,
                               minHeight: 6,
-                              backgroundColor: cs.primaryContainer.withValues(alpha: 0.2),
-                              valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
+                              backgroundColor:
+                                  cs.primaryContainer.withValues(alpha: 0.2),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(cs.primary),
                             ),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'Pripravujeme prostredie...',
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: cs.onSurfaceVariant.withValues(alpha: 0.6),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(
+                                  color: cs.onSurfaceVariant
+                                      .withValues(alpha: 0.6),
                                   letterSpacing: 0.5,
                                 ),
                           ),
@@ -220,7 +224,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 ),
               ),
             ),
-            
+
             Positioned(
               bottom: 48,
               child: Text(

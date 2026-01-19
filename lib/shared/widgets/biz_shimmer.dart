@@ -23,14 +23,15 @@ class BizShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: cs.surfaceContainerHighest,
+      highlightColor: cs.surfaceContainerLowest.withValues(alpha: 0.5),
       child: Container(
         width: width,
         height: height,
         decoration: ShapeDecoration(
-          color: Colors.grey[400]!,
+          color: cs.surfaceContainerHighest,
           shape: shapeBorder,
         ),
       ),
@@ -56,9 +57,13 @@ class BizListShimmer extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BizShimmer.rectangular(height: 16, width: MediaQuery.of(context).size.width * 0.6),
+                  BizShimmer.rectangular(
+                      height: 16,
+                      width: MediaQuery.of(context).size.width * 0.6),
                   const SizedBox(height: 8),
-                  BizShimmer.rectangular(height: 12, width: MediaQuery.of(context).size.width * 0.4),
+                  BizShimmer.rectangular(
+                      height: 12,
+                      width: MediaQuery.of(context).size.width * 0.4),
                 ],
               ),
             ),

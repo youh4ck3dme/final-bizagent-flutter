@@ -83,23 +83,21 @@ class PaymentRemindersScreen extends ConsumerWidget {
                   trailing: IconButton(
                     icon: const Icon(Icons.send, color: Colors.blue),
                     onPressed: () {
-                       // Navigate to Email Generator with pre-filled context
-                       // We need to pass arguments.
-                       // Since we use GoRouter, we can use query params or 'extra'
-                       // But our route structure might define how we pass it.
-                       // Let's pass a Map or simple object via 'extra' if route allows, 
-                       // or query params.
-                       // The AiEmailGeneratorScreen constructor accepts fields.
-                       
-                       final contextText = 'Faktúra č. ${invoice.number} pre ${invoice.clientName} v sume $amount je $daysOverdue dní po splatnosti.';
-                       
-                       context.push(
-                         '/ai-tools/email-generator',
-                         extra: {
-                           'type': 'reminder',
-                           'context': contextText,
-                         }
-                       );
+                      // Navigate to Email Generator with pre-filled context
+                      // We need to pass arguments.
+                      // Since we use GoRouter, we can use query params or 'extra'
+                      // But our route structure might define how we pass it.
+                      // Let's pass a Map or simple object via 'extra' if route allows,
+                      // or query params.
+                      // The AiEmailGeneratorScreen constructor accepts fields.
+
+                      final contextText =
+                          'Faktúra č. ${invoice.number} pre ${invoice.clientName} v sume $amount je $daysOverdue dní po splatnosti.';
+
+                      context.push('/ai-tools/email-generator', extra: {
+                        'type': 'reminder',
+                        'context': contextText,
+                      });
                     },
                   ),
                 ),

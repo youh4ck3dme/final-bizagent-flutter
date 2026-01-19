@@ -11,13 +11,15 @@ import 'package:bizagent/features/expenses/models/expense_category.dart';
 import 'package:bizagent/features/expenses/providers/expenses_provider.dart';
 
 // Mock classes
-class MockExpenseInsightsService extends Mock implements ExpenseInsightsService {
+class MockExpenseInsightsService extends Mock
+    implements ExpenseInsightsService {
   List<ExpenseModel>? capturedExpenses;
 
   @override
-  Future<List<ExpenseInsight>> analyzeExpenses(List<ExpenseModel>? expenses) async {
+  Future<List<ExpenseInsight>> analyzeExpenses(
+      List<ExpenseModel>? expenses) async {
     capturedExpenses = expenses;
-    
+
     if (expenses == null || expenses.isEmpty) return [];
 
     // Return mock insights for testing
@@ -45,31 +47,31 @@ void main() {
     mockService = MockExpenseInsightsService();
     // Reset capture
     mockService.capturedExpenses = null;
-    
+
     container = ProviderContainer(
       overrides: [
         expenseInsightsServiceProvider.overrideWithValue(mockService),
         // Mock expenses provider with sample data
         expensesProvider.overrideWith((ref) => Stream.value([
-          ExpenseModel(
-            id: '1',
-            userId: 'test-user',
-            vendorName: 'Test Vendor',
-            description: 'Test expense',
-            amount: 50.0,
-            date: DateTime.now(),
-            category: ExpenseCategory.fuel,
-          ),
-          ExpenseModel(
-            id: '2',
-            userId: 'test-user',
-            vendorName: 'Another Vendor',
-            description: 'Another expense',
-            amount: 25.0,
-            date: DateTime.now().subtract(const Duration(days: 1)),
-            category: ExpenseCategory.officeSupplies,
-          ),
-        ])),
+              ExpenseModel(
+                id: '1',
+                userId: 'test-user',
+                vendorName: 'Test Vendor',
+                description: 'Test expense',
+                amount: 50.0,
+                date: DateTime.now(),
+                category: ExpenseCategory.fuel,
+              ),
+              ExpenseModel(
+                id: '2',
+                userId: 'test-user',
+                vendorName: 'Another Vendor',
+                description: 'Another expense',
+                amount: 25.0,
+                date: DateTime.now().subtract(const Duration(days: 1)),
+                category: ExpenseCategory.officeSupplies,
+              ),
+            ])),
       ],
     );
   });
@@ -82,12 +84,12 @@ void main() {
     test('should provide insights when expenses are available', () async {
       // Wait for the stream to emit
       await container.read(expensesProvider.future);
-      
+
       // It might be loading initially if FutureProvider hasn't completed
       // But mock service is fast.
       // Better to await the future.
       final insights = await container.read(expenseInsightsProvider.future);
-      
+
       expect(insights, isNotEmpty);
       expect(insights.length, 1);
       expect(insights.first.title, 'Test Insight');
@@ -132,7 +134,7 @@ void main() {
 
       expect(mockService.capturedExpenses, isNotNull);
       expect(mockService.capturedExpenses!.length, 50);
-      
+
       containerWithMany.dispose();
     });
 
@@ -143,7 +145,7 @@ void main() {
           expensesProvider.overrideWith((ref) => Stream.value([])),
         ],
       );
-      
+
       final result = await containerEmpty.read(expenseInsightsProvider.future);
       expect(result, isEmpty);
 
@@ -154,7 +156,8 @@ void main() {
       final containerLoading = ProviderContainer(
         overrides: [
           expenseInsightsServiceProvider.overrideWithValue(mockService),
-          expensesProvider.overrideWith((ref) => Stream.fromFuture(Completer<List<ExpenseModel>>().future)),
+          expensesProvider.overrideWith((ref) =>
+              Stream.fromFuture(Completer<List<ExpenseModel>>().future)),
         ],
       );
 
@@ -168,7 +171,8 @@ void main() {
       final containerError = ProviderContainer(
         overrides: [
           expenseInsightsServiceProvider.overrideWithValue(mockService),
-          expensesProvider.overrideWith((ref) => Stream.error('Test error', StackTrace.current)),
+          expensesProvider.overrideWith(
+              (ref) => Stream.error('Test error', StackTrace.current)),
         ],
       );
 
@@ -176,7 +180,7 @@ void main() {
         containerError.read(expenseInsightsProvider.future),
         throwsA(anything),
       );
-      
+
       containerError.dispose();
     });
 
@@ -205,7 +209,8 @@ void main() {
       final containerSorted = ProviderContainer(
         overrides: [
           expenseInsightsServiceProvider.overrideWithValue(mockService),
-          expensesProvider.overrideWith((ref) => Stream.value(unsortedExpenses)),
+          expensesProvider
+              .overrideWith((ref) => Stream.value(unsortedExpenses)),
         ],
       );
 
@@ -215,7 +220,7 @@ void main() {
       final captured = mockService.capturedExpenses!;
       expect(captured[0].vendorName, 'New Expense'); // Newer date first
       expect(captured[1].vendorName, 'Old Expense');
-      
+
       containerSorted.dispose();
     });
   });

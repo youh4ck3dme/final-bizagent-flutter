@@ -11,7 +11,7 @@ void main() {
   group('SmartInsightsWidget', () {
     testWidgets('should display loading state', (tester) async {
       final completer = Completer<List<ExpenseInsight>>();
-      
+
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -28,7 +28,8 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('should display insight card when data is available', (tester) async {
+    testWidgets('should display insight card when data is available',
+        (tester) async {
       final mockInsights = [
         ExpenseInsight(
           id: '1',
@@ -62,7 +63,8 @@ void main() {
       expect(find.text('AI POSTREH'), findsOneWidget);
     });
 
-    testWidgets('should display high priority badge for high priority insights', (tester) async {
+    testWidgets('should display high priority badge for high priority insights',
+        (tester) async {
       final mockInsights = [
         ExpenseInsight(
           id: '1',
@@ -93,7 +95,8 @@ void main() {
       expect(find.text('DÔLEŽITÉ'), findsOneWidget);
     });
 
-    testWidgets('should display potential savings when available', (tester) async {
+    testWidgets('should display potential savings when available',
+        (tester) async {
       final mockInsights = [
         ExpenseInsight(
           id: '1',
@@ -125,7 +128,8 @@ void main() {
       expect(find.text('Možná úspora: 150.00 €'), findsOneWidget);
     });
 
-    testWidgets('should be hidden when no insights are available', (tester) async {
+    testWidgets('should be hidden when no insights are available',
+        (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -166,11 +170,13 @@ void main() {
         routes: [
           GoRoute(
             path: '/',
-            builder: (context, state) => const Scaffold(body: SmartInsightsWidget()),
+            builder: (context, state) =>
+                const Scaffold(body: SmartInsightsWidget()),
           ),
           GoRoute(
             path: '/analytics',
-            builder: (context, state) => const Scaffold(body: Text('Analytics Screen')),
+            builder: (context, state) =>
+                const Scaffold(body: Text('Analytics Screen')),
           ),
         ],
       );

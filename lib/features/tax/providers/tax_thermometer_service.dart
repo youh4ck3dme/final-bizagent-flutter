@@ -23,9 +23,10 @@ class TaxThermometerResult {
         isCritical = (currentTurnover / vatRegistrationThreshold) >= 1.0;
 }
 
-final taxThermometerProvider = Provider<AsyncValue<TaxThermometerResult>>((ref) {
+final taxThermometerProvider =
+    Provider<AsyncValue<TaxThermometerResult>>((ref) {
   final invoicesAsync = ref.watch(invoicesProvider);
-  
+
   return invoicesAsync.whenData((invoices) {
     if (invoices.isEmpty) return TaxThermometerResult(currentTurnover: 0);
 
@@ -33,16 +34,17 @@ final taxThermometerProvider = Provider<AsyncValue<TaxThermometerResult>>((ref) 
     final startDate = now.subtract(const Duration(days: 365));
 
     final validInvoices = invoices.where((invoice) {
-        final isWithinWindow = invoice.dateIssued.isAfter(startDate) && 
-                               invoice.dateIssued.isBefore(now.add(const Duration(days: 1)));
-        final isNotCancelled = invoice.status != InvoiceStatus.cancelled;
-        final isValidStatus = invoice.status != InvoiceStatus.draft;
+      final isWithinWindow = invoice.dateIssued.isAfter(startDate) &&
+          invoice.dateIssued.isBefore(now.add(const Duration(days: 1)));
+      final isNotCancelled = invoice.status != InvoiceStatus.cancelled;
+      final isValidStatus = invoice.status != InvoiceStatus.draft;
 
-        return isWithinWindow && isNotCancelled && isValidStatus;
+      return isWithinWindow && isNotCancelled && isValidStatus;
     });
 
-    double turnover = validInvoices.fold(0.0, (sum, invoice) => sum + invoice.totalAmount);
-    
+    double turnover =
+        validInvoices.fold(0.0, (sum, invoice) => sum + invoice.totalAmount);
+
     return TaxThermometerResult(currentTurnover: turnover);
   });
 });

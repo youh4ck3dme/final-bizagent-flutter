@@ -50,9 +50,9 @@ class PdfService {
 Future<Uint8List> _generateInvoiceTask(InvoiceGenerationArgs args) async {
   final invoice = args.invoice;
   final settings = args.settings;
-  
+
   final pdf = pw.Document();
-  
+
   // Reconstruct fonts from bytes
   final font = pw.Font.ttf(args.fontRegularData);
   final fontBold = pw.Font.ttf(args.fontBoldData);
@@ -127,8 +127,7 @@ Future<Uint8List> _generateInvoiceTask(InvoiceGenerationArgs args) async {
                                 ? 'Moja Firma'
                                 : settings.companyName,
                             style: pw.TextStyle(
-                                fontWeight: pw.FontWeight.bold,
-                                fontSize: 12)),
+                                fontWeight: pw.FontWeight.bold, fontSize: 12)),
                         pw.Text(settings.companyAddress,
                             style: const pw.TextStyle(fontSize: 10)),
                         pw.SizedBox(height: 8),
@@ -182,8 +181,7 @@ Future<Uint8List> _generateInvoiceTask(InvoiceGenerationArgs args) async {
                         pw.SizedBox(height: 4),
                         pw.Text(invoice.clientName,
                             style: pw.TextStyle(
-                                fontWeight: pw.FontWeight.bold,
-                                fontSize: 12)),
+                                fontWeight: pw.FontWeight.bold, fontSize: 12)),
                         if (invoice.clientAddress != null)
                           pw.Text(invoice.clientAddress!,
                               style: const pw.TextStyle(fontSize: 10)),
@@ -296,8 +294,7 @@ Future<Uint8List> _generateInvoiceTask(InvoiceGenerationArgs args) async {
                         width: 150,
                         decoration: const pw.BoxDecoration(
                             border: pw.Border(
-                                top:
-                                    pw.BorderSide(color: PdfColors.grey400))),
+                                top: pw.BorderSide(color: PdfColors.grey400))),
                         child: pw.Center(
                             child: pw.Text('Podpis a pečiatka',
                                 style: const pw.TextStyle(fontSize: 8))),
@@ -336,8 +333,7 @@ Future<Uint8List> _generateInvoiceTask(InvoiceGenerationArgs args) async {
                           data: invoice.items.isEmpty
                               ? []
                               : [
-                                  ...invoice.vatBreakdown.entries
-                                      .map((entry) {
+                                  ...invoice.vatBreakdown.entries.map((entry) {
                                     final rate = entry.key;
                                     final itemsInRate = invoice.items
                                         .where((i) => i.vatRate == rate);
@@ -366,23 +362,19 @@ Future<Uint8List> _generateInvoiceTask(InvoiceGenerationArgs args) async {
                                     pw.MainAxisAlignment.spaceBetween,
                                 children: [
                                   pw.Text('Základ celkom:',
-                                      style:
-                                          const pw.TextStyle(fontSize: 10)),
+                                      style: const pw.TextStyle(fontSize: 10)),
                                   pw.Text(
                                       currency.format(invoice.totalBeforeVat),
-                                      style:
-                                          const pw.TextStyle(fontSize: 10)),
+                                      style: const pw.TextStyle(fontSize: 10)),
                                 ]),
                             pw.Row(
                                 mainAxisAlignment:
                                     pw.MainAxisAlignment.spaceBetween,
                                 children: [
                                   pw.Text('DPH celkom:',
-                                      style:
-                                          const pw.TextStyle(fontSize: 10)),
+                                      style: const pw.TextStyle(fontSize: 10)),
                                   pw.Text(currency.format(invoice.totalVat),
-                                      style:
-                                          const pw.TextStyle(fontSize: 10)),
+                                      style: const pw.TextStyle(fontSize: 10)),
                                 ]),
                             pw.Divider(color: PdfColors.blue800),
                             pw.Row(
@@ -422,13 +414,13 @@ pw.Widget _buildQrPaymentBlock({
   required double amountEur,
   required String? variableSymbol,
   required String? message,
-  required String swift, 
-  required DateTime dateDue, 
+  required String swift,
+  required DateTime dateDue,
 }) {
   // Generate PAY by square string (Slovak Standard)
   final payload = PayBySquareService.generateString(
     iban: iban,
-    swift: swift.isEmpty ? 'UNKNOWNSWIFT' : swift, 
+    swift: swift.isEmpty ? 'UNKNOWNSWIFT' : swift,
     amount: amountEur,
     variableSymbol: variableSymbol ?? '',
     recipientName: beneficiaryName,

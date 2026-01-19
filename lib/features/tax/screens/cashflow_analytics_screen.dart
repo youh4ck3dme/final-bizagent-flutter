@@ -25,18 +25,21 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildMainChart(context, invoicesAsync.value ?? [], expensesAsync.value ?? []),
+                  _buildMainChart(context, invoicesAsync.value ?? [],
+                      expensesAsync.value ?? []),
                   const SizedBox(height: 24),
                   _buildCategoryBreakdown(context, expensesAsync.value ?? []),
                   const SizedBox(height: 24),
-                  _buildProfitLossCard(context, invoicesAsync.value ?? [], expensesAsync.value ?? []),
+                  _buildProfitLossCard(context, invoicesAsync.value ?? [],
+                      expensesAsync.value ?? []),
                 ],
               ),
             ),
     );
   }
 
-  Widget _buildMainChart(BuildContext context, List<dynamic> invoices, List<dynamic> expenses) {
+  Widget _buildMainChart(
+      BuildContext context, List<dynamic> invoices, List<dynamic> expenses) {
     return BizCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,14 +55,24 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
                 maxY: 5000, // Dynamic max would be better
                 barGroups: _generateBarGroups(),
                 titlesData: FlTitlesData(
-                  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        const titles = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun'];
+                        const titles = [
+                          'Jan',
+                          'Feb',
+                          'Mar',
+                          'Apr',
+                          'Maj',
+                          'Jun'
+                        ];
                         return Text(titles[value.toInt() % titles.length],
                             style: const TextStyle(fontSize: 10));
                       },
@@ -91,8 +104,10 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
       return BarChartGroupData(
         x: i,
         barRods: [
-          BarChartRodData(toY: 2000 + (i * 300.0), color: Colors.green, width: 12),
-          BarChartRodData(toY: 1500 + (i * 200.0), color: Colors.red, width: 12),
+          BarChartRodData(
+              toY: 2000 + (i * 300.0), color: Colors.green, width: 12),
+          BarChartRodData(
+              toY: 1500 + (i * 200.0), color: Colors.red, width: 12),
         ],
       );
     });
@@ -111,10 +126,34 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
             child: PieChart(
               PieChartData(
                 sections: [
-                  PieChartSectionData(color: Colors.blue, value: 40, title: 'Služby', radius: 50, titleStyle: const TextStyle(color: Colors.white, fontSize: 12)),
-                  PieChartSectionData(color: Colors.orange, value: 30, title: 'Nákup', radius: 50, titleStyle: const TextStyle(color: Colors.white, fontSize: 12)),
-                  PieChartSectionData(color: Colors.purple, value: 20, title: 'Doprava', radius: 50, titleStyle: const TextStyle(color: Colors.white, fontSize: 12)),
-                  PieChartSectionData(color: Colors.grey, value: 10, title: 'Iné', radius: 50, titleStyle: const TextStyle(color: Colors.white, fontSize: 12)),
+                  PieChartSectionData(
+                      color: Colors.blue,
+                      value: 40,
+                      title: 'Služby',
+                      radius: 50,
+                      titleStyle:
+                          const TextStyle(color: Colors.white, fontSize: 12)),
+                  PieChartSectionData(
+                      color: Colors.orange,
+                      value: 30,
+                      title: 'Nákup',
+                      radius: 50,
+                      titleStyle:
+                          const TextStyle(color: Colors.white, fontSize: 12)),
+                  PieChartSectionData(
+                      color: Colors.purple,
+                      value: 20,
+                      title: 'Doprava',
+                      radius: 50,
+                      titleStyle:
+                          const TextStyle(color: Colors.white, fontSize: 12)),
+                  PieChartSectionData(
+                      color: Colors.grey,
+                      value: 10,
+                      title: 'Iné',
+                      radius: 50,
+                      titleStyle:
+                          const TextStyle(color: Colors.white, fontSize: 12)),
                 ],
                 centerSpaceRadius: 40,
               ),
@@ -125,7 +164,8 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfitLossCard(BuildContext context, List<dynamic> invoices, List<dynamic> expenses) {
+  Widget _buildProfitLossCard(
+      BuildContext context, List<dynamic> invoices, List<dynamic> expenses) {
     final totalIncome = invoices.fold(0.0, (sum, i) => sum + i.totalAmount);
     final totalExpense = expenses.fold(0.0, (sum, e) => sum + e.amount);
     final profit = totalIncome - totalExpense;
@@ -142,13 +182,15 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Čistý zisk / strata', style: TextStyle(color: Colors.black54)),
+              const Text('Čistý zisk / strata',
+                  style: TextStyle(color: Colors.black54)),
               Text(
                 NumberFormat.currency(symbol: '€').format(profit),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: profit >= 0 ? Colors.green.shade700 : Colors.red.shade700,
+                  color:
+                      profit >= 0 ? Colors.green.shade700 : Colors.red.shade700,
                 ),
               ),
             ],

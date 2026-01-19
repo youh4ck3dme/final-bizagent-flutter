@@ -44,7 +44,7 @@ class BizFullscreenLoader extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                   CircularProgressIndicator(
+                  CircularProgressIndicator(
                     strokeWidth: 4,
                     strokeCap: StrokeCap.round,
                     valueColor: AlwaysStoppedAnimation<Color>(cs.primary),

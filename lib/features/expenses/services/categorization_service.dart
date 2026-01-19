@@ -361,7 +361,8 @@ class CategorizationService {
       r'panta\s*rhei',
       r'knihkupectvo',
     ])) {
-      if (_matchesPattern(vendor, [r'kniha', r'book', r'martinus', r'panta\s*rhei', r'knihkupectvo'])) {
+      if (_matchesPattern(vendor,
+          [r'kniha', r'book', r'martinus', r'panta\s*rhei', r'knihkupectvo'])) {
         return (ExpenseCategory.books, 85);
       }
       return (ExpenseCategory.training, 85);
@@ -405,7 +406,8 @@ class CategorizationService {
   }
 
   /// Kombinuje AI návrh s historickými dátami
-  Future<(ExpenseCategory, int)> suggestCategoryWithHistory(String vendorName) async {
+  Future<(ExpenseCategory, int)> suggestCategoryWithHistory(
+      String vendorName) async {
     // Najprv skús AI návrh
     final (aiCategory, aiConfidence) = suggestCategory(vendorName);
 

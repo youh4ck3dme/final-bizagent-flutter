@@ -13,7 +13,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/utils/biz_snackbar.dart';
 import '../../../core/services/analytics_service.dart';
 
-
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   const CreateInvoiceScreen({super.key});
 
@@ -163,7 +162,6 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       ref.read(analyticsServiceProvider).logInvoiceCreated(invoice.totalAmount);
 
       if (mounted) {
-
         BizSnackbar.showSuccess(context, 'Faktúra $number úspešne vytvorená!');
         Navigator.pop(context);
       }
@@ -357,18 +355,23 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
             // Status Selector
             Card(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Stav faktúry', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('Stav faktúry',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     DropdownButton<InvoiceStatus>(
                       value: _selectedStatus,
                       items: [
-                        const DropdownMenuItem(value: InvoiceStatus.draft, child: Text('Návrh')),
-                        const DropdownMenuItem(value: InvoiceStatus.sent, child: Text('Odoslaná')),
+                        const DropdownMenuItem(
+                            value: InvoiceStatus.draft, child: Text('Návrh')),
+                        const DropdownMenuItem(
+                            value: InvoiceStatus.sent, child: Text('Odoslaná')),
                       ],
-                      onChanged: (val) => setState(() => _selectedStatus = val!),
+                      onChanged: (val) =>
+                          setState(() => _selectedStatus = val!),
                     ),
                   ],
                 ),

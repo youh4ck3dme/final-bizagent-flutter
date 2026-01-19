@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +19,8 @@ class MockOcrService extends OcrService {
 }
 
 void main() {
-  testWidgets('AiToolsScreen displays parsed receipt data', (WidgetTester tester) async {
+  testWidgets('AiToolsScreen displays parsed receipt data',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -39,17 +39,18 @@ void main() {
     // Simulate functionality (Since we can't easily click camera in test without mocking ImagePicker platform,
     // we might need to rely on the service override or structure the code for easier testing.
     // However, pressing the button triggers _scan which calls our mock service.)
-    
+
     // Tap generic "Kamera" button
     await tester.tap(find.text('Kamera'));
     await tester.pump(); // Start scanning
-    await tester.pump(const Duration(seconds: 1)); // Finish scanning (mock is instant, but just in case)
+    await tester.pump(const Duration(
+        seconds: 1)); // Finish scanning (mock is instant, but just in case)
 
     // Verify fields are populated
     expect(find.text('15.50'), findsOneWidget);
     expect(find.text('20.03.2024'), findsOneWidget);
     expect(find.text('12345678'), findsOneWidget);
-    
+
     // Verify "Show Full Text" contains original text
     expect(find.text('Zobraziť celý text'), findsOneWidget);
   });

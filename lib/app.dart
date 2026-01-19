@@ -21,7 +21,7 @@ class BizAgentApp extends ConsumerWidget {
 
     // Initialize Review Monitoring
     ref.read(reviewServiceProvider).monitorMilestones();
-    
+
     // Initialize Notifications
     ref.read(notificationServiceProvider).init().then((_) {
       ref.read(notificationServiceProvider).requestPermissions();

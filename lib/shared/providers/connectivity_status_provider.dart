@@ -6,11 +6,13 @@ enum ConnectivityStatus { isConnected, isDisconnected, isChecking }
 
 final connectivityStatusProvider = StreamProvider<ConnectivityStatus>((ref) {
   final controller = StreamController<ConnectivityStatus>();
-  
+
   // Set initial status
   controller.add(ConnectivityStatus.isChecking);
 
-  final subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+  final subscription = Connectivity()
+      .onConnectivityChanged
+      .listen((List<ConnectivityResult> results) {
     // result is now a List in newer versions of connectivity_plus
     if (results.contains(ConnectivityResult.none) || results.isEmpty) {
       controller.add(ConnectivityStatus.isDisconnected);

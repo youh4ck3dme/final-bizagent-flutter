@@ -26,19 +26,22 @@ class ExpenseInsightsService {
     );
   }
 
-  Future<List<ExpenseInsight>> analyzeExpenses(List<ExpenseModel> expenses) async {
+  Future<List<ExpenseInsight>> analyzeExpenses(
+      List<ExpenseModel> expenses) async {
     if (_apiKey.isEmpty) {
       return _getDemoInsights();
     }
 
     if (expenses.isEmpty) return [];
 
-    final expenseData = expenses.map((e) => {
-      'vendor': e.vendorName,
-      'amount': e.amount,
-      'date': e.date.toIso8601String(),
-      'category': e.category?.displayName ?? 'other',
-    }).toList();
+    final expenseData = expenses
+        .map((e) => {
+              'vendor': e.vendorName,
+              'amount': e.amount,
+              'date': e.date.toIso8601String(),
+              'category': e.category?.displayName ?? 'other',
+            })
+        .toList();
 
     final prompt = '''
 Analyze these business expenses for a Slovak SZČO (self-employed) and provide actionable insights.
@@ -69,7 +72,9 @@ Output MUST be a JSON array of objects with these fields:
       if (text == null) return [];
 
       final List<dynamic> jsonList = jsonDecode(text);
-      return jsonList.map((j) => ExpenseInsight.fromJson(j as Map<String, dynamic>)).toList();
+      return jsonList
+          .map((j) => ExpenseInsight.fromJson(j as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint('Error generating insights: $e');
       return _getDemoInsights();
@@ -81,7 +86,8 @@ Output MUST be a JSON array of objects with these fields:
       ExpenseInsight(
         id: '1',
         title: 'Viac výdavkov na cestovné',
-        description: 'Tento mesiac ste minuli o 35% viac na pohonné hmoty než v priemere.',
+        description:
+            'Tento mesiac ste minuli o 35% viac na pohonné hmoty než v priemere.',
         icon: Icons.trending_up,
         color: Colors.orange,
         priority: InsightPriority.medium,
@@ -91,7 +97,8 @@ Output MUST be a JSON array of objects with these fields:
       ExpenseInsight(
         id: ' savings_tax',
         title: 'Možná daňová úspora',
-        description: 'V kategórii "Kancelária" máte málo dokladov. Nezabudli ste odložiť niektoré bločky?',
+        description:
+            'V kategórii "Kancelária" máte málo dokladov. Nezabudli ste odložiť niektoré bločky?',
         icon: Icons.lightbulb_outline,
         color: Colors.blue,
         potentialSavings: 50.0,

@@ -4,60 +4,60 @@ import 'package:flutter/material.dart';
 /// Obsahuje 30+ kategórií prispôsobených pre slovenský trh
 enum ExpenseCategory {
   // 🚗 DOPRAVA
-  fuel,              // Palivo
-  parking,           // Parkovanie
-  carMaintenance,    // Servis auta
-  carWash,           // Umývanie auta
-  toll,              // Diaľničné poplatky
-  taxi,              // Taxi/Uber/Bolt
+  fuel, // Palivo
+  parking, // Parkovanie
+  carMaintenance, // Servis auta
+  carWash, // Umývanie auta
+  toll, // Diaľničné poplatky
+  taxi, // Taxi/Uber/Bolt
 
   // 🏢 KANCELÁRIA
-  officeSupplies,    // Kancelárske potreby
-  software,          // Software a licencie
-  equipment,         // Zariadenie a technika
-  furniture,         // Nábytok
+  officeSupplies, // Kancelárske potreby
+  software, // Software a licencie
+  equipment, // Zariadenie a technika
+  furniture, // Nábytok
 
   // 📱 KOMUNIKÁCIA
-  phone,             // Telefón
-  internet,          // Internet
-  postage,           // Poštovné
+  phone, // Telefón
+  internet, // Internet
+  postage, // Poštovné
 
   // ✈️ CESTOVNÉ
-  accommodation,     // Ubytovanie
-  meals,             // Stravovanie
-  flights,           // Letenky
-  trainTickets,      // Vlakové lístky
-  publicTransport,   // MHD
+  accommodation, // Ubytovanie
+  meals, // Stravovanie
+  flights, // Letenky
+  trainTickets, // Vlakové lístky
+  publicTransport, // MHD
 
   // 🛡️ POISTENIE
-  healthInsurance,   // Zdravotné poistenie
-  carInsurance,      // Poistenie auta
-  liabilityInsurance,// Poistenie zodpovednosti
+  healthInsurance, // Zdravotné poistenie
+  carInsurance, // Poistenie auta
+  liabilityInsurance, // Poistenie zodpovednosti
 
   // 💼 SLUŽBY
-  accounting,        // Účtovníctvo
-  legal,             // Právne služby
-  marketing,         // Marketing a reklama
-  consulting,        // Konzultácie
+  accounting, // Účtovníctvo
+  legal, // Právne služby
+  marketing, // Marketing a reklama
+  consulting, // Konzultácie
 
   // 🏠 PREVÁDZKOVÉ NÁKLADY
-  rent,              // Nájom
-  electricity,       // Elektrina
-  water,             // Voda
-  heating,           // Kúrenie
+  rent, // Nájom
+  electricity, // Elektrina
+  water, // Voda
+  heating, // Kúrenie
 
   // 📚 VZDELÁVANIE
-  training,          // Školenia
-  books,             // Knihy a časopisy
-  courses,           // Kurzy
+  training, // Školenia
+  books, // Knihy a časopisy
+  courses, // Kurzy
 
   // 🍽️ REPREZENTÁCIA
-  clientMeals,       // Obedy s klientmi
-  gifts,             // Darčeky
+  clientMeals, // Obedy s klientmi
+  gifts, // Darčeky
 
   // 🔧 OSTATNÉ
-  bankFees,          // Bankové poplatky
-  other,             // Ostatné
+  bankFees, // Bankové poplatky
+  other, // Ostatné
 }
 
 /// Extension pre ExpenseCategory s helper metódami
@@ -404,7 +404,7 @@ ExpenseCategory? expenseCategoryFromString(String? value) {
 /// Zoznam všetkých kategórií zoskupených podľa skupiny
 Map<String, List<ExpenseCategory>> get groupedCategories {
   final Map<String, List<ExpenseCategory>> grouped = {};
-  
+
   for (final category in ExpenseCategory.values) {
     final group = category.group;
     if (!grouped.containsKey(group)) {
@@ -412,6 +412,6 @@ Map<String, List<ExpenseCategory>> get groupedCategories {
     }
     grouped[group]!.add(category);
   }
-  
+
   return grouped;
 }

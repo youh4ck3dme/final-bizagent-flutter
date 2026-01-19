@@ -10,11 +10,56 @@ void main() {
     test('calculates turnover for last 12 months correctly', () async {
       final now = DateTime.now();
       final mockInvoices = [
-        InvoiceModel(id: '1', userId: 'u', number: '001', clientName: 'C', dateIssued: now, dateDue: now, items: [], totalAmount: 1000, status: InvoiceStatus.sent),
-        InvoiceModel(id: '2', userId: 'u', number: '002', clientName: 'C', dateIssued: now.subtract(const Duration(days: 180)), dateDue: now, items: [], totalAmount: 2000, status: InvoiceStatus.paid),
-        InvoiceModel(id: '3', userId: 'u', number: '003', clientName: 'C', dateIssued: now.subtract(const Duration(days: 364)), dateDue: now, items: [], totalAmount: 500, status: InvoiceStatus.sent),
-        InvoiceModel(id: '4', userId: 'u', number: '004', clientName: 'C', dateIssued: now.subtract(const Duration(days: 366)), dateDue: now, items: [], totalAmount: 10000, status: InvoiceStatus.sent),
-        InvoiceModel(id: '5', userId: 'u', number: '005', clientName: 'C', dateIssued: now, dateDue: now, items: [], totalAmount: 5000, status: InvoiceStatus.cancelled),
+        InvoiceModel(
+            id: '1',
+            userId: 'u',
+            number: '001',
+            clientName: 'C',
+            dateIssued: now,
+            dateDue: now,
+            items: [],
+            totalAmount: 1000,
+            status: InvoiceStatus.sent),
+        InvoiceModel(
+            id: '2',
+            userId: 'u',
+            number: '002',
+            clientName: 'C',
+            dateIssued: now.subtract(const Duration(days: 180)),
+            dateDue: now,
+            items: [],
+            totalAmount: 2000,
+            status: InvoiceStatus.paid),
+        InvoiceModel(
+            id: '3',
+            userId: 'u',
+            number: '003',
+            clientName: 'C',
+            dateIssued: now.subtract(const Duration(days: 364)),
+            dateDue: now,
+            items: [],
+            totalAmount: 500,
+            status: InvoiceStatus.sent),
+        InvoiceModel(
+            id: '4',
+            userId: 'u',
+            number: '004',
+            clientName: 'C',
+            dateIssued: now.subtract(const Duration(days: 366)),
+            dateDue: now,
+            items: [],
+            totalAmount: 10000,
+            status: InvoiceStatus.sent),
+        InvoiceModel(
+            id: '5',
+            userId: 'u',
+            number: '005',
+            clientName: 'C',
+            dateIssued: now,
+            dateDue: now,
+            items: [],
+            totalAmount: 5000,
+            status: InvoiceStatus.cancelled),
       ];
 
       final container = ProviderContainer(
@@ -42,7 +87,16 @@ void main() {
 
     test('identifies critical status correctly', () async {
       final mockInvoices = [
-        InvoiceModel(id: '1', userId: 'u', number: '001', clientName: 'C', dateIssued: DateTime.now(), dateDue: DateTime.now(), items: [], totalAmount: 50000, status: InvoiceStatus.sent),
+        InvoiceModel(
+            id: '1',
+            userId: 'u',
+            number: '001',
+            clientName: 'C',
+            dateIssued: DateTime.now(),
+            dateDue: DateTime.now(),
+            items: [],
+            totalAmount: 50000,
+            status: InvoiceStatus.sent),
       ];
 
       final container = ProviderContainer(
@@ -70,7 +124,16 @@ void main() {
 
     test('identifies warning status correctly', () async {
       final mockInvoices = [
-        InvoiceModel(id: '1', userId: 'u', number: '001', clientName: 'C', dateIssued: DateTime.now(), dateDue: DateTime.now(), items: [], totalAmount: 40000, status: InvoiceStatus.sent),
+        InvoiceModel(
+            id: '1',
+            userId: 'u',
+            number: '001',
+            clientName: 'C',
+            dateIssued: DateTime.now(),
+            dateDue: DateTime.now(),
+            items: [],
+            totalAmount: 40000,
+            status: InvoiceStatus.sent),
       ];
 
       final container = ProviderContainer(

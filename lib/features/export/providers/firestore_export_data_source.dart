@@ -22,7 +22,8 @@ class FirestoreExportDataSource implements ExportDataSource {
         .collection('users')
         .doc(userId)
         .collection('invoices')
-        .where('dateIssued', isGreaterThanOrEqualTo: period.from.toIso8601String())
+        .where('dateIssued',
+            isGreaterThanOrEqualTo: period.from.toIso8601String())
         .where('dateIssued', isLessThanOrEqualTo: period.to.toIso8601String())
         .get();
 
@@ -68,9 +69,7 @@ class FirestoreExportDataSource implements ExportDataSource {
       final localPaths = <String>[];
       for (int i = 0; i < ex.receiptUrls.length; i++) {
         final path = await _downloadFile(
-          ex.receiptUrls[i], 
-          'exp_${ex.id}_$i${_ext(ex.receiptUrls[i])}'
-        );
+            ex.receiptUrls[i], 'exp_${ex.id}_$i${_ext(ex.receiptUrls[i])}');
         if (path != null) localPaths.add(path);
       }
       exportItems.add(ExpenseExportItem(
@@ -102,8 +101,10 @@ class FirestoreExportDataSource implements ExportDataSource {
     try {
       final cacheDir = await getTemporaryDirectory();
       final downloadDir = Directory(p.join(cacheDir.path, 'export_tmp'));
-      if (!await downloadDir.exists()) await downloadDir.create(recursive: true);
-      
+      if (!await downloadDir.exists()) {
+        await downloadDir.create(recursive: true);
+      }
+
       final savePath = p.join(downloadDir.path, fileName);
       await _dio.download(url, savePath);
       return savePath;

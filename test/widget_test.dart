@@ -17,7 +17,8 @@ import 'dart:async';
 
 class MockAuthRepository implements AuthRepository {
   @override
-  UserModel? get currentUser => const UserModel(id: '123', email: 'test@test.com');
+  UserModel? get currentUser =>
+      const UserModel(id: '123', email: 'test@test.com');
 
   @override
   late final Stream<UserModel?> authStateChanges;
@@ -40,11 +41,20 @@ class MockAuthRepository implements AuthRepository {
 
 class MockFirebaseAnalytics extends Fake implements FirebaseAnalytics {
   @override
-  Future<void> logEvent({required String name, Map<String, Object?>? parameters, AnalyticsCallOptions? callOptions}) async {}
+  Future<void> logEvent(
+      {required String name,
+      Map<String, Object?>? parameters,
+      AnalyticsCallOptions? callOptions}) async {}
   @override
-  Future<void> logAppOpen({Map<String, Object?>? parameters, AnalyticsCallOptions? callOptions}) async {}
+  Future<void> logAppOpen(
+      {Map<String, Object?>? parameters,
+      AnalyticsCallOptions? callOptions}) async {}
   @override
-  Future<void> logScreenView({String? screenClass, String? screenName, Map<String, Object?>? parameters, AnalyticsCallOptions? callOptions}) async {}
+  Future<void> logScreenView(
+      {String? screenClass,
+      String? screenName,
+      Map<String, Object?>? parameters,
+      AnalyticsCallOptions? callOptions}) async {}
 }
 
 class FakeNotificationService extends Fake implements NotificationService {
@@ -53,14 +63,23 @@ class FakeNotificationService extends Fake implements NotificationService {
   @override
   Future<bool?> requestPermissions() async => true;
   @override
-  Future<void> showNotification({required int id, required String title, required String body, String? payload}) async {}
+  Future<void> showNotification(
+      {required int id,
+      required String title,
+      required String body,
+      String? payload}) async {}
   @override
-  Future<void> scheduleNotification({required int id, required String title, required String body, required DateTime scheduledDate, String? payload}) async {}
+  Future<void> scheduleNotification(
+      {required int id,
+      required String title,
+      required String body,
+      required DateTime scheduledDate,
+      String? payload}) async {}
 }
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
-    SharedPreferences.setMockInitialValues({'seen_onboarding': true}); 
+    SharedPreferences.setMockInitialValues({'seen_onboarding': true});
     final mockAuth = MockAuthRepository();
     final mockAnalytics = MockFirebaseAnalytics();
     final fakeNotifications = FakeNotificationService();
@@ -74,15 +93,17 @@ void main() {
           onboardingProvider.overrideWith((ref) => OnboardingNotifier()),
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
-          settingsProvider.overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
+          settingsProvider
+              .overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
-          analyticsServiceProvider.overrideWithValue(AnalyticsService(mockAnalytics)),
+          analyticsServiceProvider
+              .overrideWithValue(AnalyticsService(mockAnalytics)),
           notificationServiceProvider.overrideWithValue(fakeNotifications),
         ],
         child: const BizAgentApp(),
       ),
     );
-    
+
     // Initial pump for Splash
     await tester.pump();
     // Allow for redirect to Dashboard

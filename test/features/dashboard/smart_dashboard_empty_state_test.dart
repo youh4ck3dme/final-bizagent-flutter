@@ -13,7 +13,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          settingsProvider.overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
+          settingsProvider
+              .overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
         ],

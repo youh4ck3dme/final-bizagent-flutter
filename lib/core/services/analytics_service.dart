@@ -1,7 +1,8 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final analyticsServiceProvider = Provider((ref) => AnalyticsService(FirebaseAnalytics.instance));
+final analyticsServiceProvider =
+    Provider((ref) => AnalyticsService(FirebaseAnalytics.instance));
 
 class AnalyticsService {
   final FirebaseAnalytics _analytics;
@@ -15,7 +16,6 @@ class AnalyticsService {
       parameters: parameters?.cast<String, Object>(),
     );
   }
-
 
   // Scan Funnel
   Future<void> logScanStarted() async {

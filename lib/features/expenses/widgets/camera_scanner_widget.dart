@@ -46,7 +46,11 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget> {
   }
 
   Future<void> _captureAndProcess() async {
-    if (_controller == null || !_controller!.value.isInitialized || _isCapturing) return;
+    if (_controller == null ||
+        !_controller!.value.isInitialized ||
+        _isCapturing) {
+      return;
+    }
 
     setState(() => _isCapturing = true);
 
@@ -114,7 +118,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget> {
                       ),
                       child: Center(
                         child: _isCapturing
-                            ? const CircularProgressIndicator(color: Colors.white)
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
                             : Container(
                                 height: 60,
                                 width: 60,

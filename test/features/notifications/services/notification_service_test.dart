@@ -13,20 +13,22 @@ void main() {
   setUp(() {
     mockPlugin = MockFlutterLocalNotificationsPlugin();
     service = NotificationService(plugin: mockPlugin);
-    
+
     // Mock initialize
     when(mockPlugin.initialize(
       any,
-      onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse'),
+      onDidReceiveNotificationResponse:
+          anyNamed('onDidReceiveNotificationResponse'),
     )).thenAnswer((_) async => true);
   });
 
   test('init should initialize the plugin and timezones', () async {
     await service.init();
-    
+
     verify(mockPlugin.initialize(
       any,
-      onDidReceiveNotificationResponse: anyNamed('onDidReceiveNotificationResponse'),
+      onDidReceiveNotificationResponse:
+          anyNamed('onDidReceiveNotificationResponse'),
     )).called(1);
   });
 

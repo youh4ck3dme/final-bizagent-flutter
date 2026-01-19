@@ -25,10 +25,10 @@ class ReceiptStorageService {
         throw Exception('File does not exist');
       }
 
-      final fileName = '${DateTime.now().millisecondsSinceEpoch}_${path.basename(filePath)}';
-      final storageRef = _storage
-          .ref()
-          .child('users/${user.id}/receipts/$fileName');
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${path.basename(filePath)}';
+      final storageRef =
+          _storage.ref().child('users/${user.id}/receipts/$fileName');
 
       // Upload file
       // Setup metadata if needed (e.g. content type)
@@ -44,7 +44,6 @@ class ReceiptStorageService {
       final downloadUrl = await uploadTask.ref.getDownloadURL();
 
       return downloadUrl;
-
     } catch (e) {
       debugPrint('Error uploading receipt: $e');
       rethrow;

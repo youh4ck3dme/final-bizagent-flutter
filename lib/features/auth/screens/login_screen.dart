@@ -73,14 +73,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: Image.asset('assets/icons/bizagent_logo.png'),
                       ),
                     ),
-
                     const SizedBox(height: 16),
                     Text(
                       _isLogin ? 'Vitajte späť' : 'Vytvoriť účet',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
@@ -161,7 +161,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : 'Už máte účet? Prihláste sa',
                       ),
                     ),
-
                   ],
                 ),
               ),

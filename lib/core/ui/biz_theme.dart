@@ -18,6 +18,15 @@ class BizTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
 
+      // Polish: Native-feel page transitions
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
+
       // Typography
       textTheme: GoogleFonts.interTextTheme().copyWith(
         headlineMedium: GoogleFonts.inter(
@@ -321,6 +330,15 @@ class BizTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
+
+      // Polish: Native-feel page transitions
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
 
       // Typography - slightly adjusted for dark mode
       textTheme:

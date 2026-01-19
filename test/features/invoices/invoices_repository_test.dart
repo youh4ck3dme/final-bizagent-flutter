@@ -4,7 +4,6 @@ import 'package:bizagent/features/invoices/providers/invoices_repository.dart';
 import 'package:bizagent/features/invoices/models/invoice_model.dart';
 
 void main() {
-
   group('InvoicesRepository', () {
     late FakeFirebaseFirestore fakeFirestore;
     late InvoicesRepository repository;
@@ -62,10 +61,8 @@ void main() {
       );
 
       // Add to firestore manually to mock existing data
-      final collection = fakeFirestore
-          .collection('users')
-          .doc(userId)
-          .collection('invoices');
+      final collection =
+          fakeFirestore.collection('users').doc(userId).collection('invoices');
       await collection.doc(invoice1.id).set(invoice1.toMap());
       await collection.doc(invoice2.id).set(invoice2.toMap());
 

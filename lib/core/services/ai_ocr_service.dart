@@ -10,16 +10,18 @@ final aiOcrServiceProvider = Provider<AiOcrService>((ref) {
 class AiOcrService {
   AiOcrService();
 
-  Future<ParsedReceipt?> refineWithAi(String rawText, {String? imagePath}) async {
+  Future<ParsedReceipt?> refineWithAi(String rawText,
+      {String? imagePath}) async {
     try {
-      final callable = FirebaseFunctions.instance.httpsCallable('analyzeReceipt');
-      
+      final callable =
+          FirebaseFunctions.instance.httpsCallable('analyzeReceipt');
+
       final result = await callable.call({
         'text': rawText,
       });
 
       final data = result.data as Map<String, dynamic>;
-      
+
       return ParsedReceipt(
         totalAmount: data['suma']?.toString(),
         date: data['datum']?.toString(),

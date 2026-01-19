@@ -14,7 +14,7 @@ void main() async {
 
   final bindingStart = DateTime.now();
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Light Cache Cleanup (Non-disruptive)
   await CacheService().performLightCleanup();
   debugPrint(

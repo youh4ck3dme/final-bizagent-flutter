@@ -55,7 +55,8 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
         BizSnackbar.showSuccess(context, 'Export bol úspešne vygenerovaný!');
       }
       if (next.error != null && previous?.error != next.error) {
-        BizSnackbar.showError(context, 'Chyba pri generovaní exportu: ${next.error}');
+        BizSnackbar.showError(
+            context, 'Chyba pri generovaní exportu: ${next.error}');
       }
     });
 

@@ -28,7 +28,8 @@ class PdfPreviewScreen extends ConsumerWidget {
           pdfFileName: 'faktura_${invoice.number}.pdf',
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Chyba pri načítaní nastavení: $err')),
+        error: (err, stack) =>
+            Center(child: Text('Chyba pri načítaní nastavení: $err')),
       ),
     );
   }

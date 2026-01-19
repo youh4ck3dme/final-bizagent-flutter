@@ -14,7 +14,8 @@ void main() {
   testWidgets(
       'Dashboard shows first-run banner when invoices & expenses are empty',
       (tester) async {
-    SharedPreferences.setMockInitialValues({}); // Mock SP for TutorialService check
+    SharedPreferences.setMockInitialValues(
+        {}); // Mock SP for TutorialService check
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

@@ -6,7 +6,8 @@ import 'package:bizagent/features/invoices/providers/invoices_provider.dart';
 import 'package:bizagent/features/expenses/providers/expenses_provider.dart';
 
 void main() {
-  testWidgets('CashflowAnalyticsScreen displays title', (WidgetTester tester) async {
+  testWidgets('CashflowAnalyticsScreen displays title',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -23,13 +24,14 @@ void main() {
 
     // Verify AppBar title
     expect(find.text('Analytika Cashflow'), findsOneWidget);
-    
+
     // Verify chart titles are present
     expect(find.text('Príjmy vs Výdavky (6 mesiacov)'), findsOneWidget);
     expect(find.text('Rozdelenie výdavkov'), findsOneWidget);
   });
 
-  testWidgets('CashflowAnalyticsScreen shows loading indicator', (WidgetTester tester) async {
+  testWidgets('CashflowAnalyticsScreen shows loading indicator',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

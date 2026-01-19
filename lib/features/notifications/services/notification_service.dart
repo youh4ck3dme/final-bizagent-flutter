@@ -31,7 +31,8 @@ class NotificationService {
       requestAlertPermission: false,
     );
 
-    final InitializationSettings initializationSettings = InitializationSettings(
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
       macOS: initializationSettingsDarwin,
@@ -48,7 +49,7 @@ class NotificationService {
   }
 
   Future<bool?> requestPermissions() async {
-    if (defaultTargetPlatform == TargetPlatform.iOS || 
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS) {
       return await _notificationsPlugin
           .resolvePlatformSpecificImplementation<

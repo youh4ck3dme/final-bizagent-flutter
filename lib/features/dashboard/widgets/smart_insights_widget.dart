@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../analytics/providers/expense_insights_provider.dart';
 import '../../analytics/models/expense_insight_model.dart';
+import '../../../shared/widgets/biz_shimmer.dart';
+import '../../../core/i18n/l10n.dart';
+import '../../../core/i18n/app_strings.dart';
 
 class SmartInsightsWidget extends ConsumerWidget {
   const SmartInsightsWidget({super.key});
@@ -14,7 +17,7 @@ class SmartInsightsWidget extends ConsumerWidget {
     return insightsAsync.when(
       data: (insights) {
         if (insights.isEmpty) return const SizedBox.shrink();
-        
+
         // Take the most relevant insight (e.g., highest priority or first)
         final topInsight = insights.first;
 
@@ -65,7 +68,8 @@ class _InsightCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => context.push('/analytics'), // Or specific insights screen
+          onTap: () =>
+              context.push('/analytics'), // Or specific insights screen
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -90,7 +94,7 @@ class _InsightCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'AI POSTREH',
+                                context.t(AppStr.aiInsightTag),
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w900,
@@ -101,14 +105,15 @@ class _InsightCard extends StatelessWidget {
                               const SizedBox(width: 8),
                               if (insight.priority == InsightPriority.high)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.red.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
-                                  child: const Text(
-                                    'DÔLEŽITÉ',
-                                    style: TextStyle(
+                                  child: Text(
+                                    context.t(AppStr.importantTag),
+                                    style: const TextStyle(
                                       fontSize: 8,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red,
@@ -127,7 +132,8 @@ class _InsightCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Icon(Icons.auto_awesome, color: Colors.amber.withValues(alpha: 0.6), size: 18),
+                    Icon(Icons.auto_awesome,
+                        color: Colors.amber.withValues(alpha: 0.6), size: 18),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -142,7 +148,8 @@ class _InsightCard extends StatelessWidget {
                 if (insight.potentialSavings != null) ...[
                   const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.green.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
@@ -150,10 +157,11 @@ class _InsightCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.savings_outlined, color: Colors.green, size: 16),
+                        const Icon(Icons.savings_outlined,
+                            color: Colors.green, size: 16),
                         const SizedBox(width: 8),
                         Text(
-                          'Možná úspora: ${insight.potentialSavings!.toStringAsFixed(2)} €',
+                          '${context.t(AppStr.potentialSavings)}: ${insight.potentialSavings!.toStringAsFixed(2)} €',
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -178,16 +186,9 @@ class _LoadingShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      margin: const EdgeInsets.only(bottom: 24),
-      decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
-      ),
+    return const BizShimmer.rectangular(
+      height: 140,
+      width: double.infinity,
     );
   }
 }

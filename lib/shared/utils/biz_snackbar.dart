@@ -33,7 +33,10 @@ class BizSnackbar {
       message,
       const Icon(Icons.info_outline_rounded, color: Colors.white, size: 28),
       LinearGradient(
-        colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withValues(alpha: 0.8)],
+        colors: [
+          Theme.of(context).primaryColor,
+          Theme.of(context).primaryColor.withValues(alpha: 0.8)
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -90,7 +93,7 @@ class BizSnackbar {
     // So we use a little hack or just rely on the content container if we want full gradient.
     // Actually, to get a gradient SnackBar, we usually wrap the content in a Container with decoration
     // and make the SnackBar background transparent.
-    
+
     // Let's re-invoke with the correct structure for gradient:
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(

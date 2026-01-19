@@ -41,32 +41,48 @@ class ExpenseInsight {
 
   static IconData _parseIcon(String iconName) {
     switch (iconName) {
-      case 'trending_up': return Icons.trending_up;
-      case 'trending_down': return Icons.trending_down;
-      case 'warning': return Icons.warning_amber_rounded;
-      case 'lightbulb': return Icons.lightbulb_outline;
-      case 'savings': return Icons.savings_outlined;
-      case 'shopping_cart': return Icons.shopping_cart_outlined;
-      default: return Icons.info_outline;
+      case 'trending_up':
+        return Icons.trending_up;
+      case 'trending_down':
+        return Icons.trending_down;
+      case 'warning':
+        return Icons.warning_amber_rounded;
+      case 'lightbulb':
+        return Icons.lightbulb_outline;
+      case 'savings':
+        return Icons.savings_outlined;
+      case 'shopping_cart':
+        return Icons.shopping_cart_outlined;
+      default:
+        return Icons.info_outline;
     }
   }
 
   static Color _parseColor(String colorName) {
     switch (colorName) {
-      case 'red': return Colors.red;
-      case 'green': return Colors.green;
-      case 'orange': return Colors.orange;
-      case 'blue': return Colors.blue;
-      case 'purple': return Colors.purple;
-      default: return Colors.grey;
+      case 'red':
+        return Colors.red;
+      case 'green':
+        return Colors.green;
+      case 'orange':
+        return Colors.orange;
+      case 'blue':
+        return Colors.blue;
+      case 'purple':
+        return Colors.purple;
+      default:
+        return Colors.grey;
     }
   }
 
   static InsightPriority _parsePriority(String priority) {
     switch (priority.toLowerCase()) {
-      case 'high': return InsightPriority.high;
-      case 'low': return InsightPriority.low;
-      default: return InsightPriority.medium;
+      case 'high':
+        return InsightPriority.high;
+      case 'low':
+        return InsightPriority.low;
+      default:
+        return InsightPriority.medium;
     }
   }
 }

@@ -7,7 +7,6 @@ import '../providers/onboarding_provider.dart';
 import '../../auth/providers/auth_repository.dart';
 import '../../../core/services/analytics_service.dart';
 
-
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -62,12 +61,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         children: [
           // Content
           SafeArea(
-
             child: Column(
               children: [
                 // Top Spacer / Skip button area
                 const SizedBox(height: 16),
-                
+
                 const Spacer(flex: 1),
 
                 // Page View
@@ -91,7 +89,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
                 // Bottom Controls
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                   child: Column(
                     children: [
                       Row(
@@ -114,7 +113,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             color: _contents[_currentPage].accentColor,
                             onPressed: () {
                               if (_currentPage == _contents.length - 1) {
-                                ref.read(onboardingProvider.notifier).completeOnboarding();
+                                ref
+                                    .read(onboardingProvider.notifier)
+                                    .completeOnboarding();
                               } else {
                                 _pageController.nextPage(
                                   duration: const Duration(milliseconds: 600),
@@ -130,17 +131,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       TextButton(
                         onPressed: () async {
                           // Log tracking
-                          ref.read(analyticsServiceProvider).logTryWithoutRegistration();
-                          
+                          ref
+                              .read(analyticsServiceProvider)
+                              .logTryWithoutRegistration();
+
                           // Trigger anonymous login
-                          await ref.read(authRepositoryProvider).signInAnonymously();
+                          await ref
+                              .read(authRepositoryProvider)
+                              .signInAnonymously();
                           // Onboarding completion is handled by auth state change listener in main app
                           // but we might need to mark onboarding as seen if logic differs
-                          ref.read(onboardingProvider.notifier).completeOnboarding();
+                          ref
+                              .read(onboardingProvider.notifier)
+                              .completeOnboarding();
                         },
                         child: Text(
                           "vyskúšať bez registrácie",
-
                           style: GoogleFonts.inter(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -180,32 +186,33 @@ class _OnboardingPage extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 // Glow effect behind SVG
-                 Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: content.accentColor.withValues(alpha: 0.1),
-                       boxShadow: [
-                        BoxShadow(
-                          color: content.accentColor.withValues(alpha: 0.1),
-                          blurRadius: 60,
-                          spreadRadius: 20,
-                        ),
-                      ],
-                    ),
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: content.accentColor.withValues(alpha: 0.1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: content.accentColor.withValues(alpha: 0.1),
+                        blurRadius: 60,
+                        spreadRadius: 20,
+                      ),
+                    ],
                   ),
+                ),
                 SvgPicture.asset(
                   content.svgPath,
                   height: 280,
                   width: 280,
-                  placeholderBuilder: (context) => const Center(child: CircularProgressIndicator()),
+                  placeholderBuilder: (context) =>
+                      const Center(child: CircularProgressIndicator()),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 48),
-          
+
           // Title
           Text(
             content.title,
@@ -219,7 +226,7 @@ class _OnboardingPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          
+
           // Description
           Text(
             content.description,
@@ -236,8 +243,6 @@ class _OnboardingPage extends StatelessWidget {
     );
   }
 }
-
-
 
 class _AnimatedDot extends StatelessWidget {
   final bool isActive;
@@ -296,7 +301,8 @@ class _AnimatedNextButton extends StatelessWidget {
             AnimatedOpacity(
               opacity: isLast ? 0.0 : 1.0,
               duration: const Duration(milliseconds: 200),
-              child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 28),
+              child: const Icon(Icons.arrow_forward_rounded,
+                  color: Colors.white, size: 28),
             ),
             AnimatedOpacity(
               opacity: isLast ? 1.0 : 0.0,
@@ -313,7 +319,8 @@ class _AnimatedNextButton extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Icon(Icons.check_circle_outline_rounded, color: Colors.white, size: 20),
+                  const Icon(Icons.check_circle_outline_rounded,
+                      color: Colors.white, size: 20),
                 ],
               ),
             ),

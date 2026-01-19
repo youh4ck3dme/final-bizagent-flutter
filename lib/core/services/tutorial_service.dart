@@ -131,7 +131,8 @@ class TutorialService {
 
     TutorialCoachMark(
       targets: targets,
-      colorShadow: const Color(0xFF2563EB), // Premium Blue opacity handled by package
+      colorShadow:
+          const Color(0xFF2563EB), // Premium Blue opacity handled by package
       textSkip: "PRESKOČIŤ",
       paddingFocus: 10,
       opacityShadow: 0.8,
@@ -141,7 +142,7 @@ class TutorialService {
         return true;
       },
       onClickTarget: (target) {
-         // Continue to next tool
+        // Continue to next tool
       },
       onClickTargetWithTapPosition: (target, tapDetails) {
         // Continue

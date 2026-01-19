@@ -21,8 +21,9 @@ class AiEmailService {
     try {
       // Volanie zabezpečenej Cloud Function
       // Funkcia beží na serveri a má bezpečný prístup k API kľúču
-      final callable = FirebaseFunctions.instance.httpsCallable('generateEmail');
-      
+      final callable =
+          FirebaseFunctions.instance.httpsCallable('generateEmail');
+
       final result = await callable.call({
         'type': _getReadableType(type),
         'tone': tone,
@@ -31,7 +32,6 @@ class AiEmailService {
 
       final data = result.data as Map<String, dynamic>;
       return data['text'] as String? ?? 'Nepodarilo sa získať text.';
-      
     } on FirebaseFunctionsException catch (e) {
       debugPrint('Cloud Function Error: ${e.code} - ${e.message}');
       return 'Chyba servera: ${e.message}';
@@ -43,10 +43,14 @@ class AiEmailService {
 
   String _getReadableType(String type) {
     switch (type) {
-      case 'reminder': return 'Upomienka k platbe';
-      case 'quote': return 'Cenová ponuka';
-      case 'intro': return 'Predstavenie služieb';
-      default: return type;
+      case 'reminder':
+        return 'Upomienka k platbe';
+      case 'quote':
+        return 'Cenová ponuka';
+      case 'intro':
+        return 'Predstavenie služieb';
+      default:
+        return type;
     }
   }
 }

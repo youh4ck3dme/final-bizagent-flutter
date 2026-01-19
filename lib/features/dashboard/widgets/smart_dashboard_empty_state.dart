@@ -17,7 +17,7 @@ class SmartDashboardEmptyState extends ConsumerWidget {
     final isSettingsCompleted = settings != null &&
         settings.companyName.isNotEmpty &&
         settings.companyIco.isNotEmpty;
-    
+
     final isInvoiceCompleted = invoices.isNotEmpty;
     final isExpenseCompleted = expenses.isNotEmpty;
 
@@ -128,7 +128,6 @@ class SmartDashboardEmptyState extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _buildChecklistItem(
     BuildContext context, {

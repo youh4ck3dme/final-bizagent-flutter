@@ -78,10 +78,12 @@ class ExpensesScreen extends ConsumerWidget {
                   return SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      constraints:
+                          BoxConstraints(minHeight: constraints.maxHeight),
                       child: Center(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 24),
                           child: BizEmptyState(
                             title: context.t(AppStr.expensesEmptyTitle),
                             body: context.t(AppStr.expensesEmptyMsg),
@@ -102,12 +104,14 @@ class ExpensesScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.filter_alt_off, size: 64, color: Colors.grey),
+                    const Icon(Icons.filter_alt_off,
+                        size: 64, color: Colors.grey),
                     const SizedBox(height: 16),
                     const Text('Žiadne výdavky vyhovujúce filtrom'),
                     TextButton(
                       onPressed: () {
-                        ref.read(expenseFilterProvider.notifier).state = const ExpenseFilterCriteria();
+                        ref.read(expenseFilterProvider.notifier).state =
+                            const ExpenseFilterCriteria();
                       },
                       child: const Text('Zrušiť filtre'),
                     ),
@@ -119,7 +123,8 @@ class ExpensesScreen extends ConsumerWidget {
             // Group by month
             final grouped = <String, List<ExpenseModel>>{};
             for (var e in filteredExpenses) {
-              final month = DateFormat('MMMM yyyy', 'sk').format(e.date); // Slovak locale
+              final month =
+                  DateFormat('MMMM yyyy', 'sk').format(e.date); // Slovak locale
               grouped.putIfAbsent(month, () => []).add(e);
             }
 
@@ -137,13 +142,17 @@ class ExpensesScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 4.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             month.toUpperCase(),
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blueGrey,
                                 ),
@@ -151,16 +160,20 @@ class ExpensesScreen extends ConsumerWidget {
                           Text(
                             // Calculate total for month
                             NumberFormat.currency(symbol: '€').format(
-                              monthExpenses.fold(0.0, (sum, e) => sum + e.amount)
-                            ),
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Colors.blueGrey,
-                            ),
+                                monthExpenses.fold(
+                                    0.0, (sum, e) => sum + e.amount)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
+                                  color: Colors.blueGrey,
+                                ),
                           ),
                         ],
                       ),
                     ),
-                    ...monthExpenses.map((expense) => _buildExpenseItem(context, ref, expense)),
+                    ...monthExpenses.map(
+                        (expense) => _buildExpenseItem(context, ref, expense)),
                     const SizedBox(height: 16),
                   ],
                 );
@@ -175,14 +188,15 @@ class ExpensesScreen extends ConsumerWidget {
   }
 
   bool _hasActiveFilters(ExpenseFilterCriteria criteria) {
-    return criteria.selectedCategories.isNotEmpty || 
-           criteria.dateRange != null ||
-           criteria.sortOption != ExpenseSortOption.dateDesc || // Default sort
-           criteria.amountRange?.start != 0 || // If modified
-           (criteria.amountRange?.end ?? 1000) != 1000;
+    return criteria.selectedCategories.isNotEmpty ||
+        criteria.dateRange != null ||
+        criteria.sortOption != ExpenseSortOption.dateDesc || // Default sort
+        criteria.amountRange?.start != 0 || // If modified
+        (criteria.amountRange?.end ?? 1000) != 1000;
   }
 
-  void _showFilterSheet(BuildContext context, WidgetRef ref, ExpenseFilterCriteria currentCriteria) {
+  void _showFilterSheet(BuildContext context, WidgetRef ref,
+      ExpenseFilterCriteria currentCriteria) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -199,28 +213,35 @@ class ExpensesScreen extends ConsumerWidget {
     );
   }
 
-  List<ExpenseModel> _applyFilters(List<ExpenseModel> expenses, ExpenseFilterCriteria criteria) {
+  List<ExpenseModel> _applyFilters(
+      List<ExpenseModel> expenses, ExpenseFilterCriteria criteria) {
     var result = List<ExpenseModel>.from(expenses);
 
     // 1. Categories
     if (criteria.selectedCategories.isNotEmpty) {
-      result = result.where((e) => criteria.selectedCategories.contains(e.category)).toList();
+      result = result
+          .where((e) => criteria.selectedCategories.contains(e.category))
+          .toList();
     }
 
     // 2. Date Range
     if (criteria.dateRange != null) {
-      result = result.where((e) => 
-        e.date.isAfter(criteria.dateRange!.start.subtract(const Duration(days: 1))) && 
-        e.date.isBefore(criteria.dateRange!.end.add(const Duration(days: 1)))
-      ).toList();
+      result = result
+          .where((e) =>
+              e.date.isAfter(criteria.dateRange!.start
+                  .subtract(const Duration(days: 1))) &&
+              e.date.isBefore(
+                  criteria.dateRange!.end.add(const Duration(days: 1))))
+          .toList();
     }
 
     // 3. Amount Range
     if (criteria.amountRange != null) {
-      result = result.where((e) => 
-        e.amount >= criteria.amountRange!.start && 
-        e.amount <= criteria.amountRange!.end
-      ).toList();
+      result = result
+          .where((e) =>
+              e.amount >= criteria.amountRange!.start &&
+              e.amount <= criteria.amountRange!.end)
+          .toList();
     }
 
     // 4. Sorting
@@ -242,7 +263,8 @@ class ExpensesScreen extends ConsumerWidget {
     return result;
   }
 
-  Widget _buildExpenseItem(BuildContext context, WidgetRef ref, ExpenseModel expense) {
+  Widget _buildExpenseItem(
+      BuildContext context, WidgetRef ref, ExpenseModel expense) {
     final category = expense.category ?? ExpenseCategory.other;
 
     return Dismissible(
@@ -253,20 +275,24 @@ class ExpensesScreen extends ConsumerWidget {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Zmazať výdavok?'),
-            content: Text('Naozaj chcete zmazať výdavok "${expense.vendorName}"?'),
+            content:
+                Text('Naozaj chcete zmazať výdavok "${expense.vendorName}"?'),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Zrušiť')),
               TextButton(
-                onPressed: () => Navigator.pop(context, true), 
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: const Text('Zmazať')
-              ),
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Zrušiť')),
+              TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  child: const Text('Zmazať')),
             ],
           ),
         );
-        
+
         if (shouldDelete == true) {
-          ref.read(expensesControllerProvider.notifier).deleteExpense(expense.id);
+          ref
+              .read(expensesControllerProvider.notifier)
+              .deleteExpense(expense.id);
           return true;
         }
         return false;
@@ -283,9 +309,8 @@ class ExpensesScreen extends ConsumerWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
           onTap: () {
-             context.push('/expenses/detail', extra: expense);
+            context.push('/expenses/detail', extra: expense);
           },
-
           borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -306,41 +331,45 @@ class ExpensesScreen extends ConsumerWidget {
                     children: [
                       Text(
                         expense.vendorName,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       if (expense.description.isNotEmpty)
                         Text(
                           expense.description,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                          style: TextStyle(
+                              color: Colors.grey.shade600, fontSize: 12),
                         ),
                       if (expense.receiptUrls.isNotEmpty)
-                         Padding(
-                           padding: const EdgeInsets.only(top: 4),
-                           child: InkWell(
-                             onTap: () {
-                               context.push('/expenses/receipt-viewer', extra: {
-                                 'url': expense.receiptUrls.first,
-                                 'isLocal': false,
-                               });
-                             },
-                             child: Row(
-                               mainAxisSize: MainAxisSize.min,
-                               children: [
-                                 Icon(Icons.attach_file, size: 14, color: Theme.of(context).primaryColor),
-                                 const SizedBox(width: 4),
-                                 Text(
-                                   'Účtenka',
-                                   style: TextStyle(
-                                     color: Theme.of(context).primaryColor,
-                                     fontSize: 12,
-                                     fontWeight: FontWeight.w500,
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: InkWell(
+                            onTap: () {
+                              context.push('/expenses/receipt-viewer', extra: {
+                                'url': expense.receiptUrls.first,
+                                'isLocal': false,
+                              });
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.attach_file,
+                                    size: 14,
+                                    color: Theme.of(context).primaryColor),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Účtenka',
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                     ],
                   ),
@@ -350,18 +379,22 @@ class ExpensesScreen extends ConsumerWidget {
                   children: [
                     Text(
                       NumberFormat.currency(symbol: '€').format(expense.amount),
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Row(
                       children: [
-                        if (expense.categorizationConfidence != null && expense.categorizationConfidence! < 100)
+                        if (expense.categorizationConfidence != null &&
+                            expense.categorizationConfidence! < 100)
                           const Padding(
                             padding: EdgeInsets.only(right: 4),
-                            child: Icon(Icons.auto_awesome, size: 12, color: Colors.amber),
+                            child: Icon(Icons.auto_awesome,
+                                size: 12, color: Colors.amber),
                           ),
                         Text(
                           DateFormat('d.M.').format(expense.date),
-                          style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                          style: TextStyle(
+                              color: Colors.grey.shade500, fontSize: 12),
                         ),
                       ],
                     ),
@@ -375,4 +408,3 @@ class ExpensesScreen extends ConsumerWidget {
     );
   }
 }
-

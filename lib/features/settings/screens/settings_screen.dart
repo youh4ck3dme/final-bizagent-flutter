@@ -15,7 +15,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   late TextEditingController _nameController;
   late TextEditingController _addressController;
   late TextEditingController _icoController;
@@ -28,7 +28,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    final settings = ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+    final settings =
+        ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
     _nameController = TextEditingController(text: settings.companyName);
     _addressController = TextEditingController(text: settings.companyAddress);
     _icoController = TextEditingController(text: settings.companyIco);
@@ -53,7 +54,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final current = ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+    final current =
+        ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
     final updated = current.copyWith(
       companyName: _nameController.text,
       companyAddress: _addressController.text,
@@ -147,7 +149,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 child: SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
                                 ),
                               )
                             : IconButton(
@@ -177,7 +180,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: const Text('Platca DPH'),
                 value: settings.isVatPayer,
                 onChanged: (val) {
-                  ref.read(settingsControllerProvider.notifier).updateVatPayer(val);
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .updateVatPayer(val);
                 },
               ),
               const Divider(height: 32),
@@ -208,21 +213,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ListTile(
                             title: const Text('Systémová'),
                             onTap: () {
-                              ref.read(themeProvider.notifier).setTheme(ThemeMode.system);
+                              ref
+                                  .read(themeProvider.notifier)
+                                  .setTheme(ThemeMode.system);
                               Navigator.pop(context);
                             },
                           ),
                           ListTile(
                             title: const Text('Svetlá'),
                             onTap: () {
-                              ref.read(themeProvider.notifier).setTheme(ThemeMode.light);
+                              ref
+                                  .read(themeProvider.notifier)
+                                  .setTheme(ThemeMode.light);
                               Navigator.pop(context);
                             },
                           ),
                           ListTile(
                             title: const Text('Tmavá'),
                             onTap: () {
-                              ref.read(themeProvider.notifier).setTheme(ThemeMode.dark);
+                              ref
+                                  .read(themeProvider.notifier)
+                                  .setTheme(ThemeMode.dark);
                               Navigator.pop(context);
                             },
                           ),
@@ -240,7 +251,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _save,
-                style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+                style:
+                    ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
                 child: const Text('Uložiť zmeny'),
               ),
             ],

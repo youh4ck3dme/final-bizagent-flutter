@@ -112,6 +112,21 @@ enum AppStr {
   badgeOk,
   badgeMissing,
   badgeInvalid,
+
+  // Dashboard & AI
+  quickActions,
+  magicScan,
+  magicScanSubtitle,
+  aiRefining,
+  aiProcessingSuccess,
+  aiInsightTag,
+  importantTag,
+  potentialSavings,
+  taxCalendar,
+  turnoverLTM,
+  dphRegistrationAlert,
+  approachingLimit,
+  everythingOk,
 }
 
 class AppStringsSK {
@@ -235,5 +250,20 @@ class AppStringsSK {
     AppStr.badgeOk: "OK",
     AppStr.badgeMissing: "Chýba",
     AppStr.badgeInvalid: "Neplatné",
+
+    // Dashboard & AI
+    AppStr.quickActions: "Rýchle akcie",
+    AppStr.magicScan: "✨ Magic Scan",
+    AppStr.magicScanSubtitle: "AI vyčítanie a automatické vyplnenie",
+    AppStr.aiRefining: "Upravujeme údaje pomocou AI...",
+    AppStr.aiProcessingSuccess: "Údaje úspešne spracované cez Gemini AI",
+    AppStr.aiInsightTag: "AI POSTREH",
+    AppStr.importantTag: "DÔLEŽITÉ",
+    AppStr.potentialSavings: "Možná úspora",
+    AppStr.taxCalendar: "Daňový kalendár",
+    AppStr.turnoverLTM: "Obrat (Ost. 12 mesiacov)",
+    AppStr.dphRegistrationAlert: "Povinná registrácia DPH!",
+    AppStr.approachingLimit: "Blížite sa k limitu",
+    AppStr.everythingOk: "Všetko v poriadku",
   };
 }

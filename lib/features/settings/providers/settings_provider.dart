@@ -64,8 +64,7 @@ class SettingsController extends StateNotifier<AsyncValue<void>> {
 
     final currentSettings =
         await _ref.read(settingsRepositoryProvider).getSettings(user.id);
-    final updatedSettings =
-        currentSettings.copyWith(isVatPayer: isVatPayer);
+    final updatedSettings = currentSettings.copyWith(isVatPayer: isVatPayer);
 
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _ref

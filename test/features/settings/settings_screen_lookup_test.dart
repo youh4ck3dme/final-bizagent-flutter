@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Fake classes to bypass Firebase initialization
 class FakeFirebaseFunctions extends Fake implements FirebaseFunctions {}
+
 class FakeFirebaseFirestore extends Fake implements FirebaseFirestore {}
 
 // Fake service to avoid real API calls
@@ -39,28 +40,30 @@ class FakeCompanyLookupService extends CompanyLookupService {
 
 class FakeSettingsRepository extends SettingsRepository {
   FakeSettingsRepository() : super(FakeFirebaseFirestore());
-  
+
   @override
   Stream<UserSettingsModel> watchSettings(String userId) {
-    return Stream.value(UserSettingsModel.empty()); 
+    return Stream.value(UserSettingsModel.empty());
   }
 }
 
 void main() {
   testWidgets('SettingsScreen populates fields after IČO lookup',
       (WidgetTester tester) async {
-
     SharedPreferences.setMockInitialValues({});
-    
+
     // Override providers
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           companyLookupServiceProvider
               .overrideWithValue(FakeCompanyLookupService()),
-          settingsProvider.overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
-          settingsRepositoryProvider.overrideWithValue(FakeSettingsRepository()),
-          authStateProvider.overrideWith((ref) => Stream.value(UserModel(id: 'test-user', email: 'test@example.com'))),
+          settingsProvider
+              .overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
+          settingsRepositoryProvider
+              .overrideWithValue(FakeSettingsRepository()),
+          authStateProvider.overrideWith((ref) => Stream.value(
+              UserModel(id: 'test-user', email: 'test@example.com'))),
           themeProvider.overrideWith((ref) => ThemeNotifier()), // Default theme
         ],
         child: const MaterialApp(
@@ -81,22 +84,27 @@ void main() {
       matching: find.text('IČO'),
     );
     expect(icoField, findsOneWidget);
-    
-    await tester.enterText(find.ancestor(of: icoField, matching: find.byType(TextFormField)), '36396567');
+
+    await tester.enterText(
+        find.ancestor(of: icoField, matching: find.byType(TextFormField)),
+        '36396567');
     await tester.pump();
 
     // Tap Search Icon
     await tester.tap(find.byIcon(Icons.search));
     await tester.pumpAndSettle(); // Wait for async lookup
 
-
     // Verify Fields Populated
     expect(find.widgetWithText(TextFormField, 'Google Slovakia, s. r. o.'),
         findsOneWidget);
-    expect(find.widgetWithText(TextFormField, 'Karadžičova 8/A, Bratislava 821 08'),
+    expect(
+        find.widgetWithText(
+            TextFormField, 'Karadžičova 8/A, Bratislava 821 08'),
         findsOneWidget);
-    expect(find.widgetWithText(TextFormField, '2020102636'), findsOneWidget); // DIČ
-    expect(find.widgetWithText(TextFormField, 'SK2020102636'), findsOneWidget); // IČ DPH
+    expect(find.widgetWithText(TextFormField, '2020102636'),
+        findsOneWidget); // DIČ
+    expect(find.widgetWithText(TextFormField, 'SK2020102636'),
+        findsOneWidget); // IČ DPH
 
     // Verify Snackbar feedback
     expect(find.text('Našli sme: Google Slovakia, s. r. o.'), findsOneWidget);

@@ -18,7 +18,7 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
   final _vendorController = TextEditingController();
-  
+
   @override
   void dispose() {
     _amountController.dispose();
@@ -177,16 +177,14 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                           controller: _vendorController,
                           decoration: const InputDecoration(
                             labelText: 'IČO / ID',
-                             border: OutlineInputBorder(),
+                            border: OutlineInputBorder(),
                           ),
                         ),
-                        
                         const SizedBox(height: 16),
                         ExpansionTile(
-                           title: const Text('Zobraziť celý text'),
-                           children: [SelectableText(_receipt!.originalText)],
+                          title: const Text('Zobraziť celý text'),
+                          children: [SelectableText(_receipt!.originalText)],
                         ),
-
                         const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,

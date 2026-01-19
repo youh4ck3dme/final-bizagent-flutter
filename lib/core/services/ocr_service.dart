@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart' deferred as ml show TextRecognizer, TextRecognitionScript, InputImage;
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart'
+    deferred as ml show TextRecognizer, TextRecognitionScript, InputImage;
 import 'package:image_picker/image_picker.dart';
 
 final ocrServiceProvider = Provider<OcrService>((ref) {
@@ -25,13 +26,14 @@ class ParsedReceipt {
 
 class OcrService {
   // Use dynamic to avoid "Deferred types can't be used in variable declarations" error
-  dynamic _textRecognizer; 
+  dynamic _textRecognizer;
   ImagePicker? _picker;
 
   Future<void> _ensureInitialized() async {
     if (_textRecognizer == null) {
       await ml.loadLibrary();
-      _textRecognizer = ml.TextRecognizer(script: ml.TextRecognitionScript.latin);
+      _textRecognizer =
+          ml.TextRecognizer(script: ml.TextRecognitionScript.latin);
     }
     _picker ??= ImagePicker();
   }
@@ -67,8 +69,10 @@ class OcrService {
       caseSensitive: false,
     );
     // Matches DD.MM.YYYY or YYYY-MM-DD
-    final datePattern = RegExp(r'(\d{1,2}[\.-]\d{1,2}[\.-]\d{4})|(\d{4}[\.-]\d{1,2}[\.-]\d{1,2})');
-    final icoPattern = RegExp(r'(?:IČO|ICO)[\s:.]*(\d{8})', caseSensitive: false);
+    final datePattern = RegExp(
+        r'(\d{1,2}[\.-]\d{1,2}[\.-]\d{4})|(\d{4}[\.-]\d{1,2}[\.-]\d{1,2})');
+    final icoPattern =
+        RegExp(r'(?:IČO|ICO)[\s:.]*(\d{8})', caseSensitive: false);
 
     for (final line in lines) {
       if (amount == null) {
@@ -96,8 +100,8 @@ class OcrService {
 
     // Fallback search in full text if not found in lines
     if (amount == null) {
-       // Look for standalone prices at the end of receipt often largest number
-       // This is a naive heuristic, can be improved.
+      // Look for standalone prices at the end of receipt often largest number
+      // This is a naive heuristic, can be improved.
     }
 
     return ParsedReceipt(

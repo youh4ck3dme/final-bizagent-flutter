@@ -114,28 +114,32 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
             ],
           ),
           const Divider(),
-          
+
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Sort Options
-                  const Text('Zoradiť podľa', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Zoradiť podľa',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     children: [
                       _buildSortChip('Najnovšie', ExpenseSortOption.dateDesc),
                       _buildSortChip('Najstaršie', ExpenseSortOption.dateAsc),
-                      _buildSortChip('Najvyššia suma', ExpenseSortOption.amountDesc),
-                      _buildSortChip('Najnižšia suma', ExpenseSortOption.amountAsc),
+                      _buildSortChip(
+                          'Najvyššia suma', ExpenseSortOption.amountDesc),
+                      _buildSortChip(
+                          'Najnižšia suma', ExpenseSortOption.amountAsc),
                     ],
                   ),
                   const SizedBox(height: 24),
 
                   // Date Range
-                  const Text('Obdobie', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Obdobie',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   InkWell(
                     onTap: () async {
@@ -153,14 +157,16 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                       }
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.calendar_today, size: 20, color: Colors.grey),
+                          const Icon(Icons.calendar_today,
+                              size: 20, color: Colors.grey),
                           const SizedBox(width: 8),
                           Text(
                             _dateRange == null
@@ -172,7 +178,8 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                           if (_dateRange != null)
                             GestureDetector(
                               onTap: () => setState(() => _dateRange = null),
-                              child: const Icon(Icons.close, size: 20, color: Colors.grey),
+                              child: const Icon(Icons.close,
+                                  size: 20, color: Colors.grey),
                             ),
                         ],
                       ),
@@ -184,8 +191,10 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Suma (€)', style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${_amountRange.start.round()} - ${_amountRange.end.round()} €'),
+                      const Text('Suma (€)',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                          '${_amountRange.start.round()} - ${_amountRange.end.round()} €'),
                     ],
                   ),
                   RangeSlider(
@@ -206,7 +215,8 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                   const SizedBox(height: 16),
 
                   // Categories
-                  const Text('Kategórie', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Kategórie',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -216,7 +226,9 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                       return FilterChip(
                         label: Text(category.displayName),
                         selected: isSelected,
-                        avatar: Icon(category.icon, size: 16, color: isSelected ? Colors.white : category.color),
+                        avatar: Icon(category.icon,
+                            size: 16,
+                            color: isSelected ? Colors.white : category.color),
                         onSelected: (selected) {
                           setState(() {
                             if (selected) {
@@ -241,7 +253,7 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
               ),
             ),
           ),
-          
+
           // Apply Button
           SizedBox(
             width: double.infinity,

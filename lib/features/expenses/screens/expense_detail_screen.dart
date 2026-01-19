@@ -14,7 +14,6 @@ class ExpenseDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final category = expense.category ?? ExpenseCategory.other;
     final hasReceipt = expense.receiptUrls.isNotEmpty;
 
@@ -26,7 +25,6 @@ class ExpenseDetailScreen extends ConsumerWidget {
             icon: const Icon(Icons.delete_outline),
             onPressed: () => _confirmDelete(context, ref),
           ),
-
         ],
       ),
       body: SingleChildScrollView(
@@ -85,31 +83,27 @@ class ExpenseDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoRow(Icons.calendar_today, 'Dátum', 
+                  _buildInfoRow(Icons.calendar_today, 'Dátum',
                       DateFormat('d. MMMM yyyy', 'sk').format(expense.date)),
                   const SizedBox(height: 16),
-                  _buildInfoRow(Icons.category_outlined, 'Kategória', 
+                  _buildInfoRow(Icons.category_outlined, 'Kategória',
                       category.displayName),
-
-                  
                   if (expense.description.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    _buildInfoRow(Icons.description_outlined, 'Popis', 
+                    _buildInfoRow(Icons.description_outlined, 'Popis',
                         expense.description),
                   ],
-
                   if (expense.categorizationConfidence != null) ...[
                     const SizedBox(height: 16),
                     _buildInfoRow(
-                      Icons.auto_awesome, 
-                      'Istota AI', 
+                      Icons.auto_awesome,
+                      'Istota AI',
                       '${expense.categorizationConfidence}%',
-                      trailing: _buildConfidenceIndicator(expense.categorizationConfidence!),
+                      trailing: _buildConfidenceIndicator(
+                          expense.categorizationConfidence!),
                     ),
                   ],
-
                   const SizedBox(height: 32),
-                  
                   if (hasReceipt) ...[
                     const Text(
                       'DOKLAD',
@@ -123,10 +117,10 @@ class ExpenseDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     GestureDetector(
                       onTap: () {
-                         context.push('/expenses/receipt-viewer', extra: {
-                           'url': expense.receiptUrls.first, 
-                           'isLocal': false
-                         });
+                        context.push('/expenses/receipt-viewer', extra: {
+                          'url': expense.receiptUrls.first,
+                          'isLocal': false
+                        });
                       },
                       child: Container(
                         height: 300,
@@ -143,7 +137,8 @@ class ExpenseDetailScreen extends ConsumerWidget {
                             fit: BoxFit.cover,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
-                              return const Center(child: CircularProgressIndicator());
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             },
                           ),
                         ),
@@ -159,7 +154,8 @@ class ExpenseDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value, {Widget? trailing}) {
+  Widget _buildInfoRow(IconData icon, String label, String value,
+      {Widget? trailing}) {
     return Row(
       children: [
         Icon(icon, size: 20, color: Colors.blueGrey),
@@ -168,8 +164,11 @@ class ExpenseDetailScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-              Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              Text(label,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(value,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500)),
             ],
           ),
         ),
@@ -196,7 +195,8 @@ class ExpenseDetailScreen extends ConsumerWidget {
       ),
       child: Text(
         confidence > 80 ? 'Vysoká' : (confidence > 50 ? 'Stredná' : 'Nízka'),
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style:
+            TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -208,12 +208,13 @@ class ExpenseDetailScreen extends ConsumerWidget {
         title: const Text('Zmazať výdavok?'),
         content: Text('Naozaj chcete zmazať výdavok "${expense.vendorName}"?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Zrušiť')),
           TextButton(
-            onPressed: () => Navigator.pop(context, true), 
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Zmazať')
-          ),
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Zrušiť')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Zmazať')),
         ],
       ),
     );
@@ -227,4 +228,3 @@ class ExpenseDetailScreen extends ConsumerWidget {
     }
   }
 }
-

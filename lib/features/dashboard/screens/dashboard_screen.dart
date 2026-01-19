@@ -51,7 +51,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     // Show tutorial if user is Anonymous (Demo) OR if it's a fresh install check
     // Ideally we use SharedPreferences to check if tutorial was already shown
     final prefs = await SharedPreferences.getInstance();
-    final hasSeenTutorial = prefs.getBool('hasSeenTutorial_${user.id}') ?? false;
+    final hasSeenTutorial =
+        prefs.getBool('hasSeenTutorial_${user.id}') ?? false;
 
     if (!hasSeenTutorial && (user.isAnonymous)) {
       if (!mounted) return;
@@ -140,8 +141,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 Text(context.t(AppStr.errorGeneric))
               else
                 _buildExecutiveDashboard(
-                  context, 
-                  revenueAsync.value!, 
+                  context,
+                  revenueAsync.value!,
                   profitAsync.value!,
                   expensesAsync.value ?? [],
                 ),
@@ -156,7 +157,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               const SizedBox(height: 32),
 
               // Quick Actions
-              const BizSectionHeader(title: 'Rýchle akcie'),
+              BizSectionHeader(title: context.t(AppStr.quickActions)),
               const SizedBox(height: 16),
               _buildActionTile(
                 context,
@@ -166,16 +167,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 color: Colors.blue,
                 onTap: () => context.push('/create-invoice'),
                 // Assign Key to Invoice Action
-                widgetKey: _invoiceKey, 
+                widgetKey: _invoiceKey,
               ),
               _buildActionTile(
                 context,
-                title: '✨ Magic Scan',
-                subtitle: 'AI vyčítanie a automatické vyplnenie',
+                title: context.t(AppStr.magicScan),
+                subtitle: context.t(AppStr.magicScanSubtitle),
                 icon: Icons.auto_awesome,
                 color: Colors.purple,
                 onTap: () => context.push('/ai-tools'),
-                 // Assign Key to Scan Action
+                // Assign Key to Scan Action
                 widgetKey: _scanKey,
               ),
               _buildActionTile(
@@ -208,9 +209,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               const BizSectionHeader(title: 'Posledné faktúry'),
               const SizedBox(height: 16),
               if (invoicesAsync.value != null)
-                ...invoicesAsync.value!
-                    .take(5)
-                    .map((invoice) => _buildRecentInvoiceTile(context, invoice)),
+                ...invoicesAsync.value!.take(5).map(
+                    (invoice) => _buildRecentInvoiceTile(context, invoice)),
             ],
           ),
         ),
@@ -222,7 +222,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final overdueCount = invoices
         .where((i) =>
             i.status == InvoiceStatus.overdue ||
-            (i.status == InvoiceStatus.sent && i.dateDue.isBefore(DateTime.now())))
+            (i.status == InvoiceStatus.sent &&
+                i.dateDue.isBefore(DateTime.now())))
         .length;
 
     if (overdueCount == 0) return const SizedBox.shrink();
@@ -275,9 +276,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildExecutiveDashboard(
-      BuildContext context, RevenueMetrics revenue, ProfitMetrics profit, List<dynamic> expenses) {
-    
+  Widget _buildExecutiveDashboard(BuildContext context, RevenueMetrics revenue,
+      ProfitMetrics profit, List<dynamic> expenses) {
     final totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
 
     return Column(
@@ -293,7 +293,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             _buildSummaryCard(
               context,
               title: 'Príjmy (Celkovo)',
-              amount: NumberFormat.currency(symbol: '€').format(revenue.totalRevenue),
+              amount: NumberFormat.currency(symbol: '€')
+                  .format(revenue.totalRevenue),
               color: Colors.green,
               icon: Icons.account_balance_wallet_outlined,
             ),
@@ -303,12 +304,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               amount: NumberFormat.currency(symbol: '€').format(profit.profit),
               color: Colors.blue,
               icon: Icons.savings_outlined,
-              subtitle: 'Marža: ${(profit.profitMargin * 100).toStringAsFixed(1)}%',
+              subtitle:
+                  'Marža: ${(profit.profitMargin * 100).toStringAsFixed(1)}%',
             ),
             _buildSummaryCard(
               context,
               title: 'Neuhradené',
-              amount: NumberFormat.currency(symbol: '€').format(revenue.unpaidAmount),
+              amount: NumberFormat.currency(symbol: '€')
+                  .format(revenue.unpaidAmount),
               color: Colors.orange,
               icon: Icons.pending_actions_outlined,
               subtitle: '${revenue.overdueCount} po lehote',
@@ -323,15 +326,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             _buildSummaryCard(
               context,
               title: 'Tento mesiac',
-              amount: NumberFormat.currency(symbol: '€').format(revenue.thisMonthRevenue),
+              amount: NumberFormat.currency(symbol: '€')
+                  .format(revenue.thisMonthRevenue),
               color: Colors.teal,
               icon: Icons.calendar_today_outlined,
-              subtitle: 'Zisk: ${NumberFormat.currency(symbol: '€').format(profit.thisMonthProfit)}',
+              subtitle:
+                  'Zisk: ${NumberFormat.currency(symbol: '€').format(profit.thisMonthProfit)}',
             ),
             _buildSummaryCard(
               context,
               title: 'Priemerná faktúra',
-              amount: NumberFormat.currency(symbol: '€').format(revenue.averageInvoiceValue),
+              amount: NumberFormat.currency(symbol: '€')
+                  .format(revenue.averageInvoiceValue),
               color: Colors.indigo,
               icon: Icons.bar_chart_outlined,
             ),
@@ -345,45 +351,46 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             onTap: () => context.push('/analytics'),
             child: BizCard(
               child: Column(children: [
-              Text('Pomer Príjmy vs Výdavky',
-                  style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 200,
-                child: PieChart(
-                  PieChartData(
-                    sections: [
-                      PieChartSectionData(
-                        color: Colors.green,
-                        value: revenue.totalRevenue,
-                        title: '', 
-                        radius: 50,
-                      ),
-                      PieChartSectionData(
-                        color: Colors.red,
-                        value: totalExpenses,
-                        title: '',
-                        radius: 50,
-                      ),
-                    ],
-                    sectionsSpace: 2,
-                    centerSpaceRadius: 40,
+                Text('Pomer Príjmy vs Výdavky',
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 200,
+                  child: PieChart(
+                    PieChartData(
+                      sections: [
+                        PieChartSectionData(
+                          color: Colors.green,
+                          value: revenue.totalRevenue,
+                          title: '',
+                          radius: 50,
+                        ),
+                        PieChartSectionData(
+                          color: Colors.red,
+                          value: totalExpenses,
+                          title: '',
+                          radius: 50,
+                        ),
+                      ],
+                      sectionsSpace: 2,
+                      centerSpaceRadius: 40,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _legendItem(
-                      context, context.t(AppStr.incomeTotal), Colors.green),
-                  const SizedBox(width: 16),
-                  _legendItem(
-                      context, context.t(AppStr.expensesTotal), Colors.red),
-                ],
-              )
-            ]),
-          ),),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _legendItem(
+                        context, context.t(AppStr.incomeTotal), Colors.green),
+                    const SizedBox(width: 16),
+                    _legendItem(
+                        context, context.t(AppStr.expensesTotal), Colors.red),
+                  ],
+                )
+              ]),
+            ),
+          ),
       ],
     );
   }

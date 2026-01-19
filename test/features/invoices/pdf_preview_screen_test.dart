@@ -7,7 +7,8 @@ import 'package:bizagent/features/settings/providers/settings_provider.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
 
 void main() {
-  testWidgets('PdfPreviewScreen displays loading state', (WidgetTester tester) async {
+  testWidgets('PdfPreviewScreen displays loading state',
+      (WidgetTester tester) async {
     final testInvoice = InvoiceModel(
       id: 'test-1',
       userId: 'user-1',
@@ -23,8 +24,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          settingsProvider.overrideWith((ref) => 
-            Stream.value(UserSettingsModel.empty())),
+          settingsProvider
+              .overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
         ],
         child: MaterialApp(
           home: PdfPreviewScreen(invoice: testInvoice),

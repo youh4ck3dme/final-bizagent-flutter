@@ -47,7 +47,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       FirebaseAnalyticsObserver(analytics: analytics),
     ],
     redirect: (context, state) {
-
       final path = state.uri.path;
 
       // 1. Loading states
@@ -179,8 +178,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'analytics',
-                    builder: (context, state) =>
-                        const ExpenseAnalyticsScreen(),
+                    builder: (context, state) => const ExpenseAnalyticsScreen(),
                   ),
                   GoRoute(
                     path: 'detail',
@@ -191,7 +189,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'receipt-viewer',
-
                     parentNavigatorKey: _rootNavigatorKey,
                     builder: (context, state) {
                       final extras = state.extra as Map<String, dynamic>;

@@ -10,10 +10,12 @@ class ExpenseAnalyticsScreen extends ConsumerStatefulWidget {
   const ExpenseAnalyticsScreen({super.key});
 
   @override
-  ConsumerState<ExpenseAnalyticsScreen> createState() => _ExpenseAnalyticsScreenState();
+  ConsumerState<ExpenseAnalyticsScreen> createState() =>
+      _ExpenseAnalyticsScreenState();
 }
 
-class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen> {
+class _ExpenseAnalyticsScreenState
+    extends ConsumerState<ExpenseAnalyticsScreen> {
   int _touchedIndex = -1;
   bool _showWeekly = true; // true = Weekly, false = Monthly
 
@@ -68,8 +70,8 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
       );
     }
 
-    final totalAmount = filteredExpenses.fold(
-        0.0, (sum, item) => sum + item.amount);
+    final totalAmount =
+        filteredExpenses.fold(0.0, (sum, item) => sum + item.amount);
     final categoryTotals = _calculateCategoryTotals(filteredExpenses);
 
     return SingleChildScrollView(
@@ -84,7 +86,10 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
           // Pie Chart Section
           Text(
             'Podľa kategórie',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -112,7 +117,8 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
                       borderData: FlBorderData(show: false),
                       sectionsSpace: 2,
                       centerSpaceRadius: 40,
-                      sections: _generatePieSections(categoryTotals, totalAmount),
+                      sections:
+                          _generatePieSections(categoryTotals, totalAmount),
                     ),
                   ),
                 ),
@@ -129,7 +135,10 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
           // Bar Chart Section (Trend)
           Text(
             'Vývoj v čase',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -138,13 +147,16 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
               _generateBarChartData(filteredExpenses),
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Top Spending List
           Text(
             'Top výdavky',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           ..._buildTopExpensesList(filteredExpenses),
@@ -218,7 +230,7 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
 
     final sortedEntries = categoryTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    
+
     // Show top 4 + others
     final topEntries = sortedEntries.take(4).toList();
 
@@ -256,7 +268,7 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
   List<Widget> _buildTopExpensesList(List<ExpenseModel> expenses) {
     final topExpenses = List<ExpenseModel>.from(expenses)
       ..sort((a, b) => b.amount.compareTo(a.amount));
-    
+
     return topExpenses.take(5).map((expense) {
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
@@ -264,14 +276,16 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
         color: Colors.grey.shade50,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: expense.category?.color.withValues(alpha: 0.1) ?? Colors.grey.shade200,
+            backgroundColor: expense.category?.color.withValues(alpha: 0.1) ??
+                Colors.grey.shade200,
             child: Icon(
               expense.category?.icon ?? Icons.question_mark,
               color: expense.category?.color ?? Colors.grey,
               size: 20,
             ),
           ),
-          title: Text(expense.vendorName, style: const TextStyle(fontWeight: FontWeight.w500)),
+          title: Text(expense.vendorName,
+              style: const TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text(DateFormat('d.M.yyyy').format(expense.date)),
           trailing: Text(
             NumberFormat.currency(symbol: '€').format(expense.amount),
@@ -314,16 +328,16 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
 
   BarChartData _generateBarChartData(List<ExpenseModel> expenses) {
     final Map<int, double> groupedData = {};
-    
+
     // Initialize groups based on view mode
     final now = DateTime.now();
-    
+
     if (_showWeekly) {
       // Last 7 days
       for (int i = 6; i >= 0; i--) {
         groupedData[i] = 0;
       }
-      
+
       for (var expense in expenses) {
         final diff = now.difference(expense.date).inDays;
         if (diff >= 0 && diff < 7) {
@@ -336,7 +350,7 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
       for (int i = 0; i < 4; i++) {
         groupedData[i] = 0;
       }
-      
+
       for (var expense in expenses) {
         final day = expense.date.day;
         // Simple bucketing into 4 weeks
@@ -352,7 +366,7 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
       if (value > maxY) maxY = value;
     });
     if (maxY == 0) maxY = 100;
-    
+
     // Add some headroom
     maxY *= 1.2;
 
@@ -385,12 +399,14 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
                 final date = now.subtract(Duration(days: 6 - value.toInt()));
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: Text(DateFormat('E', 'sk').format(date), style: const TextStyle(fontSize: 10)),
+                  child: Text(DateFormat('E', 'sk').format(date),
+                      style: const TextStyle(fontSize: 10)),
                 );
               } else {
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: Text('${value.toInt() + 1}. týž.', style: const TextStyle(fontSize: 10)),
+                  child: Text('${value.toInt() + 1}. týž.',
+                      style: const TextStyle(fontSize: 10)),
                 );
               }
             },
@@ -399,7 +415,8 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
         ),
         leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles:
+            const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       ),
       gridData: const FlGridData(show: false),
       borderData: FlBorderData(show: false),
@@ -411,7 +428,8 @@ class _ExpenseAnalyticsScreenState extends ConsumerState<ExpenseAnalyticsScreen>
               toY: entry.value,
               color: Colors.blue.shade400,
               width: 12,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(4)),
             ),
           ],
         );

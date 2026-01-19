@@ -16,7 +16,7 @@ class CompanyLookupService {
       final result = await _functions.httpsCallable('lookupCompany').call(
         {'ico': ico},
       );
-      
+
       final data = result.data;
       if (data == null) return null;
 

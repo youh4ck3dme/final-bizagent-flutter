@@ -38,11 +38,20 @@ class MockAuthRepository implements AuthRepository {
 
 class MockFirebaseAnalytics extends Fake implements FirebaseAnalytics {
   @override
-  Future<void> logEvent({required String name, Map<String, Object?>? parameters, AnalyticsCallOptions? callOptions}) async {}
+  Future<void> logEvent(
+      {required String name,
+      Map<String, Object?>? parameters,
+      AnalyticsCallOptions? callOptions}) async {}
   @override
-  Future<void> logAppOpen({Map<String, Object?>? parameters, AnalyticsCallOptions? callOptions}) async {}
+  Future<void> logAppOpen(
+      {Map<String, Object?>? parameters,
+      AnalyticsCallOptions? callOptions}) async {}
   @override
-  Future<void> logScreenView({String? screenClass, String? screenName, Map<String, Object?>? parameters, AnalyticsCallOptions? callOptions}) async {}
+  Future<void> logScreenView(
+      {String? screenClass,
+      String? screenName,
+      Map<String, Object?>? parameters,
+      AnalyticsCallOptions? callOptions}) async {}
 }
 
 void main() {
@@ -56,10 +65,12 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(MockAuthRepository(const Stream.empty())),
+          authRepositoryProvider
+              .overrideWithValue(MockAuthRepository(const Stream.empty())),
           authStateProvider.overrideWith((ref) => const Stream.empty()),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
-          analyticsServiceProvider.overrideWithValue(AnalyticsService(mockAnalytics)),
+          analyticsServiceProvider
+              .overrideWithValue(AnalyticsService(mockAnalytics)),
         ],
       );
 
@@ -90,11 +101,14 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(MockAuthRepository(Stream.value(null))),
+          authRepositoryProvider
+              .overrideWithValue(MockAuthRepository(Stream.value(null))),
           authStateProvider.overrideWith((ref) => Stream.value(null)),
-          onboardingProvider.overrideWith((ref) => OnboardingNotifier()..state = const AsyncValue.data(false)),
+          onboardingProvider.overrideWith((ref) =>
+              OnboardingNotifier()..state = const AsyncValue.data(false)),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
-          analyticsServiceProvider.overrideWithValue(AnalyticsService(mockAnalytics)),
+          analyticsServiceProvider
+              .overrideWithValue(AnalyticsService(mockAnalytics)),
         ],
       );
 
@@ -120,18 +134,23 @@ void main() {
       expect(router.state.uri.path, '/onboarding');
     });
 
-    testWidgets('Redirects to /login when not authenticated and seen onboarding', (tester) async {
+    testWidgets(
+        'Redirects to /login when not authenticated and seen onboarding',
+        (tester) async {
       tester.view.physicalSize = const Size(1000, 2000);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
 
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(MockAuthRepository(Stream.value(null))),
+          authRepositoryProvider
+              .overrideWithValue(MockAuthRepository(Stream.value(null))),
           authStateProvider.overrideWith((ref) => Stream.value(null)),
-          onboardingProvider.overrideWith((ref) => OnboardingNotifier()..state = const AsyncValue.data(true)),
+          onboardingProvider.overrideWith((ref) =>
+              OnboardingNotifier()..state = const AsyncValue.data(true)),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
-          analyticsServiceProvider.overrideWithValue(AnalyticsService(mockAnalytics)),
+          analyticsServiceProvider
+              .overrideWithValue(AnalyticsService(mockAnalytics)),
         ],
       );
 
@@ -167,14 +186,18 @@ void main() {
       const user = UserModel(id: '123', email: 'test@test.com');
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(MockAuthRepository(Stream.value(user))),
+          authRepositoryProvider
+              .overrideWithValue(MockAuthRepository(Stream.value(user))),
           authStateProvider.overrideWith((ref) => Stream.value(user)),
-          onboardingProvider.overrideWith((ref) => OnboardingNotifier()..state = const AsyncValue.data(true)),
+          onboardingProvider.overrideWith((ref) =>
+              OnboardingNotifier()..state = const AsyncValue.data(true)),
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
-          settingsProvider.overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
+          settingsProvider
+              .overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
-          analyticsServiceProvider.overrideWithValue(AnalyticsService(mockAnalytics)),
+          analyticsServiceProvider
+              .overrideWithValue(AnalyticsService(mockAnalytics)),
         ],
       );
 
