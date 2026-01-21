@@ -27,9 +27,13 @@ class _AiReminderGeneratorScreenState extends ConsumerState<AiReminderGeneratorS
     
     // Convert slider value to enum
     ReminderTone tone;
-    if (_toneValue < 0.5) tone = ReminderTone.polite;
-    else if (_toneValue > 1.5) tone = ReminderTone.strict;
-    else tone = ReminderTone.professional;
+    if (_toneValue < 0.5) {
+      tone = ReminderTone.polite;
+    } else if (_toneValue > 1.5) {
+      tone = ReminderTone.strict;
+    } else {
+      tone = ReminderTone.professional;
+    }
 
     final service = ref.read(aiReminderServiceProvider);
     final text = await service.generateReminderText(

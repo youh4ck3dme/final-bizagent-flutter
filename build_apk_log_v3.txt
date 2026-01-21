@@ -1,0 +1,340 @@
+Running Gradle task 'assembleRelease'...                        
+Expected to find fonts for (MaterialIcons, packages/cupertino_icons/CupertinoIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 19184 bytes (98.8% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Failed to execute org.gradle.cache.internal.AsyncCacheAccessDecoratedCache$$Lambda/0x0000000800657628@209bea5b.
+org.gradle.api.UncheckedIOException: Could not add entry '6fcc23d4129951b37573ff01850ac50e' to cache resourceHashesCache.bin (/Users/youh4ck3dme/.gradle/caches/8.14/fileHashes/resourceHashesCache.bin).
+	at org.gradle.cache.internal.btree.BTreePersistentIndexedCache.put(BTreePersistentIndexedCache.java:162)
+	at org.gradle.cache.internal.DefaultMultiProcessSafeIndexedCache.lambda$put$1(DefaultMultiProcessSafeIndexedCache.java:67)
+	at org.gradle.cache.internal.DefaultFileLockManager$DefaultFileLock.doWriteAction(DefaultFileLockManager.java:231)
+	at org.gradle.cache.internal.DefaultFileLockManager$DefaultFileLock.writeFile(DefaultFileLockManager.java:221)
+	at org.gradle.cache.internal.DefaultCacheCoordinator$UnitOfWorkFileAccess.writeFile(DefaultCacheCoordinator.java:475)
+	at org.gradle.cache.internal.DefaultMultiProcessSafeIndexedCache.put(DefaultMultiProcessSafeIndexedCache.java:67)
+	at org.gradle.cache.internal.AsyncCacheAccessDecoratedCache.lambda$putLater$1(AsyncCacheAccessDecoratedCache.java:56)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.cache.internal.ExclusiveCacheAccessingWorker$1.run(ExclusiveCacheAccessingWorker.java:179)
+	at org.gradle.cache.internal.DefaultCacheCoordinator.lambda$toSupplier$2(DefaultCacheCoordinator.java:228)
+	at org.gradle.cache.internal.DefaultCacheCoordinator.useCache(DefaultCacheCoordinator.java:249)
+	at org.gradle.cache.internal.DefaultCacheCoordinator.useCache(DefaultCacheCoordinator.java:223)
+	at org.gradle.cache.internal.ExclusiveCacheAccessingWorker.flushOperations(ExclusiveCacheAccessingWorker.java:169)
+	at org.gradle.cache.internal.ExclusiveCacheAccessingWorker.run(ExclusiveCacheAccessingWorker.java:139)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: org.gradle.api.UncheckedIOException: java.io.IOException: No space left on device
+	at org.gradle.cache.internal.btree.FileBackedBlockStore.write(FileBackedBlockStore.java:140)
+	at org.gradle.cache.internal.btree.CachingBlockStore.flush(CachingBlockStore.java:64)
+	at org.gradle.cache.internal.btree.FreeListBlockStore.flush(FreeListBlockStore.java:103)
+	at org.gradle.cache.internal.btree.StateCheckBlockStore.flush(StateCheckBlockStore.java:85)
+	at org.gradle.cache.internal.btree.BTreePersistentIndexedCache.put(BTreePersistentIndexedCache.java:160)
+	... 18 more
+Caused by: java.io.IOException: No space left on device
+	at java.base/java.io.RandomAccessFile.writeBytes0(Native Method)
+	at java.base/java.io.RandomAccessFile.implWriteBytes(Unknown Source)
+	at java.base/java.io.RandomAccessFile.writeBytes(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: org.gradle.api.UncheckedIOException: java.io.IOException: No space left on device
+	... 18 more
+	... 18 more
+	... 22 more
+	... 22 more
+
+FAILURE: Build completed with 3 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:mergeReleaseNativeLibs'.
+> Multiple build operations failed.
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-7017a28d-433a-4d2c-80e1-11788806ba6d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-7017a28d-433a-4d2c-80e1-11788806ba6d/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-8447426d-b45d-4797-a40a-a7901ea24f6a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-8447426d-b45d-4797-a40a-a7901ea24f6a/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-5282d4cc-955a-49fe-bf1d-47b38d47f5c5' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-5282d4cc-955a-49fe-bf1d-47b38d47f5c5/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ed406de4-0825-4043-959a-1581c4cf40fb' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ed406de4-0825-4043-959a-1581c4cf40fb/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-df89d37c-48e2-4eb4-97d1-50c6738cff12' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-df89d37c-48e2-4eb4-97d1-50c6738cff12/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-cda8f49b-8be5-4da7-a2fb-49ae839d3381' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-cda8f49b-8be5-4da7-a2fb-49ae839d3381/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ef825e34-07f8-490d-84b8-e48b85e0dfb9' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ef825e34-07f8-490d-84b8-e48b85e0dfb9/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-5e59950a-64ba-45f4-a529-0df55298fe2a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-5e59950a-64ba-45f4-a529-0df55298fe2a/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-7f35954b-169b-4575-8995-944a4c311f90' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-7f35954b-169b-4575-8995-944a4c311f90/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-49827217-fca3-4bc0-90be-9478fd1ad9ee' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-49827217-fca3-4bc0-90be-9478fd1ad9ee/transformed'
+      ...and 59 more failures.
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-7017a28d-433a-4d2c-80e1-11788806ba6d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-7017a28d-433a-4d2c-80e1-11788806ba6d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-8447426d-b45d-4797-a40a-a7901ea24f6a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-8447426d-b45d-4797-a40a-a7901ea24f6a/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-5282d4cc-955a-49fe-bf1d-47b38d47f5c5' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-5282d4cc-955a-49fe-bf1d-47b38d47f5c5/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ed406de4-0825-4043-959a-1581c4cf40fb' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ed406de4-0825-4043-959a-1581c4cf40fb/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-df89d37c-48e2-4eb4-97d1-50c6738cff12' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-df89d37c-48e2-4eb4-97d1-50c6738cff12/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-cda8f49b-8be5-4da7-a2fb-49ae839d3381' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-cda8f49b-8be5-4da7-a2fb-49ae839d3381/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ef825e34-07f8-490d-84b8-e48b85e0dfb9' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-ef825e34-07f8-490d-84b8-e48b85e0dfb9/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-5e59950a-64ba-45f4-a529-0df55298fe2a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-5e59950a-64ba-45f4-a529-0df55298fe2a/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-7f35954b-169b-4575-8995-944a4c311f90' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-7f35954b-169b-4575-8995-944a4c311f90/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-49827217-fca3-4bc0-90be-9478fd1ad9ee' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-49827217-fca3-4bc0-90be-9478fd1ad9ee/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-6f9a97cb-fa10-484e-bbc2-0015672228e6' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-6f9a97cb-fa10-484e-bbc2-0015672228e6/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/efa56333aece780700e1148c7129e96e-950b6b05-0bf7-4bc4-ac33-3330598315c5' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/efa56333aece780700e1148c7129e96e-950b6b05-0bf7-4bc4-ac33-3330598315c5/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c1270ea3ca2a315f289d09aa1946c2bf-9db3a4a0-d473-43a2-a8d0-37d29121ffac' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c1270ea3ca2a315f289d09aa1946c2bf-9db3a4a0-d473-43a2-a8d0-37d29121ffac/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-45c25ede-d2a1-48da-89a5-df4e38fae2ac' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-45c25ede-d2a1-48da-89a5-df4e38fae2ac/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-fdc62961-06ef-45f8-aa25-331cacbbb5c3' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-fdc62961-06ef-45f8-aa25-331cacbbb5c3/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-48a86058-1cbb-4a0f-b031-752dc5f1ed67' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-48a86058-1cbb-4a0f-b031-752dc5f1ed67/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-706b15d3-5a4b-42b8-8886-3424c21b181c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-706b15d3-5a4b-42b8-8886-3424c21b181c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-e0ab875a-8dd4-4d0e-81ec-df4c0a2d933a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-e0ab875a-8dd4-4d0e-81ec-df4c0a2d933a/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-08858642-3a0d-421f-841d-04a38b535083' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-08858642-3a0d-421f-841d-04a38b535083/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-02c8c866-699c-4ebd-8727-7cb27bf3d5aa' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-02c8c866-699c-4ebd-8727-7cb27bf3d5aa/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-2375b9b8-1056-4273-ac20-b20e305fb95f' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-2375b9b8-1056-4273-ac20-b20e305fb95f/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-88f610a4-bc31-4153-8883-66310200d216' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-88f610a4-bc31-4153-8883-66310200d216/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-66a364b4-d237-48a2-9edb-c6c151a30460' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-66a364b4-d237-48a2-9edb-c6c151a30460/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-b8b3c8ca-f658-4d36-8608-ae049e4763e9' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-b8b3c8ca-f658-4d36-8608-ae049e4763e9/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-b90e85db-8b2b-4e6f-81cb-602312ee2c78' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-b90e85db-8b2b-4e6f-81cb-602312ee2c78/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-c6a642b0-2982-4f40-84b7-abf6e082f380' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-c6a642b0-2982-4f40-84b7-abf6e082f380/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-050ad38c-d42a-4b53-bbca-a5d94f055b48' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-050ad38c-d42a-4b53-bbca-a5d94f055b48/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-1b32de95-b84c-4133-9bae-8c47c051d7ca' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-1b32de95-b84c-4133-9bae-8c47c051d7ca/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-53fdcd18-a260-4084-bb83-95b7a899f49d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-53fdcd18-a260-4084-bb83-95b7a899f49d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-60534dcf-d867-4b46-983f-2506e8ee5013' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-60534dcf-d867-4b46-983f-2506e8ee5013/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-5f627dab-ace8-4ba3-b26b-963af8057720' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-5f627dab-ace8-4ba3-b26b-963af8057720/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-fbc5a2ae-def7-4239-86da-0a0708e9be6c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-fbc5a2ae-def7-4239-86da-0a0708e9be6c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-9704f9e3-ecb5-40f4-8d01-7b9552b2253b' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-9704f9e3-ecb5-40f4-8d01-7b9552b2253b/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-c469506e-fa02-4c5b-8c01-99f002b97ddf' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-c469506e-fa02-4c5b-8c01-99f002b97ddf/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5848bb13e0e697dad5e1c6306aba149c-5ec0979d-e3ba-47ed-b096-765d40301612' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5848bb13e0e697dad5e1c6306aba149c-5ec0979d-e3ba-47ed-b096-765d40301612/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a7933338e86a0f3212d0761cdf43d1f5-d663838b-535b-4737-8d4f-c785d62982c9' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a7933338e86a0f3212d0761cdf43d1f5-d663838b-535b-4737-8d4f-c785d62982c9/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2bdce513e716169019469e9658c5d259-1ce647d3-9ef8-41e3-9478-5c78ade6d19b' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2bdce513e716169019469e9658c5d259-1ce647d3-9ef8-41e3-9478-5c78ade6d19b/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5270b933d19dbe64975213cd038c23a7-0e4f62c9-1160-4397-9fa7-f16efce26c35' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5270b933d19dbe64975213cd038c23a7-0e4f62c9-1160-4397-9fa7-f16efce26c35/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/16d61f76a49ac551a7c94c57386b9cf2-a6f1a938-27a4-45dd-8d0f-a8afd2e35dda' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/16d61f76a49ac551a7c94c57386b9cf2-a6f1a938-27a4-45dd-8d0f-a8afd2e35dda/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-fe38a26f-e2fb-4d29-a124-94fb1c3069a5' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-fe38a26f-e2fb-4d29-a124-94fb1c3069a5/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2afe9ac02405e7b8bb5d174c5386f29d-92b12238-ce0f-453d-a96c-4b206656e504' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2afe9ac02405e7b8bb5d174c5386f29d-92b12238-ce0f-453d-a96c-4b206656e504/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/f4b483d40088121f129d60cddd82ad4c-c54f30be-b157-4f94-8a71-42db77cf5385' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/f4b483d40088121f129d60cddd82ad4c-c54f30be-b157-4f94-8a71-42db77cf5385/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/bb4f73eaa5427b2b2c51eef495ed6c65-4dceb97b-09b1-4750-9ff5-f7e0fe5527c3' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/bb4f73eaa5427b2b2c51eef495ed6c65-4dceb97b-09b1-4750-9ff5-f7e0fe5527c3/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2a8bcefc6638a7b33a52af6785f4f66e-fa63a1bf-54fc-4b16-8056-eddd2fc2b3c4' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2a8bcefc6638a7b33a52af6785f4f66e-fa63a1bf-54fc-4b16-8056-eddd2fc2b3c4/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-64a44bcc-0de7-4bec-a388-609b0523e3ff' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-64a44bcc-0de7-4bec-a388-609b0523e3ff/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-1941539a-5887-4d48-ad1e-3137b4c16756' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-1941539a-5887-4d48-ad1e-3137b4c16756/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-d56ccccc-9114-489a-9f0f-79000b37a3b7' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-d56ccccc-9114-489a-9f0f-79000b37a3b7/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-61eeeab0-7394-4891-a7fd-830be2c3dc29' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-61eeeab0-7394-4891-a7fd-830be2c3dc29/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-9d2c0550-ce82-4130-b3e3-fd7c40c5e5bd' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-9d2c0550-ce82-4130-b3e3-fd7c40c5e5bd/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-ef713949-fedf-41ac-8757-0af925895505' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-ef713949-fedf-41ac-8757-0af925895505/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-c47304e8-a076-4dc3-a3f2-285bd1d2d4bc' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-c47304e8-a076-4dc3-a3f2-285bd1d2d4bc/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-dab7661a-ceb6-447b-9a09-5392e969b1f2' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-dab7661a-ceb6-447b-9a09-5392e969b1f2/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-f0f9b4ee-4203-4f10-9f88-a0d4f6e6bd01' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-f0f9b4ee-4203-4f10-9f88-a0d4f6e6bd01/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0ddfc0ece339e52e4f7d7b31cae69d3e-94eee030-6c81-4522-aa71-77de62a85e73' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0ddfc0ece339e52e4f7d7b31cae69d3e-94eee030-6c81-4522-aa71-77de62a85e73/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c0bfee558d1c9dea5d5b75834746e44a-f08e7e8b-439e-49a8-971b-f3652cf67c64' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c0bfee558d1c9dea5d5b75834746e44a-f08e7e8b-439e-49a8-971b-f3652cf67c64/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/de5c865245bd2429173679113fafc401-f5379af5-74e8-4104-beda-99ecf7abc46f' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/de5c865245bd2429173679113fafc401-f5379af5-74e8-4104-beda-99ecf7abc46f/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/3a8bf5b87b4cb38fadae56be725a6f8c-9279166d-aa3e-400e-bab0-2665058e78fb' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/3a8bf5b87b4cb38fadae56be725a6f8c-9279166d-aa3e-400e-bab0-2665058e78fb/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-da56855d-7bd2-4442-8826-267d65c41258' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-da56855d-7bd2-4442-8826-267d65c41258/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-2ad12904-0492-4130-92e7-7ab8b5069d95' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-2ad12904-0492-4130-92e7-7ab8b5069d95/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e933b553f189abf263d73b6c040f266d-f84fa036-a29c-47e5-8ef6-dda28483d04c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e933b553f189abf263d73b6c040f266d-f84fa036-a29c-47e5-8ef6-dda28483d04c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b5221dacc626bfe5f1be76a5a30ac726-6316070d-891d-422f-a0fb-037e2024425d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b5221dacc626bfe5f1be76a5a30ac726-6316070d-891d-422f-a0fb-037e2024425d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5aa4cc1ce8594166ee7c58ca41e2d8fa-51dd934f-337c-4886-bdb7-17c64adaeb84' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5aa4cc1ce8594166ee7c58ca41e2d8fa-51dd934f-337c-4886-bdb7-17c64adaeb84/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c3aff67ebd6a0dae2816afdf83e7555c-a2bf3503-2de4-44ec-9df3-e1c7cfcd6c19' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c3aff67ebd6a0dae2816afdf83e7555c-a2bf3503-2de4-44ec-9df3-e1c7cfcd6c19/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e6db592740ea34b035cf377488c92753-a5fb37c8-87ea-456c-8ed6-1e5e1d9fe871' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e6db592740ea34b035cf377488c92753-a5fb37c8-87ea-456c-8ed6-1e5e1d9fe871/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/baa4dba1ca842354f9c478936f9dcc37-54a8dcc4-7565-4cb0-a6bf-9c7656bb86f8' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/baa4dba1ca842354f9c478936f9dcc37-54a8dcc4-7565-4cb0-a6bf-9c7656bb86f8/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/be80fd2e4346ac73c8fe7e58c3554ac0-6a328b28-b419-4a3a-a346-a83ca8266ebb' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/be80fd2e4346ac73c8fe7e58c3554ac0-6a328b28-b419-4a3a-a346-a83ca8266ebb/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b61bab72d7a8255456b20735b086aae1-07681ec7-5628-43ad-93e8-a06aed6d4e0b' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b61bab72d7a8255456b20735b086aae1-07681ec7-5628-43ad-93e8-a06aed6d4e0b/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a08f2da9588efae2fe24ac4747926063-e04f51ea-7028-46ba-b722-1b777b2eab61' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a08f2da9588efae2fe24ac4747926063-e04f51ea-7028-46ba-b722-1b777b2eab61/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0243f4af820e335ceda5e9005efbe8d3-fcff21ec-9f31-4dfe-8a11-8e9b9f85b227' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0243f4af820e335ceda5e9005efbe8d3-fcff21ec-9f31-4dfe-8a11-8e9b9f85b227/transformed'
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+java.io.FileNotFoundException: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.kotlin/errors/errors-04f658c0-09fb-4ed7-9d7e-989c8b124664-1768979435414.log (No such file or directory)
+> /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.kotlin/errors/errors-04f658c0-09fb-4ed7-9d7e-989c8b124664-1768979435414.log (No such file or directory)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+3: Task failed with an exception.
+-----------
+* What went wrong:
+java.io.IOException: No space left on device
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 1m 2s
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not stop all services.
+> Could not stop all services.
+   > Failed to release lock on Build Output Cleanup Cache (/Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.gradle/buildOutputCleanup)
+   > Failed to release lock on execution history cache (/Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.gradle/8.14/executionHistory)
+> Could not stop all services.
+   > Failed to release lock on cache directory md-supplier (/Users/youh4ck3dme/.gradle/caches/8.14/md-supplier)
+   > Could not stop all services.
+      > Failed to release lock on Build Output Cleanup Cache (/Users/youh4ck3dme/flutter/packages/flutter_tools/gradle/.gradle/buildOutputCleanup)
+      > Failed to release lock on execution history cache (/Users/youh4ck3dme/flutter/packages/flutter_tools/gradle/.gradle/8.14/executionHistory)
+   > Failed to release lock on cache directory md-rule (/Users/youh4ck3dme/.gradle/caches/8.14/md-rule)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 2s
+Running Gradle task 'assembleRelease'...                           62,9s
+[!] Gradle threw an error while downloading artifacts from the network.
+Retrying Gradle Build: #1, wait time: 100ms
+Running Gradle task 'assembleRelease'...                        
+Expected to find fonts for (MaterialIcons, packages/cupertino_icons/CupertinoIcons), but found (MaterialIcons). This usually means you are referring to font families in an IconData class but not including them in the assets section of your pubspec.yaml, are missing the package that would include them, or are missing "uses-material-design: true".
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 19184 bytes (98.8% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+
+FAILURE: Build completed with 3 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:mergeReleaseNativeLibs'.
+> Multiple build operations failed.
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-17f81d0c-2795-4614-b6ac-c7d6760ffebc' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-17f81d0c-2795-4614-b6ac-c7d6760ffebc/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-e470657b-6338-4ba2-bd63-2117d442ba20' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-e470657b-6338-4ba2-bd63-2117d442ba20/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-201101ea-46de-4531-8a94-0dbb44b10909' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-201101ea-46de-4531-8a94-0dbb44b10909/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-fbb65413-6a22-49a5-a024-5be48f020f9e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-fbb65413-6a22-49a5-a024-5be48f020f9e/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d32e6c92-c1d7-46d1-a373-8819c8a91b65' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d32e6c92-c1d7-46d1-a373-8819c8a91b65/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d46c5903-8fd2-4972-ae55-b159bcc84d7a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d46c5903-8fd2-4972-ae55-b159bcc84d7a/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-0357f4ea-f0d3-408e-a4a3-37e213e5eaf5' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-0357f4ea-f0d3-408e-a4a3-37e213e5eaf5/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-a20766e1-c79f-40bf-a62b-802990a2be76' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-a20766e1-c79f-40bf-a62b-802990a2be76/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-4d73aff1-309f-465d-ac3f-da67fef6ed35' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-4d73aff1-309f-465d-ac3f-da67fef6ed35/transformed'
+      Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/efa56333aece780700e1148c7129e96e-c5463fb6-22cc-4cec-818e-700b1d98177a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/efa56333aece780700e1148c7129e96e-c5463fb6-22cc-4cec-818e-700b1d98177a/transformed'
+      ...and 59 more failures.
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-17f81d0c-2795-4614-b6ac-c7d6760ffebc' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-17f81d0c-2795-4614-b6ac-c7d6760ffebc/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-e470657b-6338-4ba2-bd63-2117d442ba20' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/57fcd91cd533581a2fc6d0126bc3c8d8-e470657b-6338-4ba2-bd63-2117d442ba20/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-201101ea-46de-4531-8a94-0dbb44b10909' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ef418e495cd4bf9841d86386fbc47439-201101ea-46de-4531-8a94-0dbb44b10909/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-fbb65413-6a22-49a5-a024-5be48f020f9e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-fbb65413-6a22-49a5-a024-5be48f020f9e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d32e6c92-c1d7-46d1-a373-8819c8a91b65' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d32e6c92-c1d7-46d1-a373-8819c8a91b65/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d46c5903-8fd2-4972-ae55-b159bcc84d7a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b37408346b529c09a0c957b81c08f689-d46c5903-8fd2-4972-ae55-b159bcc84d7a/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-0357f4ea-f0d3-408e-a4a3-37e213e5eaf5' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/18cb0b7fb56f17b2f6734162e62a463a-0357f4ea-f0d3-408e-a4a3-37e213e5eaf5/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-a20766e1-c79f-40bf-a62b-802990a2be76' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/996135ac0abbfa8e5b391cc68ca7d7f4-a20766e1-c79f-40bf-a62b-802990a2be76/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-4d73aff1-309f-465d-ac3f-da67fef6ed35' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ee7495d34e2e682e9d642280df0ea264-4d73aff1-309f-465d-ac3f-da67fef6ed35/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/efa56333aece780700e1148c7129e96e-c5463fb6-22cc-4cec-818e-700b1d98177a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/efa56333aece780700e1148c7129e96e-c5463fb6-22cc-4cec-818e-700b1d98177a/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-11a2a00d-fb49-4288-86a2-43c4ef1cac44' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-11a2a00d-fb49-4288-86a2-43c4ef1cac44/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-1a84a7e7-2fa6-4291-bdcd-be6b890be31b' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/75f96b4868043ae2d27a8bfcbaa16d64-1a84a7e7-2fa6-4291-bdcd-be6b890be31b/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c1270ea3ca2a315f289d09aa1946c2bf-68762c87-6db2-4aac-b313-65ef6cde41c7' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c1270ea3ca2a315f289d09aa1946c2bf-68762c87-6db2-4aac-b313-65ef6cde41c7/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-bada0f40-d3f3-40d6-9db7-6edc9e1a41e1' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-bada0f40-d3f3-40d6-9db7-6edc9e1a41e1/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-662cfd38-b881-4368-bc56-f30a33e62019' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-662cfd38-b881-4368-bc56-f30a33e62019/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-da1e7036-c3e9-4077-b08b-a6ecd9350062' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b8c68225a20ade0f6efa0cc5b39b660a-da1e7036-c3e9-4077-b08b-a6ecd9350062/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-cee22c6e-fde1-43df-9949-1ba995706297' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-cee22c6e-fde1-43df-9949-1ba995706297/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-9deab17d-22b5-46a5-972f-6c24958ebc8d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-9deab17d-22b5-46a5-972f-6c24958ebc8d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-f9ef707c-99aa-4e06-8ae8-e0bdab32f8d6' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-f9ef707c-99aa-4e06-8ae8-e0bdab32f8d6/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-078e4afb-4d33-467e-a0b2-b782c41162f4' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-078e4afb-4d33-467e-a0b2-b782c41162f4/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-3614c739-f608-4633-8ac1-a5cdb34bd694' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-3614c739-f608-4633-8ac1-a5cdb34bd694/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-99b8301f-7a6f-4e1d-bb3f-ffca29912db6' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-99b8301f-7a6f-4e1d-bb3f-ffca29912db6/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-88f4b3a3-5207-44ec-8661-9985663c261e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-88f4b3a3-5207-44ec-8661-9985663c261e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-0a2611eb-337f-4ab7-917a-32300c87643f' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-0a2611eb-337f-4ab7-917a-32300c87643f/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-de8a0d61-826c-4b6b-86c1-f76f217a466e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-de8a0d61-826c-4b6b-86c1-f76f217a466e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-f005c58b-0f12-461a-9fcb-4f8c89151a45' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-f005c58b-0f12-461a-9fcb-4f8c89151a45/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-14bf8f89-5490-4448-b08f-f1fe9cd949c7' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-14bf8f89-5490-4448-b08f-f1fe9cd949c7/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-9b97bd76-9a20-4126-a0a7-c42fe5b5b663' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-9b97bd76-9a20-4126-a0a7-c42fe5b5b663/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-fd09d654-446e-4048-827c-8586137b65ae' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-fd09d654-446e-4048-827c-8586137b65ae/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-8710c780-e29c-4ea7-8f74-c6d1c3129563' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-8710c780-e29c-4ea7-8f74-c6d1c3129563/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-67baa6ce-644c-4860-83b7-31867d9a61f6' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-67baa6ce-644c-4860-83b7-31867d9a61f6/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-e191bbce-8e3b-47de-abca-0ea258dd8264' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-e191bbce-8e3b-47de-abca-0ea258dd8264/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-db91d8fa-543c-43a6-ab6a-280b8499f73d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-db91d8fa-543c-43a6-ab6a-280b8499f73d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-e745ea4f-616e-443f-8ad5-891bf84d72c7' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/52e54aee345e0a16b14cb5dc265dce58-e745ea4f-616e-443f-8ad5-891bf84d72c7/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5848bb13e0e697dad5e1c6306aba149c-16f0cdd4-ced9-4380-a1c2-6ae5783c3f47' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5848bb13e0e697dad5e1c6306aba149c-16f0cdd4-ced9-4380-a1c2-6ae5783c3f47/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a7933338e86a0f3212d0761cdf43d1f5-40825e0c-fd32-4f09-a582-2b3172cc2b05' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a7933338e86a0f3212d0761cdf43d1f5-40825e0c-fd32-4f09-a582-2b3172cc2b05/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2afe9ac02405e7b8bb5d174c5386f29d-436d7c0d-01c8-4286-8e55-66795705732e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2afe9ac02405e7b8bb5d174c5386f29d-436d7c0d-01c8-4286-8e55-66795705732e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-4581e2b0-47e1-412b-894d-b413ddd7aa9e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-4581e2b0-47e1-412b-894d-b413ddd7aa9e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5270b933d19dbe64975213cd038c23a7-506b38a6-96a8-41d9-bd6d-58972150987c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5270b933d19dbe64975213cd038c23a7-506b38a6-96a8-41d9-bd6d-58972150987c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/16d61f76a49ac551a7c94c57386b9cf2-c8c58114-ca8f-44fb-9f53-fd63fda31432' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/16d61f76a49ac551a7c94c57386b9cf2-c8c58114-ca8f-44fb-9f53-fd63fda31432/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-f7e5c606-445b-4342-9327-0f5b2fcdf08c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-f7e5c606-445b-4342-9327-0f5b2fcdf08c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2bdce513e716169019469e9658c5d259-00bc681b-8f33-4976-ab98-37b33fcdbe4e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2bdce513e716169019469e9658c5d259-00bc681b-8f33-4976-ab98-37b33fcdbe4e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/f4b483d40088121f129d60cddd82ad4c-50d1b96d-01bf-40d6-9199-971e19b18753' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/f4b483d40088121f129d60cddd82ad4c-50d1b96d-01bf-40d6-9199-971e19b18753/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2a8bcefc6638a7b33a52af6785f4f66e-94cb914d-4968-457a-b596-80eb8b169369' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/2a8bcefc6638a7b33a52af6785f4f66e-94cb914d-4968-457a-b596-80eb8b169369/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-f8c76661-7cf2-42da-8864-1fddd85e8ab6' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-f8c76661-7cf2-42da-8864-1fddd85e8ab6/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/bb4f73eaa5427b2b2c51eef495ed6c65-155191fe-7f19-42e7-913d-38683e8c7ea3' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/bb4f73eaa5427b2b2c51eef495ed6c65-155191fe-7f19-42e7-913d-38683e8c7ea3/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-e43ece84-d097-4343-b862-5c4abed7a73d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-e43ece84-d097-4343-b862-5c4abed7a73d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-d9acae5e-595b-460c-a98a-1d2681d78865' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-d9acae5e-595b-460c-a98a-1d2681d78865/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-bf604b31-112f-45b0-a765-6abc26cd0e4e' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/6177db6cb21e6efd73a0bcf914178c50-bf604b31-112f-45b0-a765-6abc26cd0e4e/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-4caca8db-29c5-48cc-b781-891c1e6d73f3' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-4caca8db-29c5-48cc-b781-891c1e6d73f3/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-cbdc15f0-856f-4415-9e9d-ccfefe19111a' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-cbdc15f0-856f-4415-9e9d-ccfefe19111a/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0ddfc0ece339e52e4f7d7b31cae69d3e-477217ed-5431-41ea-9ed0-85b913d083c8' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0ddfc0ece339e52e4f7d7b31cae69d3e-477217ed-5431-41ea-9ed0-85b913d083c8/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-23ff5788-e5d8-4da6-bf5c-ef5afe16a516' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-23ff5788-e5d8-4da6-bf5c-ef5afe16a516/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-aefcb5f2-88ea-4e5e-b3e8-a16718ed16fe' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/ebb359964427044379683646fd34bcc0-aefcb5f2-88ea-4e5e-b3e8-a16718ed16fe/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e933b553f189abf263d73b6c040f266d-625394e7-2121-4381-9793-5e63ffc1ca21' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e933b553f189abf263d73b6c040f266d-625394e7-2121-4381-9793-5e63ffc1ca21/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/3a8bf5b87b4cb38fadae56be725a6f8c-c04c3bf6-c9b5-4dad-a90c-bab22d7d9465' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/3a8bf5b87b4cb38fadae56be725a6f8c-c04c3bf6-c9b5-4dad-a90c-bab22d7d9465/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/de5c865245bd2429173679113fafc401-2f24640a-6bc8-4eb0-854c-5226e07a9b6c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/de5c865245bd2429173679113fafc401-2f24640a-6bc8-4eb0-854c-5226e07a9b6c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c0bfee558d1c9dea5d5b75834746e44a-4307a03f-3419-4d47-b5cd-a45cac396680' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c0bfee558d1c9dea5d5b75834746e44a-4307a03f-3419-4d47-b5cd-a45cac396680/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-2ebf5d9b-9ef7-4d10-9db4-98aef650ad19' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-2ebf5d9b-9ef7-4d10-9db4-98aef650ad19/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-9cae0fb6-5f40-4ac2-8a0c-a12aa7cfd70f' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/546dafb361076cea9492970d0ceb7118-9cae0fb6-5f40-4ac2-8a0c-a12aa7cfd70f/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b5221dacc626bfe5f1be76a5a30ac726-216e1b9c-b062-4b04-9b42-ac88cd41986d' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b5221dacc626bfe5f1be76a5a30ac726-216e1b9c-b062-4b04-9b42-ac88cd41986d/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5aa4cc1ce8594166ee7c58ca41e2d8fa-b44daacc-83b8-4fdb-9d2c-9cdcdba5e9a0' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/5aa4cc1ce8594166ee7c58ca41e2d8fa-b44daacc-83b8-4fdb-9d2c-9cdcdba5e9a0/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c3aff67ebd6a0dae2816afdf83e7555c-beeb0b52-d479-4315-a480-1d14a58d1c96' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/c3aff67ebd6a0dae2816afdf83e7555c-beeb0b52-d479-4315-a480-1d14a58d1c96/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e6db592740ea34b035cf377488c92753-8d3b00a5-67a5-4adb-9b10-36634ab9d912' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/e6db592740ea34b035cf377488c92753-8d3b00a5-67a5-4adb-9b10-36634ab9d912/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/baa4dba1ca842354f9c478936f9dcc37-2bdb6546-4f2c-45da-9444-aac20cae5d26' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/baa4dba1ca842354f9c478936f9dcc37-2bdb6546-4f2c-45da-9444-aac20cae5d26/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/be80fd2e4346ac73c8fe7e58c3554ac0-f41f3e8a-9f70-43c9-b611-748a60801fcf' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/be80fd2e4346ac73c8fe7e58c3554ac0-f41f3e8a-9f70-43c9-b611-748a60801fcf/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b61bab72d7a8255456b20735b086aae1-67ebfd7c-e1f4-4dd0-bc0c-f9936f33f907' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/b61bab72d7a8255456b20735b086aae1-67ebfd7c-e1f4-4dd0-bc0c-f9936f33f907/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0243f4af820e335ceda5e9005efbe8d3-f562c647-9bac-40cc-8fd9-af36529ce72c' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/0243f4af820e335ceda5e9005efbe8d3-f562c647-9bac-40cc-8fd9-af36529ce72c/transformed'
+   > Failed to create parent directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a08f2da9588efae2fe24ac4747926063-471da17b-3f35-4520-95ae-f0ca0d7e8500' when creating directory '/Users/youh4ck3dme/.gradle/caches/8.14/transforms/a08f2da9588efae2fe24ac4747926063-471da17b-3f35-4520-95ae-f0ca0d7e8500/transformed'
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+java.io.FileNotFoundException: /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.kotlin/errors/errors-39ba7328-6c4e-4d99-855e-84d2f56fca82-1768979448619.log (No such file or directory)
+> /Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.kotlin/errors/errors-39ba7328-6c4e-4d99-855e-84d2f56fca82-1768979448619.log (No such file or directory)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+3: Task failed with an exception.
+-----------
+* What went wrong:
+java.io.IOException: No space left on device
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 12s
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not stop all services.
+> Could not stop all services.
+   > Failed to release lock on Build Output Cleanup Cache (/Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.gradle/buildOutputCleanup)
+   > Failed to release lock on execution history cache (/Users/youh4ck3dme/projekty-pwa/BizAgent/BizAgent-main/android/.gradle/8.14/executionHistory)
+> Could not stop all services.
+   > Failed to release lock on cache directory md-supplier (/Users/youh4ck3dme/.gradle/caches/8.14/md-supplier)
+   > Could not stop all services.
+      > Failed to release lock on Build Output Cleanup Cache (/Users/youh4ck3dme/flutter/packages/flutter_tools/gradle/.gradle/buildOutputCleanup)
+      > Failed to release lock on execution history cache (/Users/youh4ck3dme/flutter/packages/flutter_tools/gradle/.gradle/8.14/executionHistory)
+   > Failed to release lock on cache directory md-rule (/Users/youh4ck3dme/.gradle/caches/8.14/md-rule)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 12s
+Running Gradle task 'assembleRelease'...                           13,0s
+[!] Gradle threw an error while downloading artifacts from the network.
+Gradle task assembleRelease failed with exit code 1

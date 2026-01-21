@@ -26,11 +26,11 @@ class BizBadge extends StatelessWidget {
         fg = cs.onPrimaryContainer;
         break;
       case BizBadgeTone.warn:
-        bg = Colors.orange.withOpacity(0.18);
+        bg = Colors.orange.withValues(alpha: 0.18);
         fg = Colors.orange;
         break;
       case BizBadgeTone.danger:
-        bg = Colors.red.withOpacity(0.18);
+        bg = Colors.red.withValues(alpha: 0.18);
         fg = Colors.red;
         break;
       case BizBadgeTone.neutral:

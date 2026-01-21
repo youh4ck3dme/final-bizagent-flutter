@@ -1,8 +1,8 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { defineSecret } = require("firebase-functions/params");
+const { defineString } = require("firebase-functions/params");
 
-const geminiApiKey = defineSecret("GEMINI_API_KEY");
+const geminiApiKey = defineString("GEMINI_API_KEY");
 
 // Model configuration
 // UPDEJT: Prejdené na 2.0 flash (stable model)
@@ -12,7 +12,6 @@ const MODEL_NAME = "gemini-2.0-flash";
  * Generuje profesionálny e-mail na základe kontextu.
  */
 exports.generateEmail = onCall({ 
-  secrets: [geminiApiKey],
   cors: true // TODO: Pre produkciu zmeň na ["https://bizagent-live-2026.web.app"]
 }, async (request) => {
   if (!request.auth) {
@@ -54,7 +53,6 @@ exports.generateEmail = onCall({
  * Parsuje text z bločku pomocou AI pre presnejšie dáta.
  */
 exports.analyzeReceipt = onCall({ 
-  secrets: [geminiApiKey],
   cors: true 
 }, async (request) => {
   if (!request.auth) {
@@ -108,10 +106,9 @@ exports.analyzeReceipt = onCall({
  * Hľadá firmu podľa IČO.
  * Používa Slovensko.Digital API (ak je kľúč) alebo Mock dáta pre demo.
  */
-const slovenskoDigitalKey = defineSecret("SLOVENSKO_DIGITAL_API_KEY");
+const slovenskoDigitalKey = defineString("SLOVENSKO_DIGITAL_API_KEY");
 
 exports.lookupCompany = onCall({ 
-  secrets: [slovenskoDigitalKey],
   cors: true 
 }, async (request) => {
   // Allow unauthenticated for onboarding flow (strictly rate limited in prod)

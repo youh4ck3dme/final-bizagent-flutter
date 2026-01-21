@@ -31,14 +31,12 @@ class GlassContainer extends StatefulWidget {
 class _GlassContainerState extends State<GlassContainer> {
   double _tiltX = 0;
   double _tiltY = 0;
-  late Stream<AccelerometerEvent> _accelerometerEvents;
 
   @override
   void initState() {
     super.initState();
     if (!kIsWeb) {
-      _accelerometerEvents = accelerometerEvents;
-      _accelerometerEvents.listen((event) {
+      accelerometerEventStream().listen((event) {
         if (mounted) {
           setState(() {
             _tiltX = event.y * (widget.parallaxIntensity / 1000);
@@ -55,8 +53,8 @@ class _GlassContainerState extends State<GlassContainer> {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        Colors.white.withOpacity(widget.opacity),
-        BizTheme.slovakBlue.withOpacity(widget.opacity * 0.5),
+        Colors.white.withValues(alpha: widget.opacity),
+        BizTheme.slovakBlue.withValues(alpha: widget.opacity * 0.5),
       ],
     );
 
@@ -73,12 +71,12 @@ class _GlassContainerState extends State<GlassContainer> {
             gradient: widget.gradient ?? defaultGradient,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: BizTheme.slovakBlue.withOpacity(0.15),
+                color: BizTheme.slovakBlue.withValues(alpha: 0.15),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
                 spreadRadius: 2,

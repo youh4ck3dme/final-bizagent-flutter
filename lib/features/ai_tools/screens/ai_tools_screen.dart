@@ -56,12 +56,12 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Nástroje')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             const Card(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
@@ -208,67 +208,66 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
             if (_isScanning)
               const Center(child: CircularProgressIndicator())
             else if (_receipt != null)
-              Expanded(
-                child: Card(
-                  color: Colors.grey.shade50,
-                  margin: EdgeInsets.zero,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Rozpoznané údaje:',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        const Divider(),
-                        TextField(
-                          controller: _amountController,
-                          decoration: const InputDecoration(
-                            labelText: 'Suma',
-                            suffixText: 'EUR',
-                            border: OutlineInputBorder(),
-                          ),
+              Card(
+                color: Colors.grey.shade50,
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Rozpoznané údaje:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Divider(),
+                      TextField(
+                        controller: _amountController,
+                        decoration: const InputDecoration(
+                          labelText: 'Suma',
+                          suffixText: 'EUR',
+                          border: OutlineInputBorder(),
                         ),
-                        const SizedBox(height: 12),
-                        TextField(
-                          controller: _dateController,
-                          decoration: const InputDecoration(
-                            labelText: 'Dátum',
-                            hintText: 'DD.MM.YYYY',
-                            border: OutlineInputBorder(),
-                          ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _dateController,
+                        decoration: const InputDecoration(
+                          labelText: 'Dátum',
+                          hintText: 'DD.MM.YYYY',
+                          border: OutlineInputBorder(),
                         ),
-                        const SizedBox(height: 12),
-                        TextField(
-                          controller: _vendorController,
-                          decoration: const InputDecoration(
-                            labelText: 'IČO / ID',
-                            border: OutlineInputBorder(),
-                          ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _vendorController,
+                        decoration: const InputDecoration(
+                          labelText: 'IČO / ID',
+                          border: OutlineInputBorder(),
                         ),
-                        const SizedBox(height: 16),
-                        ExpansionTile(
-                          title: const Text('Zobraziť celý text'),
-                          children: [SelectableText(_receipt!.originalText)],
+                      ),
+                      const SizedBox(height: 16),
+                      ExpansionTile(
+                        title: const Text('Zobraziť celý text'),
+                        children: [SelectableText(_receipt!.originalText)],
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.push('/create-expense',
+                                extra: _receipt!.originalText);
+                          },
+                          child: const Text('Vytvoriť výdavok'),
                         ),
-                        const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              context.push('/create-expense',
-                                  extra: _receipt!.originalText);
-                            },
-                            child: const Text('Vytvoriť výdavok'),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
           ],
         ),
       ),
+    ),
     );
   }
 }

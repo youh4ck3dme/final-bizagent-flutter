@@ -9,6 +9,7 @@ import '../providers/invoices_provider.dart';
 import '../models/invoice_model.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../shared/widgets/biz_widgets.dart';
+import '../../../core/services/tutorial_service.dart';
 
 class InvoicesScreen extends ConsumerStatefulWidget {
   const InvoicesScreen({super.key});
@@ -19,6 +20,8 @@ class InvoicesScreen extends ConsumerStatefulWidget {
 
 class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
   final Set<String> _selectedIds = {};
+  final GlobalKey _fabKey = GlobalKey();
+  final GlobalKey _remindersKey = GlobalKey();
 
   bool get _isSelectionMode => _selectedIds.isNotEmpty;
 
@@ -92,7 +95,17 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
               onPressed: _deleteSelected,
             )
           else ...[
-             IconButton(
+            BizTutorialButton(
+              onPressed: () {
+                TutorialService.showInvoicesTutorial(
+                  context: context,
+                  fabKey: _fabKey,
+                  remindersKey: _remindersKey,
+                );
+              },
+            ),
+            IconButton(
+              key: _remindersKey,
               icon: const Icon(Icons.notifications_active_outlined),
               tooltip: 'Upomienky',
               onPressed: () => context.push('/invoices/reminders'),
@@ -103,6 +116,7 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
       floatingActionButton: _isSelectionMode
           ? null
           : FloatingActionButton(
+              key: _fabKey,
               backgroundColor: BizTheme.nationalRed,
               foregroundColor: Colors.white,
               onPressed: () => context.push('/create-invoice'),

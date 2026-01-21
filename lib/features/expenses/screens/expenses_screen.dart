@@ -10,18 +10,29 @@ import '../providers/expenses_provider.dart';
 import '../models/expense_model.dart';
 import '../models/expense_category.dart';
 import '../widgets/expense_filter_sheet.dart';
+import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/ui/biz_theme.dart';
+import '../../../core/services/tutorial_service.dart';
 
 // Provider pre filtre
 final expenseFilterProvider = StateProvider<ExpenseFilterCriteria>((ref) {
   return const ExpenseFilterCriteria();
 });
 
-class ExpensesScreen extends ConsumerWidget {
+class ExpensesScreen extends ConsumerStatefulWidget {
   const ExpensesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ExpensesScreen> createState() => _ExpensesScreenState();
+}
+
+class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
+  final GlobalKey _fabKey = GlobalKey();
+  final GlobalKey _filterKey = GlobalKey();
+  final GlobalKey _analyticsKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
     final expensesAsync = ref.watch(expensesProvider);
     final filterCriteria = ref.watch(expenseFilterProvider);
 
@@ -29,14 +40,26 @@ class ExpensesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(context.t(AppStr.expensesTitle)),
         actions: [
+          BizTutorialButton(
+            onPressed: () {
+              TutorialService.showExpensesTutorial(
+                context: context,
+                fabKey: _fabKey,
+                filterKey: _filterKey,
+                analyticsKey: _analyticsKey,
+              );
+            },
+          ),
           // Analytics Button
           IconButton(
+            key: _analyticsKey,
             icon: const Icon(Icons.pie_chart),
             tooltip: 'Analytika',
             onPressed: () => context.push('/expenses/analytics'),
           ),
           // Filter Button
           IconButton(
+            key: _filterKey,
             icon: Stack(
               children: [
                 const Icon(Icons.filter_list),
@@ -61,6 +84,7 @@ class ExpensesScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        key: _fabKey,
         onPressed: () => context.push('/create-expense'),
         child: const Icon(Icons.add),
       ),
@@ -299,7 +323,7 @@ class ExpensesScreen extends ConsumerWidget {
         return false;
       },
       background: Container(
-        color: BizTheme.nationalRed.withOpacity(0.2),
+        color: BizTheme.nationalRed.withValues(alpha: 0.2),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),
         child: const Icon(Icons.delete, color: BizTheme.nationalRed),

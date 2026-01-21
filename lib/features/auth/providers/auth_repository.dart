@@ -113,20 +113,16 @@ class AuthRepository {
 
   Future<UserModel?> signInWithGoogle() async {
     try {
-      final googleSignIn = GoogleSignIn.instance;
-      
-      try {
-        await googleSignIn.initialize();
-      } catch (e) {
-        // Initialize may not be needed in all platforms
-      }
+      final googleSignIn = GoogleSignIn();
       
       GoogleSignInAccount? googleUser;
       try {
-        googleUser = await googleSignIn.authenticate();
+        googleUser = await googleSignIn.signIn();
       } catch (e) {
         return null;
       }
+      
+      if (googleUser == null) return null;
       
       final googleAuth = await googleUser.authentication;
       

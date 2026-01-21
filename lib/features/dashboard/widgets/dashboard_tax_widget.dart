@@ -241,7 +241,7 @@ class DashboardTaxWidget extends ConsumerWidget {
     final currency = NumberFormat.currency(locale: 'sk_SK', symbol: '€');
     return Row(
       children: [
-        Icon(icon, color: color.withOpacity(0.7), size: 16),
+        Icon(icon, color: color.withValues(alpha: 0.7), size: 16),
         const SizedBox(width: 8),
         Expanded(
           child: Text(

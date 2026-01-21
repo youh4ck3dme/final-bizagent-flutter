@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Bizagent</string>
+	<string>BizAgent</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,11 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>bizagent</string>
+	<string>BizAgent</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Aplikácia potrebuje prístup k fotoaparátu pre skenovanie bločkov.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>Aplikácia používa Face ID pre bezpečné prihlásenie.</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

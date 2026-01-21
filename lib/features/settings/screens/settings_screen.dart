@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/providers/theme_provider.dart';
+import '../../../core/services/tutorial_service.dart';
 import '../providers/settings_provider.dart';
 import '../models/user_settings_model.dart';
 import '../../../shared/utils/biz_snackbar.dart';
+import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/services/company_lookup_service.dart';
+import '../../../core/services/local_persistence_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -24,6 +28,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late TextEditingController _ibanController;
   late TextEditingController _swiftController;
   bool _isLookingUp = false;
+
+  final GlobalKey _saveKey = GlobalKey();
+  final GlobalKey _sectionKey = GlobalKey();
 
   @override
   void initState() {
@@ -114,7 +121,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       appBar: AppBar(
         title: const Text('Nastavenia'),
         actions: [
-          IconButton(onPressed: _save, icon: const Icon(Icons.save)),
+          BizTutorialButton(
+            onPressed: () {
+              TutorialService.showSettingsTutorial(
+                context: context,
+                saveKey: _saveKey,
+                sectionKey: _sectionKey,
+              );
+            },
+          ),
+          IconButton(key: _saveKey, onPressed: _save, icon: const Icon(Icons.save)),
         ],
       ),
       body: settingsAsync.when(
@@ -123,7 +139,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildSectionTitle('Firma'),
+              _buildSectionTitle('Firma', key: _sectionKey),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Obchodné meno'),
@@ -248,12 +264,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 trailing: const Text('Slovenčina'),
                 onTap: () {},
               ),
+              const Divider(height: 32),
+              _buildSectionTitle('Právne dokumenty'),
+              ListTile(
+                leading: const Icon(Icons.description_outlined),
+                title: const Text('Obchodné podmienky'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/legal/terms'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: const Text('Ochrana osobných údajov (GDPR)'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/legal/privacy'),
+              ),
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _save,
                 style:
                     ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
                 child: const Text('Uložiť zmeny'),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () => _confirmReset(context),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('Resetovať aplikáciu (Smazať všetky dáta)'),
               ),
             ],
           ),
@@ -264,8 +300,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Future<void> _confirmReset(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Naozaj resetovať?'),
+        content: const Text(
+            'Týmto nenávratne vymažete všetky faktúry, výdavky a nastavenia firmy. Aplikácia bude ako po prvej inštalácii.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Zrušiť')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Vymazať všetko'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref.read(localPersistenceServiceProvider).clearAll();
+      // Restart app or invalidate providers
+      if (mounted) {
+        BizSnackbar.showSuccess(context, 'Dáta boli vymazané. Reštartujte aplikáciu.');
+      }
+    }
+  }
+
+  Widget _buildSectionTitle(String title, {Key? key}) {
     return Padding(
+      key: key,
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         title.toUpperCase(),

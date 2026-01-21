@@ -44,8 +44,8 @@ PRAVIDLÁ:
     final monthInvoices = invoices.where((i) => i.dateIssued.isAfter(monthStart)).toList();
     final monthExpenses = expenses.where((e) => e.date.isAfter(monthStart)).toList();
 
-    double totalInvoiced = monthInvoices.fold(0, (sum, i) => sum + i.totalAmount);
-    double totalExpenses = monthExpenses.fold(0, (sum, e) => sum + e.amount);
+    final double totalInvoiced = monthInvoices.fold(0, (sum, i) => sum + i.totalAmount);
+    final double totalExpenses = monthExpenses.fold(0, (sum, e) => sum + e.amount);
 
     final currency = NumberFormat.currency(symbol: '€', locale: 'sk_SK');
 

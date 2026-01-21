@@ -42,7 +42,7 @@ final taxThermometerProvider =
       return isWithinWindow && isNotCancelled && isValidStatus;
     });
 
-    double turnover =
+    final double turnover =
         validInvoices.fold(0.0, (sum, invoice) => sum + invoice.totalAmount);
 
     return TaxThermometerResult(currentTurnover: turnover);

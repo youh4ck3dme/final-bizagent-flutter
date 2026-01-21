@@ -91,13 +91,13 @@ class _AiExpenseAnalysisScreenState extends ConsumerState<AiExpenseAnalysisScree
           Text(result.itemCategory, style: const TextStyle(fontWeight: FontWeight.bold)),
           if (result.warningMessage != null) ...[
              const SizedBox(height: 16),
-             Container(
-               padding: const EdgeInsets.all(12),
-               decoration: BoxDecoration(
-                 color: BizTheme.warningAmber.withOpacity(0.1),
-                 borderRadius: BorderRadius.circular(8),
-                 border: Border.all(color: BizTheme.warningAmber.withOpacity(0.3)),
-               ),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: BizTheme.warningAmber.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: BizTheme.warningAmber.withValues(alpha: 0.3)),
+                ),
                child: Row(
                  children: [
                    const Icon(Icons.info_outline, color: BizTheme.warningAmber),

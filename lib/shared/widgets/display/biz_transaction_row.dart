@@ -30,7 +30,7 @@ class BizTransactionRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: (isExpense ? BizTheme.accentRed : BizTheme.successGreen).withOpacity(0.1),
+              color: (isExpense ? BizTheme.accentRed : BizTheme.successGreen).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(BizTheme.radiusMd),
             ),
             child: Icon(

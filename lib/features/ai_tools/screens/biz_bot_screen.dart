@@ -69,15 +69,21 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
         _scrollToBottom();
       }
     } catch (e) {
+      String errorMessage = 'Prepáč, vyskytla sa chyba pri spájaní s AI. Skús to prosím neskôr.';
+      if (e.toString().contains('API kľúč')) {
+        errorMessage = 'AI asistent je momentálne nedostupný (neplatný API kľúč).';
+      }
+      
       if (mounted) {
         setState(() {
           _messages.add(BizBotMessage(
-            text: 'Prepáč, vyskytla sa chyba pri spájaní s AI. Skús to prosím neskôr.',
+            text: errorMessage,
             isUser: false,
             timestamp: DateTime.now(),
           ));
           _isLoading = false;
         });
+        _scrollToBottom();
       }
     }
   }
@@ -91,7 +97,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
             const CircleAvatar(
               backgroundColor: BizTheme.slovakBlue,
               radius: 16,
-              child: Icon(Icons.smart_toy_outlined, color: Colors.white, size: 20),
+              child: Icon(Icons.verified_user, color: Colors.white, size: 20),
             ),
             const SizedBox(width: 12),
             Column(
@@ -167,7 +173,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -2))
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))
         ],
       ),
       child: SafeArea(

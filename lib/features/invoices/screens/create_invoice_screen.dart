@@ -13,6 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/utils/biz_snackbar.dart';
 import '../../../core/services/analytics_service.dart';
 import '../providers/invoices_provider.dart';
+import '../../../core/services/icoatlas_service.dart';
 
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   const CreateInvoiceScreen({super.key});
@@ -247,7 +248,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     return InputDecoration(
       labelText: label,
       filled: isAiFilled,
-      fillColor: isAiFilled ? BizTheme.slovakBlue.withOpacity(0.05) : null,
+      fillColor: isAiFilled ? BizTheme.slovakBlue.withValues(alpha: 0.05) : null,
       suffixIcon: isAiFilled 
         ? const Icon(Icons.auto_awesome, size: 16, color: BizTheme.slovakBlue) 
         : null,
@@ -304,7 +305,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
               label: const Text('AI Vyplniť'),
               style: TextButton.styleFrom(
                 foregroundColor: BizTheme.slovakBlue,
-                backgroundColor: BizTheme.slovakBlue.withOpacity(0.1),
+                backgroundColor: BizTheme.slovakBlue.withValues(alpha: 0.1),
               ),
             ),
           ),
@@ -369,10 +370,36 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                     const Text('Odberateľ',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _clientNameController,
-                      decoration: _aiInputDecoration('Názov firmy / Meno', 'name'),
-                      validator: (v) => v!.isEmpty ? 'Povinné pole' : null,
+                    Autocomplete<Map<String, dynamic>>(
+                      optionsBuilder: (TextEditingValue textEditingValue) async {
+                        if (textEditingValue.text.length < 2) return [];
+                        return await ref.read(icoAtlasServiceProvider).autocomplete(textEditingValue.text);
+                      },
+                      displayStringForOption: (option) => option['name'] ?? '',
+                      onSelected: (Map<String, dynamic> selection) {
+                        setState(() {
+                          _clientNameController.text = selection['name'] ?? '';
+                          _clientIcoController.text = selection['ico'] ?? selection['cin'] ?? '';
+                          _clientDicController.text = selection['dic'] ?? selection['tin'] ?? '';
+                          _clientAddressController.text = selection['formatted_address'] ?? selection['address'] ?? '';
+                          _clientIcDphController.text = selection['v_tin'] ?? selection['ic_dph'] ?? '';
+                          _isDetailsExpanded = true; 
+                        });
+                      },
+                      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                        if (controller.text != _clientNameController.text && _clientNameController.text.isNotEmpty && controller.text.isEmpty) {
+                          controller.text = _clientNameController.text;
+                        }
+                        controller.addListener(() {
+                          _clientNameController.text = controller.text;
+                        });
+                        return TextFormField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: _aiInputDecoration('Názov firmy / Meno', 'name'),
+                          validator: (v) => v!.isEmpty ? 'Povinné pole' : null,
+                        );
+                      },
                     ),
                     if (!_isAiOptimized || _isDetailsExpanded) ...[
                       const SizedBox(height: 8),

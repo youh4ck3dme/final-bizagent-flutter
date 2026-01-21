@@ -38,6 +38,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   final GlobalKey _dashboardKey = GlobalKey();
   final GlobalKey _scanKey = GlobalKey();
   final GlobalKey _invoiceKey = GlobalKey();
+  final GlobalKey _botKey = GlobalKey();
 
   @override
   void initState() {
@@ -58,13 +59,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final hasSeenTutorial =
         prefs.getBool('hasSeenTutorial_${user.id}') ?? false;
 
-    if (!hasSeenTutorial && (user.isAnonymous)) {
+    if (!hasSeenTutorial) {
       if (!mounted) return;
       TutorialService.showDashboardTutorial(
         context: context,
         dashboardKey: _dashboardKey,
         scanKey: _scanKey,
         invoiceKey: _invoiceKey,
+        botKey: _botKey,
         onFinish: () {
           prefs.setBool('hasSeenTutorial_${user.id}', true);
         },
@@ -83,17 +85,38 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: Text(context.t(AppStr.spdTitle),
-            style: Theme.of(context).appBarTheme.titleTextStyle),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(context.t(AppStr.spdTitle),
+                style: Theme.of(context).appBarTheme.titleTextStyle),
+            const SizedBox(width: 8),
+            const ZenLock(),
+          ],
+        ),
         elevation: 0,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         actions: [
+          BizTutorialButton(
+            onPressed: () {
+              TutorialService.showDashboardTutorial(
+                context: context,
+                dashboardKey: _dashboardKey,
+                scanKey: _scanKey,
+                invoiceKey: _invoiceKey,
+                botKey: _botKey,
+                onFinish: () {},
+              );
+            },
+            tooltip: 'Zobraziť tutoriál',
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               ref.read(authControllerProvider.notifier).signOut();
             },
+            tooltip: 'Odhlásiť sa',
           ),
         ],
       ),
@@ -143,7 +166,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 24.0),
                           child: SmartDashboardEmptyState(key: _dashboardKey),
-                        ).animate().fade().scale(),
+                        ).animate().fade(),
 
                       // Overdue Alerts
                       if (invoicesAsync.value != null)
@@ -164,7 +187,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           profitAsync.value!,
                           expensesAsync.value ?? [],
                           crossAxisCount: crossAxisCount, // Dynamic Column Count
-                        ).animate().fade(delay: 300.ms).moveY(begin: 20),
+                        ).animate().fade(delay: 300.ms),
 
                       const SizedBox(height: 24),
                       // AI Insights
@@ -260,7 +283,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               date: invoice.dateDue, 
                               status: invoice.status.toSlovak(),
                               statusColor: invoice.status.color(context),
-                              onTap: () => context.push('/invoices/${invoice.id}'),
+                              onTap: () => context.push('/invoices/detail', extra: invoice),
                             ).animate().fade().slideY(begin: 0.2)
                          ),
                     ],
@@ -445,11 +468,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildBizBotCard(BuildContext context) {
     return Card(
+      key: _botKey,
       elevation: 0,
-      color: BizTheme.slovakBlue.withOpacity(0.05),
+      color: BizTheme.slovakBlue.withValues(alpha: 0.05),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: BizTheme.slovakBlue.withOpacity(0.1)),
+        side: BorderSide(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
       ),
       child: InkWell(
         onTap: () {

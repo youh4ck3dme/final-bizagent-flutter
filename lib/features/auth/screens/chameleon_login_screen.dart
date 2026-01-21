@@ -179,7 +179,7 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: BizTheme.slovakBlue.withOpacity(0.2),
+                            color: BizTheme.slovakBlue.withValues(alpha: 0.2),
                             blurRadius: 20,
                             spreadRadius: 2,
                           )
@@ -203,10 +203,10 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _ambientColor.withOpacity(0.1),
+                                    color: _ambientColor.withValues(alpha: 0.1),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: _ambientColor.withOpacity(0.2),
+                                        color: _ambientColor.withValues(alpha: 0.2),
                                         blurRadius: 24,
                                         spreadRadius: 4,
                                       )
@@ -268,7 +268,7 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
                                     label: const Text('Prihlásiť biometriou'),
                                     style: OutlinedButton.styleFrom(
                                       minimumSize: const Size(double.infinity, 48),
-                                      side: BorderSide(color: _ambientColor.withOpacity(0.3)),
+                                      side: BorderSide(color: _ambientColor.withValues(alpha: 0.3)),
                                     ),
                                   ),
                                 ],
@@ -309,25 +309,6 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
              const BizFullscreenLoader(label: 'Overujem biometriu...'),
           ],
         ),
-      ),
-    );
-  }
-
-
-  Widget _buildOrb(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        boxShadow: [
-          BoxShadow(
-            color: color,
-            blurRadius: 40,
-            spreadRadius: 10,
-          )
-        ],
       ),
     );
   }
@@ -428,7 +409,7 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: BizTheme.slovakBlue.withOpacity(0.2),
+                      color: BizTheme.slovakBlue.withValues(alpha: 0.2),
                       blurRadius: 8,
                       spreadRadius: 1,
                     ),

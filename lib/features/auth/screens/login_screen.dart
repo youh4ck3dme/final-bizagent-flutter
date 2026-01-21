@@ -20,7 +20,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   bool _isLogin = true;
 
   late AnimationController _pulseController;
-  late Animation<double> _glowAnimation;
 
   late AnimationController _rotationController;
 
@@ -37,9 +36,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       duration: const Duration(seconds: 4),
     )..repeat();
 
-    _glowAnimation = Tween<double>(begin: 2.0, end: 12.0).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
   }
 
   @override
@@ -149,7 +145,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           backgroundColor: BizTheme.slovakBlue,
                           foregroundColor: Colors.white,
                           elevation: 4,
-                          shadowColor: BizTheme.slovakBlue.withOpacity(0.4),
+                          shadowColor: BizTheme.slovakBlue.withValues(alpha: 0.4),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

@@ -152,7 +152,7 @@ class _InsightCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: BizTheme.successGreen.withOpacity(0.1),
+                      color: BizTheme.successGreen.withValues(alpha: 0.1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

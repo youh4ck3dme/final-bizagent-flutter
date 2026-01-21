@@ -114,7 +114,7 @@ class _AiEmailGeneratorScreenState
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      value: _selectedTone,
+                      initialValue: _selectedTone,
                       decoration: const InputDecoration(
                         labelText: 'Tón komunikácie',
                         border: OutlineInputBorder(),

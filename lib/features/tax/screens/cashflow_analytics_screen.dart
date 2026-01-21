@@ -173,7 +173,7 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: profit >= 0 ? BizTheme.slovakBlue.withOpacity(0.1) : BizTheme.richCrimson.withOpacity(0.1),
+        color: profit >= 0 ? BizTheme.slovakBlue.withValues(alpha: 0.1) : BizTheme.richCrimson.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(16),

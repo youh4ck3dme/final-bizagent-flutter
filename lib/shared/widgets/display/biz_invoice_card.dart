@@ -33,7 +33,7 @@ class BizInvoiceCard extends StatelessWidget {
     
     return Card(
       elevation: isSelected ? 0 : BizTheme.elevation,
-      color: isSelected ? theme.colorScheme.primaryContainer.withOpacity(0.3) : null,
+      color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3) : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         side: isSelected 
@@ -57,7 +57,7 @@ class BizInvoiceCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: (statusColor ?? theme.colorScheme.primary).withOpacity(0.1),
+                    color: (statusColor ?? theme.colorScheme.primary).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(

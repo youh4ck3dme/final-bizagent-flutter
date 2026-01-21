@@ -6,6 +6,7 @@ import '../providers/settings_provider.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../shared/utils/biz_snackbar.dart';
 import '../../../core/services/company_lookup_service.dart';
+import '../../../core/services/icoatlas_service.dart';
 
 class BusinessProfileScreen extends ConsumerStatefulWidget {
   const BusinessProfileScreen({super.key});
@@ -133,11 +134,40 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
             children: [
               _buildHeader('Základné údaje'),
               const SizedBox(height: 16),
-              _buildTextField(
-                controller: _nameController,
-                label: 'Obchodné meno',
-                icon: Icons.business,
-                validator: (v) => v!.isEmpty ? 'Zadajte obchodné meno' : null,
+              Autocomplete<Map<String, dynamic>>(
+                optionsBuilder: (TextEditingValue textEditingValue) async {
+                  if (textEditingValue.text.length < 2) return [];
+                  return await ref.read(icoAtlasServiceProvider).autocomplete(textEditingValue.text);
+                },
+                displayStringForOption: (option) => option['name'] ?? '',
+                onSelected: (Map<String, dynamic> selection) {
+                  setState(() {
+                    _nameController.text = selection['name'] ?? '';
+                    _icoController.text = selection['ico'] ?? selection['cin'] ?? '';
+                    _addressController.text = selection['formatted_address'] ?? selection['address'] ?? '';
+                    _dicController.text = selection['dic'] ?? selection['tin'] ?? '';
+                    _icDphController.text = selection['v_tin'] ?? selection['ic_dph'] ?? '';
+                  });
+                },
+                fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                  // Pre-fill if we have initial data
+                  if (controller.text != _nameController.text && _nameController.text.isNotEmpty && controller.text.isEmpty) {
+                    controller.text = _nameController.text;
+                  }
+                  
+                  // Keep our _nameController in sync
+                  controller.addListener(() {
+                    _nameController.text = controller.text;
+                  });
+
+                  return _buildTextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    label: 'Obchodné meno',
+                    icon: Icons.business,
+                    validator: (v) => v!.isEmpty ? 'Zadajte obchodné meno' : null,
+                  );
+                },
               ),
               const SizedBox(height: 16),
               _buildTextField(
@@ -263,10 +293,12 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     String? placeholder,
     int maxLines = 1,
     Widget? suffix,
+    FocusNode? focusNode,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       maxLines: maxLines,
       validator: validator,
       decoration: InputDecoration(

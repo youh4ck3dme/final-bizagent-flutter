@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../features/auth/providers/auth_repository.dart';
 import '../../../features/intro/providers/onboarding_provider.dart';
-
+import '../../../core/services/initialization_service.dart';
 import '../../../core/ui/biz_theme.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -17,16 +17,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Check auth after a short delay to allow the "loading" animation to be seen
-    // and ensuring the widget system is ready.
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        _checkAuth();
-      }
+    // Start initialization when screen mounts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(initializationServiceProvider.notifier).initializeApp();
     });
   }
 
   void _checkAuth() {
+     // Don't redirect if initialization is still in progress
+     final init = ref.read(initializationServiceProvider);
+     if (!init.isCompleted) return;
+
      final authState = ref.read(authStateProvider);
      final onboardingState = ref.read(onboardingProvider);
      
@@ -43,87 +44,81 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Listen to changes to handle async auth loading if it happens while on splash
-    ref.listen(authStateProvider, (previous, next) {
-      if (next.valueOrNull != null) {
-         _checkAuth();
-      } else if (next.hasError) {
-         context.go('/login');
+    final initState = ref.watch(initializationServiceProvider);
+
+    // Listen for completion
+    ref.listen(initializationServiceProvider, (previous, next) {
+      if (next.isCompleted) {
+        _checkAuth();
       }
     });
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 0. Unified Global Background
+          // 1. Branding Image (Fullscreen or large)
           Image.asset(
-            'assets/images/background_fusion.webp',
+            'assets/images/splash_branding.jpg',
             fit: BoxFit.cover,
           ),
+          
+          // 2. Overlay Gradient for readability
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.7),
+                ],
+                stops: const [0.6, 1.0],
+              ),
+            ),
+          ),
 
-          // 1. Content
-          Center(
+          // 3. Loading Content at Bottom
+          Positioned(
+            left: 20,
+            right: 20,
+            bottom: 60,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 120, // Slightly larger
-                  height: 120,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                Text(
+                  initState.message,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  padding: const EdgeInsets.all(24),
-                  child: Image.asset('assets/icon/app_icon_1024.png'),
                 ),
-                const SizedBox(height: 40),
-                
-                // Minimalist Loader using TweenAnimationBuilder
-                SizedBox(
-                  width: 160,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: TweenAnimationBuilder<double>(
-                      tween: Tween<double>(begin: 0.0, end: 1.0),
-                      duration: const Duration(seconds: 2),
-                      curve: Curves.easeInOut,
-                      builder: (context, value, _) {
-                        return LinearProgressIndicator(
-                          value: value,
-                          minHeight: 4,
-                          backgroundColor: Colors.white.withValues(alpha: 0.3),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            BizTheme.slovakBlue,
-                          ),
-                        );
-                      },
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: initState.progress,
+                    minHeight: 6,
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      BizTheme.slovakBlue,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '${(initState.progress * 100).toInt()}%',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontSize: 12,
                     ),
                   ),
                 ),
               ],
-            ),
-          ),
-          
-          // Version info
-          Positioned(
-            bottom: 40,
-            child: Text(
-              'v1.0.1+2',
-              style: TextStyle(
-                color: const Color(0xFF64748B).withValues(alpha: 0.6),
-                fontSize: 12,
-                letterSpacing: 1.5,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Inter', // Direct generic font family fallback
-              ),
             ),
           ),
         ],

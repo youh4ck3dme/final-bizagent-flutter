@@ -76,6 +76,12 @@ class LocalPersistenceService {
     final box = Hive.box(settingsBoxName);
     await box.put(businessProfileKey, data);
   }
+
+  Future<void> clearAll() async {
+    await Hive.box(invoicesBoxName).clear();
+    await Hive.box(expensesBoxName).clear();
+    await Hive.box(settingsBoxName).clear();
+  }
 }
 
 final localPersistenceServiceProvider = Provider<LocalPersistenceService>((ref) {

@@ -54,7 +54,7 @@ class BizTimeline extends StatelessWidget {
                   Container(
                     width: 2,
                     height: 40, // Fixed height or dynamic, usually expanded
-                    color: item.isCompleted ? BizTheme.successGreen.withOpacity(0.5) : BizTheme.gray300,
+                    color: item.isCompleted ? BizTheme.successGreen.withValues(alpha: 0.5) : BizTheme.gray300,
                   ),
               ],
             ),

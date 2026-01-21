@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
 
+import '../../core/services/initialization_service.dart';
 import '../../features/splash/screens/splash_screen.dart';
 import '../../features/invoices/screens/invoices_screen.dart';
 import '../../features/expenses/screens/expenses_screen.dart';
@@ -16,7 +17,8 @@ import '../../features/ai_tools/screens/ai_tools_screen.dart';
 import '../../features/ai_tools/screens/ai_email_generator_screen.dart';
 import '../../features/ai_tools/screens/ai_expense_analysis_screen.dart';
 import '../../features/ai_tools/screens/ai_reminder_generator_screen.dart';
-import '../../features/auth/screens/chameleon_login_screen.dart';
+import '../../features/auth/screens/firebase_login_screen.dart';
+// import '../../features/auth/screens/chameleon_login_screen.dart'; // No longer used as default login
 import '../../features/auth/providers/auth_repository.dart';
 import '../../features/intro/providers/onboarding_provider.dart';
 import '../../features/invoices/screens/create_invoice_screen.dart';
@@ -31,6 +33,8 @@ import '../../features/expenses/screens/create_expense_screen.dart';
 
 import '../../features/bank_import/screens/bank_import_screen.dart';
 import '../../features/export/screens/export_screen.dart';
+import '../../features/legal/screens/terms_and_conditions_screen.dart';
+import '../../features/legal/screens/privacy_policy_screen.dart';
 import '../../shared/widgets/scaffold_with_navbar.dart';
 import '../../shared/widgets/biz_auth_required.dart';
 
@@ -41,6 +45,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
   final onboardingState = ref.watch(onboardingProvider);
   final analytics = ref.watch(firebaseAnalyticsProvider);
+  final init = ref.watch(initializationServiceProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -53,6 +58,12 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 1. Loading states
       if (authState.isLoading || onboardingState.isLoading) {
+        return path == '/splash' ? null : '/splash';
+      }
+
+      // 1b. Initialization (Force Splash)
+      // This ensures the splash screen runs its course even if auth loads fast.
+      if (!init.isCompleted) {
         return path == '/splash' ? null : '/splash';
       }
 
@@ -89,7 +100,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const ChameleonLoginScreen(),
+        builder: (context, state) => const FirebaseLoginScreen(),
       ),
       GoRoute(
         path: '/onboarding',
@@ -130,6 +141,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           );
         },
+      ),
+      GoRoute(
+        path: '/legal/terms',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const TermsAndConditionsScreen(),
+      ),
+      GoRoute(
+        path: '/legal/privacy',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PrivacyPolicyScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

@@ -50,7 +50,7 @@ class PaymentRemindersScreen extends ConsumerWidget {
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
                   leading: CircleAvatar(
-                    backgroundColor: BizTheme.richCrimson.withOpacity(0.1),
+                    backgroundColor: BizTheme.richCrimson.withValues(alpha: 0.1),
                     child: const Icon(Icons.warning_amber, color: BizTheme.richCrimson),
                   ),
                   title: Text(
@@ -67,9 +67,9 @@ class PaymentRemindersScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: BizTheme.richCrimson.withOpacity(0.05),
+                          color: BizTheme.richCrimson.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: BizTheme.richCrimson.withOpacity(0.3)),
+                          border: Border.all(color: BizTheme.richCrimson.withValues(alpha: 0.3)),
                         ),
                         child: Text(
                           '$daysOverdue dní po splatnosti',

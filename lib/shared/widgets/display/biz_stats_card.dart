@@ -42,7 +42,7 @@ class BizStatsCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: (isPositive ? BizTheme.successGreen : BizTheme.errorRed).withOpacity(0.1),
+                        color: (isPositive ? BizTheme.successGreen : BizTheme.errorRed).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(BizTheme.radiusSm),
                       ),
                       child: Row(

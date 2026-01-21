@@ -95,3 +95,37 @@ class BizPrimaryButton extends StatelessWidget {
     );
   }
 }
+
+class BizTutorialButton extends StatelessWidget {
+  const BizTutorialButton({
+    super.key,
+    required this.onPressed,
+    this.tooltip = 'Dozvedieť sa viac',
+  });
+
+  final VoidCallback onPressed;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0B4EA2).withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.verified_user,
+          color: Color(0xFF0B4EA2),
+          size: 20,
+        ),
+      ),
+      tooltip: tooltip,
+      onPressed: () {
+        HapticFeedback.lightImpact();
+        onPressed();
+      },
+    );
+  }
+}

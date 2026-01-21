@@ -76,10 +76,10 @@ final taxEstimationProvider = Provider<AsyncValue<TaxEstimationModel>>((ref) {
 
           // 3. Tax Estimates
           // Simplified: 15% income tax on profit for small business
-          double incomeTax = profit > 0 ? profit * 0.15 : 0;
+          final double incomeTax = profit > 0 ? profit * 0.15 : 0;
           
           // VAT Estimate: Assume 20% rate if payer
-          double vatLiability = 0;
+          final double vatLiability;
           final isVatPayer = settings?.isVatPayer ?? false;
           if (isVatPayer) {
              // In Slovakia, for a simplified estimate: (Output VAT - Input VAT)
@@ -87,6 +87,8 @@ final taxEstimationProvider = Provider<AsyncValue<TaxEstimationModel>>((ref) {
              double outputVat = (revenue / 1.2) * 0.2;
              double inputVat = (costs / 1.2) * 0.2;
              vatLiability = outputVat - inputVat;
+          } else {
+            vatLiability = 0;
           }
 
           return AsyncValue.data(TaxEstimationModel(

@@ -84,7 +84,7 @@ class BizTheme {
     final colorScheme = ColorScheme.light(
       primary: slovakBlue,
       onPrimary: Colors.white,
-      primaryContainer: blueLight.withOpacity(0.1),
+      primaryContainer: blueLight.withValues(alpha: 0.1),
       onPrimaryContainer: blueDark,
       secondary: nationalRed,
       onSecondary: Colors.white,

@@ -1,8 +1,6 @@
 // lib/core/services/export_service.dart
 import 'dart:convert';
 import 'package:universal_io/io.dart';
-import 'dart:typed_data';
-
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
@@ -209,13 +207,13 @@ class ExportService {
     
     if (!kIsWeb && zipPath != null) {
       final outFile = File(zipPath);
-      await outFile.writeAsBytes(outBytes!, flush: true);
+      await outFile.writeAsBytes(outBytes, flush: true);
     }
 
     return ExportResult(
       zipPath: zipPath ?? '', 
       missingItems: missing, 
-      zipBytes: kIsWeb ? Uint8List.fromList(outBytes!) : null,
+      zipBytes: kIsWeb ? Uint8List.fromList(outBytes) : null,
     );
   }
 

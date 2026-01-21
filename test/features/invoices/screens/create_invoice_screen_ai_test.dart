@@ -6,7 +6,6 @@ import 'package:bizagent/features/auth/providers/auth_repository.dart';
 import 'package:bizagent/features/settings/providers/settings_provider.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
 import 'package:bizagent/features/auth/models/user_model.dart';
-import 'package:bizagent/features/invoices/providers/invoices_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
