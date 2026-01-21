@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/ui/biz_theme.dart';
 import '../models/expense_model.dart';
 import '../models/expense_category.dart';
 import '../providers/expenses_provider.dart';
@@ -158,7 +159,7 @@ class ExpenseDetailScreen extends ConsumerWidget {
       {Widget? trailing}) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.blueGrey),
+        Icon(icon, size: 20, color: BizTheme.gray600),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -180,7 +181,7 @@ class ExpenseDetailScreen extends ConsumerWidget {
   }
 
   Widget _buildConfidenceIndicator(int confidence) {
-    Color color = Colors.red;
+    Color color = BizTheme.nationalRed;
     if (confidence > 80) {
       color = Colors.green;
     } else if (confidence > 50) {
@@ -213,7 +214,7 @@ class ExpenseDetailScreen extends ConsumerWidget {
               child: const Text('Zrušiť')),
           TextButton(
               onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              style: TextButton.styleFrom(foregroundColor: BizTheme.nationalRed),
               child: const Text('Zmazať')),
         ],
       ),

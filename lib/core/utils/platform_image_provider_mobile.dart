@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 ImageProvider getPlatformSpecificImage(String path) {
   if (path.startsWith('http')) {

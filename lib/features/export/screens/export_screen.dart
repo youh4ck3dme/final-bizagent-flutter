@@ -134,7 +134,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   Text(context.t(AppStr.exportReady),
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 6),
-                  Text(st.result!.zipPath,
+                  Text(
+                      st.result!.zipPath.isNotEmpty
+                          ? st.result!.zipPath
+                          : 'Súbor pripravený na zdieľanie/stiahnutie',
                       style: Theme.of(context).textTheme.bodySmall),
                   const SizedBox(height: 12),
                   Wrap(
@@ -143,7 +146,18 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                     children: [
                       FilledButton.icon(
                         onPressed: () async {
-                          await Share.shareXFiles([XFile(st.result!.zipPath)]);
+                          final res = st.result!;
+                          XFile file;
+                          if (res.zipBytes != null) {
+                            file = XFile.fromData(
+                              res.zipBytes!,
+                              mimeType: 'application/zip',
+                              name: 'bizagent_export.zip',
+                            );
+                          } else {
+                            file = XFile(res.zipPath);
+                          }
+                          await Share.shareXFiles([file]);
                         },
                         icon: const Icon(Icons.share),
                         label: Text(context.t(AppStr.share)),

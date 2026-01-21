@@ -56,4 +56,17 @@ class InvoicesController extends StateNotifier<AsyncValue<void>> {
         .read(invoicesRepositoryProvider)
         .deleteInvoice(user.id, invoiceId));
   }
+
+  Future<void> deleteInvoices(List<String> invoiceIds) async {
+    final user = _ref.read(authStateProvider).valueOrNull;
+    if (user == null) return;
+
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final repo = _ref.read(invoicesRepositoryProvider);
+      for (final id in invoiceIds) {
+        await repo.deleteInvoice(user.id, id);
+      }
+    });
+  }
 }

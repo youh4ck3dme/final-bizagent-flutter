@@ -1,9 +1,10 @@
 // lib/core/services/export_service.dart
 import 'dart:convert';
-import 'dart:io';
+import 'package:universal_io/io.dart';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
-import 'package:archive/archive_io.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -23,7 +24,8 @@ class InvoiceExportItem {
     required this.clientName,
     required this.totalEur,
     required this.vatEur,
-    required this.pdfLocalPath, // must be local file path or null if not cached
+    this.pdfLocalPath, 
+    this.pdfData,
   });
 
   final String id;
@@ -33,6 +35,7 @@ class InvoiceExportItem {
   final double totalEur;
   final double vatEur;
   final String? pdfLocalPath;
+  final Uint8List? pdfData;
 }
 
 class ExpenseExportItem {
@@ -42,7 +45,8 @@ class ExpenseExportItem {
     required this.vendor,
     required this.totalEur,
     required this.category,
-    required this.attachmentLocalPaths, // 0..N local file paths
+    this.attachmentLocalPaths = const [],
+    this.attachmentDatas = const [],
   });
 
   final String id;
@@ -51,6 +55,7 @@ class ExpenseExportItem {
   final double totalEur;
   final String category;
   final List<String> attachmentLocalPaths;
+  final List<Uint8List> attachmentDatas;
 }
 
 abstract class ExportDataSource {
@@ -76,15 +81,19 @@ class ExportService {
     var prog = ExportProgress.empty();
 
     final now = DateTime.now();
-    final dir = await getApplicationDocumentsDirectory();
-    final exportDir = Directory(p.join(dir.path, 'exports'));
-    if (!await exportDir.exists()) await exportDir.create(recursive: true);
-
-    final fromStr = _yyyymmdd(period.from);
-    final toStr = _yyyymmdd(period.to);
-    final zipFileName =
-        'BizAgent_Export_${FileNames.safe(uid)}_${fromStr}_$toStr.zip';
-    final zipPath = p.join(exportDir.path, zipFileName);
+    
+    // Prepare Output Path (Only on Native)
+    String? zipPath;
+    if (!kIsWeb) {
+      final dir = await getApplicationDocumentsDirectory();
+      final exportDir = Directory(p.join(dir.path, 'exports'));
+      if (!await exportDir.exists()) await exportDir.create(recursive: true);
+      final fromStr = _yyyymmdd(period.from);
+      final toStr = _yyyymmdd(period.to);
+      final zipFileName =
+          'BizAgent_Export_${FileNames.safe(uid)}_${fromStr}_$toStr.zip';
+      zipPath = p.join(exportDir.path, zipFileName);
+    }
 
     onStep?.call('Načítavam dáta…');
     final invoices = await dataSource.loadInvoices(period);
@@ -129,18 +138,22 @@ class ExportService {
     for (final inv in invoices) {
       final fileName = FileNames.safe('${inv.number}_${inv.clientName}.pdf');
       final zipEntryPath = 'invoices/$fileName';
-      final path = inv.pdfLocalPath;
+      
+      List<int>? bytes;
+      if (inv.pdfData != null) {
+        bytes = inv.pdfData;
+      } else if (inv.pdfLocalPath != null && inv.pdfLocalPath!.isNotEmpty) {
+        final f = File(inv.pdfLocalPath!);
+        if (await f.exists()) {
+          bytes = await f.readAsBytes();
+        }
+      }
 
-      if (path == null || path.isEmpty) {
+      if (bytes == null) {
         missing.add('PDF missing for invoice ${inv.number} (${inv.id})');
         continue;
       }
-      final f = File(path);
-      if (!await f.exists()) {
-        missing.add('PDF file not found: $path (invoice ${inv.number})');
-        continue;
-      }
-      final bytes = await f.readAsBytes();
+      
       archive.addFile(ArchiveFile(zipEntryPath, bytes.length, bytes));
       pdfOk++;
     }
@@ -155,6 +168,17 @@ class ExportService {
     for (final ex in expenses) {
       final baseFolder =
           'expenses/${FileNames.safe(_yyyymmdd(ex.date))}_${FileNames.safe(ex.vendor)}/${ex.id}';
+      
+      // Process explicit data first (Web)
+      for (int i = 0; i < ex.attachmentDatas.length; i++) {
+        attTotal++;
+        final bytes = ex.attachmentDatas[i];
+        final name = 'attachment_data_${i + 1}.bin'; // Fallback extension
+        archive.addFile(ArchiveFile('$baseFolder/$name', bytes.length, bytes));
+        attOk++;
+      }
+
+      // Process local paths (Mobile)
       for (final ap in ex.attachmentLocalPaths) {
         attTotal++;
         final f = File(ap);
@@ -177,16 +201,22 @@ class ExportService {
     final missingText = missing.isEmpty
         ? 'OK - nič nechýba.\n'
         : '${missing.map((e) => '- $e').join('\n')}\n';
-    // replace empty placeholder by adding a new file with same name (archive keeps last)
     archive.addFile(ArchiveFile(
         'missing_report.txt', missingText.length, utf8.encode(missingText)));
 
     // Save ZIP
     final outBytes = ZipEncoder().encode(archive);
-    final outFile = File(zipPath);
-    await outFile.writeAsBytes(outBytes, flush: true);
+    
+    if (!kIsWeb && zipPath != null) {
+      final outFile = File(zipPath);
+      await outFile.writeAsBytes(outBytes!, flush: true);
+    }
 
-    return ExportResult(zipPath: zipPath, missingItems: missing);
+    return ExportResult(
+      zipPath: zipPath ?? '', 
+      missingItems: missing, 
+      zipBytes: kIsWeb ? Uint8List.fromList(outBytes!) : null,
+    );
   }
 
   String _buildInvoicesCsv(List<InvoiceExportItem> invoices) {
@@ -213,7 +243,7 @@ class ExportService {
         e.vendor,
         e.category,
         e.totalEur.toStringAsFixed(2),
-        e.attachmentLocalPaths.length.toString(),
+        (e.attachmentLocalPaths.length + e.attachmentDatas.length).toString(),
       ]);
     }
     return Csv.encode(rows);

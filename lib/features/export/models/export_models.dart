@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class ExportPeriod {
   final DateTime from;
   final DateTime to;
@@ -83,12 +85,14 @@ class ExportResult {
   final bool hasMissing;
   final List<String> missingItems;
   final DateTime? generatedAt;
+  final Uint8List? zipBytes;
 
   const ExportResult({
     required this.zipPath,
     this.hasMissing = false,
     this.missingItems = const [],
     this.generatedAt,
+    this.zipBytes,
   });
 }
 

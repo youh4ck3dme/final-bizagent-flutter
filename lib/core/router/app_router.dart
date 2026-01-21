@@ -14,7 +14,9 @@ import '../../features/expenses/screens/expense_detail_screen.dart';
 import '../../features/ai_tools/screens/ai_tools_screen.dart';
 
 import '../../features/ai_tools/screens/ai_email_generator_screen.dart';
-import '../../features/auth/screens/login_screen.dart';
+import '../../features/ai_tools/screens/ai_expense_analysis_screen.dart';
+import '../../features/ai_tools/screens/ai_reminder_generator_screen.dart';
+import '../../features/auth/screens/chameleon_login_screen.dart';
 import '../../features/auth/providers/auth_repository.dart';
 import '../../features/intro/providers/onboarding_provider.dart';
 import '../../features/invoices/screens/create_invoice_screen.dart';
@@ -87,7 +89,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => const ChameleonLoginScreen(),
       ),
       GoRoute(
         path: '/onboarding',
@@ -217,6 +219,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                         initialContext: extra?['context'],
                       );
                     },
+                  ),
+                  GoRoute(
+                    path: 'expense-analysis',
+                    builder: (context, state) => const AiExpenseAnalysisScreen(),
+                  ),
+                  GoRoute(
+                    path: 'reminder-generator',
+                    builder: (context, state) => const AiReminderGeneratorScreen(),
                   ),
                 ],
               ),

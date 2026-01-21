@@ -71,4 +71,32 @@ class SettingsController extends StateNotifier<AsyncValue<void>> {
         .read(settingsRepositoryProvider)
         .updateSettings(user.id, updatedSettings));
   }
+
+  Future<void> updateBiometricEnabled(bool enabled) async {
+    final user = _ref.read(authStateProvider).value;
+    if (user == null) return;
+
+    final currentSettings =
+        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+    final updatedSettings = currentSettings.copyWith(biometricEnabled: enabled);
+
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _ref
+        .read(settingsRepositoryProvider)
+        .updateSettings(user.id, updatedSettings));
+  }
+
+  Future<void> updateLanguage(String language) async {
+    final user = _ref.read(authStateProvider).value;
+    if (user == null) return;
+
+    final currentSettings =
+        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+    final updatedSettings = currentSettings.copyWith(language: language);
+
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() => _ref
+        .read(settingsRepositoryProvider)
+        .updateSettings(user.id, updatedSettings));
+  }
 }

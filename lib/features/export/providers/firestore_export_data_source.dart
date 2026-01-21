@@ -1,4 +1,6 @@
-import 'dart:io';
+import 'package:universal_io/io.dart';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
@@ -34,8 +36,18 @@ class FirestoreExportDataSource implements ExportDataSource {
     final exportItems = <InvoiceExportItem>[];
     for (final inv in invoices) {
       String? localPath;
+      Uint8List? fileBytes;
+
       if (inv.pdfUrl != null && inv.pdfUrl!.isNotEmpty) {
-        localPath = await _downloadFile(inv.pdfUrl!, 'inv_${inv.number}.pdf');
+        if (kIsWeb) {
+          fileBytes = await _downloadBytes(inv.pdfUrl!);
+        } else {
+          try {
+            localPath = await _downloadFile(inv.pdfUrl!, 'inv_${inv.number}.pdf');
+          } catch (_) {
+             // ignore download errors
+          }
+        }
       }
       exportItems.add(InvoiceExportItem(
         id: inv.id,
@@ -45,6 +57,7 @@ class FirestoreExportDataSource implements ExportDataSource {
         totalEur: inv.totalAmount,
         vatEur: inv.totalVat,
         pdfLocalPath: localPath,
+        pdfData: fileBytes,
       ));
     }
     return exportItems;
@@ -67,10 +80,21 @@ class FirestoreExportDataSource implements ExportDataSource {
     final exportItems = <ExpenseExportItem>[];
     for (final ex in expenses) {
       final localPaths = <String>[];
+      final fileDatas = <Uint8List>[];
+
       for (int i = 0; i < ex.receiptUrls.length; i++) {
-        final path = await _downloadFile(
-            ex.receiptUrls[i], 'exp_${ex.id}_$i${_ext(ex.receiptUrls[i])}');
-        if (path != null) localPaths.add(path);
+        final url = ex.receiptUrls[i];
+        final name = 'exp_${ex.id}_$i${_ext(url)}';
+
+        if (kIsWeb) {
+          final bytes = await _downloadBytes(url);
+          if (bytes != null) fileDatas.add(bytes);
+        } else {
+           try {
+            final path = await _downloadFile(url, name);
+            if (path != null) localPaths.add(path);
+           } catch (_) {}
+        }
       }
       exportItems.add(ExpenseExportItem(
         id: ex.id,
@@ -79,6 +103,7 @@ class FirestoreExportDataSource implements ExportDataSource {
         totalEur: ex.amount,
         category: ex.category?.name ?? 'Other',
         attachmentLocalPaths: localPaths,
+        attachmentDatas: fileDatas,
       ));
     }
     return exportItems;
@@ -119,5 +144,17 @@ class FirestoreExportDataSource implements ExportDataSource {
     if (url.contains('.jpeg')) return '.jpeg';
     if (url.contains('.pdf')) return '.pdf';
     return '.img';
+  }
+
+  Future<Uint8List?> _downloadBytes(String url) async {
+    try {
+      final response = await _dio.get(
+        url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      return Uint8List.fromList(response.data);
+    } catch (e) {
+      return null;
+    }
   }
 }

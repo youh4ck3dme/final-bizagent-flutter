@@ -3,14 +3,19 @@ class UserSettingsModel {
   final String companyAddress;
   final String companyIco;
   final String companyDic;
-  final String companyIcDph; // Added
-  final String bankAccount; // IBAN
-  final String swift; // Added
-  final String registerInfo; // Added e.g. "Zapísaná v OR OS..."
+  final String companyIcDph;
+  final String bankAccount;
+  final String swift;
+  final String registerInfo;
   final bool showQrCode;
   final bool isVatPayer;
   final String? iban;
+  final String? companyIban;
+  final String? companySwift;
   final bool showQrOnInvoice;
+  final bool biometricEnabled;
+  final String language;
+  final String currency;
 
   UserSettingsModel({
     required this.companyName,
@@ -24,7 +29,12 @@ class UserSettingsModel {
     this.showQrCode = true,
     this.isVatPayer = false,
     this.iban,
+    this.companyIban,
+    this.companySwift,
     this.showQrOnInvoice = false,
+    this.biometricEnabled = false,
+    this.language = 'sk',
+    this.currency = 'EUR',
   });
 
   factory UserSettingsModel.fromMap(Map<String, dynamic> map) {
@@ -40,7 +50,12 @@ class UserSettingsModel {
       showQrCode: map['showQrCode'] ?? true,
       isVatPayer: map['isVatPayer'] ?? false,
       iban: map['iban'],
+      companyIban: map['companyIban'],
+      companySwift: map['companySwift'],
       showQrOnInvoice: map['showQrOnInvoice'] ?? false,
+      biometricEnabled: map['biometricEnabled'] ?? false,
+      language: map['language'] ?? 'sk',
+      currency: map['currency'] ?? 'EUR',
     );
   }
 
@@ -57,7 +72,12 @@ class UserSettingsModel {
       'showQrCode': showQrCode,
       'isVatPayer': isVatPayer,
       'iban': iban,
+      'companyIban': companyIban,
+      'companySwift': companySwift,
       'showQrOnInvoice': showQrOnInvoice,
+      'biometricEnabled': biometricEnabled,
+      'language': language,
+      'currency': currency,
     };
   }
 
@@ -73,7 +93,12 @@ class UserSettingsModel {
     bool? showQrCode,
     bool? isVatPayer,
     String? iban,
+    String? companyIban,
+    String? companySwift,
     bool? showQrOnInvoice,
+    bool? biometricEnabled,
+    String? language,
+    String? currency,
   }) {
     return UserSettingsModel(
       companyName: companyName ?? this.companyName,
@@ -87,7 +112,12 @@ class UserSettingsModel {
       showQrCode: showQrCode ?? this.showQrCode,
       isVatPayer: isVatPayer ?? this.isVatPayer,
       iban: iban ?? this.iban,
+      companyIban: companyIban ?? this.companyIban,
+      companySwift: companySwift ?? this.companySwift,
       showQrOnInvoice: showQrOnInvoice ?? this.showQrOnInvoice,
+      biometricEnabled: biometricEnabled ?? this.biometricEnabled,
+      language: language ?? this.language,
+      currency: currency ?? this.currency,
     );
   }
 
@@ -104,5 +134,8 @@ class UserSettingsModel {
         isVatPayer: false,
         iban: null,
         showQrOnInvoice: false,
+        biometricEnabled: false,
+        language: 'sk',
+        currency: 'EUR',
       );
 }

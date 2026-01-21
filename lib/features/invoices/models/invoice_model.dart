@@ -1,7 +1,40 @@
-// Tax calculation service is imported where needed
+import 'package:flutter/material.dart';
+import '../../../core/ui/biz_theme.dart';
 import '../../../core/services/tax_calculation_service.dart';
 
 enum InvoiceStatus { draft, sent, paid, overdue, cancelled }
+
+extension InvoiceStatusX on InvoiceStatus {
+  String toSlovak() {
+    switch (this) {
+      case InvoiceStatus.draft:
+        return 'Návrh';
+      case InvoiceStatus.sent:
+        return 'Odoslaná';
+      case InvoiceStatus.paid:
+        return 'Zaplatená';
+      case InvoiceStatus.overdue:
+        return 'Po splatnosti';
+      case InvoiceStatus.cancelled:
+        return 'Zrušená';
+    }
+  }
+
+  Color color(BuildContext context) {
+    switch (this) {
+      case InvoiceStatus.draft:
+        return BizTheme.gray400;
+      case InvoiceStatus.sent:
+        return BizTheme.slovakBlue;
+      case InvoiceStatus.paid:
+        return BizTheme.successGreen;
+      case InvoiceStatus.overdue:
+        return BizTheme.nationalRed;
+      case InvoiceStatus.cancelled:
+        return BizTheme.gray600;
+    }
+  }
+}
 
 class InvoiceItemModel {
   final String title; // Changed from description for consistency

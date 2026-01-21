@@ -32,4 +32,8 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _authRepository.signOut());
   }
+
+  void mockSuccessLogin() {
+    state = const AsyncValue.data(null);
+  }
 }

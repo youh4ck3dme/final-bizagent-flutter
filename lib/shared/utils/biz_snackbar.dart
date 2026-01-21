@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/ui/biz_theme.dart';
 
 class BizSnackbar {
   static void showSuccess(BuildContext context, String message) {
@@ -7,7 +8,7 @@ class BizSnackbar {
       message,
       const Icon(Icons.check_circle_rounded, color: Colors.white, size: 28),
       const LinearGradient(
-        colors: [Color(0xFF059669), Color(0xFF10B981)], // Emerald Green
+        colors: [Color(0xFF059669), Color(0xFF10B981)], // Emerald Green (kept for success)
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -20,7 +21,7 @@ class BizSnackbar {
       message,
       const Icon(Icons.error_outline_rounded, color: Colors.white, size: 28),
       const LinearGradient(
-        colors: [Color(0xFFDC2626), Color(0xFFEF4444)], // Red
+        colors: [BizTheme.nationalRed, Color(0xFFB91C1C)], // Red Gradient
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -32,10 +33,10 @@ class BizSnackbar {
       context,
       message,
       const Icon(Icons.info_outline_rounded, color: Colors.white, size: 28),
-      LinearGradient(
+      const LinearGradient(
         colors: [
-          Theme.of(context).primaryColor,
-          Theme.of(context).primaryColor.withValues(alpha: 0.8)
+          BizTheme.slovakBlue,
+          Color(0xFF3B82F6)
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

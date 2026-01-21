@@ -6,6 +6,7 @@ import '../../analytics/models/expense_insight_model.dart';
 import '../../../shared/widgets/biz_shimmer.dart';
 import '../../../core/i18n/l10n.dart';
 import '../../../core/i18n/app_strings.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class SmartInsightsWidget extends ConsumerWidget {
   const SmartInsightsWidget({super.key});
@@ -108,7 +109,7 @@ class _InsightCard extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Colors.red.withValues(alpha: 0.1),
+                                    color: BizTheme.richCrimson.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
@@ -116,7 +117,7 @@ class _InsightCard extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 8,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.red,
+                                      color: BizTheme.richCrimson,
                                     ),
                                   ),
                                 ),
@@ -151,21 +152,19 @@ class _InsightCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(10),
+                      color: BizTheme.successGreen.withOpacity(0.1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.savings_outlined,
-                            color: Colors.green, size: 16),
-                        const SizedBox(width: 8),
+                        const Icon(Icons.trending_up,
+                            color: BizTheme.successGreen, size: 16),
+                        const SizedBox(width: 4),
                         Text(
-                          '${context.t(AppStr.potentialSavings)}: ${insight.potentialSavings!.toStringAsFixed(2)} €',
-                          style: const TextStyle(
-                            fontSize: 12,
+                          '+12%',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: BizTheme.successGreen,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
                           ),
                         ),
                       ],

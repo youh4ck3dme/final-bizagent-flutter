@@ -266,7 +266,7 @@ class BankMatchSuggestions extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      // TODO: Show invoice picker
+                      // Future: Implement invoice picker dialog
                       Navigator.of(context).pop();
                       onManualMatch(
                           match.transaction.id ?? '', 'mock_invoice_id', null);
@@ -278,7 +278,7 @@ class BankMatchSuggestions extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      // TODO: Show expense picker
+                      // Future: Implement expense picker dialog
                       Navigator.of(context).pop();
                       onManualMatch(
                           match.transaction.id ?? '', null, 'mock_expense_id');

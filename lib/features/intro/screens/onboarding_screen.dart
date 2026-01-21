@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/onboarding_provider.dart';
 import '../../auth/providers/auth_repository.dart';
 import '../../../core/services/analytics_service.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -24,21 +25,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       description:
           'Zabudnite na zdĺhavé vypisovanie. Vytvárajte profesionálne faktúry za pár sekúnd s automatickým prepojením na databázu firiem.',
       svgPath: 'assets/icons/onboarding_invoice.svg', // SVG path
-      accentColor: const Color(0xFF2563EB), // Premium Blue
+      accentColor: BizTheme.slovakBlue,
     ),
     OnboardingContent(
       title: 'Umelá\nInteligencia',
       description:
           'Váš osobný AI asistent prečíta bločky, vytriedi výdavky a dokonca za vás napíše profesionálne e-maily klientom.',
       svgPath: 'assets/icons/onboarding_ai.svg', // SVG path
-      accentColor: const Color(0xFF7C3AED), // Royal Purple
+      accentColor: BizTheme.richCrimson,
     ),
     OnboardingContent(
       title: 'Finančný\nPrehľad',
       description:
           'Majte dokonalý prehľad o cash-flow. Sledujte, kto vám dlhuje, a automatizujte upomienky jedným klikom.',
       svgPath: 'assets/icons/onboarding_chart.svg', // SVG path
-      accentColor: const Color(0xFFEA580C), // Vibrant Orange
+      accentColor: BizTheme.fusionAzure,
     ),
   ];
 
@@ -68,7 +69,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         children: [
           // 0. Unified Global Background
           Image.asset(
-            'assets/images/background_fusion.jpg',
+            'assets/images/background_fusion.webp',
             fit: BoxFit.cover,
           ),
 

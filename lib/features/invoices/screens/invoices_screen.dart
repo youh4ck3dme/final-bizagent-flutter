@@ -1,39 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../../../core/i18n/app_strings.dart';
 import '../../../core/i18n/l10n.dart';
 import '../../../shared/widgets/biz_empty_state.dart';
 import '../../../shared/widgets/biz_shimmer.dart';
 import '../providers/invoices_provider.dart';
+import '../models/invoice_model.dart';
+import '../../../core/ui/biz_theme.dart';
+import '../../../shared/widgets/biz_widgets.dart';
 
-class InvoicesScreen extends ConsumerWidget {
+class InvoicesScreen extends ConsumerStatefulWidget {
   const InvoicesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<InvoicesScreen> createState() => _InvoicesScreenState();
+}
+
+class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
+  final Set<String> _selectedIds = {};
+
+  bool get _isSelectionMode => _selectedIds.isNotEmpty;
+
+  void _toggleSelection(String id) {
+    setState(() {
+      if (_selectedIds.contains(id)) {
+        _selectedIds.remove(id);
+      } else {
+        _selectedIds.add(id);
+      }
+    });
+  }
+
+  void _clearSelection() {
+    setState(() {
+      _selectedIds.clear();
+    });
+  }
+
+  Future<void> _deleteSelected() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Zmazať vybrané?'),
+        content: Text('Naozaj chcete zmazať ${_selectedIds.length} faktúr?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Zrušiť')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Zmazať', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref
+          .read(invoicesControllerProvider.notifier)
+          .deleteInvoices(_selectedIds.toList());
+      _clearSelection();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Faktúry boli zmazané')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final invoicesAsync = ref.watch(invoicesProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.t(AppStr.invoiceTitle)),
+        leading: _isSelectionMode
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: _clearSelection,
+              )
+            : null,
+        title: _isSelectionMode
+            ? Text('${_selectedIds.length} vybrané')
+            : Text(context.t(AppStr.invoiceTitle)),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_active_outlined),
-            tooltip: 'Upomienky',
-            onPressed: () => context.push('/invoices/reminders'),
-          ),
+          if (_isSelectionMode)
+            IconButton(
+              icon: const Icon(Icons.delete, color: BizTheme.nationalRed),
+              tooltip: 'Zmazať označené',
+              onPressed: _deleteSelected,
+            )
+          else ...[
+             IconButton(
+              icon: const Icon(Icons.notifications_active_outlined),
+              tooltip: 'Upomienky',
+              onPressed: () => context.push('/invoices/reminders'),
+            ),
+          ]
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/create-invoice'),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _isSelectionMode
+          ? null
+          : FloatingActionButton(
+              backgroundColor: BizTheme.nationalRed,
+              foregroundColor: Colors.white,
+              onPressed: () => context.push('/create-invoice'),
+              child: const Icon(Icons.add),
+            ),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(invoicesProvider);
           await ref.read(invoicesProvider.future);
+           _clearSelection(); // Clear selection on refresh
         },
         child: invoicesAsync.when(
           data: (invoices) {
@@ -70,30 +149,26 @@ class InvoicesScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               itemBuilder: (context, index) {
                 final invoice = invoices[index];
-                return Card(
-                  child: ListTile(
-                    onTap: () =>
-                        context.push('/invoices/detail', extra: invoice),
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.receipt_long),
-                    ),
-                    title: Text(invoice.clientName),
-                    subtitle: Text(invoice.number),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          NumberFormat.currency(symbol: '€')
-                              .format(invoice.totalAmount),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          DateFormat('dd.MM.yyyy').format(invoice.dateIssued),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
+                final isSelected = _selectedIds.contains(invoice.id);
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: BizInvoiceCard(
+                    title: invoice.clientName,
+                    subtitle: invoice.number,
+                    amount: invoice.totalAmount,
+                    date: invoice.dateIssued,
+                    status: invoice.status.toSlovak(),
+                    statusColor: invoice.status.color(context),
+                    isSelected: isSelected,
+                    onTap: () {
+                      if (_isSelectionMode) {
+                        _toggleSelection(invoice.id);
+                      } else {
+                        context.push('/invoices/detail', extra: invoice);
+                      }
+                    },
+                    onLongPress: () => _toggleSelection(invoice.id),
                   ),
                 );
               },

@@ -3,16 +3,28 @@ import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:bizagent/features/expenses/providers/expenses_repository.dart';
 import 'package:bizagent/features/expenses/models/expense_model.dart';
 import 'package:bizagent/features/expenses/models/expense_category.dart';
+import 'package:bizagent/core/services/local_persistence_service.dart';
+
+class FakeLocalPersistenceService extends LocalPersistenceService {
+  @override
+  List<Map<String, dynamic>> getExpenses() => [];
+  @override
+  Future<void> saveExpense(String id, Map<String, dynamic> data) async {}
+  @override
+  Future<void> deleteExpense(String id) async {}
+}
 
 void main() {
   group('ExpensesRepository', () {
     late FakeFirebaseFirestore fakeFirestore;
     late ExpensesRepository repository;
+    late FakeLocalPersistenceService fakePersistence;
     const userId = 'test-user-123';
 
     setUp(() {
       fakeFirestore = FakeFirebaseFirestore();
-      repository = ExpensesRepository(fakeFirestore);
+      fakePersistence = FakeLocalPersistenceService();
+      repository = ExpensesRepository(fakeFirestore, fakePersistence);
     });
 
     final dummyExpense = ExpenseModel(
@@ -81,3 +93,4 @@ void main() {
     });
   });
 }
+

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bizagent/features/ai_tools/providers/ai_email_service.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class AiEmailGeneratorScreen extends ConsumerStatefulWidget {
   final String? initialType;
@@ -113,7 +114,7 @@ class _AiEmailGeneratorScreenState
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      initialValue: _selectedTone,
+                      value: _selectedTone,
                       decoration: const InputDecoration(
                         labelText: 'Tón komunikácie',
                         border: OutlineInputBorder(),
@@ -162,7 +163,7 @@ class _AiEmailGeneratorScreenState
             const SizedBox(height: 24),
             if (_generatedEmail.isNotEmpty)
               Card(
-                color: Colors.grey.shade50,
+                color: BizTheme.gray50,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(

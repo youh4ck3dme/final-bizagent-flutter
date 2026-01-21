@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:bizagent/features/invoices/providers/invoices_provider.dart';
 import 'package:bizagent/features/invoices/providers/reminder_service.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class PaymentRemindersScreen extends ConsumerWidget {
   const PaymentRemindersScreen({super.key});
@@ -25,7 +26,7 @@ class PaymentRemindersScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.check_circle_outline,
-                      size: 64, color: Colors.green),
+                      size: 64, color: BizTheme.slovakBlue),
                   SizedBox(height: 16),
                   Text('Žiadne faktúry po splatnosti! 🎉',
                       style: TextStyle(fontSize: 18)),
@@ -49,8 +50,8 @@ class PaymentRemindersScreen extends ConsumerWidget {
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
                   leading: CircleAvatar(
-                    backgroundColor: Colors.red.shade100,
-                    child: const Icon(Icons.warning_amber, color: Colors.red),
+                    backgroundColor: BizTheme.richCrimson.withOpacity(0.1),
+                    child: const Icon(Icons.warning_amber, color: BizTheme.richCrimson),
                   ),
                   title: Text(
                     'Faktúra ${invoice.number}',
@@ -66,14 +67,14 @@ class PaymentRemindersScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.red.shade50,
+                          color: BizTheme.richCrimson.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: Colors.red.shade200),
+                          border: Border.all(color: BizTheme.richCrimson.withOpacity(0.3)),
                         ),
                         child: Text(
                           '$daysOverdue dní po splatnosti',
                           style: TextStyle(
-                              color: Colors.red.shade800,
+                              color: BizTheme.richCrimson,
                               fontWeight: FontWeight.bold,
                               fontSize: 12),
                         ),
@@ -81,7 +82,7 @@ class PaymentRemindersScreen extends ConsumerWidget {
                     ],
                   ),
                   trailing: IconButton(
-                    icon: const Icon(Icons.send, color: Colors.blue),
+                    icon: const Icon(Icons.send, color: BizTheme.slovakBlue),
                     onPressed: () {
                       // Navigate to Email Generator with pre-filled context
                       // We need to pass arguments.

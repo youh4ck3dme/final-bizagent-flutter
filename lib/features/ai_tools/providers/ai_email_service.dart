@@ -1,13 +1,15 @@
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/services/gemini_service.dart';
 
 final aiEmailServiceProvider = Provider<AiEmailService>((ref) {
-  return AiEmailService();
+  final gemini = ref.watch(geminiServiceProvider);
+  return AiEmailService(gemini);
 });
 
 class AiEmailService {
-  AiEmailService();
+  final GeminiService _gemini;
+
+  AiEmailService(this._gemini);
 
   Future<String> generateEmail({
     required String type,
@@ -18,26 +20,19 @@ class AiEmailService {
       return 'Prosím, zadajte kontext pre vygenerovanie e-mailu.';
     }
 
+    final prompt = '''
+      Vygeneruj profesionálny slovenský e-mail typu "${_getReadableType(type)}" v tóne "$tone".
+      
+      KONTEXT / DETAILY:
+      $context
+      
+      E-mail musí byť v slovenčine, gramaticky správny a pripravený na odoslanie.
+    ''';
+
     try {
-      // Volanie zabezpečenej Cloud Function
-      // Funkcia beží na serveri a má bezpečný prístup k API kľúču
-      final callable =
-          FirebaseFunctions.instance.httpsCallable('generateEmail');
-
-      final result = await callable.call({
-        'type': _getReadableType(type),
-        'tone': tone,
-        'context': context,
-      });
-
-      final data = result.data as Map<String, dynamic>;
-      return data['text'] as String? ?? 'Nepodarilo sa získať text.';
-    } on FirebaseFunctionsException catch (e) {
-      debugPrint('Cloud Function Error: ${e.code} - ${e.message}');
-      return 'Chyba servera: ${e.message}';
+      return await _gemini.generateText(prompt);
     } catch (e) {
-      debugPrint('General Error: $e');
-      return 'Nepodarilo sa spojiť so serverom. Skontrolujte pripojenie.';
+      return 'Nepodarilo sa vygenerovať e-mail: $e';
     }
   }
 

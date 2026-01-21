@@ -2,6 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:bizagent/features/invoices/providers/invoices_repository.dart';
 import 'package:bizagent/features/invoices/models/invoice_model.dart';
+import 'package:bizagent/core/services/local_persistence_service.dart';
+
+class FakeLocalPersistenceService extends LocalPersistenceService {
+  @override
+  List<Map<String, dynamic>> getInvoices() => [];
+  @override
+  Future<void> saveInvoice(String id, Map<String, dynamic> data) async {}
+  @override
+  Future<void> deleteInvoice(String id) async {}
+}
 
 void main() {
   group('InvoicesRepository', () {
@@ -11,7 +21,7 @@ void main() {
 
     setUp(() {
       fakeFirestore = FakeFirebaseFirestore();
-      repository = InvoicesRepository(fakeFirestore);
+      repository = InvoicesRepository(fakeFirestore, FakeLocalPersistenceService());
     });
 
     final dummyInvoice = InvoiceModel(

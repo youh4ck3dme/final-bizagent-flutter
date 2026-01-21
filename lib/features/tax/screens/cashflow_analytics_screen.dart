@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../invoices/providers/invoices_provider.dart';
 import '../../expenses/providers/expenses_provider.dart';
 import '../../../shared/widgets/biz_card.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class CashflowAnalyticsScreen extends ConsumerWidget {
   const CashflowAnalyticsScreen({super.key});
@@ -88,9 +89,9 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _legendItem('Príjmy', Colors.green),
+              _legendItem('Príjmy', BizTheme.slovakBlue),
               const SizedBox(width: 16),
-              _legendItem('Výdavky', Colors.red),
+              _legendItem('Výdavky', BizTheme.richCrimson),
             ],
           ),
         ],
@@ -105,9 +106,9 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
         x: i,
         barRods: [
           BarChartRodData(
-              toY: 2000 + (i * 300.0), color: Colors.green, width: 12),
+              toY: 2000 + (i * 300.0), color: BizTheme.slovakBlue, width: 12),
           BarChartRodData(
-              toY: 1500 + (i * 200.0), color: Colors.red, width: 12),
+              toY: 1500 + (i * 200.0), color: BizTheme.richCrimson, width: 12),
         ],
       );
     });
@@ -127,28 +128,28 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
               PieChartData(
                 sections: [
                   PieChartSectionData(
-                      color: Colors.blue,
+                      color: BizTheme.slovakBlue,
                       value: 40,
                       title: 'Služby',
                       radius: 50,
                       titleStyle:
                           const TextStyle(color: Colors.white, fontSize: 12)),
                   PieChartSectionData(
-                      color: Colors.orange,
+                      color: BizTheme.fusionAzure,
                       value: 30,
                       title: 'Nákup',
                       radius: 50,
                       titleStyle:
                           const TextStyle(color: Colors.white, fontSize: 12)),
                   PieChartSectionData(
-                      color: Colors.purple,
+                      color: BizTheme.nationalRed,
                       value: 20,
                       title: 'Doprava',
                       radius: 50,
                       titleStyle:
                           const TextStyle(color: Colors.white, fontSize: 12)),
                   PieChartSectionData(
-                      color: Colors.grey,
+                      color: BizTheme.slate,
                       value: 10,
                       title: 'Iné',
                       radius: 50,
@@ -172,7 +173,7 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: profit >= 0 ? Colors.green.shade50 : Colors.red.shade50,
+        color: profit >= 0 ? BizTheme.slovakBlue.withOpacity(0.1) : BizTheme.richCrimson.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(16),
@@ -190,7 +191,7 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color:
-                      profit >= 0 ? Colors.green.shade700 : Colors.red.shade700,
+                      profit >= 0 ? BizTheme.slovakBlue : BizTheme.richCrimson,
                 ),
               ),
             ],
@@ -198,7 +199,7 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
           Icon(
             profit >= 0 ? Icons.trending_up : Icons.trending_down,
             size: 48,
-            color: profit >= 0 ? Colors.green : Colors.red,
+            color: profit >= 0 ? BizTheme.slovakBlue : BizTheme.richCrimson,
           ),
         ],
       ),

@@ -1,10 +1,12 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/scheduler.dart'; // For SchedulerBinding
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // For tracking tutorial view
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../auth/providers/auth_repository.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -16,11 +18,13 @@ import '../providers/revenue_provider.dart';
 import '../providers/profit_provider.dart';
 import '../../../core/i18n/l10n.dart';
 import '../../../core/i18n/app_strings.dart';
-import '../../../shared/widgets/biz_card.dart';
 import '../../../shared/widgets/biz_section_header.dart';
 import '../widgets/smart_dashboard_empty_state.dart';
 import '../widgets/smart_insights_widget.dart';
 import '../../../core/services/tutorial_service.dart';
+import '../../../core/ui/biz_theme.dart';
+import '../../../shared/widgets/biz_widgets.dart';
+import '../../ai_tools/screens/biz_bot_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -80,10 +84,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: Text(context.t(AppStr.spdTitle),
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+            style: Theme.of(context).appBarTheme.titleTextStyle),
         elevation: 0,
-        backgroundColor: Theme.of(context).cardColor,
-        foregroundColor: Theme.of(context).colorScheme.onSurface,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -122,14 +126,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         'Ahoj, ${user?.displayName ?? 'Používateľ'}!',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
-                      ),
+                      ).animate().fade().moveY(begin: 10, duration: 400.ms),
                       const SizedBox(height: 8),
                       Text(context.t(AppStr.spdDisclaimer),
                           style: TextStyle(
-                              color: Theme.of(context).textTheme.bodySmall?.color)),
+                              color: Theme.of(context).textTheme.bodySmall?.color)).animate().fade(delay: 100.ms),
                       const SizedBox(height: 24),
-    
+
                       // First-run banner
                       if (!(invoicesAsync.isLoading || expensesAsync.isLoading) &&
                           !(invoicesAsync.hasError || expensesAsync.hasError) &&
@@ -138,12 +143,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 24.0),
                           child: SmartDashboardEmptyState(key: _dashboardKey),
-                        ),
-    
+                        ).animate().fade().scale(),
+
                       // Overdue Alerts
                       if (invoicesAsync.value != null)
-                        _buildOverdueAlert(context, invoicesAsync.value!),
-    
+                        _buildOverdueAlert(context, invoicesAsync.value!)
+                            .animate()
+                            .fade(delay: 200.ms)
+                            .slideX(begin: 0.1),
+
                       // Financial Summary (Responsive Grid)
                       if (revenueAsync.isLoading || profitAsync.isLoading)
                         const Center(child: CircularProgressIndicator())
@@ -156,19 +164,26 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           profitAsync.value!,
                           expensesAsync.value ?? [],
                           crossAxisCount: crossAxisCount, // Dynamic Column Count
-                        ),
-    
+                        ).animate().fade(delay: 300.ms).moveY(begin: 20),
+
                       const SizedBox(height: 24),
                       // AI Insights
-                      const SmartInsightsWidget(),
-    
+                      const SmartInsightsWidget().animate().fade(delay: 400.ms),
+
+                      const SizedBox(height: 16),
+                      // BizBot Quick Chat Card
+                      _buildBizBotCard(context).animate().fade(delay: 450.ms),
+
+                      const SizedBox(height: 16),
                       // Tax Widget
-                      const DashboardTaxWidget(),
-    
+                      const DashboardTaxWidget().animate().fade(delay: 500.ms),
+
                       const SizedBox(height: 32),
-    
+
                       // Quick Actions
-                      BizSectionHeader(title: context.t(AppStr.quickActions)),
+                      BizSectionHeader(title: context.t(AppStr.quickActions))
+                          .animate()
+                          .fade(delay: 600.ms),
                       const SizedBox(height: 16),
                       
                       // Using Wrap for responsive Quick Actions on large screens
@@ -177,13 +192,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           spacing: 16,
                           runSpacing: 16,
                           children: [
-                            SizedBox(width: 300, child: _buildActionTile(context, title: context.t(AppStr.invoiceTitle), subtitle: 'Nová faktúra pre klienta', icon: Icons.add_circle_outline, color: Colors.blue, onTap: () => context.push('/create-invoice'), widgetKey: _invoiceKey)),
-                            SizedBox(width: 300, child: _buildActionTile(context, title: context.t(AppStr.magicScan), subtitle: context.t(AppStr.magicScanSubtitle), icon: Icons.auto_awesome, color: Colors.purple, onTap: () => context.push('/ai-tools'), widgetKey: _scanKey)),
-                            SizedBox(width: 300, child: _buildActionTile(context, title: 'Pridať výdavok', subtitle: 'Evidencia nákladov', icon: Icons.shopping_bag_outlined, color: Colors.orange, onTap: () => context.push('/create-expense'))),
-                            SizedBox(width: 300, child: _buildActionTile(context, title: 'Import bank CSV', subtitle: 'Automatické párovanie faktúr', icon: Icons.upload_file, color: Colors.teal, onTap: () => context.push('/bank-import'))),
-                            SizedBox(width: 300, child: _buildActionTile(context, title: 'Export pre účtovníka', subtitle: 'Zostava faktúr a výdavkov', icon: Icons.download, color: Colors.indigo, onTap: () => context.push('/export'))),
+                            SizedBox(width: 250, child: _buildActionTile(context, title: context.t(AppStr.invoiceTitle), subtitle: 'Nová faktúra pre klienta', icon: Icons.add_circle_outline, color: BizTheme.slovakBlue, onTap: () => context.push('/create-invoice'), widgetKey: _invoiceKey)),
+                            SizedBox(width: 300, child: _buildActionTile(context, title: context.t(AppStr.magicScan), subtitle: context.t(AppStr.magicScanSubtitle), icon: Icons.auto_awesome, color: BizTheme.blueDark, onTap: () => context.push('/ai-tools'), widgetKey: _scanKey)),
+                            SizedBox(width: 250, child: _buildActionTile(context, title: 'Pridať výdavok', subtitle: 'Evidencia nákladov', icon: Icons.shopping_bag_outlined, color: BizTheme.nationalRed, onTap: () => context.push('/create-expense'))),
+                            SizedBox(width: 250, child: _buildActionTile(context, title: 'Import bank CSV', subtitle: 'Automatické párovanie faktúr', icon: Icons.upload_file, color: BizTheme.gray500, onTap: () => context.push('/bank-import'))),
+                            SizedBox(width: 250, child: _buildActionTile(context, title: 'Export pre účtovníka', subtitle: 'Zostava faktúr a výdavkov', icon: Icons.download, color: BizTheme.gray800, onTap: () => context.push('/export'))),
                           ],
-                        )
+                        ).animate().fade(delay: 700.ms)
                       else
                         Column(
                           children: [
@@ -192,7 +207,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               title: context.t(AppStr.invoiceTitle),
                               subtitle: 'Nová faktúra pre klienta',
                               icon: Icons.add_circle_outline,
-                              color: Colors.blue,
+                              color: BizTheme.slovakBlue, // Use theme color
                               onTap: () => context.push('/create-invoice'),
                               widgetKey: _invoiceKey,
                             ),
@@ -201,7 +216,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               title: context.t(AppStr.magicScan),
                               subtitle: context.t(AppStr.magicScanSubtitle),
                               icon: Icons.auto_awesome,
-                              color: Colors.purple,
+                              color: BizTheme.blueDark,
                               onTap: () => context.push('/ai-tools'),
                               widgetKey: _scanKey,
                             ),
@@ -210,7 +225,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               title: 'Pridať výdavok',
                               subtitle: 'Evidencia nákladov',
                               icon: Icons.shopping_bag_outlined,
-                              color: Colors.orange,
+                              color: BizTheme.nationalRed, // Use theme color
                               onTap: () => context.push('/create-expense'),
                             ),
                             _buildActionTile(
@@ -218,7 +233,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               title: 'Import bank CSV',
                               subtitle: 'Automatické párovanie faktúr',
                               icon: Icons.upload_file,
-                              color: Colors.teal,
+                              color: BizTheme.gray500, // Use theme color
                               onTap: () => context.push('/bank-import'),
                             ),
                             _buildActionTile(
@@ -226,19 +241,28 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               title: 'Export pre účtovníka',
                               subtitle: 'Zostava faktúr a výdavkov',
                               icon: Icons.download,
-                              color: Colors.indigo,
+                              color: BizTheme.gray800, // Use theme color
                               onTap: () => context.push('/export'),
                             ),
-                          ],
+                          ].animate(interval: 50.ms).fade(duration: 300.ms).slideX(begin: 0.1),
                         ),
-    
+
                       const SizedBox(height: 32),
                       // Recent Invoices
-                      const BizSectionHeader(title: 'Posledné faktúry'),
+                      const BizSectionHeader(title: 'Posledné faktúry').animate().fade(delay: 900.ms),
                       const SizedBox(height: 16),
                       if (invoicesAsync.value != null)
-                        ...invoicesAsync.value!.take(5).map(
-                            (invoice) => _buildRecentInvoiceTile(context, invoice)),
+                         ...invoicesAsync.value!.take(5).map((invoice) => 
+                            BizInvoiceCard(
+                              title: invoice.clientName,
+                              subtitle: invoice.number,
+                              amount: invoice.totalAmount,
+                              date: invoice.dateDue, 
+                              status: invoice.status.toSlovak(),
+                              statusColor: invoice.status.color(context),
+                              onTap: () => context.push('/invoices/${invoice.id}'),
+                            ).animate().fade().slideY(begin: 0.2)
+                         ),
                     ],
                   ),
                 ),
@@ -263,27 +287,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Material(
-        color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(12),
+        color: BizTheme.accentRedLight,
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         child: InkWell(
           onTap: () => context.push('/payment-reminders'),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(BizTheme.radiusLg),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.warning_amber_rounded, color: Colors.red),
+                const Icon(Icons.warning_amber_rounded, color: BizTheme.nationalRed),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Máte $overdueCount faktúr po lehote splatnosti!',
                     style: const TextStyle(
-                      color: Colors.red,
+                      color: BizTheme.nationalRed,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: Colors.red),
+                const Icon(Icons.chevron_right, color: BizTheme.nationalRed),
               ],
             ),
           ),
@@ -292,21 +316,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildRecentInvoiceTile(BuildContext context, InvoiceModel invoice) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        title: Text(invoice.clientName,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(invoice.number),
-        trailing: Text(
-          NumberFormat.currency(symbol: '€').format(invoice.totalAmount),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        onTap: () => context.push('/invoices/${invoice.id}'),
-      ),
-    );
-  }
+
 
   Widget _buildExecutiveDashboard(BuildContext context, RevenueMetrics revenue,
       ProfitMetrics profit, List<dynamic> expenses, {int crossAxisCount = 2}) {
@@ -314,7 +324,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Column(
       children: [
-        GridView.count(
+         GridView.count(
           crossAxisCount: crossAxisCount, // Use dynamic count
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -322,55 +332,45 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           crossAxisSpacing: 12,
           childAspectRatio: 1.5,
           children: [
-            _buildSummaryCard(
-              context,
+            BizStatsCard(
               title: 'Príjmy (Celkovo)',
-              amount: NumberFormat.currency(symbol: '€')
-                  .format(revenue.totalRevenue),
-              color: Colors.green,
+              metric: NumberFormat.currency(symbol: '€').format(revenue.totalRevenue),
+              color: BizTheme.slovakBlue,
               icon: Icons.account_balance_wallet_outlined,
             ),
-            _buildSummaryCard(
-              context,
+            BizStatsCard(
               title: 'Čistý Zisk',
-              amount: NumberFormat.currency(symbol: '€').format(profit.profit),
-              color: Colors.blue,
+              metric: NumberFormat.currency(symbol: '€').format(profit.profit),
+              color: BizTheme.blueLight,
               icon: Icons.savings_outlined,
-              subtitle:
-                  'Marža: ${(profit.profitMargin * 100).toStringAsFixed(1)}%',
+              trend: 'Marža: ${(profit.profitMargin * 100).toStringAsFixed(1)}%',
+              isPositive: profit.profit > 0,
             ),
-            _buildSummaryCard(
-              context,
+            BizStatsCard(
               title: 'Neuhradené',
-              amount: NumberFormat.currency(symbol: '€')
-                  .format(revenue.unpaidAmount),
-              color: Colors.orange,
+              metric: NumberFormat.currency(symbol: '€').format(revenue.unpaidAmount),
+              color: BizTheme.nationalRed,
               icon: Icons.pending_actions_outlined,
-              subtitle: '${revenue.overdueCount} po lehote',
+              trend: '${revenue.overdueCount} po lehote',
+              isPositive: false,
             ),
-            _buildSummaryCard(
-              context,
+            BizStatsCard(
               title: 'Výdavky',
-              amount: NumberFormat.currency(symbol: '€').format(totalExpenses),
-              color: Colors.red,
+              metric: NumberFormat.currency(symbol: '€').format(totalExpenses),
+              color: BizTheme.accentRed,
               icon: Icons.shopping_cart_outlined,
+              isPositive: false,
             ),
-            _buildSummaryCard(
-              context,
+            BizStatsCard(
               title: 'Tento mesiac',
-              amount: NumberFormat.currency(symbol: '€')
-                  .format(revenue.thisMonthRevenue),
-              color: Colors.teal,
+              metric: NumberFormat.currency(symbol: '€').format(revenue.thisMonthRevenue),
+              color: BizTheme.gray500,
               icon: Icons.calendar_today_outlined,
-              subtitle:
-                  'Zisk: ${NumberFormat.currency(symbol: '€').format(profit.thisMonthProfit)}',
             ),
-            _buildSummaryCard(
-              context,
+            BizStatsCard(
               title: 'Priemerná faktúra',
-              amount: NumberFormat.currency(symbol: '€')
-                  .format(revenue.averageInvoiceValue),
-              color: Colors.indigo,
+              metric: NumberFormat.currency(symbol: '€').format(revenue.averageInvoiceValue),
+              color: BizTheme.gray800,
               icon: Icons.bar_chart_outlined,
             ),
           ],
@@ -381,46 +381,47 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         if (revenue.totalRevenue > 0 || totalExpenses > 0)
           GestureDetector(
             onTap: () => context.push('/analytics'),
-            child: BizCard(
-              child: Column(children: [
-                Text('Pomer Príjmy vs Výdavky',
-                    style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 200,
-                  child: PieChart(
-                    PieChartData(
-                      sections: [
-                        PieChartSectionData(
-                          color: Colors.green,
-                          value: revenue.totalRevenue,
-                          title: '',
-                          radius: 50,
-                        ),
-                        PieChartSectionData(
-                          color: Colors.red,
-                          value: totalExpenses,
-                          title: '',
-                          radius: 50,
-                        ),
-                      ],
-                      sectionsSpace: 2,
-                      centerSpaceRadius: 40,
+            child: BizChartContainer(
+              title: 'Pomer Príjmy vs Výdavky',
+              height: 250,
+              chart: Column(
+                children: [
+                   SizedBox(
+                    height: 200,
+                    child: PieChart(
+                      PieChartData(
+                        sections: [
+                          PieChartSectionData(
+                            color: BizTheme.slovakBlue,
+                            value: revenue.totalRevenue,
+                            title: '',
+                            radius: 50,
+                          ),
+                          PieChartSectionData(
+                            color: BizTheme.nationalRed,
+                            value: totalExpenses,
+                            title: '',
+                            radius: 50,
+                          ),
+                        ],
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 40,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _legendItem(
-                        context, context.t(AppStr.incomeTotal), Colors.green),
-                    const SizedBox(width: 16),
-                    _legendItem(
-                        context, context.t(AppStr.expensesTotal), Colors.red),
-                  ],
-                )
-              ]),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _legendItem(
+                          context, context.t(AppStr.incomeTotal), BizTheme.slovakBlue),
+                      const SizedBox(width: 16),
+                      _legendItem(
+                          context, context.t(AppStr.expensesTotal), BizTheme.nationalRed),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
       ],
@@ -440,46 +441,59 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildSummaryCard(
-    BuildContext context, {
-    required String title,
-    required String amount,
-    required Color color,
-    required IconData icon,
-    String? subtitle,
-  }) {
-    return BizCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+
+  Widget _buildBizBotCard(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: BizTheme.slovakBlue.withOpacity(0.05),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: BizTheme.slovakBlue.withOpacity(0.1)),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BizBotScreen()),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
             children: [
-              Icon(icon, color: color, size: 20),
-              if (subtitle != null)
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: color.withValues(alpha: 0.8),
-                    fontWeight: FontWeight.bold,
-                  ),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: BizTheme.slovakBlue,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: const Icon(Icons.smart_toy_outlined, color: Colors.white),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Pýtaj sa BizBota',
+                      style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const Text(
+                      'AI analýza tvojich financií v reálnom čase.',
+                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: BizTheme.slovakBlue),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(title,
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.bodySmall?.color,
-                  fontSize: 12)),
-          const SizedBox(height: 4),
-          FittedBox(
-            child: Text(
-              amount,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -503,7 +517,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+        trailing: const Icon(Icons.chevron_right, color: BizTheme.gray500),
         onTap: onTap,
       ),
     );

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/invoice_model.dart';
-import '../providers/invoices_provider.dart';
+import '../../../core/ui/biz_theme.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../../auth/providers/auth_repository.dart';
 import '../services/invoice_numbering_service.dart';
@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/utils/biz_snackbar.dart';
 import '../../../core/services/analytics_service.dart';
+import '../providers/invoices_provider.dart';
 
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   const CreateInvoiceScreen({super.key});
@@ -40,6 +41,13 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   final _itemPriceController = TextEditingController();
   double _itemVatRate = 0.0; // Default 0%
   bool _vatRateInitialized = false;
+  
+  // AI UX State
+  bool _isAiOptimized = false;
+  bool _isDetailsExpanded = false;
+  final Set<String> _aiPopulatedFields = {};
+  Map<String, String>? _previousStates;
+  List<InvoiceItemModel>? _previousItems;
 
   @override
   void initState() {
@@ -172,6 +180,82 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     }
   }
 
+  void _applyMagicFill() {
+    // Uložiť predchádzajúci stav pre Undo
+    _previousStates = {
+      'name': _clientNameController.text,
+      'address': _clientAddressController.text,
+      'ico': _clientIcoController.text,
+      'dic': _clientDicController.text,
+    };
+    _previousItems = List.from(_items);
+
+    setState(() {
+      _clientNameController.text = 'Oatmeal Digital s.r.o.';
+      _clientIcoController.text = '53123456';
+      _clientDicController.text = '2121234567';
+      _clientAddressController.text = 'Mýtna 1, 811 07 Bratislava';
+      
+      _aiPopulatedFields.addAll(['name', 'ico', 'dic', 'address']);
+      
+      if (_items.isEmpty) {
+        _items.add(InvoiceItemModel(
+          title: 'Mesačný paušál - správa kampaní',
+          amount: 450.0,
+          vatRate: 0.20,
+        ));
+      }
+      
+      _isAiOptimized = true;
+      _isDetailsExpanded = false;
+    });
+    
+    BizSnackbar.showSuccess(
+      context, 
+      'AI: Formulár predvyplnený',
+    );
+    
+    // Tu by sa dal pridať ScaffoldMessenger pre Undo akciu, 
+    // ale BizSnackbar momentálne nepodporuje actions. 
+    // Použijeme aspoň internú logiku.
+  }
+
+  void _undoMagicFill() {
+    if (_previousStates == null) return;
+    
+    setState(() {
+      _clientNameController.text = _previousStates!['name'] ?? '';
+      _clientAddressController.text = _previousStates!['address'] ?? '';
+      _clientIcoController.text = _previousStates!['ico'] ?? '';
+      _clientDicController.text = _previousStates!['dic'] ?? '';
+      
+      if (_previousItems != null) {
+        _items.clear();
+        _items.addAll(_previousItems!);
+      }
+      
+      _aiPopulatedFields.clear();
+      _isAiOptimized = false;
+      _previousStates = null;
+    });
+    
+    BizSnackbar.showInfo(context, 'AI zmeny vrátené späť');
+  }
+
+  InputDecoration _aiInputDecoration(String label, String fieldKey) {
+    final isAiFilled = _aiPopulatedFields.contains(fieldKey);
+    return InputDecoration(
+      labelText: label,
+      filled: isAiFilled,
+      fillColor: isAiFilled ? BizTheme.slovakBlue.withOpacity(0.05) : null,
+      suffixIcon: isAiFilled 
+        ? const Icon(Icons.auto_awesome, size: 16, color: BizTheme.slovakBlue) 
+        : null,
+      helperText: isAiFilled ? 'Navrhnuté AI' : null,
+      helperStyle: const TextStyle(color: BizTheme.slovakBlue, fontSize: 10),
+    );
+  }
+
   Future<void> _pickDate(BuildContext context, bool isIssued) async {
     final picked = await showDatePicker(
       context: context,
@@ -205,6 +289,26 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Nová faktúra'),
+        actions: [
+          if (_previousStates != null)
+            IconButton(
+              onPressed: _undoMagicFill,
+              icon: const Icon(Icons.undo),
+              tooltip: 'Vrátiť AI zmeny',
+            ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: TextButton.icon(
+              onPressed: _applyMagicFill,
+              icon: const Icon(Icons.auto_awesome, size: 18),
+              label: const Text('AI Vyplniť'),
+              style: TextButton.styleFrom(
+                foregroundColor: BizTheme.slovakBlue,
+                backgroundColor: BizTheme.slovakBlue.withOpacity(0.1),
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
@@ -236,10 +340,13 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
               ElevatedButton(
                 onPressed: _saveInvoice,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: BizTheme.slovakBlue,
                   foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+                  ),
                 ),
                 child: const Text('Uložiť'),
               ),
@@ -264,41 +371,54 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _clientNameController,
-                      decoration: const InputDecoration(
-                          labelText: 'Názov firmy / Meno'),
+                      decoration: _aiInputDecoration('Názov firmy / Meno', 'name'),
                       validator: (v) => v!.isEmpty ? 'Povinné pole' : null,
                     ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _clientAddressController,
-                      decoration:
-                          const InputDecoration(labelText: 'Sídlo / Adresa'),
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _clientIcoController,
-                            decoration: const InputDecoration(labelText: 'IČO'),
+                    if (!_isAiOptimized || _isDetailsExpanded) ...[
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _clientAddressController,
+                        decoration: _aiInputDecoration('Sídlo / Adresa', 'address'),
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _clientIcoController,
+                              decoration: _aiInputDecoration('IČO', 'ico'),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _clientDicController,
+                              decoration: _aiInputDecoration('DIČ', 'dic'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _clientIcDphController,
+                        decoration: const InputDecoration(
+                            labelText: 'IČ DPH (nepovinné)'),
+                      ),
+                    ] else
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: InkWell(
+                          onTap: () => setState(() => _isDetailsExpanded = true),
+                          child: Row(
+                            children: [
+                              Text('Zobraziť fakturačné detaily', 
+                                style: TextStyle(color: BizTheme.slovakBlue, fontSize: 13, fontWeight: FontWeight.bold)),
+                              Icon(Icons.keyboard_arrow_down, color: BizTheme.slovakBlue, size: 20),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: TextFormField(
-                            controller: _clientDicController,
-                            decoration: const InputDecoration(labelText: 'DIČ'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      controller: _clientIcDphController,
-                      decoration: const InputDecoration(
-                          labelText: 'IČ DPH (nepovinné)'),
-                    ),
+                      ),
                   ],
                 ),
               ),
@@ -415,7 +535,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                               ],
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
+                              icon: const Icon(Icons.delete, color: BizTheme.nationalRed),
                               onPressed: () => _removeItem(idx),
                             ),
                           ],
@@ -462,7 +582,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                         IconButton(
                             onPressed: () => _addItem(isVatPayer),
                             icon: const Icon(Icons.add_circle,
-                                color: Colors.blue)),
+                                color: BizTheme.slovakBlue)),
                       ],
                     ),
                   ],

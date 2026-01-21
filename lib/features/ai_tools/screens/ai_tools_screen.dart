@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/services/ocr_service.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class AiToolsScreen extends ConsumerStatefulWidget {
   const AiToolsScreen({super.key});
@@ -66,7 +67,7 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Icon(Icons.document_scanner, size: 48, color: Colors.blue),
+                    Icon(Icons.document_scanner, size: 48, color: BizTheme.slovakBlue),
                     SizedBox(height: 16),
                     Text(
                       'Skener Bločkov',
@@ -103,6 +104,70 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                             ),
                             Text(
                               'Vytvorte profesionálne e-maily (upomienky, ponuky) za pár sekúnd.',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: InkWell(
+                onTap: () => context.go('/ai-tools/expense-analysis'),
+                borderRadius: BorderRadius.circular(12),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.receipt_long, size: 48, color: BizTheme.successGreen),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'DPH Asistent',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Overenie daňovej uznateľnosti a rizík pred zaúčtovaním.',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: InkWell(
+                onTap: () => context.go('/ai-tools/reminder-generator'),
+                borderRadius: BorderRadius.circular(12),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.notifications_active, size: 48, color: Colors.orange),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Generátor Upomienok',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Vytvorte citlivé alebo prísne upomienky jediným kliknutím.',
                             ),
                           ],
                         ),

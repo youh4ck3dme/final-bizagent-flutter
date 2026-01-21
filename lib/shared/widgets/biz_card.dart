@@ -6,7 +6,7 @@ class BizCard extends StatelessWidget {
   const BizCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(BizTheme.pad),
+    this.padding = const EdgeInsets.all(BizTheme.spacingMd),
   });
 
   final Widget child;

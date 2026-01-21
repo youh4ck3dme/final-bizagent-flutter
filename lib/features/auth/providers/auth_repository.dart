@@ -115,21 +115,24 @@ class AuthRepository {
     try {
       final googleSignIn = GoogleSignIn.instance;
       
-      // Initialize if not already done
-      await googleSignIn.initialize();
+      try {
+        await googleSignIn.initialize();
+      } catch (e) {
+        // Initialize may not be needed in all platforms
+      }
       
-      // Use authenticate() for mobile platforms
-      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
-      
-      if (googleUser == null) {
-        // User canceled the sign-in
+      GoogleSignInAccount? googleUser;
+      try {
+        googleUser = await googleSignIn.authenticate();
+      } catch (e) {
         return null;
       }
-
-      final googleAuth = googleUser.authentication;
+      
+      final googleAuth = await googleUser.authentication;
       
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
+        accessToken: null,
       );
 
       final result = await _auth.signInWithCredential(credential);

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../tax/providers/tax_provider.dart';
 import '../../tax/providers/tax_thermometer_service.dart';
+import '../../tax/providers/tax_estimation_service.dart';
 import '../../../core/i18n/l10n.dart';
 import '../../../core/i18n/app_strings.dart';
+import '../../../core/ui/biz_theme.dart';
 
 class DashboardTaxWidget extends ConsumerWidget {
   const DashboardTaxWidget({super.key});
@@ -16,16 +17,17 @@ class DashboardTaxWidget extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final deadlines = ref.watch(upcomingTaxDeadlinesProvider);
     final thermometerAsync = ref.watch(taxThermometerProvider);
+    final estimationAsync = ref.watch(taxEstimationProvider);
 
     return Card(
       elevation: 0,
       color: colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         side: BorderSide(color: colorScheme.outline.withValues(alpha: 0.1)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(BizTheme.spacingMd),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,7 +38,14 @@ class DashboardTaxWidget extends ConsumerWidget {
             const Divider(height: 1),
             const SizedBox(height: 16),
 
-            // 2. Deadlines Section
+            // 2. Tax Estimates Section
+            _buildEstimates(context, estimationAsync),
+
+            const SizedBox(height: 24),
+            const Divider(height: 1),
+            const SizedBox(height: 16),
+
+            // 3. Deadlines Section
             Row(
               children: [
                 Icon(Icons.calendar_month_outlined,
@@ -87,14 +96,14 @@ class DashboardTaxWidget extends ConsumerWidget {
       error: (err, stack) => const Text('Chyba výpočtu obratu'),
       data: (result) {
         final currency = NumberFormat.currency(locale: 'sk_SK', symbol: '€');
-        Color color = Colors.green;
+        Color color = BizTheme.successGreen;
         String statusText = context.t(AppStr.everythingOk);
 
         if (result.isCritical) {
           color = colorScheme.error;
           statusText = context.t(AppStr.dphRegistrationAlert);
         } else if (result.isWarning) {
-          color = Colors.orange;
+          color = BizTheme.warningAmber;
           statusText = context.t(AppStr.approachingLimit);
         }
 
@@ -110,9 +119,8 @@ class DashboardTaxWidget extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Text(
                       context.t(AppStr.turnoverLTM),
-                      style: GoogleFonts.outfit(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
                         color: colorScheme.onSurface,
                       ),
                     ),
@@ -123,7 +131,7 @@ class DashboardTaxWidget extends ConsumerWidget {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(BizTheme.radiusMd),
                   ),
                   child: Text(
                     statusText,
@@ -137,7 +145,7 @@ class DashboardTaxWidget extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(BizTheme.radiusMd),
               child: LinearProgressIndicator(
                 value: result.percentage.clamp(0.0, 1.0),
                 backgroundColor: colorScheme.surfaceContainerHighest,
@@ -171,6 +179,88 @@ class DashboardTaxWidget extends ConsumerWidget {
     );
   }
 
+  Widget _buildEstimates(
+      BuildContext context, AsyncValue<TaxEstimationModel> asyncValue) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return asyncValue.when(
+      loading: () => const SizedBox.shrink(),
+      error: (err, stack) => const Text('Chyba pri výpočte odhadov'),
+      data: (data) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.analytics_outlined, color: colorScheme.primary, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  'Odhady daní (YTD)',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildEstimateItem(
+              context,
+              'Daň z príjmu (odhad)',
+              data.estimatedIncomeTax,
+              Icons.trending_down,
+              BizTheme.nationalRed,
+            ),
+            if (data.isVatPayer) ...[
+              const SizedBox(height: 12),
+              _buildEstimateItem(
+                context,
+                'DPH k úhrade (odhad)',
+                data.estimatedVatLiability,
+                Icons.account_balance,
+                BizTheme.slovakBlue,
+              ),
+            ],
+            const SizedBox(height: 12),
+            _buildEstimateItem(
+              context,
+              'Čistý zisk po zdanení',
+              data.netProfit - data.estimatedIncomeTax,
+              Icons.auto_graph,
+              BizTheme.successGreen,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildEstimateItem(BuildContext context, String title, double amount,
+      IconData icon, Color color) {
+    final currency = NumberFormat.currency(locale: 'sk_SK', symbol: '€');
+    return Row(
+      children: [
+        Icon(icon, color: color.withOpacity(0.7), size: 16),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        ),
+        Text(
+          currency.format(amount),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            color: amount < 0 ? BizTheme.nationalRed : Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildDeadlineItem(BuildContext context, dynamic deadline) {
     final colorScheme = Theme.of(context).colorScheme;
     final isToday = deadline.date.year == DateTime.now().year &&
@@ -188,7 +278,7 @@ class DashboardTaxWidget extends ConsumerWidget {
               color: isToday
                   ? colorScheme.error.withValues(alpha: 0.1)
                   : colorScheme.primary.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(BizTheme.radiusMd),
             ),
             child: Column(
               children: [

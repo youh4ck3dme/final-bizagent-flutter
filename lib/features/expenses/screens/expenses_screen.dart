@@ -10,6 +10,7 @@ import '../providers/expenses_provider.dart';
 import '../models/expense_model.dart';
 import '../models/expense_category.dart';
 import '../widgets/expense_filter_sheet.dart';
+import '../../../core/ui/biz_theme.dart';
 
 // Provider pre filtre
 final expenseFilterProvider = StateProvider<ExpenseFilterCriteria>((ref) {
@@ -47,7 +48,7 @@ class ExpensesScreen extends ConsumerWidget {
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
-                        color: Colors.red,
+                        color: BizTheme.nationalRed,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -105,7 +106,7 @@ class ExpensesScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.filter_alt_off,
-                        size: 64, color: Colors.grey),
+                        size: 64, color: BizTheme.gray400),
                     const SizedBox(height: 16),
                     const Text('Žiadne výdavky vyhovujúce filtrom'),
                     TextButton(
@@ -154,7 +155,7 @@ class ExpensesScreen extends ConsumerWidget {
                                 .titleSmall
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blueGrey,
+                                  color: BizTheme.gray600,
                                 ),
                           ),
                           Text(
@@ -166,7 +167,7 @@ class ExpensesScreen extends ConsumerWidget {
                                 .textTheme
                                 .titleSmall
                                 ?.copyWith(
-                                  color: Colors.blueGrey,
+                                  color: BizTheme.gray600,
                                 ),
                           ),
                         ],
@@ -283,7 +284,7 @@ class ExpensesScreen extends ConsumerWidget {
                   child: const Text('Zrušiť')),
               TextButton(
                   onPressed: () => Navigator.pop(context, true),
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  style: TextButton.styleFrom(foregroundColor: BizTheme.nationalRed),
                   child: const Text('Zmazať')),
             ],
           ),
@@ -298,10 +299,10 @@ class ExpensesScreen extends ConsumerWidget {
         return false;
       },
       background: Container(
-        color: Colors.red.shade100,
+        color: BizTheme.nationalRed.withOpacity(0.2),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),
-        child: Icon(Icons.delete, color: Colors.red.shade700),
+        child: const Icon(Icons.delete, color: BizTheme.nationalRed),
       ),
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 4),
@@ -357,12 +358,12 @@ class ExpensesScreen extends ConsumerWidget {
                               children: [
                                 Icon(Icons.attach_file,
                                     size: 14,
-                                    color: Theme.of(context).primaryColor),
+                                    color: BizTheme.slovakBlue),
                                 const SizedBox(width: 4),
-                                Text(
+                                const Text(
                                   'Účtenka',
                                   style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
+                                    color: BizTheme.slovakBlue,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -389,7 +390,7 @@ class ExpensesScreen extends ConsumerWidget {
                           const Padding(
                             padding: EdgeInsets.only(right: 4),
                             child: Icon(Icons.auto_awesome,
-                                size: 12, color: Colors.amber),
+                                size: 12, color: BizTheme.warningAmber),
                           ),
                         Text(
                           DateFormat('d.M.').format(expense.date),
