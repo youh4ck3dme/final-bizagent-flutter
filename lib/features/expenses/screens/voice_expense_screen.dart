@@ -105,7 +105,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         });
       } else {
         setState(() => _voiceState = VoiceState.error);
-        BizSnackbar.showWarning(context, 'Nepodarilo sa rozpoznať výdavok. Skúste to znova.');
+        BizSnackbar.showInfo(context, 'Nepodarilo sa rozpoznať výdavok. Skúste to znova.');
       }
     } catch (e) {
       setState(() => _voiceState = VoiceState.error);

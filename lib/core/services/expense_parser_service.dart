@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/gemini_service.dart';
 
 class ParsedExpense {
@@ -94,7 +95,7 @@ VRÁŤ ČISTÝ JSON bez markdown blokov:
 }
 ''');
 
-      final parsed = ParsedExpense.fromJson(response);
+      final parsed = ParsedExpense.fromJson(response as Map<String, dynamic>);
 
       // Validate the parsed data
       if (parsed.amount <= 0 || parsed.description.isEmpty) {

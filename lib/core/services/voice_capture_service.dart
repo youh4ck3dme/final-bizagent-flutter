@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class VoiceCaptureService {
@@ -91,8 +92,7 @@ class VoiceCaptureService {
     _speechToText.cancel();
   }
 
-  /// Get list of available locales
-  List<stt.LocaleName> get locales => _speechToText.locales;
+
 
   /// Check if currently listening
   bool get isListening => _speechToText.isListening;

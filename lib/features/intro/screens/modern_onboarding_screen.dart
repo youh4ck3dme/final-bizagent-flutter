@@ -68,7 +68,6 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
   }
 
   void _skipToDemo() {
-    // Skip to demo step (index 2)
     _pageController.animateToPage(
       2,
       duration: const Duration(milliseconds: 600),
@@ -87,7 +86,6 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Force light status bar
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     return Scaffold(
@@ -95,7 +93,6 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -108,34 +105,20 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
               ),
             ),
           ),
-
-          // Page View
           PageView.builder(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
             onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
+              setState(() => _currentPage = index);
             },
             itemCount: _steps.length,
-            itemBuilder: (context, index) {
-              return _OnboardingPage(
-                step: _steps[index],
-                selectedBusinessType: _selectedBusinessType,
-                onBusinessTypeChanged: (type) {
-                  setState(() {
-                    _selectedBusinessType = type;
-                  });
-                },
-                onGenerateDemo: () {
-                  ref.read(onboardingDemoProvider.notifier).generateDemoInvoice(_selectedBusinessType);
-                },
-              );
-            },
+            itemBuilder: (context, index) => _OnboardingPage(
+              step: _steps[index],
+              selectedBusinessType: _selectedBusinessType,
+              onBusinessTypeChanged: (type) => setState(() => _selectedBusinessType = type),
+              onGenerateDemo: () => ref.read(onboardingDemoProvider.notifier).generateDemoInvoice(_selectedBusinessType),
+            ),
           ),
-
-          // Bottom Controls
           Positioned(
             bottom: 0,
             left: 0,
@@ -159,7 +142,6 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Progress Indicators
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
@@ -171,28 +153,20 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
                       ),
                     ),
                     const SizedBox(height: 24),
-
-                    // Action Buttons
                     Row(
                       children: [
                         if (_currentPage == 0) ...[
-                          // Skip button on welcome screen
                           TextButton(
                             onPressed: _skipToDemo,
                             child: Text(
                               'Preskočiť',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 16,
-                              ),
+                              style: TextStyle(color: Colors.grey[600], fontSize: 16),
                             ),
                           ),
                           const Spacer(),
                         ] else ...[
                           const Spacer(),
                         ],
-
-                        // Next/Continue button
                         ElevatedButton(
                           onPressed: _nextPage,
                           style: ElevatedButton.styleFrom(
@@ -206,10 +180,7 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
                           ),
                           child: Text(
                             _currentPage == _steps.length - 1 ? 'Začať používať' : 'Pokračovať',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -245,8 +216,6 @@ class _OnboardingPage extends ConsumerWidget {
       child: Column(
         children: [
           const Spacer(flex: 2),
-
-          // Title
           Text(
             step.title,
             style: const TextStyle(
@@ -257,10 +226,7 @@ class _OnboardingPage extends ConsumerWidget {
             ),
             textAlign: TextAlign.center,
           ),
-
           const SizedBox(height: 16),
-
-          // Subtitle
           Text(
             step.subtitle,
             style: TextStyle(
@@ -270,15 +236,11 @@ class _OnboardingPage extends ConsumerWidget {
             ),
             textAlign: TextAlign.center,
           ),
-
           const Spacer(flex: 1),
-
-          // Content based on step type
           Expanded(
             flex: 4,
             child: _buildStepContent(ref),
           ),
-
           const Spacer(flex: 3),
         ],
       ),
@@ -406,7 +368,7 @@ class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
-                    type['icon'],
+                    type['icon'] as IconData,
                     color: isSelected ? Colors.white : Colors.grey[600],
                     size: 24,
                   ),
@@ -417,7 +379,7 @@ class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        type['type'],
+                        type['type'] as String,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -426,7 +388,7 @@ class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        type['description'],
+                        type['description'] as String,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -463,7 +425,6 @@ class _DemoPreview extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final demoAsync = ref.watch(onboardingDemoProvider);
 
-    // Trigger demo generation when this step is reached
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (demoAsync.value == null && !demoAsync.isLoading) {
         onGenerateDemo();
@@ -604,7 +565,6 @@ class _InvoiceDemo extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -633,10 +593,7 @@ class _InvoiceDemo extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 16),
-
-          // Client info
           Text(
             invoiceData['clientName'] ?? 'Klient s.r.o.',
             style: const TextStyle(
@@ -651,10 +608,7 @@ class _InvoiceDemo extends StatelessWidget {
               color: Colors.grey[600],
             ),
           ),
-
           const SizedBox(height: 24),
-
-          // Items
           ...items.map((item) {
             final description = item['description'] ?? '';
             final quantity = item['quantity'] ?? 1;
@@ -687,10 +641,7 @@ class _InvoiceDemo extends StatelessWidget {
               ),
             );
           }),
-
           const Divider(height: 24),
-
-          // Total
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -704,10 +655,7 @@ class _InvoiceDemo extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 16),
-
-          // AI Badge
           Row(
             children: [
               Icon(
@@ -765,9 +713,7 @@ class _FinishContent extends StatelessWidget {
             color: BizTheme.slovakBlue,
           ),
         ),
-
         const SizedBox(height: 32),
-
         Text(
           'Čo ešte môžete robiť s BizAgent?',
           style: TextStyle(
@@ -777,9 +723,7 @@ class _FinishContent extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-
         const SizedBox(height: 32),
-
         ...features.map((feature) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Row(
@@ -791,14 +735,14 @@ class _FinishContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
-                  feature['icon'],
+                  feature['icon'] as IconData,
                   color: BizTheme.slovakBlue,
                   size: 20,
                 ),
               ),
               const SizedBox(width: 16),
               Text(
-                feature['text'],
+                feature['text'] as String,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,

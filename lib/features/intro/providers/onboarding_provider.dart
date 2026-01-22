@@ -76,7 +76,7 @@ VRÁŤ JSON v tomto formáte:
 }
 ''';
 
-      final response = await geminiService.analyzeJson(businessType, '''
+      final response = await geminiService.analyzeJson(prompt, '''
 {
   "invoiceNumber": "string",
   "clientName": "string",
@@ -87,7 +87,7 @@ VRÁŤ JSON v tomto formáte:
 }
 ''');
 
-      final invoiceData = Map<String, dynamic>.from(response);
+      final invoiceData = response as Map<String, dynamic>;
 
       final demoData = OnboardingDemoData(
         businessType: businessType,
@@ -191,3 +191,4 @@ class OnboardingDemoData {
     required this.suggestedFeatures,
     required this.generatedAt,
   });
+}
