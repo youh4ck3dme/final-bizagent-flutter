@@ -30,9 +30,9 @@ class BankCsvParserService {
 
     final normalized = _stripBom(csvText).trim();
     if (normalized.isEmpty) {
-      return BankCsvParseResult(
+      return const BankCsvParseResult(
           profile: BankCsvProfile.generic,
-          txs: const [],
+          txs: [],
           warnings: ['Empty CSV']);
     }
 
@@ -43,9 +43,9 @@ class BankCsvParserService {
     ).convert(normalized, fieldDelimiter: delimiter);
 
     if (rows.isEmpty) {
-      return BankCsvParseResult(
+      return const BankCsvParseResult(
           profile: BankCsvProfile.generic,
-          txs: const [],
+          txs: [],
           warnings: ['No rows parsed']);
     }
 

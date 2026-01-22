@@ -437,7 +437,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                         padding: const EdgeInsets.only(top: 12.0),
                         child: InkWell(
                           onTap: () => setState(() => _isDetailsExpanded = true),
-                          child: Row(
+                          child: const Row(
                             children: [
                               Text('Zobraziť fakturačné detaily', 
                                 style: TextStyle(color: BizTheme.slovakBlue, fontSize: 13, fontWeight: FontWeight.bold)),

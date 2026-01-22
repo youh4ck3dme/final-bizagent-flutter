@@ -71,7 +71,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.verified_user,
                     color: BizTheme.slovakBlue,
                     size: 24,

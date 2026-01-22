@@ -312,7 +312,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                 ),
               ),
             if (isSelected)
-              Positioned(
+              const Positioned(
                 top: 4,
                 right: 4,
                 child: Icon(

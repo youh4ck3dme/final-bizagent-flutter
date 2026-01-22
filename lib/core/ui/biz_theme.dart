@@ -102,7 +102,7 @@ class BizTheme {
   }
 
   static ThemeData dark() {
-    final colorScheme = ColorScheme.dark(
+    final colorScheme = const ColorScheme.dark(
       primary: darkPrimaryBlue,
       onPrimary: darkSurface, // Black text on light blue looks better, or white depending on contrast. Material specs usually contrast.
       primaryContainer: darkPrimaryContainer,
@@ -250,11 +250,11 @@ class BizTheme {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: BorderSide(color: isDark ? Color(0xFFCF6679) : errorRed, width: 1),
+          borderSide: BorderSide(color: isDark ? const Color(0xFFCF6679) : errorRed, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: BorderSide(color: isDark ? Color(0xFFCF6679) : errorRed, width: 2),
+          borderSide: BorderSide(color: isDark ? const Color(0xFFCF6679) : errorRed, width: 2),
         ),
       ),
 

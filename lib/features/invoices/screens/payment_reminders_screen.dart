@@ -73,7 +73,7 @@ class PaymentRemindersScreen extends ConsumerWidget {
                         ),
                         child: Text(
                           '$daysOverdue dní po splatnosti',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: BizTheme.richCrimson,
                               fontWeight: FontWeight.bold,
                               fontSize: 12),

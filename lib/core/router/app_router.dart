@@ -35,6 +35,7 @@ import '../../features/bank_import/screens/bank_import_screen.dart';
 import '../../features/export/screens/export_screen.dart';
 import '../../features/legal/screens/terms_and_conditions_screen.dart';
 import '../../features/legal/screens/privacy_policy_screen.dart';
+import '../../features/tools/screens/ico_lookup_screen.dart';
 import '../../shared/widgets/scaffold_with_navbar.dart';
 import '../../shared/widgets/biz_auth_required.dart';
 
@@ -248,6 +249,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'reminder-generator',
                     builder: (context, state) => const AiReminderGeneratorScreen(),
+                  ),
+                  GoRoute(
+                    path: 'ico-lookup',
+                    builder: (context, state) => const IcoLookupScreen(),
                   ),
                 ],
               ),

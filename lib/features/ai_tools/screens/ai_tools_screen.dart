@@ -178,6 +178,40 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            Card(
+              elevation: 4,
+              shadowColor: BizTheme.slovakBlue.withValues(alpha: 0.2),
+              child: InkWell(
+                onTap: () => context.go('/ai-tools/ico-lookup'),
+                borderRadius: BorderRadius.circular(12),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.business_search, size: 48, color: BizTheme.slovakBlue),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Overenie Firmy',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Rýchla kontrola IČO cez zabezpečený register.',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
             Row(
               children: [

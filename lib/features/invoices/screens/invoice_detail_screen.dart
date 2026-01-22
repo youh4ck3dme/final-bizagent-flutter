@@ -169,11 +169,11 @@ class InvoiceDetailScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Row(
+                      const Row(
                         children: [
-                          const Icon(Icons.verified, color: Colors.green),
-                          const SizedBox(width: 12),
-                          const Text('Informácie o úhrade',
+                          Icon(Icons.verified, color: Colors.green),
+                          SizedBox(width: 12),
+                          Text('Informácie o úhrade',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.green)),

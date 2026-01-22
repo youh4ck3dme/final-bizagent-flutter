@@ -1,5 +1,0 @@
-Downloading ios tools...                                            3,5s
-Downloading ios-profile tools...                                 2 912ms
-Downloading ios-release tools...                                    4,6s
-Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
-Application not configured for iOS

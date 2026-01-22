@@ -63,7 +63,7 @@ void main() {
           settingsRepositoryProvider
               .overrideWithValue(FakeSettingsRepository()),
           authStateProvider.overrideWith((ref) => Stream.value(
-              UserModel(id: 'test-user', email: 'test@example.com'))),
+              const UserModel(id: 'test-user', email: 'test@example.com'))),
           themeProvider.overrideWith((ref) => ThemeNotifier()), // Default theme
         ],
         child: const MaterialApp(

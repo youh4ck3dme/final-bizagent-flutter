@@ -377,14 +377,14 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                                 'isLocal': false,
                               });
                             },
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.attach_file,
                                     size: 14,
                                     color: BizTheme.slovakBlue),
-                                const SizedBox(width: 4),
-                                const Text(
+                                SizedBox(width: 4),
+                                Text(
                                   'Účtenka',
                                   style: TextStyle(
                                     color: BizTheme.slovakBlue,

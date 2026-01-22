@@ -46,6 +46,9 @@ class AuthRepository {
   }
 
   void _init() {
+    // Explicitly set persistence to LOCAL (long-lived)
+    _auth.setPersistence(Persistence.LOCAL);
+
     _authSubscription = _auth.authStateChanges().listen((User? user) {
       if (_currentUser != null && _currentUser!.id == 'fake-id-123') return;
 

@@ -15,6 +15,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
+
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -24,22 +25,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       title: 'Inteligentná\nFakturácia',
       description:
           'Zabudnite na zdĺhavé vypisovanie. Vytvárajte profesionálne faktúry za pár sekúnd s automatickým prepojením na databázu firiem.',
-      svgPath: 'assets/icons/onboarding_invoice.svg', // SVG path
+      imagePath: 'assets/images/onboarding_invoice_clean.webp',
       accentColor: BizTheme.slovakBlue,
+      isFullScreen: false,
     ),
     OnboardingContent(
-      title: 'Umelá\nInteligencia',
+      title: 'AI Účtovný\nExpert',
       description:
-          'Váš osobný AI asistent prečíta bločky, vytriedi výdavky a dokonca za vás napíše profesionálne e-maily klientom.',
-      svgPath: 'assets/icons/onboarding_ai.svg', // SVG path
+          'Využite silu umelej inteligencie. Automatické skenovanie bločkov, daňové predpovede a real-time finančné analýzy. Váš osobný génius v mobile.',
+      imagePath: 'assets/images/onboarding_ai_clean.webp',
       accentColor: BizTheme.richCrimson,
+      isFullScreen: false,
     ),
     OnboardingContent(
       title: 'Finančný\nPrehľad',
       description:
-          'Majte dokonalý prehľad o cash-flow. Sledujte, kto vám dlhuje, a automatizujte upomienky jedným klikom.',
-      svgPath: 'assets/icons/onboarding_chart.svg', // SVG path
+          'Dokonalý prehľad o cash-flow. Sledujte rast svojho podnikania v reálnom čase s prehľadnými grafmi a analýzami.',
+      imagePath: 'assets/images/onboarding_chart_clean.webp',
       accentColor: BizTheme.fusionAzure,
+      isFullScreen: false,
+    ),
+    OnboardingContent(
+      title: 'Bezpečnosť\n& Sloboda',
+      description:
+          'Vaše dáta sú v bezpečí (GDPR ready). Podnikajte odkiaľkoľvek, fakturujte z mobilu a majte všetko pod kontrolou.',
+      imagePath: 'assets/images/onboarding_security_clean.webp',
+      accentColor: BizTheme.slovakBlue,
+      isFullScreen: false,
     ),
   ];
 
@@ -63,115 +75,152 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     return Scaffold(
-      backgroundColor: Colors.transparent, // Transparent to show background if needed, but Stack covers it
+      backgroundColor: Colors.black,
       body: Stack(
-        fit: StackFit.expand, // Ensure background covers entire screen
+        fit: StackFit.expand,
         children: [
-          // 0. Unified Global Background
+          // 0. Global Background (Fallback for slides without own image)
           Image.asset(
             'assets/images/background_fusion.webp',
             fit: BoxFit.cover,
           ),
 
-          // Content
-          SafeArea(
-            child: Column(
-              children: [
-                // Top Spacer / Skip button area
-                const SizedBox(height: 16),
+          // 1. Full Screen PageView
+          PageView.builder(
+            controller: _pageController,
+            itemCount: _contents.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return _OnboardingPage(content: _contents[index]);
+            },
+          ),
 
-                const Spacer(flex: 1),
-
-                // Page View
-                Expanded(
-                  flex: 12,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _contents.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                      });
-                    },
-                    itemBuilder: (context, index) {
-                      return _OnboardingPage(content: _contents[index]);
-                    },
-                  ),
+          // 2. Promo Badge (Launch Special) - Top Right
+          Positioned(
+            top: 50,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFD700), Color(0xFFFF8C00)],
                 ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  )
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.star_rounded, color: Colors.white, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    "7 Dní Zdarma",
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
 
-                const Spacer(flex: 1),
-
-                // Bottom Controls
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Indicators
-                          Row(
-                            children: List.generate(
-                              _contents.length,
-                              (index) => _AnimatedDot(
-                                isActive: index == _currentPage,
-                                color: _contents[_currentPage].accentColor,
-                              ),
+          // 3. Bottom Controls & Indicators
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.8),
+                    Colors.transparent,
+                  ],
+                  stops: const [0.0, 1.0],
+                ),
+              ),
+              padding: const EdgeInsets.fromLTRB(32, 0, 32, 40),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Indicators
+                        Row(
+                          children: List.generate(
+                            _contents.length,
+                            (index) => _AnimatedDot(
+                              isActive: index == _currentPage,
+                              color: _contents[_currentPage].isFullScreen
+                                  ? Colors.white // White dots on dark images
+                                  : _contents[_currentPage].accentColor,
                             ),
                           ),
+                        ),
 
-                          // Floating Action Button
-                          _AnimatedNextButton(
-                            isLast: _currentPage == _contents.length - 1,
-                            color: _contents[_currentPage].accentColor,
-                            onPressed: () {
-                              if (_currentPage == _contents.length - 1) {
-                                ref
-                                    .read(onboardingProvider.notifier)
-                                    .completeOnboarding();
-                              } else {
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.fastOutSlowIn,
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      // Demo Mode Button (Anonymous Auth)
-                      TextButton(
-                        onPressed: () async {
-                          // Log tracking
-                          ref
-                              .read(analyticsServiceProvider)
-                              .logTryWithoutRegistration();
-
-                          // Trigger anonymous login
-                          await ref
-                              .read(authRepositoryProvider)
-                              .signInAnonymously();
-                          // Onboarding completion is handled by auth state change listener in main app
-                          // but we might need to mark onboarding as seen if logic differs
-                          ref
-                              .read(onboardingProvider.notifier)
-                              .completeOnboarding();
-                        },
-                        child: Text(
-                          "vyskúšať bez registrácie",
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[500],
-                          ),
+                        // Next Button
+                        _AnimatedNextButton(
+                          isLast: _currentPage == _contents.length - 1,
+                          color: _contents[_currentPage].isFullScreen
+                                  ? Colors.white // White button on dark images
+                                  : _contents[_currentPage].accentColor,
+                          onPressed: () {
+                            if (_currentPage == _contents.length - 1) {
+                              ref
+                                  .read(onboardingProvider.notifier)
+                                  .completeOnboarding();
+                            } else {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.fastOutSlowIn,
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Demo Mode Button
+                    TextButton(
+                      onPressed: () async {
+                        ref
+                            .read(analyticsServiceProvider)
+                            .logTryWithoutRegistration();
+                        await ref
+                            .read(authRepositoryProvider)
+                            .signInAnonymously();
+                        ref
+                            .read(onboardingProvider.notifier)
+                            .completeOnboarding();
+                      },
+                      child: Text(
+                        "vyskúšať bez registrácie",
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white70,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],
@@ -187,79 +236,172 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Full Screen Image Mode
+    if (content.isFullScreen && content.imagePath != null) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background Image
+          Image.asset(
+            content.imagePath!,
+            fit: BoxFit.cover,
+            height: double.infinity,
+            width: double.infinity,
+            alignment: Alignment.center,
+          ),
+
+          // Gradient Overlay (for text readability)
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.1), // Slight tint middle
+                  Colors.black.withValues(alpha: 0.9), // Dark bottom
+                ],
+                stops: const [0.4, 0.6, 1.0],
+              ),
+            ),
+          ),
+
+          // Text Content (Bottom Aligned)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(flex: 3), // Push text down but keep some flexibility
+                
+                Text(
+                  content.title,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontSize: 42,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.1,
+                    letterSpacing: -1.0,
+                    shadows: [
+                       Shadow(
+                        blurRadius: 10.0,
+                        color: Colors.black.withValues(alpha: 0.5),
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  content.description,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    color: Colors.white.withValues(alpha: 0.9),
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
+                     shadows: [
+                       Shadow(
+                        blurRadius: 4.0,
+                        color: Colors.black.withValues(alpha: 0.5),
+                        offset: const Offset(0, 1),
+                      ),
+                    ]
+                  ),
+                ),
+                const SizedBox(height: 140), // Space for bottom controls
+              ],
+            ),
+          )
+        ],
+      );
+    }
+
+    // 2. Standard SVG Mode (Fallback for non-image slides)
+    // Uses transparent background so global background shows through
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center, // Centered alignment
-              children: [
-                const SizedBox(height: 20),
-                // SVG Illustration Container
-                SizedBox(
-                  height: 300,
-                  width: constraints.maxWidth,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Glow effect behind SVG
-                      Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: content.accentColor.withValues(alpha: 0.1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: content.accentColor.withValues(alpha: 0.1),
-                              blurRadius: 60,
-                              spreadRadius: 20,
-                            ),
-                          ],
+          child: ConstrainedBox(
+             // Ensure it takes full height to center content vertically
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // SVG Illustration Container
+                  SizedBox(
+                    height: 300,
+                    width: constraints.maxWidth,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Glow effect behind SVG
+                        Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: content.accentColor.withValues(alpha: 0.1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: content.accentColor.withValues(alpha: 0.1),
+                                blurRadius: 60,
+                                spreadRadius: 20,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SvgPicture.asset(
-                        content.svgPath,
-                        height: 280,
-                        // width property removed to allow flexible width in small screens
-                        fit: BoxFit.contain, 
-                        placeholderBuilder: (context) =>
-                            const Center(child: CircularProgressIndicator()),
-                      ),
-                    ],
+                        content.imagePath != null
+                            ? Image.asset(
+                                content.imagePath!,
+                                height: 280,
+                                fit: BoxFit.contain,
+                              )
+                            : SvgPicture.asset(
+                                content.svgPath!,
+                                height: 280,
+                                fit: BoxFit.contain,
+                                placeholderBuilder: (context) =>
+                                    const Center(child: CircularProgressIndicator()),
+                              ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 48),
+                  const SizedBox(height: 48),
 
-                // Title
-                Text(
-                  content.title,
-                  textAlign: TextAlign.center, // Center text
-                  style: GoogleFonts.outfit(
-                    fontSize: 42,
-                    height: 1.1,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF111827),
-                    letterSpacing: -1.0,
+                  // Title
+                  Text(
+                    content.title,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.outfit(
+                      fontSize: 42,
+                      height: 1.1,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF111827),
+                      letterSpacing: -1.0,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                // Description
-                Text(
-                  content.description,
-                  textAlign: TextAlign.center, // Center text
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    height: 1.6,
-                    color: const Color(0xFF4B5563),
-                    fontWeight: FontWeight.w400,
+                  // Description
+                  Text(
+                    content.description,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      height: 1.6,
+                      color: const Color(0xFF4B5563),
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         );
@@ -358,13 +500,18 @@ class _AnimatedNextButton extends StatelessWidget {
 class OnboardingContent {
   final String title;
   final String description;
-  final String svgPath; // Replaced IconData with svgPath
+  final String? svgPath;
+  final String? imagePath;
   final Color accentColor;
+  final bool isFullScreen;
 
   OnboardingContent({
     required this.title,
     required this.description,
-    required this.svgPath,
+    this.svgPath,
+    this.imagePath,
     required this.accentColor,
-  });
+    this.isFullScreen = true,
+  }) : assert(svgPath != null || imagePath != null);
 }
+

@@ -291,7 +291,7 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
                                   },
                                   child: Text(
                                     _isLogin ? 'Ešte nemáte účet? Registrácia' : 'Späť na prihlásenie',
-                                    style: TextStyle(color: Colors.black54),
+                                    style: const TextStyle(color: Colors.black54),
                                   ),
                                 ),
                               ],
@@ -334,7 +334,7 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
           labelStyle: const TextStyle(color: Colors.black54),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.black12),
+            borderSide: const BorderSide(color: Colors.black12),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -449,8 +449,8 @@ class _ChameleonLoginScreenState extends ConsumerState<ChameleonLoginScreen>
                     child: Image.asset('assets/icons/google_g.png'),
                   ),
                   const SizedBox(width: 12),
-                  Flexible(
-                    child: const Text(
+                  const Flexible(
+                    child: Text(
                       'Cez Google',
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

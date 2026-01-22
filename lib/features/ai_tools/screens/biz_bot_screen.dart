@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/biz_bot_service.dart';
 import '../../../core/ui/biz_theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class BizBotMessage {
   final String text;
@@ -69,9 +70,16 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
         _scrollToBottom();
       }
     } catch (e) {
-      String errorMessage = 'Prepáč, vyskytla sa chyba pri spájaní s AI. Skús to prosím neskôr.';
+      String errorMessage = 'Prepáč, vyskytla sa chyba pri spájaní s AI.';
+      
       if (e.toString().contains('API kľúč')) {
-        errorMessage = 'AI asistent je momentálne nedostupný (neplatný API kľúč).';
+        errorMessage = 'Chyba API kľúča (403/Invalid). Kontaktujte podporu.';
+      } else if (e.toString().contains('quota')) {
+        errorMessage = 'Dosiahli ste denný limit bezplatných dopytov (429).';
+      } else if (e.toString().toLowerCase().contains('network') || e.toString().contains('ClientException')) {
+        errorMessage = 'Sieťová chyba. Skontrolujte pripojenie na internet.';
+      } else {
+        errorMessage = 'Chyba: $e';
       }
       
       if (mounted) {
@@ -144,26 +152,46 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
     return Align(
       alignment: msg.isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
         decoration: BoxDecoration(
-          color: msg.isUser ? BizTheme.slovakBlue : BizTheme.gray100,
+          gradient: msg.isUser
+              ? LinearGradient(
+                  colors: [BizTheme.slovakBlue, BizTheme.slovakBlue.withValues(alpha: 0.9)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  colors: [Colors.white, const Color(0xFFF9FAFB)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+          color: msg.isUser ? null : Colors.white,
           borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(16),
-            topRight: const Radius.circular(16),
-            bottomLeft: Radius.circular(msg.isUser ? 16 : 0),
-            bottomRight: Radius.circular(msg.isUser ? 0 : 16),
+            topLeft: const Radius.circular(20),
+            topRight: const Radius.circular(20),
+            bottomLeft: Radius.circular(msg.isUser ? 20 : 4),
+            bottomRight: Radius.circular(msg.isUser ? 4 : 20),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          border: msg.isUser ? null : Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         ),
-        child: Text(
+        child: SelectableText( // Allow copying text
           msg.text,
           style: TextStyle(
             color: msg.isUser ? Colors.white : Colors.black87,
-            height: 1.4,
+            height: 1.5,
+            fontSize: 15,
           ),
         ),
-      ),
+      ).animate().fade().slideY(begin: 0.1, duration: 300.ms, curve: Curves.easeOut),
     );
   }
 
@@ -173,31 +201,46 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, -2))
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          )
         ],
       ),
       child: SafeArea(
         child: Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: _controller,
-                onSubmitted: (_) => _sendMessage(),
-                decoration: InputDecoration(
-                  hintText: 'Opýtaj sa niečo...',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  filled: true,
-                  fillColor: BizTheme.gray50,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.transparent),
+                ),
+                child: TextField(
+                  key: const Key('bizbot_input'),
+                  controller: _controller,
+                  onSubmitted: (_) => _sendMessage(),
+                  style: const TextStyle(fontSize: 15),
+                  decoration: InputDecoration(
+                    hintText: 'Opýtaj sa na účtovníctvo...',
+                    hintStyle: TextStyle(color: Colors.grey[500]),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    isDense: true,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             FloatingActionButton.small(
+              key: const Key('bizbot_send_btn'),
               onPressed: _sendMessage,
               backgroundColor: BizTheme.slovakBlue,
-              child: const Icon(Icons.send, color: Colors.white),
-            ),
+              elevation: 2,
+              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+            ).animate(target: _isLoading ? 0 : 1).scale(),
           ],
         ),
       ),

@@ -84,8 +84,8 @@ final taxEstimationProvider = Provider<AsyncValue<TaxEstimationModel>>((ref) {
           if (isVatPayer) {
              // In Slovakia, for a simplified estimate: (Output VAT - Input VAT)
              // We estimate based on total amounts (gross / 1.2 * 0.2)
-             double outputVat = (revenue / 1.2) * 0.2;
-             double inputVat = (costs / 1.2) * 0.2;
+             final double outputVat = (revenue / 1.2) * 0.2;
+             final double inputVat = (costs / 1.2) * 0.2;
              vatLiability = outputVat - inputVat;
           } else {
             vatLiability = 0;

@@ -1,6 +1,0 @@
-Running Gradle task 'bundleRelease'...                            107,9s
-Release app bundle failed to strip debug symbols from native libraries.
-Please run flutter doctor and ensure that the Android toolchain does not
-report any issues.
-
-Otherwise, file an issue at https://github.com/flutter/flutter/issues.

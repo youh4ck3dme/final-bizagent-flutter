@@ -309,7 +309,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: BizTheme.gray200),
+          borderSide: const BorderSide(color: BizTheme.gray200),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

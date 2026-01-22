@@ -14,7 +14,7 @@ class GlassContainer extends StatefulWidget {
   final VoidCallback? onTap;
 
   const GlassContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.blurAmount = 10.0,
     this.opacity = 0.1,
@@ -22,7 +22,7 @@ class GlassContainer extends StatefulWidget {
     this.parallaxIntensity = 50,
     this.padding = const EdgeInsets.all(24.0),
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<GlassContainer> createState() => _GlassContainerState();

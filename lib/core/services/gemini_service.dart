@@ -6,9 +6,11 @@ class GeminiService {
   final String _apiKey;
   late final GenerativeModel _model;
 
+  static const String modelName = 'gemini-pro';
+
   GeminiService({required String apiKey}) : _apiKey = apiKey {
     _model = GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: modelName,
       apiKey: _apiKey,
     );
   }

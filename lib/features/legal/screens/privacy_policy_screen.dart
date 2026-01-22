@@ -87,7 +87,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.lock,
                     color: BizTheme.successGreen,
                     size: 24,

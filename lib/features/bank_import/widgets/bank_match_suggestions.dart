@@ -181,7 +181,7 @@ class BankMatchSuggestions extends StatelessWidget {
               ],
               const Spacer(),
               if (match.transaction.variableSymbol != null) ...[
-                Icon(Icons.tag, size: 16, color: Colors.grey),
+                const Icon(Icons.tag, size: 16, color: Colors.grey),
                 const SizedBox(width: 4),
                 Text(
                   'VS: ${match.transaction.variableSymbol ?? ''}',

@@ -80,7 +80,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Logo or Title
-                      Icon(
+                      const Icon(
                         Icons.lock_outline_rounded,
                         size: 64,
                         color: BizTheme.slovakBlue,

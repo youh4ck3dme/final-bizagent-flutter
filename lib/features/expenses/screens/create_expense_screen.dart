@@ -83,7 +83,7 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
     final regex = RegExp(r'(\d+[.,]\d{2})');
     final match = regex.firstMatch(text);
     if (match != null) {
-      String amountStr = match.group(0)!.replaceAll(',', '.');
+      final String amountStr = match.group(0)!.replaceAll(',', '.');
       _amountController.text = amountStr;
     }
   }
@@ -197,7 +197,7 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
     });
 
     try {
-      List<String> receiptUrls = [];
+      final List<String> receiptUrls = [];
 
       // Upload receipt if exists
       if (_scannedReceiptPath != null) {

@@ -26,9 +26,9 @@ void main() {
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
         ],
-        child: L10n(
+        child: const L10n(
           locale: AppLocale.sk,
-          child: const MaterialApp(
+          child: MaterialApp(
             home: DashboardScreen(),
           ),
         ),

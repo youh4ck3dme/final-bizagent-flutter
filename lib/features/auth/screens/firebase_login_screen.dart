@@ -15,8 +15,8 @@ class FirebaseLoginScreen extends ConsumerWidget {
         GoogleProvider(clientId: '542280140779-c5m14rqpih1j9tmf9km52aq1684l9qjd.apps.googleusercontent.com'),
       ],
       headerBuilder: (context, constraints, shrinkOffset) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
+        return const Padding(
+          padding: EdgeInsets.all(20),
           child: Center(
             child: Icon(
               Icons.lock_person_rounded,
