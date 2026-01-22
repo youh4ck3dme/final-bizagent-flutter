@@ -162,8 +162,8 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
-              : LinearGradient(
-                  colors: [Colors.white, const Color(0xFFF9FAFB)],
+              : const LinearGradient(
+                  colors: [Colors.white, Color(0xFFF9FAFB)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),

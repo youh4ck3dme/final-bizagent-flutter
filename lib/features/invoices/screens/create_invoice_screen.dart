@@ -61,9 +61,11 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       _clientNameController.text = widget.initialData!['clientName'] ?? '';
       _clientIcoController.text = widget.initialData!['clientIco'] ?? '';
       _clientAddressController.text = widget.initialData!['clientAddress'] ?? '';
+      _clientDicController.text = widget.initialData!['clientDic'] ?? '';
+      _clientIcDphController.text = widget.initialData!['clientIcDph'] ?? '';
       
       if (_clientNameController.text.isNotEmpty) {
-        _aiPopulatedFields.addAll(['name', 'ico', 'address']);
+        _aiPopulatedFields.addAll(['name', 'ico', 'address', 'dic', 'icDph']);
         _isAiOptimized = true;
       }
     }
@@ -291,7 +293,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // final isDark = theme.brightness == Brightness.dark;
     final settingsAsync = ref.watch(settingsProvider);
     final settings = settingsAsync.valueOrNull;
     final isVatPayer = settings?.isVatPayer ?? false;
@@ -611,4 +613,3 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   }
 }
 
-}

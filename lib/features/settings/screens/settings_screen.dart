@@ -323,9 +323,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (confirmed == true) {
       await ref.read(localPersistenceServiceProvider).clearAll();
       // Restart app or invalidate providers
-      if (mounted) {
-        BizSnackbar.showSuccess(context, 'Dáta boli vymazané. Reštartujte aplikáciu.');
-      }
+      if (!context.mounted) return;
+      BizSnackbar.showSuccess(context, 'Dáta boli vymazané. Reštartujte aplikáciu.');
     }
   }
 

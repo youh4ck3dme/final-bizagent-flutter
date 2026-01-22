@@ -60,7 +60,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         children: [
           // 1. Branding Image (Fullscreen or large)
           Image.asset(
-            'assets/images/splash_branding.jpg',
+            'assets/images/splash_branding.webp',
             fit: BoxFit.cover,
           ),
           

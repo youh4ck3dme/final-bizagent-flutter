@@ -27,23 +27,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           'Zabudnite na zdĺhavé vypisovanie. Vytvárajte profesionálne faktúry za pár sekúnd s automatickým prepojením na databázu firiem.',
       imagePath: 'assets/images/onboarding_invoice_clean.webp',
       accentColor: BizTheme.slovakBlue,
-      isFullScreen: false,
+      isFullScreen: true,
     ),
     OnboardingContent(
       title: 'AI Účtovný\nExpert',
       description:
           'Využite silu umelej inteligencie. Automatické skenovanie bločkov, daňové predpovede a real-time finančné analýzy. Váš osobný génius v mobile.',
       imagePath: 'assets/images/onboarding_ai_clean.webp',
-      accentColor: BizTheme.richCrimson,
-      isFullScreen: false,
+      accentColor: BizTheme.nationalRed,
+      isFullScreen: true,
     ),
     OnboardingContent(
       title: 'Finančný\nPrehľad',
       description:
           'Dokonalý prehľad o cash-flow. Sledujte rast svojho podnikania v reálnom čase s prehľadnými grafmi a analýzami.',
       imagePath: 'assets/images/onboarding_chart_clean.webp',
-      accentColor: BizTheme.fusionAzure,
-      isFullScreen: false,
+      accentColor: BizTheme.slovakBlue,
+      isFullScreen: true,
     ),
     OnboardingContent(
       title: 'Bezpečnosť\n& Sloboda',
@@ -51,7 +51,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           'Vaše dáta sú v bezpečí (GDPR ready). Podnikajte odkiaľkoľvek, fakturujte z mobilu a majte všetko pod kontrolou.',
       imagePath: 'assets/images/onboarding_security_clean.webp',
       accentColor: BizTheme.slovakBlue,
-      isFullScreen: false,
+      isFullScreen: true,
     ),
   ];
 
@@ -75,11 +75,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 0. Global Background (Fallback for slides without own image)
+          // 0. Global Background (Restored)
           Image.asset(
             'assets/images/background_fusion.webp',
             fit: BoxFit.cover,
@@ -146,7 +146,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.black.withValues(alpha: 0.8),
+                    Colors.white.withValues(alpha: 0.9),
                     Colors.transparent,
                   ],
                   stops: const [0.0, 1.0],
@@ -214,7 +214,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.white70,
+                          color: Colors.black54,
                         ),
                       ),
                     ),
@@ -258,8 +258,8 @@ class _OnboardingPage extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.black.withValues(alpha: 0.1), // Slight tint middle
-                  Colors.black.withValues(alpha: 0.9), // Dark bottom
+                  Colors.white.withValues(alpha: 0.05), // Slight tint middle
+                  Colors.white.withValues(alpha: 0.8), // White bottom
                 ],
                 stops: const [0.4, 0.6, 1.0],
               ),
@@ -299,7 +299,7 @@ class _OnboardingPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 16,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: const Color(0xFF4B5563),
                     height: 1.5,
                     fontWeight: FontWeight.w500,
                      shadows: [

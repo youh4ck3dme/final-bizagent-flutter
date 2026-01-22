@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../auth/providers/auth_repository.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -24,7 +23,6 @@ import '../widgets/smart_insights_widget.dart';
 import '../../../core/services/tutorial_service.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../shared/widgets/biz_widgets.dart';
-import '../../ai_tools/screens/biz_bot_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -311,7 +309,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         color: BizTheme.accentRedLight,
         borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         child: InkWell(
-          onTap: () => context.push('/payment-reminders'),
+          onTap: () => context.push('/invoices/reminders'),
+
           borderRadius: BorderRadius.circular(BizTheme.radiusLg),
           child: Padding(
             padding: const EdgeInsets.all(16),

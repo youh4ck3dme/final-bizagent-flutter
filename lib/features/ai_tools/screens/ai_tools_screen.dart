@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/services/ocr_service.dart';
 import '../../../core/ui/biz_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../../shared/widgets/biz_glass_card.dart';
 
 class AiToolsScreen extends ConsumerStatefulWidget {
   const AiToolsScreen({super.key});
@@ -68,6 +67,17 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
             const SizedBox(height: BizTheme.spacingMd),
             _buildToolCard(
               context,
+              title: 'BizBot AI Asistent',
+              subtitle: 'Váš inteligentný parťák pre biznis, dane a poradenstvo.',
+              icon: Icons.smart_toy,
+              color: BizTheme.slovakBlue,
+              onTap: () => context.go('/ai-tools/biz-bot'),
+              isProminent: true,
+              delay: 0.ms,
+            ),
+            const SizedBox(height: BizTheme.spacingMd),
+            _buildToolCard(
+              context,
               title: 'AI Email Generátor',
               subtitle: 'Vytvorte profesionálne e-maily (upomienky, ponuky) za pár sekúnd.',
               icon: Icons.auto_awesome,
@@ -100,7 +110,7 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
               context,
               title: 'Overenie Firmy',
               subtitle: 'Rýchla kontrola IČO cez zabezpečený register.',
-              icon: Icons.business_search,
+              icon: Icons.business,
               color: BizTheme.slovakBlue,
               onTap: () => context.go('/ai-tools/ico-lookup'),
               isProminent: true,
@@ -235,7 +245,7 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
     Duration delay = Duration.zero,
   }) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // final isDark = theme.brightness == Brightness.dark;
 
     return Card(
       elevation: isProminent ? 4 : 0,

@@ -35,13 +35,13 @@ class InitializationService extends StateNotifier<InitState> {
 
     // 2. Connectivity Check (Simulating network stabilization)
     state = state.copyWith(progress: 0.3, message: 'Stabilizujem pripojenie...');
-    final connectivityResult = await Connectivity().checkConnectivity();
+    await Connectivity().checkConnectivity();
     // In a real app we might ping a server here
     await Future.delayed(const Duration(milliseconds: 800));
 
     // 3. Database Warmup
     state = state.copyWith(progress: 0.6, message: 'Načítavam lokálne dáta...');
-    final persistence = _ref.read(localPersistenceServiceProvider);
+    _ref.read(localPersistenceServiceProvider);
     // Ensure boxes are open (they are init in main, but we can verify)
     await Future.delayed(const Duration(milliseconds: 600));
 

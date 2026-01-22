@@ -5,14 +5,24 @@ import '../models/company_info.dart';
 import '../models/ico_lookup_result.dart';
 
 final icoAtlasServiceProvider = Provider<IcoAtlasService>((ref) {
+  const isReal = String.fromEnvironment('ICO_MODE') == 'REAL';
+  final baseUrl = isReal ? 'https://icoatlas.sk' : 'https://bizagent.sk';
+  
+  final headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
+
+  if (isReal) {
+    // API Key from secure storage or env (hardcoded for now as per instructions)
+    headers['X-Api-Key'] = 'ia_7b78c4d4ecfc53bf11599130dabfed3f36ea872b193f0eda';
+  }
+
   final dio = Dio(BaseOptions(
-    baseUrl: 'https://bizagent-cc.vercel.app',
+    baseUrl: baseUrl,
     connectTimeout: null,
     receiveTimeout: null,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: headers,
   ));
 
   // Logger only for development
@@ -41,6 +51,18 @@ class IcoAtlasService {
   /// Handles 200 (Success) and 429 (Rate Limited).
   Future<IcoLookupResult?> publicLookup(String ico) async {
     try {
+      if (!isDemoMode) {
+        // REAL MODE: Direct Access to icoatlas.sk
+        final endpoint = '/api/company/$ico';
+        final response = await _dio.get(endpoint);
+
+        if (response.statusCode == 200 && response.data != null) {
+          return IcoLookupResult.fromRealApi(response.data);
+        }
+        return null; 
+      }
+
+      // DEMO/GATEWAY MODE
       const endpoint = '/api/public/ico/lookup';
       final response = await _dio.get(endpoint, queryParameters: {'ico': ico});
 
@@ -107,7 +129,9 @@ class IcoAtlasService {
         return CompanyInfo(
           name: result.name,
           ico: ico,
-          address: result.city, // City as a fallback for address in this simplified view
+          address: result.fullAddress,
+          dic: result.dic,
+          icDph: result.icDph,
         );
       }
       return null;

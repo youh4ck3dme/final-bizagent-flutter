@@ -23,6 +23,9 @@ class MockAuthRepository implements AuthRepository {
   @override
   late final Stream<UserModel?> authStateChanges;
 
+  @override
+  Future<String?> get currentUserToken async => 'fake-token-123';
+
   MockAuthRepository() {
     authStateChanges = Stream.value(currentUser);
   }

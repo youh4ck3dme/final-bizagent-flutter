@@ -17,6 +17,7 @@ import '../../features/ai_tools/screens/ai_tools_screen.dart';
 import '../../features/ai_tools/screens/ai_email_generator_screen.dart';
 import '../../features/ai_tools/screens/ai_expense_analysis_screen.dart';
 import '../../features/ai_tools/screens/ai_reminder_generator_screen.dart';
+import '../../features/ai_tools/screens/biz_bot_screen.dart';
 import '../../features/auth/screens/firebase_login_screen.dart';
 // import '../../features/auth/screens/chameleon_login_screen.dart'; // No longer used as default login
 import '../../features/auth/providers/auth_repository.dart';
@@ -256,6 +257,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'ico-lookup',
                     builder: (context, state) => const IcoLookupScreen(),
+                  ),
+                  GoRoute(
+                    path: 'biz-bot',
+                    builder: (context, state) => const BizBotScreen(),
                   ),
                 ],
               ),

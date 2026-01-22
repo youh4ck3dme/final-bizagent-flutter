@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/ui/biz_theme.dart';
+import '../../auth/providers/auth_repository.dart';
 import '../../../core/services/icoatlas_service.dart';
 import '../../../core/models/ico_lookup_result.dart';
 
@@ -40,13 +41,13 @@ class IcoLookupScreen extends ConsumerStatefulWidget {
 
 class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
   final TextEditingController _controller = TextEditingController();
-  bool _isSearching = false;
+  // bool _isSearching = false;
 
   void _handleSearch() {
     final query = _controller.text.trim();
     if (query.length == 8) {
       ref.read(icoSearchQueryProvider.notifier).state = query;
-      setState(() => _isSearching = true);
+      // setState(() => _isSearching = true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Zadajte platné 8-miestne IČO')),
@@ -195,9 +196,12 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
               children: [
                 Icon(Icons.location_on_outlined, size: 16, color: theme.colorScheme.onSurfaceVariant),
                 const SizedBox(width: 4),
-                Text(
-                  result.city,
-                  style: theme.textTheme.bodySmall,
+                Expanded(
+                  child: Text(
+                    result.fullAddress,
+                    style: theme.textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -238,7 +242,9 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                         extra: {
                           'clientName': result.name,
                           'clientIco': _controller.text,
-                          'clientAddress': result.city,
+                          'clientAddress': result.fullAddress,
+                          'clientDic': result.dic,
+                          'clientIcDph': result.icDph,
                         },
                       );
                     },
@@ -395,7 +401,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
           children: [
             const Icon(Icons.error_outline, color: BizTheme.nationalRed, size: 48),
             const SizedBox(height: BizTheme.spacingMd),
-            Text(
+            const Text(
               'Vyskytla sa chyba pri načítaní.',
               textAlign: TextAlign.center,
               style: TextStyle(color: BizTheme.nationalRed, fontWeight: FontWeight.bold),

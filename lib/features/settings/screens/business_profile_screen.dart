@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import '../models/user_settings_model.dart';
 import '../providers/settings_provider.dart';
 import '../../../core/ui/biz_theme.dart';
@@ -310,6 +310,4 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
       ),
     );
   }
-}
-
 }

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class BizTheme {
   // Spacing System (4px base)
   static const double spacingBase = 4;
+  static const double spacingXs = 4;
   static const double spacingSm = 8;
   static const double spacingMd = 16;
   static const double spacingLg = 24;
@@ -178,7 +179,7 @@ class BizTheme {
       ),
 
       // Card Decoration
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: isDark ? darkSurfaceVariant : Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(

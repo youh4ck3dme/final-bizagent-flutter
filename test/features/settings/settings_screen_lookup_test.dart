@@ -1,6 +1,7 @@
 import 'package:bizagent/core/models/company_info.dart';
 import 'package:bizagent/core/providers/theme_provider.dart';
 import 'package:bizagent/core/services/company_lookup_service.dart';
+import 'package:bizagent/core/services/icoatlas_service.dart';
 import 'package:bizagent/features/auth/models/user_model.dart';
 import 'package:bizagent/features/auth/providers/auth_repository.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
@@ -19,9 +20,14 @@ class FakeFirebaseFunctions extends Fake implements FirebaseFunctions {}
 
 class FakeFirebaseFirestore extends Fake implements FirebaseFirestore {}
 
+class FakeIcoAtlasService extends Fake implements IcoAtlasService {
+  @override
+  Future<CompanyInfo?> lookupCompany(String ico) async => null;
+}
+
 // Fake service to avoid real API calls
 class FakeCompanyLookupService extends CompanyLookupService {
-  FakeCompanyLookupService() : super(FakeFirebaseFunctions());
+  FakeCompanyLookupService() : super(FakeIcoAtlasService(), FakeFirebaseFunctions());
 
   @override
   Future<CompanyInfo?> lookup(String ico) async {
