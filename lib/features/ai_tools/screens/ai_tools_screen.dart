@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/services/ocr_service.dart';
 import '../../../core/ui/biz_theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../../shared/widgets/biz_glass_card.dart';
 
 class AiToolsScreen extends ConsumerStatefulWidget {
   const AiToolsScreen({super.key});
@@ -62,155 +64,47 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Icon(Icons.document_scanner, size: 48, color: BizTheme.slovakBlue),
-                    SizedBox(height: 16),
-                    Text(
-                      'Skener Bločkov',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Odfote bloček a AI automaticky vyčíta údaje.',
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+            _buildToolHeader(context),
+            const SizedBox(height: BizTheme.spacingMd),
+            _buildToolCard(
+              context,
+              title: 'AI Email Generátor',
+              subtitle: 'Vytvorte profesionálne e-maily (upomienky, ponuky) za pár sekúnd.',
+              icon: Icons.auto_awesome,
+              color: Colors.purple,
+              onTap: () => context.go('/ai-tools/email-generator'),
+              delay: 100.ms,
             ),
-            const SizedBox(height: 16),
-            Card(
-              child: InkWell(
-                onTap: () => context.go('/ai-tools/email-generator'),
-                borderRadius: BorderRadius.circular(12),
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.auto_awesome, size: 48, color: Colors.purple),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'AI Email Generátor',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Vytvorte profesionálne e-maily (upomienky, ponuky) za pár sekúnd.',
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                    ],
-                  ),
-                ),
-              ),
+            const SizedBox(height: BizTheme.spacingMd),
+            _buildToolCard(
+              context,
+              title: 'DPH Asistent',
+              subtitle: 'Overenie daňovej uznateľnosti a rizík pred zaúčtovaním.',
+              icon: Icons.receipt_long,
+              color: BizTheme.successGreen,
+              onTap: () => context.go('/ai-tools/expense-analysis'),
+              delay: 200.ms,
             ),
-            const SizedBox(height: 16),
-            Card(
-              child: InkWell(
-                onTap: () => context.go('/ai-tools/expense-analysis'),
-                borderRadius: BorderRadius.circular(12),
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.receipt_long, size: 48, color: BizTheme.successGreen),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'DPH Asistent',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Overenie daňovej uznateľnosti a rizík pred zaúčtovaním.',
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                    ],
-                  ),
-                ),
-              ),
+            const SizedBox(height: BizTheme.spacingMd),
+            _buildToolCard(
+              context,
+              title: 'Generátor Upomienok',
+              subtitle: 'Vytvorte citlivé alebo prísne upomienky jediným kliknutím.',
+              icon: Icons.notifications_active,
+              color: Colors.orange,
+              onTap: () => context.go('/ai-tools/reminder-generator'),
+              delay: 300.ms,
             ),
-            const SizedBox(height: 16),
-            Card(
-              child: InkWell(
-                onTap: () => context.go('/ai-tools/reminder-generator'),
-                borderRadius: BorderRadius.circular(12),
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.notifications_active, size: 48, color: Colors.orange),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Generátor Upomienok',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Vytvorte citlivé alebo prísne upomienky jediným kliknutím.',
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 4,
-              shadowColor: BizTheme.slovakBlue.withValues(alpha: 0.2),
-              child: InkWell(
-                onTap: () => context.go('/ai-tools/ico-lookup'),
-                borderRadius: BorderRadius.circular(12),
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.business_search, size: 48, color: BizTheme.slovakBlue),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Overenie Firmy',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Rýchla kontrola IČO cez zabezpečený register.',
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward_ios, color: Colors.grey),
-                    ],
-                  ),
-                ),
-              ),
+            const SizedBox(height: BizTheme.spacingMd),
+            _buildToolCard(
+              context,
+              title: 'Overenie Firmy',
+              subtitle: 'Rýchla kontrola IČO cez zabezpečený register.',
+              icon: Icons.business_search,
+              color: BizTheme.slovakBlue,
+              onTap: () => context.go('/ai-tools/ico-lookup'),
+              isProminent: true,
+              delay: 400.ms,
             ),
             const SizedBox(height: 24),
             Row(
@@ -240,50 +134,50 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
             ),
             const SizedBox(height: 24),
             if (_isScanning)
-              const Center(child: CircularProgressIndicator())
+              const Center(child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 32),
+                child: CircularProgressIndicator(),
+              ))
             else if (_receipt != null)
               Card(
-                color: Colors.grey.shade50,
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(BizTheme.spacingMd),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Rozpoznané údaje:',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      const Divider(),
-                      TextField(
+                      Text('Rozpoznané údaje:',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      const Divider(height: 24),
+                      TextFormField(
                         controller: _amountController,
                         decoration: const InputDecoration(
                           labelText: 'Suma',
                           suffixText: 'EUR',
-                          border: OutlineInputBorder(),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      TextField(
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _dateController,
                         decoration: const InputDecoration(
                           labelText: 'Dátum',
                           hintText: 'DD.MM.YYYY',
-                          border: OutlineInputBorder(),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      TextField(
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _vendorController,
                         decoration: const InputDecoration(
                           labelText: 'IČO / ID',
-                          border: OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
                       ExpansionTile(
                         title: const Text('Zobraziť celý text'),
+                        tilePadding: EdgeInsets.zero,
                         children: [SelectableText(_receipt!.originalText)],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -297,11 +191,91 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                     ],
                   ),
                 ),
-              ),
+              ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9)),
           ],
         ),
       ),
     ),
     );
+  }
+
+  Widget _buildToolHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: BizTheme.slovakBlue.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+      ),
+      child: const Column(
+        children: [
+          Icon(Icons.document_scanner, size: 64, color: BizTheme.slovakBlue),
+          SizedBox(height: 16),
+          Text(
+            'Skener Bločkov',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Odfote bloček a AI automaticky vyčíta údaje.',
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: -0.1);
+  }
+
+  Widget _buildToolCard(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    bool isProminent = false,
+    Duration delay = Duration.zero,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Card(
+      elevation: isProminent ? 4 : 0,
+      shadowColor: isProminent ? color.withValues(alpha: 0.2) : null,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(BizTheme.spacingMd),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+                ),
+                child: Icon(icon, size: 32, color: color),
+              ),
+              const SizedBox(width: BizTheme.spacingMd),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: BizTheme.gray300),
+            ],
+          ),
+        ),
+      ),
+    ).animate(delay: delay).fadeIn().slideX(begin: 0.05);
   }
 }

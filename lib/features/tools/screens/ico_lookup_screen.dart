@@ -6,15 +6,7 @@ import '../../../core/ui/biz_theme.dart';
 import '../../../core/services/icoatlas_service.dart';
 import '../../../core/models/ico_lookup_result.dart';
 
-final icoLookupProvider = StateParametersProvider<AsyncValue<IcoLookupResult?>, String>((ref, ico) async {
-  if (ico.length < 8) return const AsyncValue.data(null);
-  
-  final service = ref.read(icoAtlasServiceProvider);
-  final result = await service.publicLookup(ico);
-  return AsyncValue.data(result);
-});
-
-// Since StateParametersProvider doesn't exist in standard Riverpod, I'll use a simple StateProvider + FutureProvider approach
+// Provider for the search query and lookup result
 final icoSearchQueryProvider = StateProvider<String>((ref) => '');
 
 final icoLookupFutureProvider = FutureProvider<IcoLookupResult?>((ref) async {
@@ -51,267 +43,242 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
   @override
   Widget build(BuildContext context) {
     final lookupAsync = ref.watch(icoLookupFutureProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        title: Text('Overenie Firmy', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
+        title: const Text('Overenie Firmy'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.white, BizTheme.fusionAzure.withValues(alpha: 0.05)],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'IČO Register',
-                style: GoogleFonts.outfit(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: BizTheme.slovakBlue,
-                ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(BizTheme.spacingLg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'IČO Register',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: BizTheme.slovakBlue,
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Okamžitá kontrola rizikovosti a stavu firmy.',
-                style: GoogleFonts.outfit(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 32),
-              
-              // Search Field
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  controller: _controller,
-                  keyboardType: TextInputType.number,
-                  maxLength: 8,
-                  decoration: InputDecoration(
-                    hintText: 'Zadajte IČO (napr. 35742364)',
-                    counterText: '',
-                    prefixIcon: const Icon(Icons.search, color: BizTheme.slovakBlue),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.arrow_forward, color: BizTheme.slovakBlue),
-                      onPressed: _handleSearch,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.all(20),
+            ),
+            const SizedBox(height: BizTheme.spacingXs),
+            Text(
+              'Okamžitá kontrola rizikovosti a stavu firmy.',
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: BizTheme.spacingXl),
+            
+            // Search Field
+            Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+                border: Border.all(color: isDark ? BizTheme.darkOutline : BizTheme.gray100),
+                boxShadow: isDark ? null : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
                   ),
-                  onSubmitted: (_) => _handleSearch(),
-                ),
+                ],
               ),
-              
-              const SizedBox(height: 32),
-              
-              // Result Area
-              lookupAsync.when(
-                data: (result) {
-                  if (result == null) {
-                    return _buildEmptyState();
-                  }
-                  if (result.isRateLimited) {
-                    return _buildRateLimitedState(result.resetIn);
-                  }
-                  return _buildResultCard(result);
-                },
-                loading: () => const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(40.0),
-                    child: CircularProgressIndicator(color: BizTheme.slovakBlue),
+              child: TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                maxLength: 8,
+                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: 'Zadajte IČO (napr. 35742364)',
+                  counterText: '',
+                  prefixIcon: const Icon(Icons.search, color: BizTheme.slovakBlue),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.arrow_forward_rounded, color: BizTheme.slovakBlue),
+                    onPressed: _handleSearch,
                   ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: const EdgeInsets.all(BizTheme.spacingLg),
                 ),
-                error: (e, _) => _buildErrorState(e.toString()),
+                onSubmitted: (_) => _handleSearch(),
               ),
-            ],
-          ),
+            ),
+            
+            const SizedBox(height: BizTheme.spacing2xl),
+            
+            // Result Area
+            lookupAsync.when(
+              data: (result) {
+                if (result == null) {
+                  return _buildEmptyState();
+                }
+                if (result.isRateLimited) {
+                  return _buildRateLimitedState(result.resetIn);
+                }
+                return _buildResultCard(result);
+              },
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(BizTheme.spacing3xl),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              error: (e, _) => _buildErrorState(e.toString()),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildResultCard(IcoLookupResult result) {
+    final theme = Theme.of(context);
     final isReliable = result.status.toLowerCase().contains('aktív') || result.status.toLowerCase().contains('pôsob');
     
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: BizTheme.slovakBlue.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isReliable ? Colors.green[50] : Colors.orange[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  result.status.toUpperCase(),
-                  style: GoogleFonts.outfit(
-                    color: isReliable ? Colors.green[700] : Colors.orange[700],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(BizTheme.spacingLg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: (isReliable ? Colors.green : Colors.orange).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(BizTheme.radiusSm),
                   ),
-                ),
-              ),
-              Icon(
-                isReliable ? Icons.verified : Icons.warning_amber_rounded,
-                color: isReliable ? Colors.green : Colors.orange,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            result.name,
-            style: GoogleFonts.outfit(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(Icons.location_on_outlined, size: 16, color: Colors.grey[600]),
-              const SizedBox(width: 4),
-              Text(
-                result.city,
-                style: GoogleFonts.outfit(color: Colors.grey[600]),
-              ),
-            ],
-          ),
-          if (result.riskHint != null) ...[
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: BizTheme.richCrimson.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: BizTheme.richCrimson.withValues(alpha: 0.1)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.bolt, color: BizTheme.richCrimson, size: 20),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      result.riskHint!,
-                      style: GoogleFonts.outfit(
-                        color: BizTheme.richCrimson,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  child: Text(
+                    result.status.toUpperCase(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: isReliable ? Colors.green[700] : Colors.orange[700],
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.1,
                     ),
                   ),
-                ],
+                ),
+                Icon(
+                  isReliable ? Icons.verified_rounded : Icons.warning_amber_rounded,
+                  color: isReliable ? Colors.green : Colors.orange,
+                  size: 20,
+                ),
+              ],
+            ),
+            const SizedBox(height: BizTheme.spacingLg),
+            Text(
+              result.name,
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: BizTheme.spacingSm),
+            Row(
+              children: [
+                Icon(Icons.location_on_outlined, size: 16, color: theme.colorScheme.onSurfaceVariant),
+                const SizedBox(width: 4),
+                Text(
+                  result.city,
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
+            ),
+            if (result.riskHint != null) ...[
+              const SizedBox(height: BizTheme.spacingLg),
+              Container(
+                padding: const EdgeInsets.all(BizTheme.spacingMd),
+                decoration: BoxDecoration(
+                  color: BizTheme.nationalRed.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+                  border: Border.all(color: BizTheme.nationalRed.withValues(alpha: 0.1)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.shield_outlined, color: BizTheme.nationalRed, size: 18),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        result.riskHint!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: BizTheme.nationalRed,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: BizTheme.spacingXl),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {},
+                child: const Text('ZOBRAZIŤ DETAILNÝ REPORT'),
               ),
             ),
           ],
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                // Future: Generate full report
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: BizTheme.slovakBlue,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
-              ),
-              child: const Text('Zobraziť detailný report'),
-            ),
-          ),
-        ],
+        ),
       ),
-    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1);
+    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.05);
   }
 
   Widget _buildRateLimitedState(int? resetIn) {
+    final theme = Theme.of(context);
+    
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(BizTheme.spacingLg),
       decoration: BoxDecoration(
-        color: Colors.orange[50],
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.orange[200]!),
+        color: Colors.orange.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
-          const Icon(Icons.timer_outlined, size: 48, color: Colors.orange),
-          const SizedBox(height: 16),
+          const Icon(Icons.speed_rounded, size: 48, color: Colors.orange),
+          const SizedBox(height: BizTheme.spacingMd),
           Text(
             'Limit dosiahnutý',
-            style: GoogleFonts.outfit(
-              fontSize: 20,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.orange[900],
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: BizTheme.spacingSm),
           Text(
             'Bezplatný limit pre verejné vyhľadávanie je 10 dopytov za 10 minút.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(color: Colors.orange[800]),
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.orange[800]),
           ),
           if (resetIn != null) ...[
-            const SizedBox(height: 16),
-            Text(
-              'Skúste to znova o ${resetIn ~/ 60} minút.',
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.orange[900]),
+            const SizedBox(height: BizTheme.spacingMd),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.orange.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(BizTheme.radiusXl),
+              ),
+              child: Text(
+                'Skúste to znova o ${resetIn ~/ 60} minút',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.bold, 
+                  color: Colors.orange[900],
+                ),
+              ),
             ),
           ],
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              // CTA to upgrade
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange[700],
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          const SizedBox(height: BizTheme.spacingXl),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {},
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.orange[700],
+              ),
+              child: const Text('PREJSŤ NA PREMIUM (BEZ LIMITOV)'),
             ),
-            child: const Text('Prejsť na PREMIUM (bez limitov)'),
           ),
         ],
       ),
@@ -320,15 +287,18 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        children: [
-          Icon(Icons.business_search, size: 80, color: Colors.grey[200]),
-          const SizedBox(height: 16),
-          Text(
-            'Zadajte IČO pre okamžité overenie',
-            style: GoogleFonts.outfit(color: Colors.grey[400]),
-          ),
-        ],
+      child: Opacity(
+        opacity: 0.5,
+        child: Column(
+          children: [
+            const Icon(Icons.business_center_outlined, size: 80),
+            const SizedBox(height: BizTheme.spacingMd),
+            Text(
+              'Zadajte IČO pre okamžité overenie',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -336,11 +306,23 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
   Widget _buildErrorState(String error) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Text(
-          'Vyskytla sa chyba: $error',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.outfit(color: Colors.red[400]),
+        padding: const EdgeInsets.all(BizTheme.spacingLg),
+        child: Column(
+          children: [
+            const Icon(Icons.error_outline, color: BizTheme.nationalRed, size: 48),
+            const SizedBox(height: BizTheme.spacingMd),
+            Text(
+              'Vyskytla sa chyba pri načítaní.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: BizTheme.nationalRed, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ),
       ),
     );

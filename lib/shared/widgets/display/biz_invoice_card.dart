@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/ui/biz_theme.dart';
 
 class BizInvoiceCard extends StatelessWidget {
@@ -29,16 +30,22 @@ class BizInvoiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final currency = NumberFormat.currency(locale: 'sk', symbol: '€');
+    final activeStatusColor = statusColor ?? theme.colorScheme.primary;
     
     return Card(
-      elevation: isSelected ? 0 : BizTheme.elevation,
-      color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.3) : null,
+      elevation: isSelected ? 4 : 0,
+      shadowColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+      color: isSelected && !isDark ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5) : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(BizTheme.radiusLg),
-        side: isSelected 
-            ? BorderSide(color: theme.colorScheme.primary, width: 2) 
-            : BorderSide.none,
+        side: BorderSide(
+          color: isSelected 
+              ? theme.colorScheme.primary 
+              : (isDark ? BizTheme.darkOutline : BizTheme.gray100),
+          width: isSelected ? 2 : 1,
+        ),
       ),
       margin: const EdgeInsets.only(bottom: BizTheme.spacingSm),
       child: InkWell(
@@ -52,18 +59,18 @@ class BizInvoiceCard extends StatelessWidget {
             padding: const EdgeInsets.all(BizTheme.spacingMd),
             child: Row(
               children: [
-                // Icon Placeholder or Status Indicator
+                // Status Indicator
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: (statusColor ?? theme.colorScheme.primary).withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
+                    color: activeStatusColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(BizTheme.radiusMd),
                   ),
                   child: Icon(
-                    Icons.receipt_long_outlined,
-                    color: statusColor ?? theme.colorScheme.primary,
-                    size: 20,
+                    _getStatusIcon(status),
+                    color: activeStatusColor,
+                    size: 24,
                   ),
                 ),
                 const SizedBox(width: BizTheme.spacingMd),
@@ -75,14 +82,24 @@ class BizInvoiceCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      Row(
+                        children: [
+                          Icon(Icons.numbers, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                          const SizedBox(width: 4),
+                          Text(
+                            subtitle,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -96,13 +113,16 @@ class BizInvoiceCard extends StatelessWidget {
                       currency.format(amount),
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary, // Or specific logic
+                        color: isDark ? Colors.white : BizTheme.slovakBlue,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       DateFormat('dd.MM.yyyy').format(date),
-                      style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -111,6 +131,22 @@ class BizInvoiceCard extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.05);
+  }
+
+  IconData _getStatusIcon(String status) {
+    switch (status.toLowerCase()) {
+      case 'zaplatená':
+      case 'paid':
+        return Icons.check_circle_outline;
+      case 'po lehote':
+      case 'overdue':
+        return Icons.error_outline;
+      case 'rozpracovaná':
+      case 'draft':
+        return Icons.edit_note;
+      default:
+        return Icons.receipt_long_outlined;
+    }
   }
 }

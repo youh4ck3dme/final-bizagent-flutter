@@ -6,14 +6,26 @@ import '../models/ico_lookup_result.dart';
 
 final icoAtlasServiceProvider = Provider<IcoAtlasService>((ref) {
   final dio = Dio(BaseOptions(
-    baseUrl: 'https://bizagent-cc.vercel.app/api',
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
+    baseUrl: 'https://bizagent-cc.vercel.app',
+    connectTimeout: null,
+    receiveTimeout: null,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
   ));
+
+  // Logger only for development
+  if (kDebugMode) {
+    dio.interceptors.add(LogInterceptor(
+      request: true,
+      requestHeader: true,
+      requestBody: true,
+      responseHeader: true,
+      responseBody: true,
+      error: true,
+    ));
+  }
 
   const isDemo = String.fromEnvironment('ICO_MODE') != 'REAL';
   return IcoAtlasService(dio, isDemoMode: isDemo);
@@ -29,7 +41,7 @@ class IcoAtlasService {
   /// Handles 200 (Success) and 429 (Rate Limited).
   Future<IcoLookupResult?> publicLookup(String ico) async {
     try {
-      final endpoint = isDemoMode ? '/public/ico/lookup' : '/icoatlas/lookup';
+      const endpoint = '/api/public/ico/lookup';
       final response = await _dio.get(endpoint, queryParameters: {'ico': ico});
 
       if (response.statusCode == 200 && response.data != null && response.data['ok'] == true) {
@@ -77,7 +89,7 @@ class IcoAtlasService {
     
     try {
       // Assuming gateway might have an autocomplete proxy later
-      final response = await _dio.get('/public/ico/autocomplete', queryParameters: {'q': query});
+      final response = await _dio.get('/api/public/ico/autocomplete', queryParameters: {'q': query});
       
       if (response.statusCode == 200 && response.data is List) {
         return List<Map<String, dynamic>>.from(response.data);

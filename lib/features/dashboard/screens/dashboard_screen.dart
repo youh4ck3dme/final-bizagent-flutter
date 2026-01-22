@@ -149,13 +149,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         'Ahoj, ${user?.displayName ?? 'Používateľ'}!',
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                       ).animate().fade().moveY(begin: 10, duration: 400.ms),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Text(context.t(AppStr.spdDisclaimer),
-                          style: TextStyle(
-                              color: Theme.of(context).textTheme.bodySmall?.color)).animate().fade(delay: 100.ms),
+                          style: Theme.of(context).textTheme.bodySmall).animate().fade(delay: 100.ms),
                       const SizedBox(height: 24),
 
                       // First-run banner
@@ -467,49 +465,38 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
 
   Widget _buildBizBotCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Card(
       key: _botKey,
-      elevation: 0,
-      color: BizTheme.slovakBlue.withValues(alpha: 0.05),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
-      ),
+      color: isDark ? theme.colorScheme.primaryContainer.withValues(alpha: 0.1) : BizTheme.slovakBlue.withValues(alpha: 0.05),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const BizBotScreen()),
-          );
-        },
-        borderRadius: BorderRadius.circular(16),
+        onTap: () => context.push('/ai-tools/biz-bot'),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(BizTheme.spacingMd),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: BizTheme.slovakBlue,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(BizTheme.radiusLg),
                 ),
-                child: const Icon(Icons.smart_toy_outlined, color: Colors.white),
+                child: const Icon(Icons.smart_toy_outlined, color: Colors.white, size: 24),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: BizTheme.spacingMd),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Pýtaj sa BizBota',
-                      style: GoogleFonts.outfit(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    const Text(
+                    Text(
                       'AI analýza tvojich financií v reálnom čase.',
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
+                      style: theme.textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -531,94 +518,51 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     required VoidCallback onTap,
     Key? widgetKey,
   }) {
-    return Container(
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Card(
       key: widgetKey,
       margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-          ),
-        ],
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          splashColor: color.withValues(alpha: 0.1),
-          highlightColor: color.withValues(alpha: 0.05),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                // Premium Icon Container
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        color.withValues(alpha: 0.1),
-                        color.withValues(alpha: 0.2),
-                      ],
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(BizTheme.spacingMd),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+                ),
+                child: Icon(icon, color: color, size: 24),
+              ),
+              const SizedBox(width: BizTheme.spacingMd),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  child: Icon(icon, color: color, size: 24),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                
-                // Text Content
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: GoogleFonts.outfit(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: const Color(0xFF111827),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: const Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // Trailing Arrow
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.arrow_forward_ios_rounded, 
-                    size: 14, 
-                    color: Color(0xFF9CA3AF)
-                  ),
-                ),
-              ],
-            ),
+              ),
+              Icon(Icons.arrow_forward_ios_rounded, 
+                size: 14, 
+                color: isDark ? BizTheme.darkDisabled : BizTheme.gray300,
+              ),
+            ],
           ),
         ),
       ),
-    ).animate(target: 1).scale(duration: 200.ms, curve: Curves.easeOut);
+    ).animate().scale(duration: 200.ms, curve: Curves.easeOut);
   }
 }

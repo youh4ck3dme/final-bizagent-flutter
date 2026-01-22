@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/ui/biz_theme.dart';
 
 class BizCustomerCard extends StatelessWidget {
@@ -18,34 +19,79 @@ class BizCustomerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final initials = name.trim().split(' ').take(2).map((e) => e.isNotEmpty ? e[0] : '').join();
+    final isDark = theme.brightness == Brightness.dark;
+    final initials = name.trim().split(' ').take(2).map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase();
 
     return Card(
+      elevation: 0,
       margin: const EdgeInsets.only(bottom: BizTheme.spacingSm),
-      child: Semantics(
-        label: 'Zákazník $name${email != null ? ', email $email' : ''}${phone != null ? ', telefón $phone' : ''}',
-        button: onTap != null,
-        child: ListTile(
-          onTap: onTap,
-          contentPadding: const EdgeInsets.all(BizTheme.spacingSm), // slightly tighter than invoice
-          leading: CircleAvatar(
-            backgroundColor: theme.colorScheme.primaryContainer,
-            foregroundColor: theme.colorScheme.onPrimaryContainer,
-            child: Text(initials, style: const TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: (email != null || phone != null) 
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (email != null) Text(email!, style: theme.textTheme.bodySmall),
-                  if (phone != null) Text(phone!, style: theme.textTheme.bodySmall),
-                ],
-              )
-            : null,
-          trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+        side: BorderSide(
+          color: isDark ? BizTheme.darkOutline : BizTheme.gray100,
+          width: 1,
         ),
       ),
-    );
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+        child: Semantics(
+          label: 'Zákazník $name${email != null ? ', email $email' : ''}${phone != null ? ', telefón $phone' : ''}',
+          button: onTap != null,
+          child: Padding(
+            padding: const EdgeInsets.all(BizTheme.spacingMd),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: theme.colorScheme.primaryContainer,
+                  foregroundColor: theme.colorScheme.primary,
+                  child: Text(
+                    initials, 
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+                  ),
+                ),
+                const SizedBox(width: BizTheme.spacingMd),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name, 
+                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
+                      ),
+                      if (email != null || phone != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          email ?? phone!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                // Quick Actions
+                if (phone != null)
+                  IconButton(
+                    icon: const Icon(Icons.phone_outlined, size: 20),
+                    onPressed: () { /* TODO: Launch URL */ },
+                    style: IconButton.styleFrom(
+                      foregroundColor: BizTheme.slovakBlue,
+                      backgroundColor: BizTheme.slovakBlue.withValues(alpha: 0.1),
+                    ),
+                  ),
+                const SizedBox(width: 4),
+                const Icon(Icons.chevron_right, color: BizTheme.gray300, size: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.05);
   }
 }

@@ -113,6 +113,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
 
     return Scaffold(
@@ -126,14 +127,14 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(BizTheme.spacingLg),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader('Základné údaje'),
-              const SizedBox(height: 16),
+              _buildHeader(context, 'Základné údaje'),
+              const SizedBox(height: BizTheme.spacingMd),
               Autocomplete<Map<String, dynamic>>(
                 optionsBuilder: (TextEditingValue textEditingValue) async {
                   if (textEditingValue.text.length < 2) return [];
@@ -150,17 +151,15 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                   });
                 },
                 fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-                  // Pre-fill if we have initial data
                   if (controller.text != _nameController.text && _nameController.text.isNotEmpty && controller.text.isEmpty) {
                     controller.text = _nameController.text;
                   }
-                  
-                  // Keep our _nameController in sync
                   controller.addListener(() {
                     _nameController.text = controller.text;
                   });
 
                   return _buildTextField(
+                    context,
                     controller: controller,
                     focusNode: focusNode,
                     label: 'Obchodné meno',
@@ -169,29 +168,33 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: BizTheme.spacingMd),
               _buildTextField(
+                context,
                 controller: _addressController,
                 label: 'Sídlo / Adresa',
                 icon: Icons.location_on_outlined,
                 maxLines: 2,
                 validator: (v) => v!.isEmpty ? 'Zadajte adresu' : null,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: BizTheme.spacingMd),
                _buildTextField(
+                context,
                 controller: _registerInfoController,
                 label: 'Registrácia (OR SR / ŽR SR)',
                 icon: Icons.info_outline,
                 placeholder: 'Zapísaná v OR OS Bratislava I...',
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: BizTheme.spacingLg),
               
-              _buildHeader('Identifikačné údaje'),
-              const SizedBox(height: 16),
+              _buildHeader(context, 'Identifikačné údaje'),
+              const SizedBox(height: BizTheme.spacingMd),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: _buildTextField(
+                      context,
                       controller: _icoController,
                       label: 'IČO',
                       icon: Icons.numbers,
@@ -208,9 +211,10 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                       validator: (v) => v!.isEmpty ? 'Povinné' : null,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: BizTheme.spacingMd),
                   Expanded(
                     child: _buildTextField(
+                      context,
                       controller: _dicController,
                       label: 'DIČ',
                       icon: Icons.tag,
@@ -219,54 +223,51 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: BizTheme.spacingMd),
               _buildTextField(
+                context,
                 controller: _icDphController,
                 label: 'IČ DPH',
                 icon: Icons.receipt_long,
                 placeholder: 'SK1020304050',
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: BizTheme.spacingSm),
               SwitchListTile(
-                 title: const Text('Platca DPH', style: TextStyle(fontSize: 14)),
+                 title: Text('Platca DPH', style: theme.textTheme.bodyMedium),
                  value: settings.isVatPayer,
                  contentPadding: EdgeInsets.zero,
                  onChanged: (val) {
                    ref.read(settingsControllerProvider.notifier).updateVatPayer(val);
                  },
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: BizTheme.spacingLg),
 
-              _buildHeader('Bankové spojenie'),
-              const SizedBox(height: 16),
+              _buildHeader(context, 'Bankové spojenie'),
+              const SizedBox(height: BizTheme.spacingMd),
               _buildTextField(
+                context,
                 controller: _ibanController,
                 label: 'IBAN',
                 icon: Icons.account_balance,
                 validator: (v) => v!.isEmpty ? 'Zadajte IBAN' : null,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: BizTheme.spacingMd),
               _buildTextField(
+                context,
                 controller: _swiftController,
                 label: 'SWIFT / BIC',
                 icon: Icons.language,
               ),
               
-              const SizedBox(height: 40),
+              const SizedBox(height: BizTheme.spacing3xl),
               SizedBox(
                 width: double.infinity,
-                height: 54,
-                child: ElevatedButton(
+                child: FilledButton(
                   onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: BizTheme.slovakBlue,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text('ULOŽIŤ PROFIL', style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: const Text('ULOŽIŤ PROFIL'),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: BizTheme.spacingXl),
             ],
           ),
         ),
@@ -274,19 +275,19 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     );
   }
 
-  Widget _buildHeader(String title) {
+  Widget _buildHeader(BuildContext context, String title) {
     return Text(
       title.toUpperCase(),
-      style: GoogleFonts.outfit(
-        fontSize: 12,
+      style: Theme.of(context).textTheme.labelSmall?.copyWith(
         fontWeight: FontWeight.bold,
-        color: BizTheme.gray600,
-        letterSpacing: 1.2,
+        color: Theme.of(context).colorScheme.primary,
+        letterSpacing: 1.5,
       ),
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildTextField(
+    BuildContext context, {
     required TextEditingController controller,
     required String label,
     required IconData icon,
@@ -304,18 +305,11 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
       decoration: InputDecoration(
         labelText: label,
         hintText: placeholder,
-        prefixIcon: Icon(icon, color: BizTheme.slovakBlue),
+        prefixIcon: Icon(icon),
         suffixIcon: suffix,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: BizTheme.gray200),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: BizTheme.slovakBlue, width: 2),
-        ),
       ),
     );
   }
+}
+
 }

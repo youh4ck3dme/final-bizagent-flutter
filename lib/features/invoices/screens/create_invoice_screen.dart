@@ -277,6 +277,8 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final settingsAsync = ref.watch(settingsProvider);
     final settings = settingsAsync.valueOrNull;
     final isVatPayer = settings?.isVatPayer ?? false;
@@ -304,7 +306,6 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
               icon: const Icon(Icons.auto_awesome, size: 18),
               label: const Text('AI Vyplniť'),
               style: TextButton.styleFrom(
-                foregroundColor: BizTheme.slovakBlue,
                 backgroundColor: BizTheme.slovakBlue.withValues(alpha: 0.1),
               ),
             ),
@@ -312,12 +313,10 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(BizTheme.spacingMd),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          boxShadow: [
-            BoxShadow(blurRadius: 5, color: Colors.black.withValues(alpha: 0.1))
-          ],
+          color: theme.colorScheme.surface,
+          border: Border(top: BorderSide(color: theme.dividerTheme.color ?? BizTheme.gray100)),
         ),
         child: SafeArea(
           child: Row(
@@ -328,27 +327,18 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      'Spolu: ${NumberFormat.currency(symbol: '€').format(_grandTotal)}',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16)),
+                    'Spolu: ${NumberFormat.currency(symbol: '€').format(_grandTotal)}',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                   if (isVatPayer)
                     Text(
-                        'DPH: ${NumberFormat.currency(symbol: '€').format(_totalVat)}',
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey)),
+                      'DPH: ${NumberFormat.currency(symbol: '€').format(_totalVat)}',
+                      style: theme.textTheme.bodySmall,
+                    ),
                 ],
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: _saveInvoice,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: BizTheme.slovakBlue,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(BizTheme.radiusMd),
-                  ),
-                ),
                 child: const Text('Uložiť'),
               ),
             ],
@@ -358,18 +348,17 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(BizTheme.spacingMd),
           children: [
             // Client Info
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(BizTheme.spacingMd),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Odberateľ',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 16),
+                    _buildSectionHeader(context, 'Odberateľ'),
+                    const SizedBox(height: BizTheme.spacingMd),
                     Autocomplete<Map<String, dynamic>>(
                       optionsBuilder: (TextEditingValue textEditingValue) async {
                         if (textEditingValue.text.length < 2) return [];
@@ -402,14 +391,15 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                       },
                     ),
                     if (!_isAiOptimized || _isDetailsExpanded) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: BizTheme.spacingMd),
                       TextFormField(
                         controller: _clientAddressController,
                         decoration: _aiInputDecoration('Sídlo / Adresa', 'address'),
                         maxLines: 2,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: BizTheme.spacingMd),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: TextFormField(
@@ -417,7 +407,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                               decoration: _aiInputDecoration('IČO', 'ico'),
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: BizTheme.spacingMd),
                           Expanded(
                             child: TextFormField(
                               controller: _clientDicController,
@@ -426,22 +416,24 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: BizTheme.spacingMd),
                       TextFormField(
                         controller: _clientIcDphController,
-                        decoration: const InputDecoration(
-                            labelText: 'IČ DPH (nepovinné)'),
+                        decoration: const InputDecoration(labelText: 'IČ DPH (nepovinné)'),
                       ),
                     ] else
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: InkWell(
                           onTap: () => setState(() => _isDetailsExpanded = true),
-                          child: const Row(
+                          child: Row(
                             children: [
                               Text('Zobraziť fakturačné detaily', 
-                                style: TextStyle(color: BizTheme.slovakBlue, fontSize: 13, fontWeight: FontWeight.bold)),
-                              Icon(Icons.keyboard_arrow_down, color: BizTheme.slovakBlue, size: 20),
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: BizTheme.slovakBlue,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                              const Icon(Icons.keyboard_arrow_down, color: BizTheme.slovakBlue, size: 20),
                             ],
                           ),
                         ),
@@ -450,12 +442,12 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: BizTheme.spacingMd),
 
             // Dates & Number
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(BizTheme.spacingMd),
                 child: Column(
                   children: [
                     TextFormField(
@@ -465,29 +457,26 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                         helperText: 'Generuje sa automaticky (napr. 2026/001)',
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: BizTheme.spacingMd),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: InkWell(
                             onTap: () => _pickDate(context, true),
                             child: InputDecorator(
-                              decoration: const InputDecoration(
-                                  labelText: 'Dátum vystavenia'),
-                              child: Text(
-                                  DateFormat('dd.MM.yyyy').format(_dateIssued)),
+                              decoration: const InputDecoration(labelText: 'Dátum vystavenia'),
+                              child: Text(DateFormat('dd.MM.yyyy').format(_dateIssued), style: theme.textTheme.bodyMedium),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: BizTheme.spacingMd),
                         Expanded(
                           child: InkWell(
                             onTap: () => _pickDate(context, false),
                             child: InputDecorator(
-                              decoration: const InputDecoration(
-                                  labelText: 'Dátum splatnosti'),
-                              child: Text(
-                                  DateFormat('dd.MM.yyyy').format(_dateDue)),
+                              decoration: const InputDecoration(labelText: 'Dátum splatnosti'),
+                              child: Text(DateFormat('dd.MM.yyyy').format(_dateDue), style: theme.textTheme.bodyMedium),
                             ),
                           ),
                         ),
@@ -497,53 +486,50 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: BizTheme.spacingMd),
 
             // Status Selector
             Card(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: BizTheme.spacingMd, vertical: BizTheme.spacingSm),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Stav faktúry',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Stav faktúry', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                     DropdownButton<InvoiceStatus>(
                       value: _selectedStatus,
+                      underline: const SizedBox(),
                       items: [
-                        const DropdownMenuItem(
-                            value: InvoiceStatus.draft, child: Text('Návrh')),
-                        const DropdownMenuItem(
-                            value: InvoiceStatus.sent, child: Text('Odoslaná')),
+                        const DropdownMenuItem(value: InvoiceStatus.draft, child: Text('Návrh')),
+                        const DropdownMenuItem(value: InvoiceStatus.sent, child: Text('Odoslaná')),
                       ],
-                      onChanged: (val) =>
-                          setState(() => _selectedStatus = val!),
+                      onChanged: (val) => setState(() => _selectedStatus = val!),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: BizTheme.spacingMd),
 
             // Items
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(BizTheme.spacingMd),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Položky',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 16),
+                    _buildSectionHeader(context, 'Položky'),
+                    const SizedBox(height: BizTheme.spacingMd),
                     ..._items.asMap().entries.map((entry) {
                       final idx = entry.key;
                       final item = entry.value;
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(item.description),
+                        title: Text(item.description, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                         subtitle: Text(
-                            '${item.quantity} x ${item.unitPrice} €  (DPH ${(item.vatRate * 100).toInt()}%)'),
+                          '${item.quantity} x ${item.unitPrice} €  (DPH ${(item.vatRate * 100).toInt()}%)',
+                          style: theme.textTheme.bodySmall,
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -551,65 +537,43 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                    '${item.totalWithVat.toStringAsFixed(2)} €',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                Text(
-                                    'bez DPH: ${item.subtotal.toStringAsFixed(2)} €',
-                                    style: const TextStyle(
-                                        fontSize: 10, color: Colors.grey)),
+                                Text('${item.totalWithVat.toStringAsFixed(2)} €', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                                Text('bez DPH: ${item.subtotal.toStringAsFixed(2)} €', style: theme.textTheme.labelSmall),
                               ],
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete, color: BizTheme.nationalRed),
+                              icon: const Icon(Icons.delete_outline, color: BizTheme.nationalRed),
                               onPressed: () => _removeItem(idx),
                             ),
                           ],
                         ),
                       );
                     }),
-                    const Divider(),
+                    const Divider(height: 32),
                     // Add Item Row
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                            child: TextField(
-                                controller: _itemDescController,
-                                decoration:
-                                    const InputDecoration(labelText: 'Popis'))),
+                        Expanded(child: TextFormField(controller: _itemDescController, decoration: const InputDecoration(labelText: 'Popis'))),
                         const SizedBox(width: 8),
-                        SizedBox(
-                            width: 50,
-                            child: TextField(
-                                controller: _itemQtyController,
-                                decoration:
-                                    const InputDecoration(labelText: 'Ks'),
-                                keyboardType: TextInputType.number)),
+                        SizedBox(width: 50, child: TextFormField(controller: _itemQtyController, decoration: const InputDecoration(labelText: 'Ks'), keyboardType: TextInputType.number)),
                         const SizedBox(width: 8),
-                        SizedBox(
-                            width: 70,
-                            child: TextField(
-                                controller: _itemPriceController,
-                                decoration:
-                                    const InputDecoration(labelText: 'Cena/ks'),
-                                keyboardType: TextInputType.number)),
+                        SizedBox(width: 80, child: TextFormField(controller: _itemPriceController, decoration: const InputDecoration(labelText: 'Cena/ks'), keyboardType: TextInputType.number)),
                         const SizedBox(width: 8),
                         if (isVatPayer)
                           DropdownButton<double>(
                             value: _itemVatRate,
+                            underline: const SizedBox(),
                             items: const [
                               DropdownMenuItem(value: 0.0, child: Text('0%')),
                               DropdownMenuItem(value: 0.1, child: Text('10%')),
                               DropdownMenuItem(value: 0.2, child: Text('20%')),
                             ],
-                            onChanged: (val) =>
-                                setState(() => _itemVatRate = val!),
+                            onChanged: (val) => setState(() => _itemVatRate = val!),
                           ),
                         IconButton(
                             onPressed: () => _addItem(isVatPayer),
-                            icon: const Icon(Icons.add_circle,
-                                color: BizTheme.slovakBlue)),
+                            icon: const Icon(Icons.add_circle, color: BizTheme.slovakBlue, size: 32)),
                       ],
                     ),
                   ],
@@ -621,4 +585,17 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
       ),
     );
   }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Text(
+      title.toUpperCase(),
+      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: Theme.of(context).colorScheme.primary,
+        letterSpacing: 1.5,
+      ),
+    );
+  }
+}
+
 }
