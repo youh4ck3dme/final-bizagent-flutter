@@ -3,6 +3,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { defineString } = require("firebase-functions/params");
 
 const geminiApiKey = defineString("GEMINI_API_KEY");
+const icoAtlasApiKey = defineString("ICOATLAS_API_KEY");
 
 // Model configuration
 // UPDEJT: Prejdené na 2.0 flash (stable model)
@@ -104,20 +105,21 @@ exports.analyzeReceipt = onCall({
 
 /**
  * Hľadá firmu podľa IČO.
- * Používa Slovensko.Digital API (ak je kľúč) alebo Mock dáta pre demo.
+ * Používa IcoAtlas.sk API s proxy cez server-side kľúčom.
  */
-const slovenskoDigitalKey = defineString("SLOVENSKO_DIGITAL_API_KEY");
-
-exports.lookupCompany = onCall({ 
-  cors: true 
+exports.lookupCompany = onCall({
+  cors: true
 }, async (request) => {
   // Allow unauthenticated for onboarding flow (strictly rate limited in prod)
   // For now, allow it to speed up "Magic Setup"
-  
+
   const { ico } = request.data;
   if (!ico) {
     throw new HttpsError('invalid-argument', 'Chýba IČO.');
   }
+
+  // Pad ICO to 8 digits if numeric
+  const paddedIco = ico.padStart(8, '0');
 
   // 1. Try Mock Data (For Demo "Wow" Effect without API Key)
   const MOCK_DB = {
@@ -144,45 +146,53 @@ exports.lookupCompany = onCall({
     }
   };
 
-  const apiKey = slovenskoDigitalKey.value();
+  const apiKey = icoAtlasApiKey.value();
 
   // Ak nemáme kľúč alebo je to známe testovacie IČO, vráť mock
   if (!apiKey || MOCK_DB[ico]) {
     console.log("Using Mock/Fallback for IČO:", ico);
     if (MOCK_DB[ico]) return MOCK_DB[ico];
-    
+
     // Ak nemáme kľúč a nie je v mocku:
     if (!apiKey) {
-       // Return empty or throw? Better to return null to let UI handle "Not Found"
        return null;
     }
   }
 
-  // 2. Real API Call (Slovensko.Digital)
+  // 2. Real API Call (IcoAtlas.sk)
   try {
-    const response = await fetch(`https://autoform.ekosystem.slovensko.digital/api/corporate_bodies/search?q=ico:${ico}`, {
+    const response = await fetch(`https://icoatlas.sk/api/company/${paddedIco}`, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'X-Api-Key': apiKey,
         'Content-Type': 'application/json'
       }
     });
 
+    if (response.status === 404) {
+      console.log("Endpoint mismatch for IČO:", ico);
+      return null;
+    }
+
+    if (response.status === 401 || response.status === 403) {
+      console.error("Missing or invalid API key for IcoAtlas");
+      throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný (chýba alebo neplatný API kľúč pre IcoAtlas).');
+    }
+
     if (!response.ok) {
-       console.error("SD API Error:", response.status, await response.text());
+       console.error("IcoAtlas API Error:", response.status, await response.text());
        return null;
     }
 
     const data = await response.json();
-    if (!data || data.length === 0) return null;
+    if (!data) return null;
 
-    const company = data[0];
     // Map to our simplified format
     return {
-      name: company.name,
-      ico: company.cin, // CIN = IČO
-      dic: company.tin, // TIN = DIČ
-      icDph: company.v_tin, // V_TIN = IČ DPH
-      address: `${company.formatted_address}`
+      name: data.name || '',
+      ico: data.ico || ico,
+      dic: data.dic || '',
+      icDph: data.ic_dph || '',
+      address: data.address || ''
     };
 
   } catch (error) {

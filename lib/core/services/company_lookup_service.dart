@@ -18,15 +18,8 @@ class CompanyLookupService {
   CompanyLookupService(this._icoAtlas, this._functions);
 
   Future<CompanyInfo?> lookup(String ico) async {
-    // 1. Try ICOATLAS first (Direct & Fast)
-    final icoAtlasInfo = await _icoAtlas.lookupCompany(ico);
-    if (icoAtlasInfo != null) return icoAtlasInfo;
-
-    // 2. Fallback to Firebase Functions (Slovensko.Digital)
+    // Use Firebase Functions proxy to IcoAtlas.sk (server-side API key)
     try {
-      // Small check to avoid calling if we know it will fail or if no billing
-      // For Spark plan, functions might still work if not using Secret Manager, 
-      // but if the project is blocked, this will catch it.
       final result = await _functions.httpsCallable('lookupCompany').call(
         {'ico': ico},
       ).timeout(const Duration(seconds: 10));
@@ -37,7 +30,7 @@ class CompanyLookupService {
       final map = Map<String, dynamic>.from(data as Map);
       return CompanyInfo.fromMap(map);
     } catch (e) {
-      debugPrint('Company lookup fallback failed (likely billing/quota): $e');
+      debugPrint('Company lookup failed: $e');
       return null;
     }
   }
