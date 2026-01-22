@@ -11,6 +11,7 @@ import '../../features/expenses/screens/expenses_screen.dart';
 import '../../features/expenses/screens/expense_analytics_screen.dart';
 import '../../features/expenses/screens/receipt_viewer_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
+import '../../features/settings/screens/trash_screen.dart';
 import '../../features/expenses/screens/expense_detail_screen.dart';
 import '../../features/ai_tools/screens/ai_tools_screen.dart';
 
@@ -28,6 +29,7 @@ import '../../features/invoices/screens/payment_reminders_screen.dart';
 import '../../features/invoices/screens/pdf_preview_screen.dart';
 import '../../features/tax/screens/cashflow_analytics_screen.dart';
 import '../../features/intro/screens/onboarding_screen.dart';
+import '../../features/intro/screens/modern_onboarding_screen.dart';
 import '../../features/invoices/models/invoice_model.dart';
 import '../../features/expenses/models/expense_model.dart';
 import '../../features/expenses/screens/create_expense_screen.dart';
@@ -106,7 +108,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        builder: (context, state) => const ModernOnboardingScreen(),
       ),
       GoRoute(
         path: '/create-invoice',
@@ -271,6 +273,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/settings',
                 builder: (context, state) => const SettingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'trash',
+                    builder: (context, state) => const TrashScreen(),
+                  ),
+                ],
               ),
             ],
           ),

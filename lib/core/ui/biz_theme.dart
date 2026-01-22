@@ -192,11 +192,11 @@ class BizTheme {
       // Buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isDark ? darkPrimaryBlue : slovakBlue, 
+          backgroundColor: isDark ? darkPrimaryBlue : slovakBlue,
           foregroundColor: isDark ? darkSurface : Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusLg)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
           textStyle: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 14),
         ),
       ),
@@ -206,7 +206,7 @@ class BizTheme {
            foregroundColor: isDark ? darkSurface : Colors.white,
            elevation: 0,
            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusLg)),
+           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
         )
       ),
       textButtonTheme: TextButtonThemeData(
@@ -220,7 +220,7 @@ class BizTheme {
           foregroundColor: isDark ? darkPrimaryBlue : slovakBlue,
           side: BorderSide(color: isDark ? darkPrimaryBlue : slovakBlue, width: 1.5),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusLg)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
         ),
       ),
 

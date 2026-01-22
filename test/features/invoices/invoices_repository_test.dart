@@ -27,6 +27,7 @@ void main() {
     final dummyInvoice = InvoiceModel(
       id: 'invoice-1',
       userId: userId,
+      createdAt: DateTime(2023, 10, 1),
       number: '2023001',
       clientName: 'Test Client',
       dateIssued: DateTime(2023, 10, 1),
@@ -61,6 +62,7 @@ void main() {
       final invoice2 = InvoiceModel(
         id: 'invoice-2',
         userId: userId,
+        createdAt: DateTime(2023, 11, 1),
         number: '2023002',
         clientName: 'Client 2',
         dateIssued: DateTime(2023, 11, 1), // Newer
@@ -97,6 +99,7 @@ void main() {
       final updatedInvoice = InvoiceModel(
         id: dummyInvoice.id,
         userId: userId,
+        createdAt: dummyInvoice.createdAt,
         number: '2023001',
         clientName: 'Updated Client Name', // Changed
         dateIssued: dummyInvoice.dateIssued,

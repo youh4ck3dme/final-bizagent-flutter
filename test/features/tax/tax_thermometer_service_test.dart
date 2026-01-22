@@ -13,6 +13,7 @@ void main() {
         InvoiceModel(
             id: '1',
             userId: 'u',
+            createdAt: now,
             number: '001',
             clientName: 'C',
             dateIssued: now,
@@ -23,6 +24,7 @@ void main() {
         InvoiceModel(
             id: '2',
             userId: 'u',
+            createdAt: now.subtract(const Duration(days: 180)),
             number: '002',
             clientName: 'C',
             dateIssued: now.subtract(const Duration(days: 180)),
@@ -33,6 +35,7 @@ void main() {
         InvoiceModel(
             id: '3',
             userId: 'u',
+            createdAt: now.subtract(const Duration(days: 364)),
             number: '003',
             clientName: 'C',
             dateIssued: now.subtract(const Duration(days: 364)),
@@ -43,6 +46,7 @@ void main() {
         InvoiceModel(
             id: '4',
             userId: 'u',
+            createdAt: now.subtract(const Duration(days: 366)),
             number: '004',
             clientName: 'C',
             dateIssued: now.subtract(const Duration(days: 366)),
@@ -53,6 +57,7 @@ void main() {
         InvoiceModel(
             id: '5',
             userId: 'u',
+            createdAt: now,
             number: '005',
             clientName: 'C',
             dateIssued: now,
@@ -90,6 +95,7 @@ void main() {
         InvoiceModel(
             id: '1',
             userId: 'u',
+            createdAt: DateTime.now(),
             number: '001',
             clientName: 'C',
             dateIssued: DateTime.now(),
@@ -127,6 +133,7 @@ void main() {
         InvoiceModel(
             id: '1',
             userId: 'u',
+            createdAt: DateTime.now(),
             number: '001',
             clientName: 'C',
             dateIssued: DateTime.now(),

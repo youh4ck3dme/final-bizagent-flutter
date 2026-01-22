@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/providers/auth_repository.dart';
 import '../models/invoice_model.dart';
 import 'invoices_repository.dart';
+import '../../../core/services/soft_delete_service.dart';
 
 final invoicesProvider = StreamProvider<List<InvoiceModel>>((ref) {
   final user = ref.watch(authStateProvider).valueOrNull;
@@ -47,26 +48,31 @@ class InvoicesController extends StateNotifier<AsyncValue<void>> {
         .updateInvoiceStatus(user.id, invoiceId, status));
   }
 
-  Future<void> deleteInvoice(String invoiceId) async {
+  Future<void> softDeleteInvoice(String invoiceId, {String? reason}) async {
     final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _ref
-        .read(invoicesRepositoryProvider)
-        .deleteInvoice(user.id, invoiceId));
+        .read(softDeleteServiceProvider)
+        .softDeleteItem(SoftDeleteCollections.invoices, user.id, invoiceId, reason: reason));
   }
 
-  Future<void> deleteInvoices(List<String> invoiceIds) async {
+  Future<void> deleteInvoices(List<String> invoiceIds, {String? reason}) async {
     final user = _ref.read(authStateProvider).valueOrNull;
     if (user == null) return;
 
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final repo = _ref.read(invoicesRepositoryProvider);
+      final service = _ref.read(softDeleteServiceProvider);
       for (final id in invoiceIds) {
-        await repo.deleteInvoice(user.id, id);
+        await service.softDeleteItem(SoftDeleteCollections.invoices, user.id, id, reason: reason);
       }
     });
+  }
+
+  // Legacy method for backward compatibility - now does soft delete
+  Future<void> deleteInvoice(String invoiceId) async {
+    await softDeleteInvoice(invoiceId);
   }
 }

@@ -54,5 +54,6 @@ class DefaultFirebaseOptions {
     projectId: 'bizagent-live-2026',
     authDomain: 'bizagent-live-2026.firebaseapp.com',
     storageBucket: 'bizagent-live-2026.firebasestorage.app',
+    measurementId: 'G-XXXXXXXXXX',
   );
 }

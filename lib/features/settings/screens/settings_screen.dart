@@ -265,6 +265,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: () {},
               ),
               const Divider(height: 32),
+              _buildSectionTitle('Správa dát'),
+              ListTile(
+                leading: const Icon(Icons.delete_outline),
+                title: const Text('Kôš (obnovenie zmazaných položiek)'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/settings/trash'),
+              ),
+              const Divider(height: 32),
               _buildSectionTitle('Právne dokumenty'),
               ListTile(
                 leading: const Icon(Icons.description_outlined),

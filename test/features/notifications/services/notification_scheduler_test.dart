@@ -24,6 +24,7 @@ void main() {
         notificationServiceProvider.overrideWithValue(mockService),
         invoicesProvider.overrideWith((ref) => Stream.value([
               InvoiceModel(
+      createdAt: DateTime.now(),
                 id: 'inv-1',
                 userId: 'u1',
                 clientName: 'Client A',
@@ -38,6 +39,7 @@ void main() {
                 variableSymbol: '2024001',
               ),
               InvoiceModel(
+      createdAt: DateTime.now(),
                 id: 'inv-2',
                 userId: 'u1',
                 clientName: 'Client B',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../core/services/tax_calculation_service.dart';
+import '../../../core/models/soft_delete_model.dart';
 
 enum InvoiceStatus { draft, sent, paid, overdue, cancelled }
 
@@ -108,30 +109,31 @@ class InvoiceItemModel {
   }
 }
 
-class InvoiceModel {
-  final String id;
-  final String userId;
+class InvoiceModel extends SoftDeleteModel {
   final String number;
   final String clientName;
-  final String? clientAddress; // Added
+  final String? clientAddress;
   final String? clientIco;
-  final String? clientDic; // Added
-  final String? clientIcDph; // Added
+  final String? clientDic;
+  final String? clientIcDph;
   final DateTime dateIssued;
   final DateTime dateDue;
   final List<InvoiceItemModel> items;
   final double totalAmount;
   final InvoiceStatus status;
   final String? pdfUrl;
-  final String? variableSymbol; // Added
-  final String? constantSymbol; // Added
+  final String? variableSymbol;
+  final String? constantSymbol;
   final DateTime? paymentDate;
   final String? paymentMethod;
-  final bool isNumberProvisional; // Added for offline numbering
+  final bool isNumberProvisional;
 
   InvoiceModel({
-    required this.id,
-    required this.userId,
+    required super.id,
+    required super.userId,
+    required super.createdAt,
+    super.deletedAt,
+    super.deleteReason,
     required this.number,
     required this.clientName,
     this.clientAddress,
@@ -165,10 +167,68 @@ class InvoiceModel {
     return breakdown;
   }
 
+  @override
+  InvoiceModel copyWith({
+    String? id,
+    String? userId,
+    DateTime? createdAt,
+    DateTime? deletedAt,
+    String? deleteReason,
+    String? number,
+    String? clientName,
+    String? clientAddress,
+    String? clientIco,
+    String? clientDic,
+    String? clientIcDph,
+    DateTime? dateIssued,
+    DateTime? dateDue,
+    List<InvoiceItemModel>? items,
+    double? totalAmount,
+    InvoiceStatus? status,
+    String? pdfUrl,
+    String? variableSymbol,
+    String? constantSymbol,
+    DateTime? paymentDate,
+    String? paymentMethod,
+    bool? isNumberProvisional,
+  }) {
+    return InvoiceModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt,
+      deleteReason: deleteReason,
+      number: number ?? this.number,
+      clientName: clientName ?? this.clientName,
+      clientAddress: clientAddress ?? this.clientAddress,
+      clientIco: clientIco ?? this.clientIco,
+      clientDic: clientDic ?? this.clientDic,
+      clientIcDph: clientIcDph ?? this.clientIcDph,
+      dateIssued: dateIssued ?? this.dateIssued,
+      dateDue: dateDue ?? this.dateDue,
+      items: items ?? this.items,
+      totalAmount: totalAmount ?? this.totalAmount,
+      status: status ?? this.status,
+      pdfUrl: pdfUrl ?? this.pdfUrl,
+      variableSymbol: variableSymbol ?? this.variableSymbol,
+      constantSymbol: constantSymbol ?? this.constantSymbol,
+      paymentDate: paymentDate ?? this.paymentDate,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      isNumberProvisional: isNumberProvisional ?? this.isNumberProvisional,
+    );
+  }
+
   factory InvoiceModel.fromMap(Map<String, dynamic> map, String id) {
     return InvoiceModel(
       id: id,
       userId: map['userId'] ?? '',
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.parse(map['dateIssued']), // fallback for old data
+      deletedAt: map['deletedAt'] != null
+          ? DateTime.parse(map['deletedAt'])
+          : null,
+      deleteReason: map['deleteReason'],
       number: map['number'] ?? '',
       clientName: map['clientName'] ?? '',
       clientAddress: map['clientAddress'],
@@ -197,9 +257,10 @@ class InvoiceModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  @override
+  Map<String, dynamic> toFirestore() {
     return {
-      'userId': userId,
+      ...super.toFirestore(),
       'number': number,
       'clientName': clientName,
       'clientAddress': clientAddress,
@@ -218,5 +279,10 @@ class InvoiceModel {
       'paymentMethod': paymentMethod,
       'isNumberProvisional': isNumberProvisional,
     };
+  }
+
+  // Legacy toMap for backward compatibility
+  Map<String, dynamic> toMap() {
+    return toFirestore();
   }
 }

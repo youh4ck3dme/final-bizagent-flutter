@@ -24,8 +24,10 @@ void main() {
     required InvoiceStatus status,
   }) {
     return InvoiceModel(
+      createdAt: DateTime.now(),
       id: id,
       userId: 'user-1',
+      createdAt: dateIssued,
       number: 'INV-$id',
       variableSymbol: 'VS$id',
       dateIssued: dateIssued,

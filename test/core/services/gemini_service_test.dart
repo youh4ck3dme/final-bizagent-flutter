@@ -3,9 +3,9 @@ import 'package:bizagent/core/services/gemini_service.dart';
 
 void main() {
   group('GeminiService Stability Tests', () {
-    test('Should use stable "gemini-pro" model', () {
-      // strict check to ensure we never accidentally revert to 'gemini-1.5-flash' or other betas
-      expect(GeminiService.modelName, equals('gemini-pro'));
+    test('Should use best available model by default', () {
+      // Should start with the highest priority model (gemini-2.0-flash-exp)
+      expect(GeminiService.modelName, equals('gemini-2.0-flash-exp'));
     });
 
     test('Should reject empty API keys gracefully', () async {

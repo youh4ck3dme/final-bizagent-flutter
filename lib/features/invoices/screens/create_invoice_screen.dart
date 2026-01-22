@@ -164,6 +164,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     final invoice = InvoiceModel(
       id: '',
       userId: '',
+      createdAt: DateTime.now(),
       number: number,
       clientName: _clientNameController.text,
       clientAddress: _clientAddressController.text,
@@ -612,4 +613,3 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     );
   }
 }
-

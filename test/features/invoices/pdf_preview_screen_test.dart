@@ -12,6 +12,7 @@ void main() {
     final testInvoice = InvoiceModel(
       id: 'test-1',
       userId: 'user-1',
+      createdAt: DateTime.now(),
       number: '2026/001',
       clientName: 'Test Client',
       dateIssued: DateTime.now(),

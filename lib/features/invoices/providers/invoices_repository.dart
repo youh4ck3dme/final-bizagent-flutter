@@ -19,10 +19,11 @@ class InvoicesRepository {
     final localData = _persistence.getInvoices();
     final localInvoices = localData
         .map((data) => InvoiceModel.fromMap(data, data['id'] ?? ''))
+        .where((invoice) => !invoice.isDeleted) // Filter out soft deleted
         .toList();
 
     try {
-      // 2. Fetch from Firestore (will work offline if persistence enabled in Firestore, 
+      // 2. Fetch from Firestore (will work offline if persistence enabled in Firestore,
       // but Hive gives us more control over explicit sync)
       final snapshot = await _firestore
           .collection('users')
@@ -34,10 +35,13 @@ class InvoicesRepository {
       final remoteInvoices = snapshot.docs.map((doc) {
         final data = doc.data();
         data['id'] = doc.id;
-        // Update local cache
-        _persistence.saveInvoice(doc.id, data);
-        return InvoiceModel.fromMap(data, doc.id);
-      }).toList();
+        final invoice = InvoiceModel.fromMap(data, doc.id);
+        // Only save to local cache if not soft deleted
+        if (!invoice.isDeleted) {
+          _persistence.saveInvoice(doc.id, data);
+        }
+        return invoice;
+      }).where((invoice) => !invoice.isDeleted).toList(); // Filter out soft deleted
 
       return remoteInvoices;
     } catch (e) {
@@ -47,10 +51,11 @@ class InvoicesRepository {
   }
 
   Stream<List<InvoiceModel>> watchInvoices(String userId) async* {
-    // Emit local first
+    // Emit local first (filter out soft deleted)
     final localData = _persistence.getInvoices();
     yield localData
         .map((data) => InvoiceModel.fromMap(data, data['id'] ?? ''))
+        .where((invoice) => !invoice.isDeleted)
         .toList();
 
     final stream = _firestore
@@ -64,9 +69,13 @@ class InvoicesRepository {
       final invoices = snapshot.docs.map((doc) {
         final data = doc.data();
         data['id'] = doc.id;
-        _persistence.saveInvoice(doc.id, data);
-        return InvoiceModel.fromMap(data, doc.id);
-      }).toList();
+        final invoice = InvoiceModel.fromMap(data, doc.id);
+        // Only save to local cache if not soft deleted
+        if (!invoice.isDeleted) {
+          _persistence.saveInvoice(doc.id, data);
+        }
+        return invoice;
+      }).where((invoice) => !invoice.isDeleted).toList(); // Filter out soft deleted
 
       yield invoices;
     }
