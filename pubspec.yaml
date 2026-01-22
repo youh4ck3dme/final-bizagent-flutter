@@ -70,6 +70,9 @@ dependencies:
   camera: ^0.11.3
   image_picker: ^1.0.5
 
+  # Speech Recognition
+  speech_to_text: ^6.6.2
+
   # Charts
   fl_chart: ^1.1.1
   qr_flutter: ^4.1.0

@@ -33,6 +33,7 @@ import '../../features/intro/screens/modern_onboarding_screen.dart';
 import '../../features/invoices/models/invoice_model.dart';
 import '../../features/expenses/models/expense_model.dart';
 import '../../features/expenses/screens/create_expense_screen.dart';
+import '../../features/expenses/screens/voice_expense_screen.dart';
 
 import '../../features/bank_import/screens/bank_import_screen.dart';
 import '../../features/export/screens/export_screen.dart';
@@ -125,6 +126,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           final text = state.extra as String?;
           return CreateExpenseScreen(initialText: text);
         },
+      ),
+      GoRoute(
+        path: '/voice-expense',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const VoiceExpenseScreen(),
       ),
       GoRoute(
         path: '/bank-import',

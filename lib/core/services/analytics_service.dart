@@ -47,8 +47,25 @@ class AnalyticsService {
     await logEvent('onboarding_seen');
   }
 
+  Future<void> logOnboardingStarted() async {
+    await logEvent('onboarding_started');
+  }
+
+  Future<void> logOnboardingCompleted() async {
+    await logEvent('onboarding_completed');
+  }
+
   Future<void> logTryWithoutRegistration() async {
     await logEvent('try_no_reg');
+  }
+
+  // Voice Expense Funnel
+  Future<void> logVoiceExpenseStarted() async {
+    await logEvent('voice_expense_started');
+  }
+
+  Future<void> logVoiceExpenseCompleted({required bool success}) async {
+    await logEvent('voice_expense_completed', parameters: {'success': success});
   }
 
   // App Lifecycle
