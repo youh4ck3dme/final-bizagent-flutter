@@ -16,7 +16,8 @@ import '../providers/invoices_provider.dart';
 import '../../../core/services/icoatlas_service.dart';
 
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
-  const CreateInvoiceScreen({super.key});
+  final Map<String, dynamic>? initialData;
+  const CreateInvoiceScreen({super.key, this.initialData});
 
   @override
   ConsumerState<CreateInvoiceScreen> createState() =>
@@ -54,6 +55,18 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   void initState() {
     super.initState();
     _loadNextNumber();
+    
+    // Pre-fill if initial data provided (Funnel from IČO Lookup)
+    if (widget.initialData != null) {
+      _clientNameController.text = widget.initialData!['clientName'] ?? '';
+      _clientIcoController.text = widget.initialData!['clientIco'] ?? '';
+      _clientAddressController.text = widget.initialData!['clientAddress'] ?? '';
+      
+      if (_clientNameController.text.isNotEmpty) {
+        _aiPopulatedFields.addAll(['name', 'ico', 'address']);
+        _isAiOptimized = true;
+      }
+    }
   }
 
   Future<void> _loadNextNumber() async {

@@ -70,6 +70,13 @@ class AuthRepository {
   // Helper to get current user immediately
   UserModel? get currentUser => _currentUser;
 
+  // Helper to get Firebase ID Token
+  Future<String?> get currentUserToken async {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+    return await user.getIdToken();
+  }
+
   Future<UserModel?> signIn(String email, String password) async {
     try {
       final result = await _auth.signInWithEmailAndPassword(

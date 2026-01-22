@@ -63,6 +63,40 @@ class IcoAtlasService {
     }
   }
 
+  /// Performs a secure IČO lookup for paid users.
+  Future<IcoLookupResult?> secureLookup(String ico, String? token) async {
+    if (token == null) return null;
+
+    try {
+      const endpoint = '/api/icoatlas/lookup';
+      final response = await _dio.get(
+        endpoint, 
+        queryParameters: {'ico': ico},
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200 && response.data != null && response.data['ok'] == true) {
+        return IcoLookupResult.fromMap(response.data['summary'] ?? {});
+      }
+      return null;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        final resetIn = e.response?.data?['resetIn'];
+        return IcoLookupResult.rateLimited(
+          resetIn: resetIn != null ? int.tryParse(resetIn.toString()) : null,
+        );
+      }
+      if (e.response?.statusCode == 402) {
+        return IcoLookupResult.paymentRequired();
+      }
+      debugPrint('Secure IČO lookup failed: ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint('Secure IČO lookup error: $e');
+      return null;
+    }
+  }
+
   /// Looks up a company by its IČO (Legacy/Proxy method).
   Future<CompanyInfo?> lookupCompany(String ico) async {
     try {

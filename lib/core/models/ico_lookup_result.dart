@@ -5,6 +5,7 @@ class IcoLookupResult {
   final String? riskHint;
   final int? resetIn; // seconds until rate limit resets
   final bool isRateLimited;
+  final bool isPaymentRequired;
 
   IcoLookupResult({
     required this.name,
@@ -13,6 +14,7 @@ class IcoLookupResult {
     this.riskHint,
     this.resetIn,
     this.isRateLimited = false,
+    this.isPaymentRequired = false,
   });
 
   factory IcoLookupResult.fromMap(Map<String, dynamic> map) {
@@ -33,6 +35,17 @@ class IcoLookupResult {
       city: '',
       resetIn: resetIn,
       isRateLimited: true,
+      isPaymentRequired: false,
+    );
+  }
+
+  factory IcoLookupResult.paymentRequired() {
+    return IcoLookupResult(
+      name: '',
+      status: 'Payment Required',
+      city: '',
+      isRateLimited: false,
+      isPaymentRequired: true,
     );
   }
 
@@ -41,6 +54,8 @@ class IcoLookupResult {
       name: '',
       status: '',
       city: '',
+      isRateLimited: false,
+      isPaymentRequired: false,
     );
   }
 }

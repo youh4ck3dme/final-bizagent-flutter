@@ -110,7 +110,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/create-invoice',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const CreateInvoiceScreen(),
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>?;
+          return CreateInvoiceScreen(initialData: data);
+        },
       ),
       GoRoute(
         path: '/create-expense',

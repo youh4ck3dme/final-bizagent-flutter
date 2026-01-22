@@ -13,7 +13,21 @@ final icoLookupFutureProvider = FutureProvider<IcoLookupResult?>((ref) async {
   final query = ref.watch(icoSearchQueryProvider);
   if (query.length < 8) return null;
   
+  final authUser = ref.watch(authStateProvider).value;
   final service = ref.read(icoAtlasServiceProvider);
+
+  // If user is logged in (not anonymous), use secure lookup
+  if (authUser != null && !authUser.isAnonymous) {
+    try {
+      final token = await (ref.read(authRepositoryProvider).currentUserToken);
+      if (token != null) {
+        return await service.secureLookup(query, token);
+      }
+    } catch (e) {
+      debugPrint('Auth token retrieval failed: $e');
+    }
+  }
+  
   return await service.publicLookup(query);
 });
 
@@ -117,6 +131,9 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                 if (result.isRateLimited) {
                   return _buildRateLimitedState(result.resetIn);
                 }
+                if (result.isPaymentRequired) {
+                  return _buildPaymentRequiredState();
+                }
                 return _buildResultCard(result);
               },
               loading: () => const Center(
@@ -211,17 +228,84 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
               ),
             ],
             const SizedBox(height: BizTheme.spacingXl),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      context.push(
+                        '/create-invoice',
+                        extra: {
+                          'clientName': result.name,
+                          'clientIco': _controller.text,
+                          'clientAddress': result.city,
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.receipt_long, size: 18),
+                    label: const Text('VYSTAVIŤ FAKTÚRU'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: BizTheme.spacingSm),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {},
-                child: const Text('ZOBRAZIŤ DETAILNÝ REPORT'),
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  // Logic to add to contacts would go here
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Firma bola pridaná do kontaktov')),
+                  );
+                },
+                icon: const Icon(Icons.person_add_outlined, size: 18),
+                label: const Text('PRIDAŤ DO KONTAKTOV'),
               ),
             ),
           ],
         ),
       ),
     ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.05);
+  }
+
+  Widget _buildPaymentRequiredState() {
+    final theme = Theme.of(context);
+    
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(BizTheme.spacingLg),
+      decoration: BoxDecoration(
+        color: BizTheme.slovakBlue.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
+        border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.lock_person_outlined, size: 48, color: BizTheme.slovakBlue),
+          const SizedBox(height: BizTheme.spacingMd),
+          Text(
+            'Secure Gateway: Premium',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: BizTheme.slovakBlue,
+            ),
+          ),
+          const SizedBox(height: BizTheme.spacingSm),
+          const Text(
+            'Váš aktuálny plán nepovoľuje neobmedzené lookupy cez bezpečný gateway.',
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: BizTheme.spacingXl),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {},
+              child: const Text('AKTIVOVAŤ SOLO/GROWTH PLÁN'),
+            ),
+          ),
+        ],
+      ),
+    ).animate().shake();
   }
 
   Widget _buildRateLimitedState(int? resetIn) {
