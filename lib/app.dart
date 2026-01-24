@@ -33,6 +33,9 @@ class _BizAgentAppState extends ConsumerState<BizAgentApp> {
       if (!mounted) return;
       ref.read(notificationServiceProvider).requestPermissions();
       ref.read(notificationSchedulerProvider).scheduleAllAlerts();
+      
+      // Start Monitoring (Firestore Listener)
+      // ref.read(monitoringServiceProvider).notifications(); // Stream is lazy loaded by UI
     });
   }
 

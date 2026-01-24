@@ -85,12 +85,23 @@ class IcoAtlasService {
     }
   }
 
-  /// Performs a secure IČO lookup for paid users.
+  /// Fetches company data by normalized IČO.
+  /// Used for background referesh logic.
+  Future<IcoLookupResult> fetchByIco(String icoNorm) async {
+    // Re-use public lookup logic but throw on failure for the background service
+    final result = await publicLookup(icoNorm);
+    if (result == null || result.isRateLimited) {
+      throw Exception('Refresh failed');
+    }
+    return result;
+  }
+
+  /// Performs a secure IČO lookup for paid users (fetches full data + AI verdict).
   Future<IcoLookupResult?> secureLookup(String ico, String? token) async {
     if (token == null) return null;
 
     try {
-      const endpoint = '/api/icoatlas/lookup';
+      const endpoint = '/api/internal/ico/full';
       final response = await _dio.get(
         endpoint, 
         queryParameters: {'ico': ico},
@@ -98,7 +109,8 @@ class IcoAtlasService {
       );
 
       if (response.statusCode == 200 && response.data != null && response.data['ok'] == true) {
-        return IcoLookupResult.fromMap(response.data['summary'] ?? {});
+        // Map full data response to result model
+        return IcoLookupResult.fromMap(response.data['payload'] ?? {});
       }
       return null;
     } on DioException catch (e) {

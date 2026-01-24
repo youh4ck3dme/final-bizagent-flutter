@@ -15,9 +15,16 @@ void main() {
         ),
       ));
 
-      expect(find.text('Tržby'), findsOneWidget);
+      // Let flutter_animate settle.
+      await tester.pumpAndSettle();
+
+      expect(find.text('TRŽBY'), findsOneWidget);
       expect(find.text('12 500 €'), findsOneWidget);
       expect(find.byIcon(Icons.attach_money), findsOneWidget);
+
+      // Clear any delayed timers before teardown.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
     });
 
     testWidgets('BizStatsCard displays positive trend correctly', (WidgetTester tester) async {
@@ -33,8 +40,14 @@ void main() {
         ),
       ));
 
+      await tester.pumpAndSettle();
+
       expect(find.text('+15%'), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_upward), findsOneWidget);
+      // Icon appears in the card (main) and in the trend badge.
+      expect(find.byIcon(Icons.trending_up), findsAtLeastNWidgets(1));
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
     });
 
     testWidgets('BizStatsCard displays negative trend correctly', (WidgetTester tester) async {
@@ -50,8 +63,14 @@ void main() {
         ),
       ));
 
+      await tester.pumpAndSettle();
+
       expect(find.text('-5%'), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_downward), findsOneWidget);
+      // Icon appears in the card (main) and in the trend badge.
+      expect(find.byIcon(Icons.trending_down), findsAtLeastNWidgets(1));
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pumpAndSettle();
     });
   });
 }

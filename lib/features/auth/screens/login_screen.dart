@@ -156,9 +156,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
-                      
+
+                      // Error Display
+                      if (authState.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.red.shade200),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.error_outline, color: Colors.red.shade700),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    authState.error.toString(),
+                                    style: TextStyle(color: Colors.red.shade700),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
                       const SizedBox(height: 24),
-                      
+
                       // Divider
                       Row(
                         children: [

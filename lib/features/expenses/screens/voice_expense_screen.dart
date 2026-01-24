@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/ui/biz_theme.dart';
@@ -81,10 +80,12 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
 
         await _processTranscription(transcription);
       } else {
+        if (!mounted) return;
         _resetToIdle();
         BizSnackbar.showInfo(context, 'Nezachytil som žiadny hlasový vstup');
       }
     } catch (e) {
+      if (!mounted) return;
       _resetToIdle();
       BizSnackbar.showError(context, 'Chyba pri rozpoznávaní hlasu: $e');
     } finally {
@@ -98,6 +99,8 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
       final parserService = ref.read(expenseParserServiceProvider);
       final parsed = await parserService.parseExpenseText(transcription);
 
+      if (!mounted) return;
+
       if (parsed != null && parserService.isValidExpense(parsed)) {
         setState(() {
           _parsedExpense = parsed;
@@ -108,6 +111,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         BizSnackbar.showInfo(context, 'Nepodarilo sa rozpoznať výdavok. Skúste to znova.');
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() => _voiceState = VoiceState.error);
       BizSnackbar.showError(context, 'Chyba pri spracovaní: $e');
     }
@@ -140,6 +144,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
 
       ref.read(analyticsServiceProvider).logVoiceExpenseCompleted(success: true);
 
+      if (!mounted) return;
       BizSnackbar.showSuccess(context, 'Výdavok uložený cez hlas! 🎉');
 
       // Reset state
@@ -148,14 +153,15 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         _transcription = '';
         _parsedExpense = null;
       });
-
     } catch (e) {
+      if (!mounted) return;
       setState(() => _voiceState = VoiceState.error);
       BizSnackbar.showError(context, 'Chyba pri ukladaní výdavku: $e');
     }
   }
 
   void _resetToIdle() {
+    if (!mounted) return;
     setState(() {
       _voiceState = VoiceState.idle;
       _transcription = '';
@@ -234,7 +240,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
               color: BizTheme.slovakBlue.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.mic_none,
               size: 60,
               color: BizTheme.slovakBlue,
@@ -279,7 +285,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
                     color: Colors.red.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.mic,
                     size: 60,
                     color: Colors.red,
@@ -370,7 +376,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.check_circle,
               size: 64,
               color: Colors.green,
@@ -493,7 +499,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 64,
             color: Colors.orange,
@@ -544,14 +550,14 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           ),
           elevation: 0,
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.mic, size: 24),
-            const SizedBox(width: 12),
+            Icon(Icons.mic, size: 24),
+            SizedBox(width: 12),
             Text(
               'Začať nahrávať',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/soft_delete_model.dart';
 
 /// Service for managing soft delete operations following Google/Firebase data retention policies
 class SoftDeleteService {

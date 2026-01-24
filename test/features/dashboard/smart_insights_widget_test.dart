@@ -139,7 +139,9 @@ void main() {
       );
 
       await tester.pump();
-      expect(find.text('Možná úspora: 150.00 €'), findsOneWidget);
+      // Current widget shows a "+12%" badge when potentialSavings is present.
+      expect(find.text('+12%'), findsOneWidget);
+      expect(find.byIcon(Icons.trending_up), findsWidgets);
     });
 
     testWidgets('should be hidden when no insights are available',

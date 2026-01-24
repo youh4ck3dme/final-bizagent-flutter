@@ -35,7 +35,9 @@ void main() {
       ),
     );
 
-    await tester.pumpAndSettle();
+    // Avoid pumpAndSettle due to infinite animations on the dashboard.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
 
     // Verify Smart Dashboard Empty State is present
     expect(find.text('Vitajte v BizAgent!'), findsOneWidget);
@@ -49,5 +51,8 @@ void main() {
     // Verify Icons exist
     expect(find.byIcon(Icons.rocket_launch_rounded), findsOneWidget);
     expect(find.byIcon(Icons.business), findsOneWidget);
+
+    // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+    await tester.pump(const Duration(seconds: 3));
   });
 }

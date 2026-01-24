@@ -89,20 +89,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() => _isLookingUp = true);
     try {
       final service = ref.read(companyLookupServiceProvider);
-      final company = await service.lookup(ico);
+      final company = await service.lookupByIco(ico);
 
       if (mounted) {
-        if (company != null) {
-          setState(() {
-            _nameController.text = company.name;
-            _addressController.text = company.address;
-            if (company.dic != null) _dicController.text = company.dic!;
-            if (company.icDph != null) _icDphController.text = company.icDph!;
-          });
-          BizSnackbar.showSuccess(context, 'Našli sme: ${company.name}');
-        } else {
-          BizSnackbar.showError(context, 'Firmu s týmto IČO sme nenašli.');
-        }
+        // Result is never null or throws exception
+        setState(() {
+          _nameController.text = company.name;
+          _addressController.text = company.fullAddress;
+          if (company.dic != null) _dicController.text = company.dic!;
+          if (company.icDph != null) _icDphController.text = company.icDph!;
+        });
+        BizSnackbar.showSuccess(context, 'Našli sme: ${company.name}');
       }
     } catch (e) {
       if (mounted) {

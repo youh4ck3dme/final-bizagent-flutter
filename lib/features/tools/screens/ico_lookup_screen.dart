@@ -3,9 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/ui/biz_theme.dart';
-import '../../auth/providers/auth_repository.dart';
-import '../../../core/services/icoatlas_service.dart';
+import '../../../core/services/company_lookup_service.dart';
 import '../../../core/models/ico_lookup_result.dart';
+import '../../../shared/widgets/watched_company_button.dart';
+import '../../billing/subscription_guard.dart';
+import '../../billing/paywall_screen.dart';
+import '../../limits/usage_limiter.dart';
+import '../../billing/billing_service.dart';
 
 // Provider for the search query and lookup result
 final icoSearchQueryProvider = StateProvider<String>((ref) => '');
@@ -14,22 +18,17 @@ final icoLookupFutureProvider = FutureProvider<IcoLookupResult?>((ref) async {
   final query = ref.watch(icoSearchQueryProvider);
   if (query.length < 8) return null;
   
-  final authUser = ref.watch(authStateProvider).value;
-  final service = ref.read(icoAtlasServiceProvider);
+  final lookupService = ref.read(companyLookupServiceProvider);
 
-  // If user is logged in (not anonymous), use secure lookup
-  if (authUser != null && !authUser.isAnonymous) {
-    try {
-      final token = await (ref.read(authRepositoryProvider).currentUserToken);
-      if (token != null) {
-        return await service.secureLookup(query, token);
-      }
-    } catch (e) {
-      debugPrint('Auth token retrieval failed: $e');
-    }
+  try {
+    return await lookupService.lookupByIco(query);
+  } catch (e) {
+    debugPrint('Lookup failed: $e');
+    // Rethrow to let UI handle specific errors (like socket exception if mapped)
+    // Or return a specific failure object. For now returning null is handled as empty/error.
+    // Ideally we propagate the error state to the UI provider.
+    throw e; 
   }
-  
-  return await service.publicLookup(query);
 });
 
 class IcoLookupScreen extends ConsumerStatefulWidget {
@@ -46,8 +45,19 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
   void _handleSearch() {
     final query = _controller.text.trim();
     if (query.length == 8) {
-      ref.read(icoSearchQueryProvider.notifier).state = query;
-      // setState(() => _isSearching = true);
+      final guard = ref.read(subscriptionGuardProvider);
+      if (guard.canAccess(BizFeature.icoLookup)) {
+        // Debounce protection: Check if already loading
+        if (ref.read(icoLookupFutureProvider).isLoading) return;
+
+        ref.read(icoSearchQueryProvider.notifier).state = query;
+        ref.read(usageLimiterProvider).incrementIco();
+        ref.read(billingProvider.notifier).refreshUsage();
+      } else {
+         Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PaywallScreen()),
+         );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Zadajte platné 8-miestne IČO')),
@@ -109,8 +119,10 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                   counterText: '',
                   prefixIcon: const Icon(Icons.search, color: BizTheme.slovakBlue),
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.arrow_forward_rounded, color: BizTheme.slovakBlue),
-                    onPressed: _handleSearch,
+                    icon: lookupAsync.isLoading 
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Icon(Icons.arrow_forward_rounded, color: BizTheme.slovakBlue),
+                    onPressed: lookupAsync.isLoading ? null : _handleSearch,
                   ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
@@ -143,7 +155,14 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              error: (e, _) => _buildErrorState(e.toString()),
+              error: (e, _) {
+                // Better Offline / Error UX
+                final msg = e.toString().toLowerCase();
+                final isOffline = msg.contains('socket') || msg.contains('connection') || msg.contains('internet');
+                return _buildErrorState(isOffline 
+                    ? 'Skontrolujte pripojenie na internet.' 
+                    : 'Nepodarilo sa načítať údaje.');
+              },
             ),
           ],
         ),
@@ -179,10 +198,19 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     ),
                   ),
                 ),
-                Icon(
-                  isReliable ? Icons.verified_rounded : Icons.warning_amber_rounded,
-                  color: isReliable ? Colors.green : Colors.orange,
-                  size: 20,
+                Row(
+                  children: [
+                    Icon(
+                      isReliable ? Icons.verified_rounded : Icons.warning_amber_rounded,
+                      color: isReliable ? Colors.green : Colors.orange,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    WatchedCompanyButton(
+                      icoNorm: result.icoNorm,
+                      name: result.name,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -205,31 +233,57 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                 ),
               ],
             ),
-            if (result.riskHint != null) ...[
+            if (result.headline != null || result.explanation != null) ...[
               const SizedBox(height: BizTheme.spacingLg),
               Container(
-                padding: const EdgeInsets.all(BizTheme.spacingMd),
+                padding: const EdgeInsets.all(BizTheme.spacingLg),
                 decoration: BoxDecoration(
-                  color: BizTheme.nationalRed.withValues(alpha: 0.05),
+                  color: BizTheme.slovakBlue.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(BizTheme.radiusMd),
-                  border: Border.all(color: BizTheme.nationalRed.withValues(alpha: 0.1)),
+                  border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.shield_outlined, color: BizTheme.nationalRed, size: 18),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        result.riskHint!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: BizTheme.nationalRed,
-                          fontWeight: FontWeight.w600,
+                    Row(
+                      children: [
+                        const Icon(Icons.auto_awesome, color: BizTheme.slovakBlue, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          'AI VERDIKT',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: BizTheme.slovakBlue,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
                         ),
-                      ),
+                        const Spacer(),
+                        if (result.confidence != null)
+                          Text(
+                            '${(result.confidence! * 100).toInt()}% istota',
+                            style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: BizTheme.spacingSm),
+                    Text(
+                      result.headline ?? 'Analýza dokončená',
+                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      result.explanation ?? '',
+                      style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
                     ),
                   ],
                 ),
               ),
+            ],
+            
+            // Risk Badge (LOW / MEDIUM / HIGH)
+            if (result.riskLevel != null || result.riskHint != null) ...[
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildRiskBadge(result.riskLevel, result.riskHint),
             ],
             const SizedBox(height: BizTheme.spacingXl),
             Row(
@@ -414,6 +468,50 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildRiskBadge(String? level, String? hint) {
+    final theme = Theme.of(context);
+    final color = switch (level?.toUpperCase()) {
+      'LOW' => Colors.green,
+      'MEDIUM' => Colors.orange,
+      'HIGH' => BizTheme.nationalRed,
+      _ => Colors.blue,
+    };
+
+    return Container(
+      padding: const EdgeInsets.all(BizTheme.spacingMd),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+        border: Border.all(color: color.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.shield_outlined, color: color, size: 18),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Risk Score: ${level ?? "UNKNOWN"}',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (hint != null)
+                  Text(
+                    hint,
+                    style: theme.textTheme.bodySmall?.copyWith(color: color),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

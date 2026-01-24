@@ -23,6 +23,7 @@ import '../widgets/smart_insights_widget.dart';
 import '../../../core/services/tutorial_service.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../shared/widgets/biz_widgets.dart';
+import '../../../shared/widgets/notification_bell.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -86,8 +87,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(context.t(AppStr.spdTitle),
-                style: Theme.of(context).appBarTheme.titleTextStyle),
+            Flexible(
+              child: Text(
+                context.t(AppStr.spdTitle),
+                style: Theme.of(context).appBarTheme.titleTextStyle,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             const SizedBox(width: 8),
             const ZenLock(),
           ],
@@ -96,6 +102,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         actions: [
+          const NotificationBell(), 
           BizTutorialButton(
             onPressed: () {
               TutorialService.showDashboardTutorial(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_model.dart';
@@ -123,22 +124,25 @@ class AuthRepository {
 
   Future<UserModel?> signInWithGoogle() async {
     try {
-      final googleSignIn = GoogleSignIn();
-      
+      final googleSignIn = GoogleSignIn(
+        clientId: '542280140779-fnbgni0vvqb9dgpl6q4k64p6s91s6jdi.apps.googleusercontent.com',
+      );
+
       GoogleSignInAccount? googleUser;
       try {
         googleUser = await googleSignIn.signIn();
       } catch (e) {
+        debugPrint('Google Sign-In error: $e');
         return null;
       }
-      
+
       if (googleUser == null) return null;
-      
+
       final googleAuth = await googleUser.authentication;
-      
+
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
-        accessToken: null,
+        accessToken: googleAuth.accessToken,
       );
 
       final result = await _auth.signInWithCredential(credential);
@@ -157,6 +161,7 @@ class AuthRepository {
       _authStateController.add(userModel);
       return userModel;
     } catch (e) {
+      debugPrint('Firebase Auth error: $e');
       rethrow;
     }
   }

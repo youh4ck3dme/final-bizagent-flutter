@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bizagent/features/ai_tools/screens/biz_bot_screen.dart';
 import 'package:bizagent/features/ai_tools/services/biz_bot_service.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 // Generate Mocks (Manual implementation for simplicity in one file)

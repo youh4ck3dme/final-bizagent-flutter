@@ -11,7 +11,20 @@ import 'package:bizagent/features/expenses/providers/expenses_provider.dart';
 import 'package:bizagent/features/settings/providers/settings_provider.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
 import 'package:bizagent/core/i18n/l10n.dart';
+import 'package:bizagent/core/services/initialization_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bizagent/features/notifications/services/notification_service.dart';
+import 'package:bizagent/features/tools/services/monitoring_service.dart';
+import 'package:bizagent/features/analytics/providers/expense_insights_provider.dart';
+import 'package:bizagent/features/analytics/models/expense_insight_model.dart';
+import 'dart:async';
+import 'package:mocktail/mocktail.dart';
+import 'package:bizagent/features/dashboard/providers/revenue_provider.dart';
+import 'package:bizagent/features/dashboard/providers/profit_provider.dart';
+import 'package:bizagent/features/tax/providers/tax_thermometer_service.dart';
+import 'package:bizagent/features/tax/providers/tax_estimation_service.dart';
+import 'package:bizagent/features/tax/providers/tax_provider.dart';
 
 class MockAuthRepository implements AuthRepository {
   @override
@@ -41,22 +54,48 @@ class MockAuthRepository implements AuthRepository {
   void dispose() {}
 }
 
-class MockFirebaseAnalytics extends Fake implements FirebaseAnalytics {
+class MockFirebaseAnalytics extends Mock implements FirebaseAnalytics {}
+
+class TestInitializationService extends InitializationService {
+  TestInitializationService(super.ref) {
+    state = const InitState(progress: 1.0, message: 'Hotovo!', isCompleted: true);
+  }
+
   @override
-  Future<void> logEvent(
-      {required String name,
-      Map<String, Object?>? parameters,
-      AnalyticsCallOptions? callOptions}) async {}
+  Future<void> initializeApp() async {}
+}
+
+class FakeNotificationService extends Fake implements NotificationService {
   @override
-  Future<void> logAppOpen(
-      {Map<String, Object?>? parameters,
-      AnalyticsCallOptions? callOptions}) async {}
+  Future<void> init() async {}
   @override
-  Future<void> logScreenView(
-      {String? screenClass,
-      String? screenName,
-      Map<String, Object?>? parameters,
-      AnalyticsCallOptions? callOptions}) async {}
+  Future<bool?> requestPermissions() async => true;
+  @override
+  Future<void> showNotification(
+      {required int id,
+      required String title,
+      required String body,
+      String? payload}) async {}
+  @override
+  Future<void> scheduleNotification(
+      {required int id,
+      required String title,
+      required String body,
+      required DateTime scheduledDate,
+      String? payload}) async {}
+}
+
+class FakeMonitoringService extends Fake implements MonitoringService {
+  @override
+  Stream<List<Map<String, dynamic>>> notifications() {
+    return Stream.value([]);
+  }
+  
+  @override
+  Future<void> markAsRead(String id) async {}
+  
+  @override
+  Future<void> markAllAsRead() async {}
 }
 
 void main() {
@@ -73,11 +112,24 @@ void main() {
           authRepositoryProvider
               .overrideWithValue(MockAuthRepository(const Stream.empty())),
           authStateProvider.overrideWith((ref) => const Stream.empty()),
+          onboardingProvider
+              .overrideWith((ref) => OnboardingNotifier.test(ref, seen: true)),
+          initializationServiceProvider
+              .overrideWith((ref) => TestInitializationService(ref)),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
           analyticsServiceProvider
               .overrideWithValue(AnalyticsService(mockAnalytics)),
+          notificationServiceProvider.overrideWithValue(FakeNotificationService()),
+          monitoringServiceProvider.overrideWithValue(FakeMonitoringService()),
+          expenseInsightsProvider.overrideWith((ref) => []),
+          revenueMetricsProvider.overrideWith((ref) => Future.value(RevenueMetrics(totalRevenue: 0, thisMonthRevenue: 0, lastMonthRevenue: 0, unpaidAmount: 0, overdueCount: 0, averageInvoiceValue: 0))),
+          profitMetricsProvider.overrideWith((ref) => Future.value(ProfitMetrics(profit: 0, profitMargin: 0, thisMonthProfit: 0))),
+          taxThermometerProvider.overrideWith((ref) => AsyncValue.data(TaxThermometerResult(currentTurnover: 0))),
+          taxEstimationProvider.overrideWith((ref) => AsyncValue.data(TaxEstimationModel.empty())),
+          upcomingTaxDeadlinesProvider.overrideWith((ref) => []),
         ],
       );
+      addTearDown(container.dispose);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -96,7 +148,14 @@ void main() {
       );
 
       final router = container.read(routerProvider);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 10));
       expect(router.state.uri.path, '/splash');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
 
     testWidgets('Redirects to /onboarding when not seen', (tester) async {
@@ -109,13 +168,24 @@ void main() {
           authRepositoryProvider
               .overrideWithValue(MockAuthRepository(Stream.value(null))),
           authStateProvider.overrideWith((ref) => Stream.value(null)),
-          onboardingProvider.overrideWith((ref) =>
-              OnboardingNotifier()..state = const AsyncValue.data(false)),
+            onboardingProvider
+              .overrideWith((ref) => OnboardingNotifier.test(ref, seen: false)),
+          initializationServiceProvider
+              .overrideWith((ref) => TestInitializationService(ref)),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
           analyticsServiceProvider
               .overrideWithValue(AnalyticsService(mockAnalytics)),
+          notificationServiceProvider.overrideWithValue(FakeNotificationService()),
+          monitoringServiceProvider.overrideWithValue(FakeMonitoringService()),
+          expenseInsightsProvider.overrideWith((ref) => []),
+          revenueMetricsProvider.overrideWith((ref) => Future.value(RevenueMetrics(totalRevenue: 0, thisMonthRevenue: 0, lastMonthRevenue: 0, unpaidAmount: 0, overdueCount: 0, averageInvoiceValue: 0))),
+          profitMetricsProvider.overrideWith((ref) => Future.value(ProfitMetrics(profit: 0, profitMargin: 0, thisMonthProfit: 0))),
+          taxThermometerProvider.overrideWith((ref) => AsyncValue.data(TaxThermometerResult(currentTurnover: 0))),
+          taxEstimationProvider.overrideWith((ref) => AsyncValue.data(TaxEstimationModel.empty())),
+          upcomingTaxDeadlinesProvider.overrideWith((ref) => []),
         ],
       );
+      addTearDown(container.dispose);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -133,10 +203,16 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
 
       final router = container.read(routerProvider);
       expect(router.state.uri.path, '/onboarding');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
 
     testWidgets(
@@ -151,13 +227,24 @@ void main() {
           authRepositoryProvider
               .overrideWithValue(MockAuthRepository(Stream.value(null))),
           authStateProvider.overrideWith((ref) => Stream.value(null)),
-          onboardingProvider.overrideWith((ref) =>
-              OnboardingNotifier()..state = const AsyncValue.data(true)),
+            onboardingProvider
+              .overrideWith((ref) => OnboardingNotifier.test(ref, seen: true)),
+          initializationServiceProvider
+              .overrideWith((ref) => TestInitializationService(ref)),
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
           analyticsServiceProvider
               .overrideWithValue(AnalyticsService(mockAnalytics)),
+          notificationServiceProvider.overrideWithValue(FakeNotificationService()),
+          monitoringServiceProvider.overrideWithValue(FakeMonitoringService()),
+          expenseInsightsProvider.overrideWith((ref) => []),
+          revenueMetricsProvider.overrideWith((ref) => Future.value(RevenueMetrics(totalRevenue: 0, thisMonthRevenue: 0, lastMonthRevenue: 0, unpaidAmount: 0, overdueCount: 0, averageInvoiceValue: 0))),
+          profitMetricsProvider.overrideWith((ref) => Future.value(ProfitMetrics(profit: 0, profitMargin: 0, thisMonthProfit: 0))),
+          taxThermometerProvider.overrideWith((ref) => AsyncValue.data(TaxThermometerResult(currentTurnover: 0))),
+          taxEstimationProvider.overrideWith((ref) => AsyncValue.data(TaxEstimationModel.empty())),
+          upcomingTaxDeadlinesProvider.overrideWith((ref) => []),
         ],
       );
+      addTearDown(container.dispose);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -176,12 +263,15 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
-      // Use deterministic pump to avoid infinite animation timeout on LoginScreen
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 50));
 
       final router = container.read(routerProvider);
       expect(router.state.uri.path, '/login');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
 
     testWidgets('Redirects to /dashboard when authenticated', (tester) async {
@@ -195,8 +285,10 @@ void main() {
           authRepositoryProvider
               .overrideWithValue(MockAuthRepository(Stream.value(user))),
           authStateProvider.overrideWith((ref) => Stream.value(user)),
-          onboardingProvider.overrideWith((ref) =>
-              OnboardingNotifier()..state = const AsyncValue.data(true)),
+            onboardingProvider
+              .overrideWith((ref) => OnboardingNotifier.test(ref, seen: true)),
+          initializationServiceProvider
+              .overrideWith((ref) => TestInitializationService(ref)),
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
           settingsProvider
@@ -204,8 +296,17 @@ void main() {
           firebaseAnalyticsProvider.overrideWithValue(mockAnalytics),
           analyticsServiceProvider
               .overrideWithValue(AnalyticsService(mockAnalytics)),
+          notificationServiceProvider.overrideWithValue(FakeNotificationService()),
+          monitoringServiceProvider.overrideWithValue(FakeMonitoringService()),
+          expenseInsightsProvider.overrideWith((ref) => []),
+          revenueMetricsProvider.overrideWith((ref) => Future.value(RevenueMetrics(totalRevenue: 0, thisMonthRevenue: 0, lastMonthRevenue: 0, unpaidAmount: 0, overdueCount: 0, averageInvoiceValue: 0))),
+          profitMetricsProvider.overrideWith((ref) => Future.value(ProfitMetrics(profit: 0, profitMargin: 0, thisMonthProfit: 0))),
+          taxThermometerProvider.overrideWith((ref) => AsyncValue.data(TaxThermometerResult(currentTurnover: 0))),
+          taxEstimationProvider.overrideWith((ref) => AsyncValue.data(TaxEstimationModel.empty())),
+          upcomingTaxDeadlinesProvider.overrideWith((ref) => []),
         ],
       );
+      addTearDown(container.dispose);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -224,12 +325,15 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
-      // Use deterministic pump to avoid potential animation timeouts on Dashboard
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 50));
 
       final router = container.read(routerProvider);
       expect(router.state.uri.path, '/dashboard');
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
   });
 }

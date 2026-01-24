@@ -12,6 +12,7 @@ dependencies:
 
   # Firebase
   firebase_core: ^3.10.0
+  firebase_app_check: ^0.3.0
   firebase_auth: ^5.4.0
   cloud_firestore: ^5.6.0
   firebase_storage: ^12.3.0
@@ -21,6 +22,8 @@ dependencies:
   cloud_functions: any
   firebase_ui_auth: ^1.16.1
   firebase_ui_oauth_google: ^1.4.1
+  firebase_remote_config: ^5.0.0
+  in_app_purchase: ^3.2.0
 
   # State Management
   flutter_riverpod: ^2.6.1
@@ -71,7 +74,7 @@ dependencies:
   image_picker: ^1.0.5
 
   # Speech Recognition
-  speech_to_text: ^6.6.2
+  speech_to_text: ^7.0.0
 
   # Charts
   fl_chart: ^1.1.1
@@ -94,6 +97,7 @@ dependencies:
   # Offline Storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  http: ^1.2.0
   
   # Biometrics
   local_auth: ^2.3.0
@@ -114,8 +118,8 @@ dev_dependencies:
   fake_cloud_firestore: any
   firebase_core_platform_interface: ^6.0.2
   mockito: ^5.4.4
-
   flutter_local_notifications_platform_interface: any
+  mocktail: ^1.0.0
 flutter:
   uses-material-design: true
   assets:

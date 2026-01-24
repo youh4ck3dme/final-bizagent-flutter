@@ -62,13 +62,15 @@ class VoiceCaptureService {
       },
       listenFor: timeout,
       pauseFor: const Duration(seconds: 5),
-      partialResults: true,
       localeId: language,
       onSoundLevelChange: (level) {
         // Could be used for visual feedback
       },
-      cancelOnError: false,
-      listenMode: stt.ListenMode.dictation,
+      listenOptions: stt.SpeechListenOptions(
+        partialResults: true,
+        cancelOnError: false,
+        listenMode: stt.ListenMode.dictation,
+      ),
     );
 
     // Set up timeout

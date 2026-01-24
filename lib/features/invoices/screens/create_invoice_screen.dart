@@ -5,15 +5,15 @@ import 'package:uuid/uuid.dart';
 import '../models/invoice_model.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../settings/providers/settings_provider.dart';
-import '../../auth/providers/auth_repository.dart';
-import '../services/invoice_numbering_service.dart';
-import '../data/firestore_invoice_numbering_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/utils/biz_snackbar.dart';
 import '../../../core/services/analytics_service.dart';
 import '../providers/invoices_provider.dart';
+import '../../auth/providers/auth_repository.dart';
 import '../../../core/services/icoatlas_service.dart';
+import '../../../core/models/ico_lookup_result.dart';
+import '../../limits/usage_limiter.dart';
+import '../../billing/billing_service.dart';
 
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic>? initialData;
@@ -27,6 +27,7 @@ class CreateInvoiceScreen extends ConsumerStatefulWidget {
 class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _clientNameController = TextEditingController();
+  TextEditingController? _clientNameAutocompleteController;
   final _clientAddressController = TextEditingController();
   final _clientIcoController = TextEditingController();
   final _clientDicController = TextEditingController();
@@ -51,11 +52,17 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   Map<String, String>? _previousStates;
   List<InvoiceItemModel>? _previousItems;
 
+  // ICO Lookup State
+  IcoLookupResult? _lookupResult;
+  bool _isLookingUp = false;
+
   @override
   void initState() {
     super.initState();
     _loadNextNumber();
     
+    _clientIcoController.addListener(_onIcoChanged);
+
     // Pre-fill if initial data provided (Funnel from IČO Lookup)
     if (widget.initialData != null) {
       _clientNameController.text = widget.initialData!['clientName'] ?? '';
@@ -72,31 +79,68 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   }
 
   Future<void> _loadNextNumber() async {
-    final user = ref.read(authStateProvider).value;
-    if (user == null) return;
-
     try {
       final prefs = await SharedPreferences.getInstance();
-      final firestore = FirebaseFirestore.instance;
-      final repo = FirestoreInvoiceNumberingRepository(
-        firestore: firestore,
-        prefs: prefs,
-      );
-      final numberingService = InvoiceNumberingService(repo: repo);
-      final result = await numberingService.nextNumber(uid: user.id);
+      final lastNumber = prefs.getInt('invoice_next_number') ?? 1;
+      _numberController.text = 'FA-$lastNumber';
+    } catch (e) {
+      _numberController.text = 'FA-1';
+    }
+  }
 
-      if (mounted) {
+  void _onIcoChanged() {
+    final ico = _clientIcoController.text.trim();
+    if (ico.length == 8 && (_lookupResult == null || _lookupResult!.name.isEmpty)) {
+      _triggerLookup(ico);
+    }
+  }
+
+  Future<void> _triggerLookup(String ico) async {
+    if (_isLookingUp) return;
+
+    setState(() {
+      _isLookingUp = true;
+    });
+
+    try {
+      final authUser = ref.read(authStateProvider).value;
+      IcoLookupResult? result;
+      final service = ref.read(icoAtlasServiceProvider);
+
+      if (authUser != null && !authUser.isAnonymous) {
+        final token = await ref.read(authRepositoryProvider).currentUserToken;
+        if (token != null) {
+          result = await service.secureLookup(ico, token);
+        }
+      }
+      
+      // Fallback or public lookup if not secure
+      result ??= await service.publicLookup(ico);
+
+      if (result != null && result.name.isNotEmpty) {
         setState(() {
-          _numberController.text = result.number;
+          _lookupResult = result;
+          _clientNameController.text = result?.name ?? "";
+          _clientNameAutocompleteController?.text = result?.name ?? "";
+          _clientAddressController.text = result?.fullAddress ?? "";
+          _clientDicController.text = result?.dic ?? '';
+          _clientIcDphController.text = result?.icDph ?? '';
+          _isAiOptimized = true;
+          _aiPopulatedFields.addAll(['name', 'address', 'dic', 'icDph']);
         });
       }
-    } catch (e) {
-      debugPrint('Error generating invoice number: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLookingUp = false;
+        });
+      }
     }
   }
 
   @override
   void dispose() {
+    _clientIcoController.removeListener(_onIcoChanged);
     _clientNameController.dispose();
     _clientAddressController.dispose();
     _clientIcoController.dispose();
@@ -183,6 +227,10 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     try {
       await ref.read(invoicesControllerProvider.notifier).addInvoice(invoice);
 
+      // Helper: Track usage
+      await ref.read(usageLimiterProvider).incrementInvoice();
+      ref.read(billingProvider.notifier).refreshUsage();
+
       // Track created
       ref.read(analyticsServiceProvider).logInvoiceCreated(invoice.totalAmount);
 
@@ -209,6 +257,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
 
     setState(() {
       _clientNameController.text = 'Oatmeal Digital s.r.o.';
+      _clientNameAutocompleteController?.text = _clientNameController.text;
       _clientIcoController.text = '53123456';
       _clientDicController.text = '2121234567';
       _clientAddressController.text = 'Mýtna 1, 811 07 Bratislava';
@@ -242,6 +291,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
     
     setState(() {
       _clientNameController.text = _previousStates!['name'] ?? '';
+      _clientNameAutocompleteController?.text = _clientNameController.text;
       _clientAddressController.text = _previousStates!['address'] ?? '';
       _clientIcoController.text = _previousStates!['ico'] ?? '';
       _clientDicController.text = _previousStates!['dic'] ?? '';
@@ -384,6 +434,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                       onSelected: (Map<String, dynamic> selection) {
                         setState(() {
                           _clientNameController.text = selection['name'] ?? '';
+                          _clientNameAutocompleteController?.text = _clientNameController.text;
                           _clientIcoController.text = selection['ico'] ?? selection['cin'] ?? '';
                           _clientDicController.text = selection['dic'] ?? selection['tin'] ?? '';
                           _clientAddressController.text = selection['formatted_address'] ?? selection['address'] ?? '';
@@ -392,15 +443,30 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                         });
                       },
                       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-                        if (controller.text != _clientNameController.text && _clientNameController.text.isNotEmpty && controller.text.isEmpty) {
-                          controller.text = _clientNameController.text;
+                        _clientNameAutocompleteController ??= controller;
+
+                        // Keep the Autocomplete's internal controller in sync with our source-of-truth
+                        // controller, but do it post-frame to avoid triggering Form rebuilds during build.
+                        if (controller.text != _clientNameController.text) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (!mounted) return;
+                            final c = _clientNameAutocompleteController;
+                            if (c == null) return;
+                            if (c.text == _clientNameController.text) return;
+                            final text = _clientNameController.text;
+                            c.value = c.value.copyWith(
+                              text: text,
+                              selection: TextSelection.collapsed(offset: text.length),
+                              composing: TextRange.empty,
+                            );
+                          });
                         }
-                        controller.addListener(() {
-                          _clientNameController.text = controller.text;
-                        });
                         return TextFormField(
                           controller: controller,
                           focusNode: focusNode,
+                          onChanged: (value) {
+                            _clientNameController.text = value;
+                          },
                           decoration: _aiInputDecoration('Názov firmy / Meno', 'name'),
                           validator: (v) => v!.isEmpty ? 'Povinné pole' : null,
                         );
@@ -432,6 +498,10 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                           ),
                         ],
                       ),
+                      if (_lookupResult != null || _isLookingUp) ...[
+                        const SizedBox(height: BizTheme.spacingSm),
+                        _buildRiskBadge(),
+                      ],
                       const SizedBox(height: BizTheme.spacingMd),
                       TextFormField(
                         controller: _clientIcDphController,
@@ -599,6 +669,114 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildRiskBadge() {
+    if (_isLookingUp) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 8.0),
+        child: Row(
+          children: [
+            SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2)),
+            SizedBox(width: 8),
+            Text('Overujem firmu...', style: TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
+      );
+    }
+
+    if (_lookupResult == null) return const SizedBox.shrink();
+
+    final theme = Theme.of(context);
+    final risk = _lookupResult!.riskLevel?.toUpperCase() ?? 'LOW';
+    final color = switch (risk) {
+      'HIGH' => BizTheme.nationalRed,
+      'MEDIUM' => Colors.orange,
+      'LOW' => Colors.green,
+      _ => Colors.blue,
+    };
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        // AI Verdict Section (High value)
+        if (_lookupResult!.headline != null) ...[
+          Container(
+            padding: const EdgeInsets.all(BizTheme.spacingMd),
+            decoration: BoxDecoration(
+              color: BizTheme.slovakBlue.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+              border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.auto_awesome, color: BizTheme.slovakBlue, size: 14),
+                    const SizedBox(width: 6),
+                    Text(
+                      'AI VERDIKT',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: BizTheme.slovakBlue,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _lookupResult!.headline!,
+                  style: theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                if (_lookupResult!.explanation != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: Text(
+                      _lookupResult!.explanation!,
+                      style: theme.textTheme.bodySmall?.copyWith(fontSize: 11, height: 1.3),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        // Risk Status Badge
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: color.withValues(alpha: 0.2)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                risk == 'HIGH' ? Icons.warning_amber_rounded : (risk == 'MEDIUM' ? Icons.info_outline : Icons.check_circle_outline),
+                size: 12,
+                color: color,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'RIZIKO: $risk',
+                style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+              ),
+              if (_lookupResult!.confidence != null) ...[
+                const SizedBox(width: 4),
+                Text(
+                  '(${( _lookupResult!.confidence! * 100).toInt()}%)',
+                  style: TextStyle(color: color.withValues(alpha: 0.7), fontSize: 9),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 

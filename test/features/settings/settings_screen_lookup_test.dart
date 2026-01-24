@@ -1,4 +1,4 @@
-import 'package:bizagent/core/models/company_info.dart';
+import 'package:bizagent/core/models/ico_lookup_result.dart';
 import 'package:bizagent/core/providers/theme_provider.dart';
 import 'package:bizagent/core/services/company_lookup_service.dart';
 import 'package:bizagent/core/services/icoatlas_service.dart';
@@ -22,25 +22,28 @@ class FakeFirebaseFirestore extends Fake implements FirebaseFirestore {}
 
 class FakeIcoAtlasService extends Fake implements IcoAtlasService {
   @override
-  Future<CompanyInfo?> lookupCompany(String ico) async => null;
+  Future<IcoLookupResult?> publicLookup(String ico) async => null;
 }
 
 // Fake service to avoid real API calls
-class FakeCompanyLookupService extends CompanyLookupService {
-  FakeCompanyLookupService() : super(FakeIcoAtlasService(), FakeFirebaseFunctions());
-
+class FakeCompanyLookupService implements CompanyLookupService {
   @override
-  Future<CompanyInfo?> lookup(String ico) async {
+  Future<IcoLookupResult> lookupByIco(String ico) async {
     if (ico == '36396567') {
-      return const CompanyInfo(
-        name: 'Google Slovakia, s. r. o.',
+      return IcoLookupResult(
         ico: '36396567',
+        icoNorm: '36396567',
+        name: 'Google Slovakia, s. r. o.',
+        status: 'Active',
+        city: 'Bratislava',
+        street: 'Karadžičova 8/A',
+        postalCode: '821 08',
         dic: '2020102636',
         icDph: 'SK2020102636',
-        address: 'Karadžičova 8/A, Bratislava 821 08',
+        cachedAt: DateTime.now(),
       );
     }
-    return null;
+    throw Exception('Not found');
   }
 }
 
@@ -105,7 +108,7 @@ void main() {
         findsOneWidget);
     expect(
         find.widgetWithText(
-            TextFormField, 'Karadžičova 8/A, Bratislava 821 08'),
+            TextFormField, 'Karadžičova 8/A, 821 08 Bratislava'),
         findsOneWidget);
     expect(find.widgetWithText(TextFormField, '2020102636'),
         findsOneWidget); // DIČ

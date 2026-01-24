@@ -27,7 +27,7 @@ void main() {
 
       // Checking high contrast variants
       expect(scheme.brightness, Brightness.dark);
-      expect(scheme.primary.value, isNot(0xFF0B4EA2), reason: 'Dark primary should be lighter than slovak blue');
+      expect(scheme.primary.toARGB32(), isNot(0xFF0B4EA2), reason: 'Dark primary should be lighter than slovak blue');
       expect(scheme.surface, const Color(0xFF121212));
     });
 

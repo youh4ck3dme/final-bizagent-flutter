@@ -6,6 +6,9 @@ class UserModel {
   final bool isSuperAdmin;
   final bool isAnonymous;
 
+  /// Compatibility alias (some parts of the app expect `.uid`)
+  String get uid => id;
+
   const UserModel({
     required this.id,
     required this.email,
@@ -17,12 +20,12 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] ?? '',
-      email: map['email'] ?? '',
-      displayName: map['displayName'],
-      photoUrl: map['photoUrl'],
-      isSuperAdmin: map['isSuperAdmin'] ?? false,
-      isAnonymous: map['isAnonymous'] ?? false,
+      id: (map['id'] ?? '') as String,
+      email: (map['email'] ?? '') as String,
+      displayName: map['displayName'] as String?,
+      photoUrl: map['photoUrl'] as String?,
+      isSuperAdmin: (map['isSuperAdmin'] ?? false) as bool,
+      isAnonymous: (map['isAnonymous'] ?? false) as bool,
     );
   }
 
@@ -37,3 +40,4 @@ class UserModel {
     };
   }
 }
+

@@ -8,13 +8,12 @@ import 'package:flutter/foundation.dart';
 
 class GeminiService {
   final String _apiKey;
-  late final GenerativeModel _model;
 
   // Multi-model strategy with automatic fallback
   static const List<String> _modelPriority = [
-    'gemini-2.0-flash-exp', // Latest experimental - best performance
-    'gemini-1.5-pro',       // Latest stable - great quality
-    'gemini-pro',           // Fallback - reliable baseline
+    'gemini-2.0-flash-exp', // Primary - high performance
+    'gemini-1.5-flash',     // Fallback - cost effective & fast
+    'gemini-1.5-pro',       // Fallback - high quality precision
   ];
 
   static String modelName = _modelPriority[0]; // Start with best model
@@ -23,12 +22,7 @@ class GeminiService {
   static final LinkedHashMap<String, String> _cache = LinkedHashMap<String, String>();
   static const int _maxCacheSize = 100;
 
-  GeminiService({required String apiKey}) : _apiKey = apiKey {
-    _model = GenerativeModel(
-      model: modelName,
-      apiKey: _apiKey,
-    );
-  }
+  GeminiService({required String apiKey}) : _apiKey = apiKey;
 
   Future<String> generateContent(String prompt) async {
     final startTime = DateTime.now();
@@ -61,8 +55,11 @@ class GeminiService {
       return 'Chyba: Gemini API kľúč nie je platný. Prosím, pridajte platný kľúč cez --dart-define=GEMINI_API_KEY=vaš_kľúč.';
     }
 
+    final preferredModel = _selectOptimalModel(prompt);
+    final modelsToTry = <String>{preferredModel, ..._modelPriority}.toList();
+
     // Try models in priority order with automatic fallback
-    for (final model in _modelPriority) {
+    for (final model in modelsToTry) {
       try {
         debugPrint('Gemini API attempting with model: $model, key length: ${_apiKey.length}');
         final tempModel = GenerativeModel(model: model, apiKey: _apiKey);
@@ -129,7 +126,7 @@ class GeminiService {
     );
 
     // All models failed
-    return 'AI Chyba: Všetky modely sú nedostupné. Skúste to neskôr.';
+    return 'AI Offline: Nepodarilo sa pripojiť k žiadnemu AI modelu. Skontrolujte pripojenie alebo skúste neskôr.';
   }
 
   String _generateCacheKey(String prompt) {
@@ -181,7 +178,7 @@ ${history.map((msg) => '${msg['role'] == 'user' ? 'Užívateľ' : 'AI'}: ${msg['
 
 ''';
 
-    final fullPrompt = contextPrompt + 'Aktuálna otázka: ' + userMessage;
+    final fullPrompt = '${contextPrompt}Aktuálna otázka: $userMessage';
 
     final response = await generateContent(fullPrompt);
 
@@ -404,22 +401,6 @@ VRÁŤ ODPOVEĎ V SLOVENČINE ako číslovaný zoznam bez ďalších komentárov
         data.entries.map((e) => '${e.key}: ${e.value}').join(', ')
     ).join('\n');
 
-    final prompt = '''
-Analyzuj nasledujúce obchodné údaje a poskytni insights v JSON formáte:
-
-ÚDAJE:
-$dataSummary
-
-POSKYŤ ANALÝZU V TOMTO JSON FORMÁTE:
-{
-  "trends": ["trend1", "trend2", "trend3"],
-  "recommendations": ["rec1", "rec2", "rec3"],
-  "risks": ["risk1", "risk2"],
-  "opportunities": ["opp1", "opp2", "opp3"],
-  "confidence": 0.85
-}
-''';
-
     final response = await analyzeJson(dataSummary, '''
 {
   "trends": ["string"],
@@ -490,21 +471,6 @@ POSKYŤ ANALÝZU V TOMTO FORMÁTE:
   Future<Map<String, dynamic>> lookupCompanyByICO(String ico) async {
     // In production, integrate with Slovak Business Registry API
     // For now, simulate ICO validation and lookup
-    final prompt = '''
-Over a poskytni informácie o spoločnosti s IČO: $ico
-
-POSKYŤ ODPOVEĎ V JSON FORMÁTE:
-{
-  "valid": true/false,
-  "companyName": "názov spoločnosti",
-  "address": "adresa",
-  "legalForm": "právna forma",
-  "vatPayer": true/false,
-  "registrationDate": "dátum registrácie",
-  "status": "aktívna/neaktívna"
-}
-''';
-
     final response = await analyzeJson(ico, '''
 {
   "valid": "boolean",
@@ -534,22 +500,6 @@ POSKYŤ ODPOVEĎ V JSON FORMÁTE:
 
   // Bank Transaction Analysis & Categorization
   Future<Map<String, dynamic>> analyzeBankTransaction(String transactionText) async {
-    final prompt = '''
-Analyzuj nasledujúci bankový prevod a kategorizuj ho:
-
-PREVOD: "$transactionText"
-
-POSKYŤ ANALÝZU V JSON:
-{
-  "category": "kategória výdavku",
-  "subcategory": "podkategória",
-  "vendor": "názov dodávateľa",
-  "confidence": 0.0-1.0,
-  "taxDeductible": true/false,
-  "suggestions": ["návrhy na optimalizáciu"]
-}
-''';
-
     final response = await analyzeJson(transactionText, '''
 {
   "category": "string",
@@ -581,23 +531,6 @@ POSKYŤ ANALÝZU V JSON:
         'Mesiac: ${data['month']}, Príjmy: ${data['income']}€, Výdavky: ${data['expenses']}€, Cashflow: ${data['cashflow']}€'
     ).join('\n');
 
-    final prompt = '''
-Na základe historických údajov predikuj cash flow na nasledujúce 3 mesiace:
-
-HISTORICKÉ DÁTA:
-$dataSummary
-
-POSKYŤ PREDIČNÚ ANALÝZU V JSON:
-{
-  "nextMonthPrediction": {"income": 0, "expenses": 0, "cashflow": 0, "confidence": 0.0},
-  "month2Prediction": {"income": 0, "expenses": 0, "cashflow": 0, "confidence": 0.0},
-  "month3Prediction": {"income": 0, "expenses": 0, "cashflow": 0, "confidence": 0.0},
-  "trends": ["identifikované trendy"],
-  "recommendations": ["odporúčania na zlepšenie cash flow"],
-  "risks": ["potenciálne riziká"]
-}
-''';
-
     final response = await analyzeJson(dataSummary, '''
 {
   "nextMonthPrediction": {"income": "number", "expenses": "number", "cashflow": "number", "confidence": "number"},
@@ -624,28 +557,6 @@ POSKYŤ PREDIČNÚ ANALÝZU V JSON:
   // Automated Invoice Generation Assistant
   Future<Map<String, dynamic>> generateInvoiceDraft(Map<String, dynamic> invoiceData) async {
     final dataText = invoiceData.entries.map((e) => '${e.key}: ${e.value}').join(', ');
-
-    final prompt = '''
-Vytvor návrh faktúry na základe nasledujúcich údajov:
-
-ÚDAJE: $dataText
-
-POSKYŤ ŠTRUKTÚROVANÝ NÁVRH FAKTÚRY V JSON:
-{
-  "invoiceNumber": "FA-2025001",
-  "clientName": "názov klienta",
-  "clientICO": "IČO klienta",
-  "items": [
-    {"description": "popis položky", "quantity": 1, "price": 0, "vatRate": 20}
-  ],
-  "totalWithoutVAT": 0,
-  "totalVAT": 0,
-  "totalWithVAT": 0,
-  "dueDate": "YYYY-MM-DD",
-  "paymentTerms": "text platobných podmienok",
-  "validationErrors": ["prípadné chyby alebo upozornenia"]
-}
-''';
 
     final response = await analyzeJson(dataText, '''
 {
@@ -680,22 +591,6 @@ POSKYŤ ŠTRUKTÚROVANÝ NÁVRH FAKTÚRY V JSON:
   Future<Map<String, dynamic>> checkBusinessCompliance(String businessType, List<String> activities) async {
     final activitiesText = activities.join(', ');
 
-    final prompt = '''
-Over súlad podnikania typu "$businessType" s aktivitami: $activitiesText
-
-Skontroluj voči slovenskej legislatíve a poskytni analýzu súladu.
-
-POSKYŤ ANALÝZU V JSON:
-{
-  "compliant": true/false,
-  "requiredLicenses": ["potrebné licencie"],
-  "regulatoryRequirements": ["regulačné požiadavky"],
-  "risks": ["potenciálne riziká"],
-  "recommendations": ["odporúčania pre súlad"],
-  "nextSteps": ["ďalšie kroky"]
-}
-''';
-
     final response = await analyzeJson('$businessType: $activitiesText', '''
 {
   "compliant": "boolean",
@@ -726,8 +621,11 @@ POSKYŤ ANALÝZU V JSON:
       return;
     }
 
+    final preferredModel = _selectOptimalModel(prompt);
+    final modelsToTry = <String>{preferredModel, ..._modelPriority}.toList();
+
     // Try models in priority order with automatic fallback
-    for (final model in _modelPriority) {
+    for (final model in modelsToTry) {
       try {
         debugPrint('Gemini API streaming with model: $model');
         final tempModel = GenerativeModel(model: model, apiKey: _apiKey);
@@ -776,12 +674,12 @@ POSKYŤ ANALÝZU V JSON:
 
   Future<String> analyzeJson(String context, String schema) async {
     final prompt = '''
-      Si expert na slovenské účtovníctvo a biznis asistenciu.
-      Spracuj nasledujúci kontext a vráť výsledok ako PURE JSON (bez markdown blokov) podľa schémy: $schema
+Si expert na slovenské účtovníctvo a biznis asistenciu.
+Spracuj nasledujúci kontext a vráť výsledok ako PURE JSON (bez markdown blokov) podľa schémy: $schema
 
-      KONTEXT:
-      $context
-    ''';
+KONTEXT:
+$context
+''';
 
     return generateContent(prompt);
   }

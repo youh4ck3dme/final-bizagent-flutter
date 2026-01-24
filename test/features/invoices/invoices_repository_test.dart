@@ -147,6 +147,8 @@ void main() {
         repository.watchInvoices(userId),
         emitsInOrder([
           isEmpty,
+          // FakeFirestore may emit an initial empty snapshot more than once.
+          isEmpty,
           isA<List<InvoiceModel>>().having((l) => l.length, 'length', 1),
         ]),
       );

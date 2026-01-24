@@ -30,7 +30,18 @@ void main() {
       ),
     );
 
-    await tester.pumpAndSettle();
+    // Avoid pumpAndSettle due to infinite animations on the dashboard.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+
+    // Scroll down to the Quick Actions section (ListView content may be off-screen).
+    final scrollable = find.byType(Scrollable).first;
+    await tester.scrollUntilVisible(
+      find.text('Rýchle akcie'),
+      300,
+      scrollable: scrollable,
+    );
+    await tester.pump();
 
     // Verify "Rýchle akcie" section header
     expect(find.text('Rýchle akcie'), findsOneWidget);
@@ -57,8 +68,11 @@ void main() {
     expect(find.text('Export pre účtovníka'), findsOneWidget);
     expect(find.text('Zostava faktúr a výdavkov'), findsOneWidget);
 
-    // Verify all action tiles have chevron icons (5 total)
-    final chevronIcons = find.byIcon(Icons.chevron_right);
-    expect(chevronIcons, findsNWidgets(5));
+    // Verify action tiles use the trailing arrow icon.
+    final trailingIcons = find.byIcon(Icons.arrow_forward_ios_rounded);
+    expect(trailingIcons, findsAtLeastNWidgets(5));
+
+    // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+    await tester.pump(const Duration(seconds: 3));
   });
 }

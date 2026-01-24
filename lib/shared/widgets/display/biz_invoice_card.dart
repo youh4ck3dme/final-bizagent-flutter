@@ -4,6 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/ui/biz_theme.dart';
 
 class BizInvoiceCard extends StatelessWidget {
+  static const Key amountTextKey = Key('biz_invoice_card_amount_text');
+  static const Key dateTextKey = Key('biz_invoice_card_date_text');
+
   final String title;
   final String subtitle;
   final double amount;
@@ -111,6 +114,7 @@ class BizInvoiceCard extends StatelessWidget {
                   children: [
                     Text(
                       currency.format(amount),
+                      key: amountTextKey,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : BizTheme.slovakBlue,
@@ -119,6 +123,7 @@ class BizInvoiceCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       DateFormat('dd.MM.yyyy').format(date),
+                      key: dateTextKey,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w500,

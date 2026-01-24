@@ -10,6 +10,8 @@ import '../models/invoice_model.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/services/tutorial_service.dart';
+import '../../billing/subscription_guard.dart';
+import '../../billing/paywall_screen.dart';
 
 class InvoicesScreen extends ConsumerStatefulWidget {
   const InvoicesScreen({super.key});
@@ -119,7 +121,16 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
               key: _fabKey,
               backgroundColor: BizTheme.nationalRed,
               foregroundColor: Colors.white,
-              onPressed: () => context.push('/create-invoice'),
+              onPressed: () {
+                final guard = ref.read(subscriptionGuardProvider);
+                if (guard.canAccess(BizFeature.createInvoice)) {
+                  context.push('/create-invoice');
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PaywallScreen()),
+                  );
+                }
+              },
               child: const Icon(Icons.add),
             ),
       body: RefreshIndicator(

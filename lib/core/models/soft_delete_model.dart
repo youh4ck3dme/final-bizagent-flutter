@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Base model for soft-deletable items following Google/Firebase data retention policies
 abstract class SoftDeleteModel {

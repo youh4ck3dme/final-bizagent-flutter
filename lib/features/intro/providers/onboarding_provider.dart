@@ -12,6 +12,9 @@ class OnboardingNotifier extends StateNotifier<AsyncValue<bool>> {
     _loadStatus();
   }
 
+  OnboardingNotifier.test(this.ref, {required bool seen})
+      : super(AsyncValue.data(seen));
+
   final Ref ref;
   static const _key = 'seen_onboarding';
 

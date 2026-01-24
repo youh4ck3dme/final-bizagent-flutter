@@ -6,7 +6,6 @@ import '../../expenses/providers/expenses_provider.dart';
 import '../../expenses/models/expense_category.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../../auth/providers/auth_repository.dart';
-import '../models/biz_bot_conversation_model.dart';
 import 'package:intl/intl.dart';
 
 class BizBotService {
@@ -107,17 +106,6 @@ ${monthExpenses.take(5).map((e) => "- ${e.vendorName}: ${currency.format(e.amoun
   Future<void> softDeleteConversation({String? reason}) async {
     final userId = _ref.read(authStateProvider).valueOrNull?.id;
     if (userId == null) return;
-
-    // Create a conversation model for the current BizBot conversation
-    final conversation = BizBotConversationModel(
-      id: _conversationId,
-      userId: userId,
-      createdAt: DateTime.now(), // This should be tracked properly in production
-      title: 'BizBot Konverzácia',
-      messages: [], // In production, load from memory/storage
-      lastActivity: DateTime.now(),
-      messageCount: 0, // Track this properly
-    );
 
     // Move to soft delete collection
     await _ref.read(softDeleteServiceProvider).softDeleteItem(

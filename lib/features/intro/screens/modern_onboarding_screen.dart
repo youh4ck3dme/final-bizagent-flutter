@@ -22,7 +22,17 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
   final List<ModernOnboardingStep> _steps = [
     ModernOnboardingStep(
       title: 'Vitajte v BizAgent',
-      subtitle: 'Vytvorte faktúru za sekundy s AI pomocou',
+      subtitle: 'AI Business Asistent pre SZČO a malé firmy',
+      type: OnboardingStepType.welcome,
+    ),
+    ModernOnboardingStep(
+      title: 'Vytvorte faktúru za sekundy',
+      subtitle: 'AI vám pomôže s profesionálnymi faktúrami',
+      type: OnboardingStepType.welcome,
+    ),
+    ModernOnboardingStep(
+      title: 'Sledujte výdavky inteligentne',
+      subtitle: 'AI analýza a automatické rozpočty',
       type: OnboardingStepType.welcome,
     ),
     ModernOnboardingStep(
@@ -250,7 +260,9 @@ class _OnboardingPage extends ConsumerWidget {
   Widget _buildStepContent(WidgetRef ref) {
     switch (step.type) {
       case OnboardingStepType.welcome:
-        return _WelcomeContent();
+        return step.image != null ? _ImageContent(imagePath: step.image!) : _WelcomeContent();
+      case OnboardingStepType.features:
+        return step.image != null ? _ImageContent(imagePath: step.image!) : _WelcomeContent();
       case OnboardingStepType.businessType:
         return _BusinessTypeSelector(
           selectedType: selectedBusinessType,
@@ -280,7 +292,7 @@ class _WelcomeContent extends StatelessWidget {
             color: BizTheme.slovakBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(100),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.auto_awesome,
             size: 80,
             color: BizTheme.slovakBlue,
@@ -297,6 +309,23 @@ class _WelcomeContent extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ],
+    );
+  }
+}
+
+class _ImageContent extends StatelessWidget {
+  const _ImageContent({required this.imagePath});
+
+  final String imagePath;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 300, maxHeight: 300),
+      child: Image.asset(
+        imagePath,
+        fit: BoxFit.contain,
+      ),
     );
   }
 }
@@ -398,7 +427,7 @@ class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
                   ),
                 ),
                 if (isSelected)
-                  Icon(
+                  const Icon(
                     Icons.check_circle,
                     color: BizTheme.slovakBlue,
                     size: 24,
@@ -460,7 +489,7 @@ class _LoadingDemo extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             width: 60,
             height: 60,
             child: CircularProgressIndicator(
@@ -507,7 +536,7 @@ class _ErrorDemo extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 48,
             color: Colors.orange,
@@ -582,7 +611,7 @@ class _InvoiceDemo extends StatelessWidget {
                   color: BizTheme.slovakBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(
+                child: const Text(
                   'Návrh',
                   style: TextStyle(
                     fontSize: 12,
@@ -656,14 +685,14 @@ class _InvoiceDemo extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Row(
+          const Row(
             children: [
               Icon(
                 Icons.auto_awesome,
                 size: 16,
                 color: BizTheme.slovakBlue,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Vygenerované AI pre váš typ podnikania',
                 style: TextStyle(
@@ -698,60 +727,65 @@ class _FinishContent extends StatelessWidget {
       {'icon': Icons.show_chart, 'text': 'Real-time prehľady'},
     ];
 
-    return Column(
-      children: [
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(60),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: BizTheme.slovakBlue.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(60),
+            ),
+            child: const Icon(
+              Icons.check_circle,
+              size: 60,
+              color: BizTheme.slovakBlue,
+            ),
           ),
-          child: Icon(
-            Icons.check_circle,
-            size: 60,
-            color: BizTheme.slovakBlue,
+          const SizedBox(height: 32),
+          Text(
+            'Čo ešte môžete robiť s BizAgent?',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[700],
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        const SizedBox(height: 32),
-        Text(
-          'Čo ešte môžete robiť s BizAgent?',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[700],
-            height: 1.5,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 32),
-        ...features.map((feature) => Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+          const SizedBox(height: 32),
+          ...features.map((feature) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: BizTheme.slovakBlue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    feature['icon'] as IconData,
+                    color: BizTheme.slovakBlue,
+                    size: 20,
+                  ),
                 ),
-                child: Icon(
-                  feature['icon'] as IconData,
-                  color: BizTheme.slovakBlue,
-                  size: 20,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    feature['text'] as String,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                feature['text'] as String,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        )),
-      ],
+              ],
+            ),
+          )),
+        ],
+      ),
     );
   }
 }
@@ -785,6 +819,7 @@ class _ProgressDot extends StatelessWidget {
 
 enum OnboardingStepType {
   welcome,
+  features,
   businessType,
   demo,
   finish,
@@ -793,11 +828,13 @@ enum OnboardingStepType {
 class ModernOnboardingStep {
   final String title;
   final String subtitle;
+  final String? image;
   final OnboardingStepType type;
 
   ModernOnboardingStep({
     required this.title,
     required this.subtitle,
+    this.image,
     required this.type,
   });
 }

@@ -24,6 +24,8 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
+      case TargetPlatform.macOS:
+        return ios;
       default:
         throw UnsupportedError(
           'Platform ${defaultTargetPlatform} is not supported.',
@@ -40,8 +42,8 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAiaG9ycdPjAfIivv-zGfCsGH8NAdaY9Xw',
-    appId: '1:542280140779:ios:5f400713be240f95373bae',
+    apiKey: 'AIzaSyCa8SnnqrxMkJPpKNcZ04v7hKBs-mLN3wM',
+    appId: '1:542280140779:ios:5536609225fab278373bae',
     messagingSenderId: '542280140779',
     projectId: 'bizagent-live-2026',
     storageBucket: 'bizagent-live-2026.firebasestorage.app',

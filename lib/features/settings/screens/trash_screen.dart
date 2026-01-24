@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import '../../../core/services/soft_delete_service.dart';
 import '../../auth/providers/auth_repository.dart';
 import '../../../shared/utils/biz_snackbar.dart';
-import '../../../shared/widgets/biz_widgets.dart';
 
 class TrashScreen extends ConsumerStatefulWidget {
   const TrashScreen({super.key});
@@ -57,9 +56,11 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
 
     try {
       await ref.read(softDeleteServiceProvider).restoreItem(collection, userId, itemId);
+      if (!mounted) return;
       BizSnackbar.showSuccess(context, 'Položka bola obnovená');
       _loadTrashItems(); // Refresh list
     } catch (e) {
+      if (!mounted) return;
       BizSnackbar.showError(context, 'Chyba pri obnovovaní: $e');
     }
   }
@@ -92,9 +93,11 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
 
     try {
       await ref.read(softDeleteServiceProvider).permanentDeleteItem(collection, userId, itemId);
+      if (!mounted) return;
       BizSnackbar.showSuccess(context, 'Položka bola natrvalo vymazaná');
       _loadTrashItems(); // Refresh list
     } catch (e) {
+      if (!mounted) return;
       BizSnackbar.showError(context, 'Chyba pri mazaní: $e');
     }
   }
@@ -138,9 +141,11 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
         await ref.read(softDeleteServiceProvider).emptyTrash(collection, userId);
       }
 
+      if (!mounted) return;
       BizSnackbar.showSuccess(context, 'Kôš bol vyprázdnený');
       _loadTrashItems();
     } catch (e) {
+      if (!mounted) return;
       BizSnackbar.showError(context, 'Chyba pri vyprázdňovaní koša: $e');
       setState(() => _isLoading = false);
     }
@@ -199,7 +204,7 @@ class _TrashScreenState extends ConsumerState<TrashScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kôš (${totalItems})'),
+        title: Text('Kôš ($totalItems)'),
         actions: [
           if (totalItems > 0)
             IconButton(

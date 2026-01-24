@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,8 +12,10 @@ import 'package:bizagent/features/settings/providers/settings_provider.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
 import 'package:bizagent/core/services/analytics_service.dart';
 import 'package:bizagent/core/router/app_router.dart';
+import 'package:bizagent/core/services/initialization_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:bizagent/features/notifications/services/notification_service.dart';
+import 'package:bizagent/features/tools/services/monitoring_service.dart';
 import 'dart:async';
 
 class MockAuthRepository implements AuthRepository {
@@ -82,9 +85,42 @@ class FakeNotificationService extends Fake implements NotificationService {
       String? payload}) async {}
 }
 
+class FakeMonitoringService extends Fake implements MonitoringService {
+  @override
+  Stream<List<Map<String, dynamic>>> notifications() {
+    return Stream.value([]);
+  }
+  
+  @override
+  Future<void> markAsRead(String id) async {}
+  
+  @override
+  Future<void> markAllAsRead() async {}
+}
+
+class TestInitializationService extends InitializationService {
+  TestInitializationService(super.ref) {
+    state = const InitState(progress: 1.0, message: 'Hotovo!', isCompleted: true);
+  }
+
+  @override
+  Future<void> initializeApp() async {}
+}
+
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
-    SharedPreferences.setMockInitialValues({'seen_onboarding': true});
+    tester.view.physicalSize = const Size(1200, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    SharedPreferences.setMockInitialValues({
+      'seen_onboarding': true,
+      // Prevent TutorialService from showing an overlay during tests.
+      'hasSeenTutorial_123': true,
+    });
     final mockAuth = MockAuthRepository();
     final mockAnalytics = MockFirebaseAnalytics();
     final fakeNotifications = FakeNotificationService();
@@ -95,7 +131,10 @@ void main() {
         overrides: [
           authRepositoryProvider.overrideWithValue(mockAuth),
           authStateProvider.overrideWith((ref) => mockAuth.authStateChanges),
-          onboardingProvider.overrideWith((ref) => OnboardingNotifier()),
+            onboardingProvider
+              .overrideWith((ref) => OnboardingNotifier.test(ref, seen: true)),
+          initializationServiceProvider
+              .overrideWith((ref) => TestInitializationService(ref)),
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
           settingsProvider
@@ -104,6 +143,7 @@ void main() {
           analyticsServiceProvider
               .overrideWithValue(AnalyticsService(mockAnalytics)),
           notificationServiceProvider.overrideWithValue(fakeNotifications),
+          monitoringServiceProvider.overrideWithValue(FakeMonitoringService()),
         ],
         child: const BizAgentApp(),
       ),
@@ -116,7 +156,7 @@ void main() {
     // Dashboard has shimmer animation which is infinite, use pump(Duration)
     await tester.pump(const Duration(seconds: 2));
 
-    // Verify that Dashboard is shown.
-    expect(find.text('Dashboard'), findsWidgets);
+    // Verify that the dashboard app bar is shown (stable signal).
+    expect(find.byIcon(Icons.logout), findsOneWidget);
   });
 }

@@ -569,6 +569,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.10+16"
+  firebase_app_check:
+    dependency: "direct main"
+    description:
+      name: firebase_app_check
+      sha256: c4124632094a4062d7a1ff0a9f9c657ff54bece5d8393af4626cb191351a2aac
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2+10"
+  firebase_app_check_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_app_check_platform_interface
+      sha256: "4ca80bcc6c5c55289514d85e7c8ba8bc354342d23ab807b01c3f82e2fc7158e4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1+10"
+  firebase_app_check_web:
+    dependency: transitive
+    description:
+      name: firebase_app_check_web
+      sha256: b3150a78fe18c27525af05b149724ee33bd8592a5959e484fdfa5c98e25edb5f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0+14"
   firebase_auth:
     dependency: "direct main"
     description:
@@ -673,6 +697,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.7+16"
+  firebase_remote_config:
+    dependency: "direct main"
+    description:
+      name: firebase_remote_config
+      sha256: e1635b1e8713f4a823920ec3a56a14034b90ce455d47746ab0da994857f370cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.0"
+  firebase_remote_config_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_remote_config_platform_interface
+      sha256: ce836c5c62056edbe23ef501e6876691ee32476afd12fe95b76e57bba9d25485
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
+  firebase_remote_config_web:
+    dependency: transitive
+    description:
+      name: firebase_remote_config_web
+      sha256: "9dbd75024bfcd47c05046c95f9cf648a8fc862b096bcf8ea1e4b855d50ea19ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.9"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -1014,7 +1062,7 @@ packages:
     source: hosted
     version: "0.20.5"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "87721a4a50b19c7f1d49001e51409bddc46303966ce89a65af4f4e6004896412"
@@ -1109,6 +1157,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
+  in_app_purchase:
+    dependency: "direct main"
+    description:
+      name: in_app_purchase
+      sha256: "5cddd7f463f3bddb1d37a72b95066e840d5822d66291331d7f8f05ce32c24b6c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.3"
+  in_app_purchase_android:
+    dependency: transitive
+    description:
+      name: in_app_purchase_android
+      sha256: abb254ae159a5a9d4f867795ecb076864faeba59ce015ab81d4cca380f23df45
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+8"
+  in_app_purchase_platform_interface:
+    dependency: transitive
+    description:
+      name: in_app_purchase_platform_interface
+      sha256: "1d353d38251da5b9fea6635c0ebfc6bb17a2d28d0e86ea5e083bf64244f1fb4c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
+  in_app_purchase_storekit:
+    dependency: transitive
+    description:
+      name: in_app_purchase_storekit
+      sha256: f7cbbd7fb47ab5a4fb736fc3f20ae81a4f6def0af9297b3c525ca727761e2589
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.7"
   in_app_review:
     dependency: "direct main"
     description:
@@ -1309,6 +1389,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.6"
+  mocktail:
+    dependency: "direct dev"
+    description:
+      name: mocktail
+      sha256: "890df3f9688106f25755f26b1c60589a92b3ab91a22b8b224947ad041bf172d8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   more:
     dependency: transitive
     description:
@@ -1766,18 +1854,10 @@ packages:
     dependency: "direct main"
     description:
       name: speech_to_text
-      sha256: "97425fd8cc60424061a0584b6c418c0eedab5201cc5e96ef15a946d7fab7b9b7"
+      sha256: c07557664974afa061f221d0d4186935bea4220728ea9446702825e8b988db04
       url: "https://pub.dev"
     source: hosted
-    version: "6.6.2"
-  speech_to_text_macos:
-    dependency: transitive
-    description:
-      name: speech_to_text_macos
-      sha256: e685750f7542fcaa087a5396ee471e727ec648bf681f4da83c84d086322173f6
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
+    version: "7.3.0"
   speech_to_text_platform_interface:
     dependency: transitive
     description:
@@ -1786,6 +1866,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  speech_to_text_windows:
+    dependency: transitive
+    description:
+      name: speech_to_text_windows
+      sha256: "2c9846d18253c7bbe059a276297ef9f27e8a2745dead32192525beb208195072"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+beta.8"
   stack_trace:
     dependency: transitive
     description:

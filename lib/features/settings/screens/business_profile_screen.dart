@@ -7,6 +7,7 @@ import '../../../core/ui/biz_theme.dart';
 import '../../../shared/utils/biz_snackbar.dart';
 import '../../../core/services/company_lookup_service.dart';
 import '../../../core/services/icoatlas_service.dart';
+import '../../../shared/widgets/watched_company_button.dart';
 
 class BusinessProfileScreen extends ConsumerStatefulWidget {
   const BusinessProfileScreen({super.key});
@@ -64,20 +65,17 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     setState(() => _isLookingUp = true);
     try {
       final service = ref.read(companyLookupServiceProvider);
-      final company = await service.lookup(ico);
+      final company = await service.lookupByIco(ico);
 
       if (mounted) {
-        if (company != null) {
-          setState(() {
-            _nameController.text = company.name;
-            _addressController.text = company.address;
-            if (company.dic != null) _dicController.text = company.dic!;
-            if (company.icDph != null) _icDphController.text = company.icDph!;
-          });
-          BizSnackbar.showSuccess(context, 'Údaje firmy boli aktualizované');
-        } else {
-          BizSnackbar.showError(context, 'Firmu s týmto IČO sme nenašli.');
-        }
+        // Result is never null or throws exception
+        setState(() {
+          _nameController.text = company.name;
+          _addressController.text = company.fullAddress;
+          if (company.dic != null) _dicController.text = company.dic!;
+          if (company.icDph != null) _icDphController.text = company.icDph!;
+        });
+        BizSnackbar.showSuccess(context, 'Údaje firmy boli aktualizované');
       }
     } catch (e) {
       if (mounted) {
@@ -120,6 +118,13 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
       appBar: AppBar(
         title: const Text('Profil firmy'),
         actions: [
+          if (settings.companyIco.isNotEmpty)
+            WatchedCompanyButton(
+              icoNorm: settings.companyIco.replaceAll(RegExp(r'\D'), ''),
+              name: settings.companyName,
+              activeColor: Colors.white,
+              inactiveColor: Colors.white70,
+            ),
           IconButton(
             onPressed: _save,
             icon: const Icon(Icons.check),

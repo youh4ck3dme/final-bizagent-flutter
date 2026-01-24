@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/ui/biz_theme.dart';
 
 class BizCustomerCard extends StatelessWidget {
@@ -79,7 +80,15 @@ class BizCustomerCard extends StatelessWidget {
                 if (phone != null)
                   IconButton(
                     icon: const Icon(Icons.phone_outlined, size: 20),
-                    onPressed: () { /* TODO: Launch URL */ },
+                    onPressed: () async {
+                      final sanitized = phone!.replaceAll(RegExp(r'\s+'), '');
+                      final uri = Uri(scheme: 'tel', path: sanitized);
+                      try {
+                        await launchUrl(uri);
+                      } catch (e) {
+                        debugPrint('Failed to launch $uri: $e');
+                      }
+                    },
                     style: IconButton.styleFrom(
                       foregroundColor: BizTheme.slovakBlue,
                       backgroundColor: BizTheme.slovakBlue.withValues(alpha: 0.1),

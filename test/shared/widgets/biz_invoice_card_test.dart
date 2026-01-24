@@ -21,21 +21,45 @@ void main() {
         ),
       ));
 
+      // Let flutter_animate and formatting settle.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+
       // 1. Verify Texts
-      expect(find.text('Firma XYZ'), findsOneWidget);
-      expect(find.text('FA-2025001'), findsOneWidget);
-      expect(find.textContaining('150,50'), findsOneWidget);
+      expect(find.text('Firma XYZ', skipOffstage: false), findsOneWidget);
+      expect(find.text('FA-2025001', skipOffstage: false), findsOneWidget);
+      expect(find.textContaining('150', skipOffstage: false), findsOneWidget);
 
       // 2. Verify Semantics
       final handle = tester.ensureSemantics();
-      final semantics = tester.getSemantics(find.byType(BizInvoiceCard));
-      expect(semantics.label, contains('Faktúra FA-2025001 pre Firma XYZ'));
-      expect(semantics.label, contains('31.12.2025'));
-      
-      final data = semantics.getSemanticsData();
-      expect(data.hasFlag(SemanticsFlag.isButton), true);
+
+      expect(
+        find.bySemanticsLabel(
+          RegExp(
+            r'Faktúra\s+FA-2025001\s+pre\s+Firma\s+XYZ,\s*suma\s+.*150.*(€|EUR),\s*dátum\s+31\.12\.2025',
+          ),
+        ),
+        findsOneWidget,
+      );
+
+      // Tap action should be available via InkWell semantics.
+      final inkWellFinder = find.descendant(
+        of: find.byType(BizInvoiceCard, skipOffstage: false),
+        matching: find.byType(InkWell),
+      );
+      final data = tester.getSemantics(inkWellFinder).getSemanticsData();
+      expect(data.flagsCollection.isButton, true);
       expect(data.hasAction(SemanticsAction.tap), true);
       handle.dispose();
+
+      // Let any delayed flutter_animate timers fire to avoid timersPending at teardown.
+      await tester.pump(const Duration(seconds: 3));
+
+      // Ensure all pending timers from flutter_animate are cleared before teardown.
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
   });
 }

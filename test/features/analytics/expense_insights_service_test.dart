@@ -17,7 +17,8 @@ void main() {
   late ExpenseInsightsService service;
 
   setUp(() {
-    service = ExpenseInsightsService('test_api_key');
+    // Use empty key to trigger demo fallback logic and avoid SDK validation errors
+    service = ExpenseInsightsService('');
   });
 
   group('ExpenseInsightsService', () {

@@ -7,6 +7,19 @@ import 'package:bizagent/features/settings/providers/settings_provider.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
 import 'package:bizagent/features/auth/models/user_model.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dio/dio.dart';
+import 'package:bizagent/core/services/icoatlas_service.dart';
+import 'package:bizagent/core/models/ico_lookup_result.dart';
+
+class FakeIcoAtlasService extends IcoAtlasService {
+  FakeIcoAtlasService() : super(Dio(BaseOptions(baseUrl: 'http://localhost')));
+
+  @override
+  Future<List<Map<String, dynamic>>> autocomplete(String query) async => [];
+
+  @override
+  Future<IcoLookupResult?> publicLookup(String ico) async => null;
+}
 
 void main() {
   setUpAll(() {
@@ -27,6 +40,7 @@ void main() {
           companyName: 'My Biz',
           isVatPayer: true,
         ))),
+        icoAtlasServiceProvider.overrideWithValue(FakeIcoAtlasService()),
       ],
       child: const MaterialApp(
         home: CreateInvoiceScreen(),

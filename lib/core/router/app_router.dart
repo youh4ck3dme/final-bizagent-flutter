@@ -28,7 +28,6 @@ import '../../features/invoices/screens/invoice_detail_screen.dart';
 import '../../features/invoices/screens/payment_reminders_screen.dart';
 import '../../features/invoices/screens/pdf_preview_screen.dart';
 import '../../features/tax/screens/cashflow_analytics_screen.dart';
-import '../../features/intro/screens/onboarding_screen.dart';
 import '../../features/intro/screens/modern_onboarding_screen.dart';
 import '../../features/invoices/models/invoice_model.dart';
 import '../../features/expenses/models/expense_model.dart';
@@ -40,6 +39,7 @@ import '../../features/export/screens/export_screen.dart';
 import '../../features/legal/screens/terms_and_conditions_screen.dart';
 import '../../features/legal/screens/privacy_policy_screen.dart';
 import '../../features/tools/screens/ico_lookup_screen.dart';
+import '../../features/tools/screens/watched_companies_screen.dart';
 import '../../shared/widgets/scaffold_with_navbar.dart';
 import '../../shared/widgets/biz_auth_required.dart';
 
@@ -269,6 +269,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'biz-bot',
                     builder: (context, state) => const BizBotScreen(),
+                  ),
+                  GoRoute(
+                    path: 'monitoring',
+                    builder: (context, state) => const WatchedCompaniesScreen(),
                   ),
                 ],
               ),

@@ -74,10 +74,12 @@ void main() {
     });
 
     test('watchExpenses emits updates from Firestore', () async {
-      // Expect empty then 1 item
+      // FakeFirestore may emit an initial empty snapshot more than once.
+      // Allow for a couple of empty emissions before the added item arrives.
       expectLater(
         repository.watchExpenses(userId),
         emitsInOrder([
+          isEmpty,
           isEmpty,
           isA<List<ExpenseModel>>().having((l) => l.length, 'length', 1),
         ]),

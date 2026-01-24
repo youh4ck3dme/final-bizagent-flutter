@@ -2,49 +2,64 @@
 
 **AI Business Assistant pre SZČO a malé firmy na Slovensku**
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.10.7-02569B?logo=flutter)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.13.0+-02569B?logo=flutter)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Cloud-FFCA28?logo=firebase)](https://firebase.google.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-17%2F17%20passing-success)](https://github.com/youh4ck3dme/BizAgent/actions)
+[![Tests](https://img.shields.io/badge/Tests-Passing-success)](https://github.com/youh4ck3dme/BizAgent/actions)
 
-> Kompletné riešenie pre faktúry, výdavky a accounting - špeciálne navrhnuté pre slovenský trh.
+> Kompletné riešenie pre faktúry, výdavky a účtovníctvo – špeciálne navrhnuté pre slovenský trh a legislatívu.
 
-## ✨ Features (Elite Release 2026)
+---
 
-### 🚀 Production Ready PWA
-- ✅ **Offline-First:** Práca bez internetu s automatickou synchronizáciou.
-- ✅ **Installable:** Podpora pre PWA inštaláciu (Manifest, Shortcuts).
-- ✅ **Clean URLs:** Profesionálne URL bez hash fragmentov (`/dashboard` vs `/#/dashboard`).
-- ✅ **Performance:** Start < 1s (CanvasKit + Asset Caching).
+## 📚 Dokumentácia
 
-### 🔐 Bezpečnosť & Auth
-- ✅ **Google Sign-In:** Oficiálna integrácia cez Firebase Auth (One-Tap ready).
-- ✅ **Secure Data:** Strict Firestore Schema Validation rules.
-- ✅ **Safe Storage:** Validácia nahrávaných súborov (Max 10MB, Images Only).
+*   **[Google Play Submission Guide](docs/GOOGLE_PLAY_SUBMISSION.md):** Podrobný návod, ako vyplniť formuláre (Data Safety, App Access) v Play Console.
+*   **[Privacy Policy Template](docs/PRIVACY_POLICY.md):** Pripravený text pre Zásady ochrany súkromia (potrebné pre Play Store).
 
-### 📄 Faktúry & Financie
-- ✅ **Automatické číslovanie:** (YYYY/XXX formát)
-- ✅ **Smart QR:** Generovanie EPC-QR kódov pre okamžitú platbu.
-- ✅ **PDF Export:** Profesionálne PDF faktúry.
-- ✅ **Dashboard:** Interaktívne grafy, "Magic Scan" a smart prehľady.
+---
 
-### 💰 Výdavky & Intelligence
-- ✅ **Auto-kategorizácia:** AI priraďovanie kategórií.
-- ✅ **Expense Analytics:** Vizualizácia výdavkov v čase.
-- ✅ **OCR skenovanie:** Automatické vyčítanie dát z bločkov.
+## 🚀 Rýchly Štart (Development)
 
-## 🛠️ Tech Stack & Architecture
+1.  **Prerekvizity:**
+    *   Flutter SDK (3.13+)
+    *   Firebase CLI (`npm install -g firebase-tools`)
+    *   Melos (voliteľné pre monorepo, tu stačí `flutter pub get`)
 
-- **Framework:** Flutter 3.x (Web: CanvasKit)
-- **State Management:** Riverpod 2.6.1 (Architecture: Riverpod Generator)
-- **Cloud:** Firebase (Auth, Firestore, Storage, Hosting, Functions)
-- **UI:** Custom "Elite" Design System (Pulse animations, Shimmers)
+2.  **Inštalácia:**
+    ```bash
+    flutter pub get
+    ```
 
-## 🚀 Deployment (Elite PWA)
+3.  **Spustenie (Web PWA):**
+    ```bash
+    flutter run -d chrome --web-renderer canvaskit
+    ```
 
-Aplikácia je optimalizovaná pre **PWA** s rendererom CanvasKit pre maximálny výkon.
+4.  **Spustenie (Android):**
+    ```bash
+    flutter run -d android
+    ```
 
-**1. Production Build:**
+---
+
+## 📦 Build & Release (Production)
+
+### 🤖 Android (Google Play)
+
+Toto vytvorí optimalizovaný, obfuskovaný `.aab` balíček pripravený na upload.
+
+```bash
+flutter build appbundle \
+  --release \
+  --obfuscate \
+  --split-debug-info=build/symbols
+```
+
+*   **Výstup:** `build/app/outputs/bundle/release/app-release.aab`
+*   **Next Step:** Upload do [Google Play Console](https://play.google.com/console). Pozri [Submission Guide](docs/GOOGLE_PLAY_SUBMISSION.md).
+
+### 🌐 Web (PWA)
+
 ```bash
 flutter build web --release \
   --web-renderer canvaskit \
@@ -52,24 +67,54 @@ flutter build web --release \
   --dart-define=FLUTTER_WEB_USE_SKIA=true
 ```
 
-**2. Deploy to Firebase:**
-```bash
-firebase deploy --only hosting
-```
+*   **Deploy:** `firebase deploy --only hosting`
 
-**3. Verification:**
-- Skontrolujte `LightHouse` skóre (Current target: >90).
-- Overte offline funkčnosť cez Chrome DevTools.
+---
 
-## 📱 Platform Support
+## ✅ TODO: Čo treba ešte dokončiť? (Post-Release)
 
-- ✅ **Web (PWA):** Elite Production Ready (Chrome, Safari, Edge)
-- 🚧 **Mobile (Native):** Android/iOS ready (via Capacitor/Flutter Native)
-- 🔜 **Desktop:** Planned
+Tieto kroky sú potrebné pre plnú produkčnú prevádzku, ale aplikácia funguje aj bez nich (v obmedzenom alebo testovacom režime).
 
-## 📄 License
+### 1. 🛡️ ReCaptcha Enterprise (Security)
+*   **[Setup Guide](docs/RECAPTCHA_SETUP.md):** Podrobné inštrukcie a API kľúče pre tvoj projekt (`bizagent-live-2026`).
+*   Configurované v `web/index.html`.
+*   [ ] **Backend Verification:** Implementuj Cloud Function podľa návodu v `docs/RECAPTCHA_SETUP.md` (ak nepoužívaš Firebase App Check).
 
-MIT License - see [LICENSE](LICENSE) for details.
+### 2. 📧 Production Mail Server (SendGrid/Postmark)
+Momentálne emaily (faktúry) chodia cez predvolený Firebase/Google SMTP alebo testovací server.
+*   [ ] Integrovať dedikovanú službu (napr. SendGrid) pre vyššiu doručiteľnosť faktúr klientom.
+
+### 3. 🍎 iOS Verzia (Apple App Store)
+Android (`.aab`) je hotový. Pre iOS treba:
+*   [ ] Mac s Xcode.
+*   [ ] Apple Developer Account (99$/rok).
+*   [ ] Spustiť `flutter build ipa`.
+
+### 4. 💳 IČ DPH Validácia (VIES API)
+Súčasné overovanie IČO je napojené na Slovensko.Digital.
+*   [ ] Pre obchodovanie s EU pridať validáciu cez VIES (EU Commission API) pre automatické overenie DPH.
+
+---
+
+## ✨ Kľúčové Funkcie (Features)
+
+### 📄 Faktúry
+*   Generovanie **PDF** v reálnom čase.
+*   **QR kódy (PAY by square)** pre slovenské banky.
+*   Automatické číslovanie a sledovanie splatnosti.
+
+### 🤖 AI Magic Scan
+*   Skenovanie bločkov kamerou.
+*   Vyčítanie sumy, dátumu a firmy cez Google ML Kit / Gemini.
+
+### 📊 Daňový Teplomer
+*   Sledovanie obratu za 12 mesiacov vs. limit **49 790 €**.
+*   Upozornenie na povinnosť registrácie DPH.
+
+### 🔒 Bezpečnosť
+*   Dáta uložené v **Cloud Firestore** (Google Cloud).
+*   Šifrovaný prenos (SSL).
+*   Prihlásenie cez Google / Apple / Email.
 
 ---
 

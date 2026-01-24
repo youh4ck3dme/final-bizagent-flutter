@@ -56,33 +56,6 @@ class ExpenseParserService {
   Future<ParsedExpense?> parseExpenseText(String text) async {
     if (text.trim().isEmpty) return null;
 
-    final prompt = '''
-Parsuj nasledujúci text o výdavku a vráť štruktúrované údaje v JSON formáte.
-
-TEXT VÝDAVKU: "$text"
-
-POŽIADAVKY:
-- Rozpoznaj sumu (akákoľvek mena: €, Sk, koruny, EUR, atď.)
-- Identifikuj kategóriu výdavku (jedlo, doprava, kancelária, atď.)
-- Extrahuj názov obchodníka/obchodu ak je spomenutý
-- Použi dnešný dátum ak nie je špecifikovaný
-- Slovenský kontext a bežné výrazy
-
-PRÍKLADY:
-"Kúpil som kávu za 3,50€" → {"description": "Káva", "amount": 3.5, "category": "Jedlo"}
-"Zaplatil som 150€ za reklamu vo firme XYZ" → {"description": "Reklama", "amount": 150, "category": "Marketing", "merchant": "Firma XYZ"}
-
-VRÁŤ ČISTÝ JSON bez markdown blokov:
-{
-  "description": "strucny popis",
-  "amount": 0.0,
-  "category": "kategoria",
-  "date": "YYYY-MM-DD",
-  "merchant": "obchodnik alebo null",
-  "confidence": 0.0-1.0
-}
-''';
-
     try {
       final response = await _gemini.analyzeJson(text, '''
 {
