@@ -27,7 +27,10 @@ These third parties have access to your Personal Information only to perform the
 ### 3. Data Deletion
 Users can request data deletion at any time within the App settings or by contacting `support@bizagent.sk`. Upon request, all associated account records will be permanently removed from our databases.
 
-### 4. Contact Us
+### 4. Security and Abuse Prevention
+We take the security of your data and the integrity of our services seriously. We implement **reCAPTCHA Enterprise** and **Firebase App Check** (using Play Integrity API) to identify and prevent automated abuse, spam, and unauthorized access. These services may collect hardware and software information, such as device and application data, and send it to Google for assessment and security purposes.
+
+### 5. Contact Us
 If you have any questions, contact us at `support@bizagent.sk`.
 
 ---
@@ -54,5 +57,8 @@ Tieto strany majú prístup k vašim údajom len v nevyhnutnom rozsahu na vykona
 ### 3. Vymazanie údajov
 Používateľ môže kedykoľvek požiadať o vymazanie svojho účtu a všetkých pridružených dát priamo v nastaveniach aplikácie alebo na e-maile `support@bizagent.sk`. Po spracovaní žiadosti budú dáta trvalo odstránené z našich databáz.
 
-### 4. Kontakt
+### 4. Bezpečnosť a prevencia zneužitia
+Bezpečnosť vašich údajov a integrita našich služieb sú pre nás prioritou. Implementujeme technológie **reCAPTCHA Enterprise** a **Firebase App Check** (využívajúce rozhranie Play Integrity), ktoré slúžia na rozpoznávanie a prevenciu automatizovaného zneužívania (botov), spamu a neoprávneného prístupu. Tieto služby môžu zhromažďovať informácie o hardvéri a softvéri zariadenia na účely bezpečnostného vyhodnotenia.
+
+### 5. Kontakt
 V prípade otázok nás kontaktujte na `support@bizagent.sk`.
