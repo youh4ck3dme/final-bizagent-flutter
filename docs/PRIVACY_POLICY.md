@@ -16,6 +16,7 @@ For a better experience, while using our Service, we may require you to provide 
 *   **Email Address:** Used for account authentication and data synchronization via Firebase Auth.
 *   **Camera and Photos:** Used to scan receipts and business documents. Images are processed locally or via secure Google APIs.
 *   **Financial Data:** Invoices and expenses you enter are stored securely in Google Cloud Firestore for your use across devices.
+*   **Encryption:** All data is transmitted over encrypted connections (HTTPS/TLS).
 
 ### 2. Service Providers
 We employ third-party companies due to the following reasons:
@@ -46,6 +47,7 @@ Pre správne fungovanie aplikácie spracúvame tieto údaje:
 *   **E-mailová adresa:** Slúži na autentifikáciu používateľa a synchronizáciu dát cez Firebase Auth.
 *   **Fotoaparát a Fotky:** Používa sa výhradne na skenovanie bločkov a dokumentov. Snímky sú spracované lokálne alebo cez zabezpečené Google API.
 *   **Finančné údaje:** Faktúry a výdavky, ktoré zadáte, sú bezpečne uložené v Google Cloud Firestore pre váš prístup z rôznych zariadení.
+*   **Šifrovanie:** Všetky údaje sú prenášané výhradne cez šifrované spojenia (HTTPS/TLS).
 
 ### 2. Poskytovatelia služieb
 Aplikácia využíva služby tretích strán na zabezpečenie stability a funkcií:

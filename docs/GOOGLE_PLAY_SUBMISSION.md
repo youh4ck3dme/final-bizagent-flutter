@@ -25,7 +25,7 @@ Toto vidia používatelia v obchode.
     🔒 BEZPEČNOSŤ:
     • Vaše dáta sú bezpečne šifrované v cloude
     • Prihlásenie cez Google
-    • Plná podpora offline režimu
+    • Čiastočná podpora offline režimu (prehliadanie dát bez pripojenia)
 
     Aplikácia je navrhnutá špeciálne pre slovenskú legislatívu a potreby lokálnych podnikateľov.
     ```
@@ -55,7 +55,7 @@ Pretože máme prihlásenie, Google Reviewer sa **MUSÍ** vedieť prihlásiť.
 *   Vyber: **All or some functionality is restricted.**
 *   Pridaj inštrukcie:
     *   **Username:** `demo@bizagent.sk`
-    *   **Password:** `Demo1234`
+    *   **Password:** `Poklop1369###`
     *   **Notes:** `This is a test account strictly for review purposes. It comes with pre-populated dummy data.`
 
 ### 🛑 2.3.1 Krok naviac: VYTVORENIE DEMO ÚČTU (Overenie funkčnosti)
@@ -64,7 +64,7 @@ Aby sa Google vedel prihlásiť, tento účet **MUSÍ EXISTOVAŤ**.
 1.  Choď do **Firebase Console** -> **Authentication** -> **Users**.
 2.  Klikni **"Add User"**.
 3.  Email: `demo@bizagent.sk`
-4.  Heslo: `Demo1234`
+4.  Heslo: `Poklop1369###`
 5.  Klikni **"Add User"**.
 6.  **Hotovo.** Teraz je to na 100%. (Môžeš sa skúsiť prihlásiť v Appke, aby si mal istotu).
 
