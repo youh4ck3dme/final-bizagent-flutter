@@ -10,7 +10,7 @@ Tento dokument je tvojou poslednou zastávkou pred kliknutím na tlačidlo **"Pu
 - [ ] **App Access:** Zadaj si v Play Console do sekcie "App Access" presne tieto credentials.
 - [ ] **Data Safety:** Máš zaškrtnuté "Photos" (kvôli skenovaniu) a "Email" (kvôli loginu)?
 - [ ] **Data Safety:** Máš priznané aj "App activity" (Analytics) a "Diagnostics" (Crashlytics)?
-- [ ] **Privacy Policy URL:** Máš text z `docs/PRIVACY_POLICY.md` niekde na webe a URL je vložená v konzole?
+- [ ] **Privacy Policy URL:** Máš text z `docs/PRIVACY_POLICY.md` niekde na webe? URL musí byť **verejne dostupná** (bez prihlásenia!).
 - [ ] **AAB súbor:** Nahrávaš verziu z `build/app/outputs/bundle/release/app-release.aab`? (Je obfuskovaná a o 30MB menšia).
 
 ---
