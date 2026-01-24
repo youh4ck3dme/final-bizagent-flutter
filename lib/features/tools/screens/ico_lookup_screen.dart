@@ -1,38 +1,23 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/ui/biz_theme.dart';
-import '../../../core/services/company_lookup_service.dart';
 import '../../../core/models/ico_lookup_result.dart';
 import '../../../shared/widgets/watched_company_button.dart';
 import '../../billing/subscription_guard.dart';
 import '../../billing/paywall_screen.dart';
 import '../../limits/usage_limiter.dart';
 import '../../billing/billing_service.dart';
+import '../services/web_sync_service.dart';
+import '../providers/ico_lookup_provider.dart';
 
-// Provider for the search query and lookup result
-final icoSearchQueryProvider = StateProvider<String>((ref) => '');
 
-final icoLookupFutureProvider = FutureProvider<IcoLookupResult?>((ref) async {
-  final query = ref.watch(icoSearchQueryProvider);
-  if (query.length < 8) return null;
-  
-  final lookupService = ref.read(companyLookupServiceProvider);
-
-  try {
-    return await lookupService.lookupByIco(query);
-  } catch (e) {
-    debugPrint('Lookup failed: $e');
-    // Rethrow to let UI handle specific errors (like socket exception if mapped)
-    // Or return a specific failure object. For now returning null is handled as empty/error.
-    // Ideally we propagate the error state to the UI provider.
-    throw e; 
-  }
-});
 
 class IcoLookupScreen extends ConsumerStatefulWidget {
-  const IcoLookupScreen({super.key});
+  final String? initialIco;
+  const IcoLookupScreen({super.key, this.initialIco});
 
   @override
   ConsumerState<IcoLookupScreen> createState() => _IcoLookupScreenState();
@@ -40,25 +25,50 @@ class IcoLookupScreen extends ConsumerStatefulWidget {
 
 class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
   final TextEditingController _controller = TextEditingController();
-  // bool _isSearching = false;
+  Timer? _debounce;
 
-  void _handleSearch() {
+  @override
+  void initState() {
+    super.initState();
+    // Auto-search if initialIco is provided (Deep Link/Handover)
+    if (widget.initialIco != null && widget.initialIco!.length == 8) {
+      _controller.text = widget.initialIco!;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _handleSearch();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (value.length == 8) {
+        _handleSearch(isAuto: true);
+      }
+    });
+  }
+
+  void _handleSearch({bool isAuto = false}) {
     final query = _controller.text.trim();
     if (query.length == 8) {
       final guard = ref.read(subscriptionGuardProvider);
       if (guard.canAccess(BizFeature.icoLookup)) {
-        // Debounce protection: Check if already loading
-        if (ref.read(icoLookupFutureProvider).isLoading) return;
-
-        ref.read(icoSearchQueryProvider.notifier).state = query;
+        ref.read(icoLookupProvider.notifier).lookup(query);
         ref.read(usageLimiterProvider).incrementIco();
         ref.read(billingProvider.notifier).refreshUsage();
-      } else {
+      } else if (!isAuto) {
          Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const PaywallScreen()),
          );
       }
-    } else {
+    } else if (!isAuto) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Zadajte platné 8-miestne IČO')),
       );
@@ -67,7 +77,8 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lookupAsync = ref.watch(icoLookupFutureProvider);
+    final lookupState = ref.watch(icoLookupProvider);
+    final isLoading = lookupState.status == IcoLookupStatus.loading;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -76,6 +87,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
       appBar: AppBar(
         title: const Text('Overenie Firmy'),
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(BizTheme.spacingLg),
         child: Column(
@@ -115,321 +127,272 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                 maxLength: 8,
                 style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
-                  hintText: 'Zadajte IČO (napr. 35742364)',
+                  hintText: 'Zadajte IČO (napr. 46359371)',
                   counterText: '',
                   prefixIcon: const Icon(Icons.search, color: BizTheme.slovakBlue),
                   suffixIcon: IconButton(
-                    icon: lookupAsync.isLoading 
+                    icon: isLoading 
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
                         : const Icon(Icons.arrow_forward_rounded, color: BizTheme.slovakBlue),
-                    onPressed: lookupAsync.isLoading ? null : _handleSearch,
+                    onPressed: isLoading ? null : () => _handleSearch(),
                   ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   contentPadding: const EdgeInsets.all(BizTheme.spacingLg),
                 ),
+                onChanged: _onChanged,
                 onSubmitted: (_) => _handleSearch(),
               ),
             ),
             
+            // Web Synced List
+            const SizedBox(height: BizTheme.spacingMd),
+            _buildWebSyncSection(context, ref),
+            
             const SizedBox(height: BizTheme.spacing2xl),
             
             // Result Area
-            lookupAsync.when(
-              data: (result) {
-                if (result == null) {
-                  return _buildEmptyState();
-                }
-                if (result.isRateLimited) {
-                  return _buildRateLimitedState(result.resetIn);
-                }
-                if (result.isPaymentRequired) {
-                  return _buildPaymentRequiredState();
-                }
-                return _buildResultCard(result);
-              },
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(BizTheme.spacing3xl),
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              error: (e, _) {
-                // Better Offline / Error UX
-                final msg = e.toString().toLowerCase();
-                final isOffline = msg.contains('socket') || msg.contains('connection') || msg.contains('internet');
-                return _buildErrorState(isOffline 
-                    ? 'Skontrolujte pripojenie na internet.' 
-                    : 'Nepodarilo sa načítať údaje.');
-              },
-            ),
+            _buildResultContent(context, ref, lookupState),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildResultCard(IcoLookupResult result) {
+  Widget _buildResultContent(BuildContext context, WidgetRef ref, IcoLookupState state) {
+    if (state.status == IcoLookupStatus.idle) {
+      return _buildIdleState();
+    }
+
+    if (state.status == IcoLookupStatus.loading && state.result == null) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(BizTheme.spacing3xl),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (state.status == IcoLookupStatus.notFound) {
+      return _buildNotFoundState();
+    }
+
+    if (state.status == IcoLookupStatus.errorOffline) {
+       return _buildErrorState('Ste offline. Skontrolujte pripojenie.');
+    }
+
+    if (state.status == IcoLookupStatus.errorServer) {
+       return _buildErrorState(state.errorMessage ?? 'Chyba servera');
+    }
+
+    if (state.result != null) {
+       return _buildResultCard(state.result!, state.status);
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildResultCard(IcoLookupResult result, IcoLookupStatus status) {
     final theme = Theme.of(context);
+    final isCached = status == IcoLookupStatus.cachedFresh;
     final isReliable = result.status.toLowerCase().contains('aktív') || result.status.toLowerCase().contains('pôsob');
-    
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(BizTheme.spacingLg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Premium Indicator for Cache/Handover / Refreshing
+        if (isCached || status == IcoLookupStatus.success || status == IcoLookupStatus.cachedStaleRefreshing)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: (isReliable ? Colors.green : Colors.orange).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(BizTheme.radiusSm),
+                if (status == IcoLookupStatus.cachedStaleRefreshing)
+                  const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: BizTheme.slovakBlue),
+                  )
+                else
+                  Icon(
+                    isCached ? Icons.bolt_rounded : Icons.cloud_done_rounded,
+                    size: 14,
+                    color: isCached ? Colors.amber : Colors.green,
                   ),
-                  child: Text(
-                    result.status.toUpperCase(),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: isReliable ? Colors.green[700] : Colors.orange[700],
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                    ),
+                const SizedBox(width: 6),
+                Text(
+                  status == IcoLookupStatus.cachedStaleRefreshing 
+                    ? 'AKTUALIZUJEM NA POZADÍ...' 
+                    : (isCached ? 'DÁTA Z CACHE (BLESKOVÉ)' : 'DÁTA AKTUALIZOVANÉ'),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: status == IcoLookupStatus.cachedStaleRefreshing 
+                      ? BizTheme.slovakBlue 
+                      : (isCached ? Colors.amber : Colors.green),
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.1,
                   ),
                 ),
+              ],
+            ).animate().fadeIn().slideX(begin: -0.1),
+          ),
+          
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(BizTheme.spacingLg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      isReliable ? Icons.verified_rounded : Icons.warning_amber_rounded,
-                      color: isReliable ? Colors.green : Colors.orange,
-                      size: 20,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: (isReliable ? Colors.green : Colors.orange).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(BizTheme.radiusSm),
+                      ),
+                      child: Text(
+                        result.status.toUpperCase(),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: isReliable ? Colors.green[700] : Colors.orange[700],
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.1,
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    WatchedCompanyButton(
-                      icoNorm: result.icoNorm,
-                      name: result.name,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: BizTheme.spacingLg),
-            Text(
-              result.name,
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: BizTheme.spacingSm),
-            Row(
-              children: [
-                Icon(Icons.location_on_outlined, size: 16, color: theme.colorScheme.onSurfaceVariant),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    result.fullAddress,
-                    style: theme.textTheme.bodySmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            if (result.headline != null || result.explanation != null) ...[
-              const SizedBox(height: BizTheme.spacingLg),
-              Container(
-                padding: const EdgeInsets.all(BizTheme.spacingLg),
-                decoration: BoxDecoration(
-                  color: BizTheme.slovakBlue.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(BizTheme.radiusMd),
-                  border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
                     Row(
                       children: [
-                        const Icon(Icons.auto_awesome, color: BizTheme.slovakBlue, size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          'AI VERDIKT',
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: BizTheme.slovakBlue,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
+                        Icon(
+                          isReliable ? Icons.verified_rounded : Icons.warning_amber_rounded,
+                          color: isReliable ? Colors.green : Colors.orange,
+                          size: 20,
                         ),
-                        const Spacer(),
-                        if (result.confidence != null)
-                          Text(
-                            '${(result.confidence! * 100).toInt()}% istota',
-                            style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                          ),
+                        const SizedBox(width: 8),
+                        WatchedCompanyButton(
+                          icoNorm: result.icoNorm,
+                          name: result.name,
+                        ),
                       ],
-                    ),
-                    const SizedBox(height: BizTheme.spacingSm),
-                    Text(
-                      result.headline ?? 'Analýza dokončená',
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      result.explanation ?? '',
-                      style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
                     ),
                   ],
                 ),
-              ),
-            ],
-            
-            // Risk Badge (LOW / MEDIUM / HIGH)
-            if (result.riskLevel != null || result.riskHint != null) ...[
-              const SizedBox(height: BizTheme.spacingMd),
-              _buildRiskBadge(result.riskLevel, result.riskHint),
-            ],
-            const SizedBox(height: BizTheme.spacingXl),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () {
-                      context.push(
-                        '/create-invoice',
-                        extra: {
-                          'clientName': result.name,
-                          'clientIco': _controller.text,
-                          'clientAddress': result.fullAddress,
-                          'clientDic': result.dic,
-                          'clientIcDph': result.icDph,
+                const SizedBox(height: BizTheme.spacingLg),
+                Text(
+                  result.name,
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: BizTheme.spacingSm),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_outlined, size: 16, color: theme.colorScheme.onSurfaceVariant),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        result.fullAddress,
+                        style: theme.textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                if (result.headline != null || result.explanation != null) ...[
+                  const SizedBox(height: BizTheme.spacingLg),
+                  Container(
+                    padding: const EdgeInsets.all(BizTheme.spacingLg),
+                    decoration: BoxDecoration(
+                      color: BizTheme.slovakBlue.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+                      border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.auto_awesome, color: BizTheme.slovakBlue, size: 18),
+                            const SizedBox(width: 8),
+                            Text(
+                              'AI VERDIKT',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: BizTheme.slovakBlue,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (result.confidence != null)
+                              Text(
+                                '${(result.confidence! * 100).toInt()}% istota',
+                                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: BizTheme.spacingSm),
+                        Text(
+                          result.headline ?? 'Analýza dokončená',
+                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          result.explanation ?? '',
+                          style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                
+                // Risk Badge (LOW / MEDIUM / HIGH)
+                if (result.riskLevel != null || result.riskHint != null) ...[
+                  const SizedBox(height: BizTheme.spacingMd),
+                  _buildRiskBadge(result.riskLevel, result.riskHint),
+                ],
+                const SizedBox(height: BizTheme.spacingXl),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: () {
+                          context.push(
+                            '/create-invoice',
+                            extra: {
+                              'clientName': result.name,
+                              'clientIco': _controller.text,
+                              'clientAddress': result.fullAddress,
+                              'clientDic': result.dic,
+                              'clientIcDph': result.icDph,
+                            },
+                          );
                         },
+                        icon: const Icon(Icons.receipt_long, size: 18),
+                        label: const Text('VYSTAVIŤ FAKTÚRU'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: BizTheme.spacingSm),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      // Logic to add to contacts would go here
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Firma bola pridaná do kontaktov')),
                       );
                     },
-                    icon: const Icon(Icons.receipt_long, size: 18),
-                    label: const Text('VYSTAVIŤ FAKTÚRU'),
+                    icon: const Icon(Icons.person_add_outlined, size: 18),
+                    label: const Text('PRIDAŤ DO KONTAKTOV'),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: BizTheme.spacingSm),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  // Logic to add to contacts would go here
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Firma bola pridaná do kontaktov')),
-                  );
-                },
-                icon: const Icon(Icons.person_add_outlined, size: 18),
-                label: const Text('PRIDAŤ DO KONTAKTOV'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.05);
+          ),
+        ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.05),
+      ],
+    );
   }
 
-  Widget _buildPaymentRequiredState() {
-    final theme = Theme.of(context);
-    
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(BizTheme.spacingLg),
-      decoration: BoxDecoration(
-        color: BizTheme.slovakBlue.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
-        border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        children: [
-          const Icon(Icons.lock_person_outlined, size: 48, color: BizTheme.slovakBlue),
-          const SizedBox(height: BizTheme.spacingMd),
-          Text(
-            'Secure Gateway: Premium',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: BizTheme.slovakBlue,
-            ),
-          ),
-          const SizedBox(height: BizTheme.spacingSm),
-          const Text(
-            'Váš aktuálny plán nepovoľuje neobmedzené lookupy cez bezpečný gateway.',
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: BizTheme.spacingXl),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () {},
-              child: const Text('AKTIVOVAŤ SOLO/GROWTH PLÁN'),
-            ),
-          ),
-        ],
-      ),
-    ).animate().shake();
-  }
-
-  Widget _buildRateLimitedState(int? resetIn) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(BizTheme.spacingLg),
-      decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(BizTheme.radiusLg),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        children: [
-          const Icon(Icons.speed_rounded, size: 48, color: Colors.orange),
-          const SizedBox(height: BizTheme.spacingMd),
-          Text(
-            'Limit dosiahnutý',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.orange[900],
-            ),
-          ),
-          const SizedBox(height: BizTheme.spacingSm),
-          Text(
-            'Bezplatný limit pre verejné vyhľadávanie je 10 dopytov za 10 minút.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.orange[800]),
-          ),
-          if (resetIn != null) ...[
-            const SizedBox(height: BizTheme.spacingMd),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.orange.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(BizTheme.radiusXl),
-              ),
-              child: Text(
-                'Skúste to znova o ${resetIn ~/ 60} minút',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.bold, 
-                  color: Colors.orange[900],
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: BizTheme.spacingXl),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () {},
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.orange[700],
-              ),
-              child: const Text('PREJSŤ NA PREMIUM (BEZ LIMITOV)'),
-            ),
-          ),
-        ],
-      ),
-    ).animate().shake();
-  }
-
-  Widget _buildEmptyState() {
+  Widget _buildIdleState() {
     return Center(
       child: Opacity(
         opacity: 0.5,
@@ -447,72 +410,162 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
     );
   }
 
-  Widget _buildErrorState(String error) {
+  Widget _buildNotFoundState() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(BizTheme.spacingLg),
-        child: Column(
+      child: Column(
+        children: [
+          const Icon(Icons.search_off_rounded, size: 64, color: Colors.grey),
+          const SizedBox(height: 16),
+          Text(
+            'Firma sa nenašla',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const Text('Skontrolujte prosím zadané IČO.'),
+        ],
+      ),
+    ).animate().fadeIn();
+  }
+
+  Widget _buildWebSyncSection(BuildContext context, WidgetRef ref) {
+    final webSyncAsync = ref.watch(webSyncServiceProvider);
+    final theme = Theme.of(context);
+
+    return webSyncAsync.when(
+      data: (leads) {
+        if (leads.isEmpty) return const SizedBox.shrink();
+        
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.error_outline, color: BizTheme.nationalRed, size: 48),
-            const SizedBox(height: BizTheme.spacingMd),
-            const Text(
-              'Vyskytla sa chyba pri načítaní.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: BizTheme.nationalRed, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                children: [
+                  const Icon(Icons.cloud_sync_rounded, size: 16, color: BizTheme.slovakBlue),
+                  const SizedBox(width: 8),
+                  Text(
+                    'NEDÁVNE Z WEBU',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: BizTheme.slovakBlue,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 44,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: leads.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (context, index) {
+                  final lead = leads[index];
+                  final ico = lead['ico'] ?? '';
+                  final name = lead['companyName'] ?? 'Neznáma firma';
+                  final isNew = lead['status'] == 'new';
+
+                  return ActionChip(
+                    avatar: Icon(
+                      isNew ? Icons.bolt : Icons.history, 
+                      size: 14, 
+                      color: isNew ? Colors.amber : Colors.grey
+                    ),
+                    label: Text(
+                      name.length > 20 ? '${name.substring(0, 18)}...' : name,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: isNew ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    onPressed: () {
+                      _controller.text = ico;
+                      ref.read(icoLookupProvider.notifier).lookup(ico);
+                    },
+                    backgroundColor: theme.colorScheme.surface,
+                    side: BorderSide(
+                      color: isNew ? BizTheme.slovakBlue : BizTheme.slovakBlue.withValues(alpha: 0.2),
+                      width: isNew ? 1.5 : 1,
+                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BizTheme.radiusMd)),
+                  );
+                },
+              ),
             ),
           ],
-        ),
-      ),
+        ).animate().fadeIn().slideX(begin: 0.1);
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 
   Widget _buildRiskBadge(String? level, String? hint) {
+    if (level == null && hint == null) return const SizedBox.shrink();
+    
     final theme = Theme.of(context);
-    final color = switch (level?.toUpperCase()) {
-      'LOW' => Colors.green,
-      'MEDIUM' => Colors.orange,
-      'HIGH' => BizTheme.nationalRed,
-      _ => Colors.blue,
-    };
+    Color color;
+    IconData icon;
+    
+    switch (level?.toLowerCase()) {
+      case 'high':
+      case 'vysoké':
+        color = Colors.red;
+        icon = Icons.dangerous_rounded;
+        break;
+      case 'medium':
+      case 'stredné':
+        color = Colors.orange;
+        icon = Icons.warning_rounded;
+        break;
+      default:
+        color = Colors.green;
+        icon = Icons.check_circle_rounded;
+    }
 
     return Container(
-      padding: const EdgeInsets.all(BizTheme.spacingMd),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(BizTheme.radiusMd),
-        border: Border.all(color: color.withValues(alpha: 0.1)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          Icon(Icons.shield_outlined, color: color, size: 18),
-          const SizedBox(width: 12),
+          Icon(icon, color: color, size: 16),
+          const SizedBox(width: 8),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Risk Score: ${level ?? "UNKNOWN"}',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (hint != null)
-                  Text(
-                    hint,
-                    style: theme.textTheme.bodySmall?.copyWith(color: color),
-                  ),
-              ],
+            child: Text(
+              hint ?? (level ?? 'Neznáme riziko'),
+              style: theme.textTheme.bodySmall?.copyWith(color: color.withValues(alpha: 0.8), fontWeight: FontWeight.w600),
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        children: [
+          const Icon(Icons.error_outline_rounded, size: 64, color: Colors.red),
+          const SizedBox(height: 16),
+          Text(
+            'Chyba',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => _handleSearch(),
+            child: const Text('SKÚSIŤ ZNOVU'),
+          ),
+        ],
+      ),
+    ).animate().fadeIn();
+  }
 }
+

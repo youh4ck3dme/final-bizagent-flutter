@@ -18,8 +18,8 @@ npm install
 cd ..
 
 # 3. Firebase Secrets (Safety Check)
-echo "🔒 Checking Gemini API Key..."
-# Note: Use 'firebase functions:secrets:set GEMINI_API_KEY' if not set
+echo "🔒 Checking OpenAI API Key..."
+# Note: Use 'firebase functions:secrets:set OPENAI_API_KEY' if not set
 
 # 4. Deploy
 echo "☁️  Deploying to Firebase..."

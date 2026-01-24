@@ -18,8 +18,12 @@ class IcoLookupResult {
   final int? resetIn;
   final bool isRateLimited;
   final bool isPaymentRequired;
-  final bool isOffline; // New: Explicit offline state
-  final DateTime? cachedAt; // New: Replaces fetchedAt for clarity
+  final bool isOffline;
+  final DateTime? fetchedAt; // Renamed from cachedAt to match schema
+  final DateTime? expiresAt; // New field
+  final String? source;      // New field
+  final String? hash;        // New field
+  final String? lastSyncFrom; // New field
 
   const IcoLookupResult._({
     this.ico = '',
@@ -40,7 +44,11 @@ class IcoLookupResult {
     this.isRateLimited = false,
     this.isPaymentRequired = false,
     this.isOffline = false,
-    this.cachedAt,
+    this.fetchedAt,
+    this.expiresAt,
+    this.source,
+    this.hash,
+    this.lastSyncFrom,
   });
 
   factory IcoLookupResult({
@@ -62,7 +70,11 @@ class IcoLookupResult {
     bool isRateLimited = false,
     bool isPaymentRequired = false,
     bool isOffline = false,
-    DateTime? cachedAt,
+    DateTime? fetchedAt,
+    DateTime? expiresAt,
+    String? source,
+    String? hash,
+    String? lastSyncFrom,
   }) {
     final effectiveIcoNorm = icoNorm.isNotEmpty 
         ? icoNorm 
@@ -87,7 +99,11 @@ class IcoLookupResult {
       isRateLimited: isRateLimited,
       isPaymentRequired: isPaymentRequired,
       isOffline: isOffline,
-      cachedAt: cachedAt,
+      fetchedAt: fetchedAt,
+      expiresAt: expiresAt,
+      source: source,
+      hash: hash,
+      lastSyncFrom: lastSyncFrom,
     );
   }
 
@@ -151,7 +167,11 @@ class IcoLookupResult {
       confidence: json['confidence'] != null ? double.tryParse(json['confidence'].toString()) : null,
       headline: json['headline'],
       explanation: json['explanation'],
-      cachedAt: (json['cachedAt'] as Timestamp?)?.toDate(),
+      fetchedAt: (json['fetchedAt'] as Timestamp?)?.toDate(),
+      expiresAt: (json['expiresAt'] as Timestamp?)?.toDate(),
+      source: json['source'],
+      hash: json['hash'],
+      lastSyncFrom: json['lastSyncFrom'],
     );
   }
 
@@ -170,7 +190,11 @@ class IcoLookupResult {
     'confidence': confidence,
     'headline': headline,
     'explanation': explanation,
-    'cachedAt': FieldValue.serverTimestamp(), // Always Server Time on write
+    'fetchedAt': fetchedAt != null ? Timestamp.fromDate(fetchedAt!) : FieldValue.serverTimestamp(),
+    'expiresAt': expiresAt != null ? Timestamp.fromDate(expiresAt!) : null,
+    'source': source,
+    'hash': hash,
+    'lastSyncFrom': lastSyncFrom,
   };
 
   factory IcoLookupResult.fromMap(Map<String, dynamic> map) {
@@ -193,7 +217,11 @@ class IcoLookupResult {
       headline: verdict?['headline'] ?? map['headline'],
       explanation: verdict?['explanation'] ?? map['explanation'],
       resetIn: map['resetIn'] != null ? int.tryParse(map['resetIn'].toString()) : null,
-      cachedAt: DateTime.now(), // Local time for direct API hits
+      fetchedAt: map['fetchedAt'] != null ? (map['fetchedAt'] is Timestamp ? (map['fetchedAt'] as Timestamp).toDate() : DateTime.tryParse(map['fetchedAt'].toString())) : null,
+      expiresAt: map['expiresAt'] != null ? (map['expiresAt'] is Timestamp ? (map['expiresAt'] as Timestamp).toDate() : DateTime.tryParse(map['expiresAt'].toString())) : null,
+      source: map['source'],
+      hash: map['hash'],
+      lastSyncFrom: map['lastSyncFrom'],
     );
   }
 

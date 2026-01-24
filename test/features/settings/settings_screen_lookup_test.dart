@@ -57,6 +57,14 @@ class FakeSettingsRepository extends SettingsRepository {
 }
 
 void main() {
+  Finder _fieldByLabel(String label) {
+    // TextFormField builds a TextField internally; TextField exposes `decoration`.
+    return find.byWidgetPredicate(
+      (w) => w is TextField && w.decoration?.labelText == label,
+      description: 'TextField(labelText: $label)',
+    );
+  }
+
   testWidgets('SettingsScreen populates fields after IČO lookup',
       (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
@@ -87,33 +95,31 @@ void main() {
     expect(find.text('Google Slovakia, s. r. o.'), findsNothing);
 
     // Enter IČO
-    // Use a more robust finder for the labels in InputDecoration
-    final icoField = find.descendant(
-      of: find.byType(TextFormField),
-      matching: find.text('IČO'),
-    );
+    final icoField = _fieldByLabel('IČO');
     expect(icoField, findsOneWidget);
 
-    await tester.enterText(
-        find.ancestor(of: icoField, matching: find.byType(TextFormField)),
-        '36396567');
+    await tester.enterText(icoField, '36396567');
     await tester.pump();
 
     // Tap Search Icon
     await tester.tap(find.byIcon(Icons.search));
     await tester.pumpAndSettle(); // Wait for async lookup
 
-    // Verify Fields Populated
-    expect(find.widgetWithText(TextFormField, 'Google Slovakia, s. r. o.'),
-        findsOneWidget);
-    expect(
-        find.widgetWithText(
-            TextFormField, 'Karadžičova 8/A, 821 08 Bratislava'),
-        findsOneWidget);
-    expect(find.widgetWithText(TextFormField, '2020102636'),
-        findsOneWidget); // DIČ
-    expect(find.widgetWithText(TextFormField, 'SK2020102636'),
-        findsOneWidget); // IČ DPH
+    // Verify Fields Populated (assert via controllers; TextFormField doesn't render its value as Text widgets)
+    final nameField = tester.widget<TextField>(_fieldByLabel('Obchodné meno'));
+    expect(nameField.controller?.text, 'Google Slovakia, s. r. o.');
+
+    final addressField = tester.widget<TextField>(_fieldByLabel('Adresa sídla'));
+    final addressText = addressField.controller?.text ?? '';
+    expect(addressText, contains('Karadžičova 8/A'));
+    expect(addressText, contains('821 08'));
+    expect(addressText, contains('Bratislava'));
+
+    final dicField = tester.widget<TextField>(_fieldByLabel('DIČ'));
+    expect(dicField.controller?.text, '2020102636');
+
+    final icDphField = tester.widget<TextField>(_fieldByLabel('IČ DPH'));
+    expect(icDphField.controller?.text, 'SK2020102636');
 
     // Verify Snackbar feedback
     expect(find.text('Našli sme: Google Slovakia, s. r. o.'), findsOneWidget);

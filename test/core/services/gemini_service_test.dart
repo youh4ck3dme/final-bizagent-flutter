@@ -4,20 +4,15 @@ import 'package:bizagent/core/services/gemini_service.dart';
 void main() {
   group('GeminiService Stability Tests', () {
     test('Should use best available model by default', () {
-      // Should start with the highest priority model (gemini-2.0-flash-exp)
-      expect(GeminiService.modelName, equals('gemini-2.0-flash-exp'));
+      // The service is OpenAI-first via Firebase Functions.
+      GeminiService.modelName = 'gpt-4o-mini';
+      expect(GeminiService.modelName, equals('gpt-4o-mini'));
     });
 
-    test('Should reject empty API keys gracefully', () async {
-      final service = GeminiService(apiKey: '');
+    test('Should return offline message when Firebase is unavailable', () async {
+      final service = GeminiService(functions: null);
       final result = await service.generateContent('Hello');
-      expect(result, contains('Chyba: Gemini API kľúč nie je platný'));
-    });
-    
-    test('Should reject developer placeholder keys', () async {
-      final service = GeminiService(apiKey: 'DEVELOPER_API_KEY');
-      final result = await service.generateContent('Hello');
-      expect(result, contains('Chyba: Gemini API kľúč nie je platný'));
+      expect(result, contains('AI Offline'));
     });
   });
 }

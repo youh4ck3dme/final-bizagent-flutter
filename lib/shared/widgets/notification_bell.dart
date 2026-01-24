@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import '../../core/ui/biz_theme.dart';
 import '../../features/tools/services/monitoring_service.dart';
 
@@ -9,6 +10,12 @@ class NotificationBell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // In widget tests (or before Firebase init), Firebase may not be available.
+    // Avoid throwing and simply hide the bell.
+    if (Firebase.apps.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     final monitoring = ref.watch(monitoringServiceProvider);
     
     return StreamBuilder<List<Map<String, dynamic>>>(

@@ -85,9 +85,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Flexible(
+            Expanded(
               child: Text(
                 context.t(AppStr.spdTitle),
                 style: Theme.of(context).appBarTheme.titleTextStyle,

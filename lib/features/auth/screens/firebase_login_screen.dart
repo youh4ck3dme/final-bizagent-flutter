@@ -155,10 +155,15 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Background Image (same as onboarding)
-          Image.asset(
-            'assets/images/background_fusion.webp',
-            fit: BoxFit.cover,
+          // Background (removed image with the "5")
+          const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [BizTheme.gray50, BizTheme.silverMist],
+              ),
+            ),
           ),
 
           // Centered Login Card

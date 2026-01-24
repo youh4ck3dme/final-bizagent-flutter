@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bizagent/features/invoices/screens/create_invoice_screen.dart';
-import 'package:bizagent/features/auth/providers/auth_repository.dart';
 import 'package:bizagent/features/settings/providers/settings_provider.dart';
 import 'package:bizagent/features/settings/models/user_settings_model.dart';
-import 'package:bizagent/features/auth/models/user_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
 import 'package:bizagent/core/services/icoatlas_service.dart';
 import 'package:bizagent/core/models/ico_lookup_result.dart';
+import 'package:bizagent/features/auth/providers/auth_repository.dart';
 
 class FakeIcoAtlasService extends IcoAtlasService {
   FakeIcoAtlasService() : super(Dio(BaseOptions(baseUrl: 'http://localhost')));
@@ -30,11 +29,8 @@ void main() {
     return ProviderScope(
       overrides: [
         // Mock Auth State
-        authStateProvider.overrideWith((ref) => Stream.value(const UserModel(
-          id: 'test-user',
-          email: 'test@example.com',
-          displayName: 'Test user',
-        ))),
+        // Keep user null so IČO lookup doesn't try secure (Firebase) path.
+        authStateProvider.overrideWith((ref) => Stream.value(null)),
         // Mock Settings
         settingsProvider.overrideWith((ref) => Stream.value(UserSettingsModel.empty().copyWith(
           companyName: 'My Biz',

@@ -1,39 +1,24 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:bizagent/core/services/gemini_service.dart';
 import 'package:bizagent/features/analytics/services/expense_insights_service.dart';
 import 'package:bizagent/features/expenses/models/expense_model.dart';
 import 'package:bizagent/features/expenses/models/expense_category.dart';
 
-// Mock classes
-class MockGenerativeModel extends Mock {
-  Future<MockGenerateContentResponse> generateContent(List<dynamic> content);
-}
+class FakeGeminiService extends GeminiService {
+  final String response;
 
-class MockGenerateContentResponse extends Mock {
-  String? get text => 'mock response';
+  FakeGeminiService(this.response) : super(functions: null);
+
+  @override
+  Future<String> analyzeJson(String context, String schema) async {
+    return response;
+  }
 }
 
 void main() {
-  late ExpenseInsightsService service;
-
-  setUp(() {
-    // Use empty key to trigger demo fallback logic and avoid SDK validation errors
-    service = ExpenseInsightsService('');
-  });
-
   group('ExpenseInsightsService', () {
-    test('should return demo insights when API key is empty', () async {
-      final serviceWithoutKey = ExpenseInsightsService('');
-      final expenses = <ExpenseModel>[];
-
-      final insights = await serviceWithoutKey.analyzeExpenses(expenses);
-
-      expect(insights.length, 2);
-      expect(insights[0].title, contains('Viac výdavkov'));
-      expect(insights[1].title, contains('Možná daňová'));
-    });
-
     test('should return empty list for empty expenses', () async {
+      final service = ExpenseInsightsService(FakeGeminiService('[]'));
       final expenses = <ExpenseModel>[];
 
       final insights = await service.analyzeExpenses(expenses);
@@ -41,7 +26,42 @@ void main() {
       expect(insights, isEmpty);
     });
 
+    test('should parse AI JSON response into insights', () async {
+      final service = ExpenseInsightsService(FakeGeminiService('''
+[
+  {
+    "id": "1",
+    "title": "Test insight",
+    "description": "Popis",
+    "icon": "lightbulb",
+    "color": "blue",
+    "potentialSavings": 50,
+    "priority": "medium",
+    "category": "optimization",
+    "createdAt": "2026-01-24T00:00:00.000Z"
+  }
+]
+'''));
+
+      final expenses = <ExpenseModel>[
+        ExpenseModel(
+          id: '1',
+          userId: 'test-user',
+          vendorName: 'Shell',
+          description: 'Fuel purchase',
+          amount: 50.0,
+          date: DateTime.now(),
+          category: ExpenseCategory.fuel,
+        ),
+      ];
+
+      final insights = await service.analyzeExpenses(expenses);
+      expect(insights.length, 1);
+      expect(insights.first.title, 'Test insight');
+    });
+
     test('should handle expenses with categories', () async {
+      final service = ExpenseInsightsService(FakeGeminiService('not json'));
       final expenses = [
         ExpenseModel(
           id: '1',
@@ -66,11 +86,12 @@ void main() {
       final insights = await service.analyzeExpenses(expenses);
 
       expect(insights, isNotEmpty);
-      // Since we're using the demo fallback due to API key, we get demo insights
+      // Invalid AI response should fall back to demo insights
       expect(insights.length, 2);
     });
 
     test('should process expenses without categories', () async {
+      final service = ExpenseInsightsService(FakeGeminiService('not json'));
       final expenses = [
         ExpenseModel(
           id: '1',
@@ -90,6 +111,7 @@ void main() {
     });
 
     test('should limit expenses to last 50 for analysis', () async {
+      final service = ExpenseInsightsService(FakeGeminiService('[]'));
       final expenses = List.generate(
         60,
         (index) => ExpenseModel(
@@ -105,8 +127,8 @@ void main() {
 
       final insights = await service.analyzeExpenses(expenses);
 
-      // Should still work and return demo insights since API key is not real
-      expect(insights, isNotEmpty);
+      // Service should not throw even for large inputs
+      expect(insights, isA<List>());
     });
   });
 }

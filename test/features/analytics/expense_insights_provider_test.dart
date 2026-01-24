@@ -17,10 +17,10 @@ class MockExpenseInsightsService extends Mock
 
   @override
   Future<List<ExpenseInsight>> analyzeExpenses(
-      List<ExpenseModel>? expenses) async {
+      List<ExpenseModel> expenses) async {
     capturedExpenses = expenses;
 
-    if (expenses == null || expenses.isEmpty) return [];
+    if (expenses.isEmpty) return [];
 
     // Return mock insights for testing
     return [

@@ -3,11 +3,120 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { defineString } = require("firebase-functions/params");
 
 const geminiApiKey = defineString("GEMINI_API_KEY");
+const openaiApiKey = defineString("OPENAI_API_KEY");
+const openaiModelPrimary = defineString("OPENAI_MODEL_PRIMARY");
+const openaiModelFallback = defineString("OPENAI_MODEL_FALLBACK");
 const icoAtlasApiKey = defineString("ICOATLAS_API_KEY");
 
 // Model configuration
 // UPDEJT: Prejdené na 2.0 flash (stable model)
 const MODEL_NAME = "gemini-2.0-flash";
+
+/**
+ * Generuje AI odpoveď cez OpenAI (server-side), s fallback modelom.
+ * Používa sa pre chatbota a iné prompt-based AI funkcie z Flutter Web.
+ */
+exports.generateAiText = onCall(
+  {
+    cors: true, // TODO: Pre produkciu obmedz origin(y)
+  },
+  async (request) => {
+    const { prompt, models } = request.data || {};
+
+    if (!prompt || typeof prompt !== "string") {
+      throw new HttpsError("invalid-argument", 'Chýba parameter "prompt".');
+    }
+
+    const apiKey = openaiApiKey.value();
+    if (!apiKey) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Server nie je správne nakonfigurovaný (chýba OPENAI_API_KEY)."
+      );
+    }
+
+    const primary = (openaiModelPrimary.value() || "gpt-4o-mini").trim();
+    const fallback = (openaiModelFallback.value() || "gpt-4o").trim();
+    const requestedModels = Array.isArray(models)
+      ? models.filter((m) => typeof m === "string" && m.trim().length > 0)
+      : [];
+
+    // Whitelist to avoid arbitrary expensive models from clients.
+    const allowed = new Set([primary, fallback, "gpt-4o-mini", "gpt-4o"]);
+    const candidates = [
+      ...requestedModels.filter((m) => allowed.has(m)),
+      primary,
+      fallback,
+    ].filter((v, i, a) => a.indexOf(v) === i);
+
+    const systemInstruction =
+      "Si BizAgent AI - inteligentný asistent pre slovenských podnikateľov. Odpovedaj stručne, vecne a v slovenčine.";
+
+    const callOnce = async (model) => {
+      const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0.2,
+          messages: [
+            { role: "system", content: systemInstruction },
+            { role: "user", content: prompt },
+          ],
+        }),
+      });
+
+      const json = await resp.json().catch(() => null);
+      if (!resp.ok) {
+        const message =
+          (json && json.error && json.error.message) ||
+          `OpenAI request failed with HTTP ${resp.status}`;
+        const err = new Error(message);
+        err.status = resp.status;
+        throw err;
+      }
+
+      const text =
+        json?.choices?.[0]?.message?.content ||
+        json?.choices?.[0]?.text ||
+        "";
+      return { text, model };
+    };
+
+    let lastError = null;
+    for (const model of candidates) {
+      try {
+        const result = await callOnce(model);
+        return { text: result.text, model: result.model };
+      } catch (err) {
+        lastError = err;
+
+        if (err?.status === 401 || err?.status === 403) {
+          throw new HttpsError(
+            "permission-denied",
+            "Neplatný alebo chýbajúci OpenAI API kľúč."
+          );
+        }
+
+        if (err?.status === 429) {
+          throw new HttpsError(
+            "resource-exhausted",
+            "Limit dopytov bol prekročený."
+          );
+        }
+
+        // Try next model.
+        continue;
+      }
+    }
+
+    console.error("OpenAI generateAiText error:", lastError);
+    throw new HttpsError("internal", "Chyba pri generovaní AI odpovede.");
+  }
+);
 
 /**
  * Generuje profesionálny e-mail na základe kontextu.

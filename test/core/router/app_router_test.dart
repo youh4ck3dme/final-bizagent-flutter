@@ -13,11 +13,9 @@ import 'package:bizagent/features/settings/models/user_settings_model.dart';
 import 'package:bizagent/core/i18n/l10n.dart';
 import 'package:bizagent/core/services/initialization_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bizagent/features/notifications/services/notification_service.dart';
 import 'package:bizagent/features/tools/services/monitoring_service.dart';
 import 'package:bizagent/features/analytics/providers/expense_insights_provider.dart';
-import 'package:bizagent/features/analytics/models/expense_insight_model.dart';
 import 'dart:async';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizagent/features/dashboard/providers/revenue_provider.dart';
@@ -100,6 +98,24 @@ class FakeMonitoringService extends Fake implements MonitoringService {
 
 void main() {
   final mockAnalytics = MockFirebaseAnalytics();
+
+  setUpAll(() {
+    when(
+      () => mockAnalytics.logScreenView(
+        screenName: any(named: 'screenName'),
+        screenClass: any(named: 'screenClass'),
+      ),
+    ).thenAnswer((_) async {});
+
+    when(
+      () => mockAnalytics.logEvent(
+        name: any(named: 'name'),
+        parameters: any(named: 'parameters'),
+      ),
+    ).thenAnswer((_) async {});
+
+    when(() => mockAnalytics.logAppOpen()).thenAnswer((_) async {});
+  });
 
   group('AppRouter Redirect Tests', () {
     testWidgets('Stays on /splash when auth is loading', (tester) async {

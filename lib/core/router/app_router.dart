@@ -263,8 +263,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (context, state) => const AiReminderGeneratorScreen(),
                   ),
                   GoRoute(
-                    path: 'ico-lookup',
-                    builder: (context, state) => const IcoLookupScreen(),
+                    path: 'ico-lookup/:initialIco?',
+                    builder: (context, state) {
+                      final initialIco = state.pathParameters['initialIco'];
+                      return IcoLookupScreen(initialIco: initialIco);
+                    },
                   ),
                   GoRoute(
                     path: 'biz-bot',

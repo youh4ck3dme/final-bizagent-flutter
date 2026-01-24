@@ -1,1 +1,3 @@
-AIzaSyD8Fq8rFgPA42Y5J_G-8cZ4RAfRGCt0zuw
+<!-- REDACTED -->
+
+This file previously contained a secret. Do not commit API keys.
