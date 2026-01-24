@@ -6,7 +6,7 @@ Tento dokument je tvojou poslednou zastávkou pred kliknutím na tlačidlo **"Pu
 
 ## ✅ Final Pre-Publish Checklist (5 Minút)
 
-- [ ] **Demo Účet existuje:** Overil si v Firebase Console, že user `demo@bizagent.sk` s heslom `Poklop1369###` reálne existuje?
+- [ ] **Demo Účet existuje:** Overil si v Firebase Console, že user `demo@bizagent.sk` s heslom `Poklop1369###` reálne existuje a je typu **"Email/Password"** (nie Google Sign-In!)?
 - [ ] **App Access:** Zadaj si v Play Console do sekcie "App Access" presne tieto credentials.
 - [ ] **Data Safety:** Máš zaškrtnuté "Photos" (kvôli skenovaniu) a "Email" (kvôli loginu)?
 - [ ] **Data Safety:** Máš priznané aj "App activity" (Analytics) a "Diagnostics" (Crashlytics)?

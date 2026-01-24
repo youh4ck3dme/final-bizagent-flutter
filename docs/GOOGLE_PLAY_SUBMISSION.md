@@ -59,14 +59,15 @@ Pretože máme prihlásenie, Google Reviewer sa **MUSÍ** vedieť prihlásiť.
     *   **Notes:** `This is a test account strictly for review purposes. It comes with pre-populated dummy data.`
 
 ### 🛑 2.3.1 Krok naviac: VYTVORENIE DEMO ÚČTU (Overenie funkčnosti)
-Aby sa Google vedel prihlásiť, tento účet **MUSÍ EXISTOVAŤ**.
+Aby sa Google vedel prihlásiť, tento účet **MUSÍ EXISTOVAŤ** a byť typu **Email/Password**.
 
 1.  Choď do **Firebase Console** -> **Authentication** -> **Users**.
 2.  Klikni **"Add User"**.
 3.  Email: `demo@bizagent.sk`
 4.  Heslo: `Poklop1369###`
 5.  Klikni **"Add User"**.
-6.  **Hotovo.** Teraz je to na 100%. (Môžeš sa skúsiť prihlásiť v Appke, aby si mal istotu).
+6.  **Uisti sa**, že v stĺpci "Provider" vidíš ikonu obálky (Email), nie G (Google).
+7.  **Hotovo.** Teraz je to na 100%.
 
 ### 2.4 Data Safety (Bezpečnosť údajov) - **KRITICKÉ**
 Toto určuje, čo sa zobrazí v sekcii "Data Safety".
