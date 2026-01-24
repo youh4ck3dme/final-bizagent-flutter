@@ -15,7 +15,17 @@ Tento dokument je tvojou poslednou zastávkou pred kliknutím na tlačidlo **"Pu
 
 ---
 
-## 🆘 Emergency: Rejection Recovery (Čo odpísať?)
+## � POSLEDNÝ CHECK (30 sekúnd, fakt posledné!)
+
+1. **Firebase Console:** Skontroluj, že `demo@bizagent.sk` je **Enabled** a vieš sa s ním manuálne prihlásiť (skús to v Incognito móde webu).
+2. **Play Console:** Over, že v sekciách **App Access** aj **Data Safety** svieti zelená fajka a všetko je uložené.
+3. **AAB:** Nahraj súbor.
+4. **Publish:** Klikni a oslavuj. 🚀
+
+
+---
+
+## �🆘 Emergency: Rejection Recovery (Čo odpísať?)
 
 Ak ti Google vráti aplikáciu s chybou, nestresuj. Tu sú pripravené odpovede:
 
