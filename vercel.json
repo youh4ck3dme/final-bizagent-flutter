@@ -1,12 +1,17 @@
 {
   "version": 2,
   "public": true,
-  "buildCommand": "flutter build web --release",
+  "buildCommand": "echo 'Skipping build...'",
   "outputDirectory": "build/web",
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "headers": []
 }

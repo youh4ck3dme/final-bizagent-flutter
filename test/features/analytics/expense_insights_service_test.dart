@@ -7,7 +7,7 @@ import 'package:bizagent/features/expenses/models/expense_category.dart';
 class FakeGeminiService extends GeminiService {
   final String response;
 
-  FakeGeminiService(this.response) : super(functions: null);
+  FakeGeminiService(this.response);
 
   @override
   Future<String> analyzeJson(String context, String schema) async {

@@ -14,6 +14,7 @@ class UserSettingsModel {
   final String? companySwift;
   final bool showQrOnInvoice;
   final bool biometricEnabled;
+  final bool pinEnabled;
   final String language;
   final String currency;
 
@@ -33,6 +34,7 @@ class UserSettingsModel {
     this.companySwift,
     this.showQrOnInvoice = false,
     this.biometricEnabled = false,
+    this.pinEnabled = false,
     this.language = 'sk',
     this.currency = 'EUR',
   });
@@ -54,6 +56,7 @@ class UserSettingsModel {
       companySwift: map['companySwift'],
       showQrOnInvoice: map['showQrOnInvoice'] ?? false,
       biometricEnabled: map['biometricEnabled'] ?? false,
+      pinEnabled: map['pinEnabled'] ?? false,
       language: map['language'] ?? 'sk',
       currency: map['currency'] ?? 'EUR',
     );
@@ -76,6 +79,7 @@ class UserSettingsModel {
       'companySwift': companySwift,
       'showQrOnInvoice': showQrOnInvoice,
       'biometricEnabled': biometricEnabled,
+      'pinEnabled': pinEnabled,
       'language': language,
       'currency': currency,
     };
@@ -97,6 +101,7 @@ class UserSettingsModel {
     String? companySwift,
     bool? showQrOnInvoice,
     bool? biometricEnabled,
+    bool? pinEnabled,
     String? language,
     String? currency,
   }) {
@@ -116,6 +121,7 @@ class UserSettingsModel {
       companySwift: companySwift ?? this.companySwift,
       showQrOnInvoice: showQrOnInvoice ?? this.showQrOnInvoice,
       biometricEnabled: biometricEnabled ?? this.biometricEnabled,
+      pinEnabled: pinEnabled ?? this.pinEnabled,
       language: language ?? this.language,
       currency: currency ?? this.currency,
     );
@@ -135,6 +141,7 @@ class UserSettingsModel {
         iban: null,
         showQrOnInvoice: false,
         biometricEnabled: false,
+        pinEnabled: false,
         language: 'sk',
         currency: 'EUR',
       );

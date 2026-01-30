@@ -17,14 +17,14 @@ void main() {
   // Real data sample
   const validIco = '35742364';
   const invalidIco = '00000000';
-  
+
   final validResult = IcoLookupResult(
     ico: validIco,
     icoNorm: validIco,
     name: 'Telegrafia, a.s.',
     status: 'Active',
     city: 'Košice',
-    cachedAt: DateTime.now(),
+    fetchedAt: DateTime.now(),
   );
 
   setUp(() {
@@ -35,19 +35,19 @@ void main() {
   });
 
   group('🔍 IČO Lookup Diagnostic Suite (5 Layers)', () {
-    
+
     // -------------------------------------------------------------------------
     // Layer 1: Data Model (Mapping & Null Safety)
     // -------------------------------------------------------------------------
     test('Layer 1: Data Model - Should handle partial/malformed data gracefully', () {
       final badData = {
-        'name': 'Broken Ltd.', 
+        'name': 'Broken Ltd.',
         // Missing status, address, etc.
       };
-      
+
       // Should not throw
       final result = IcoLookupResult.fromMap(badData);
-      
+
       expect(result.name, 'Broken Ltd.');
       expect(result.status, ''); // Fallback default
       expect(result.city, '');   // Fallback default
@@ -89,7 +89,7 @@ void main() {
       await fakeDb.collection('companies').doc(validIco).set({
         ...validResult.toFirestore(),
         'name': 'Cached Name',
-        'cachedAt': Timestamp.fromDate(DateTime.now()),
+        'fetchedAt': Timestamp.fromDate(DateTime.now()),
       });
 
       final result = await service.lookupByIco(validIco);
@@ -115,7 +115,7 @@ void main() {
       await fakeDb.collection('companies').doc(validIco).set({
         ...validResult.toFirestore(),
         'name': 'Old Name',
-        'cachedAt': Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 2))),
+        'fetchedAt': Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 2))),
       });
 
       // Remote has new data
@@ -128,7 +128,7 @@ void main() {
       final result = await service.lookupByIco(validIco);
 
       // Immediate result is STALE (optimistic UX)
-      expect(result.name, 'Old Name'); 
+      expect(result.name, 'Old Name');
 
       // Wait for background microtask (allow async gap to close)
       await Future.delayed(const Duration(milliseconds: 50));
@@ -145,7 +145,7 @@ void main() {
       // Simulating what the TextField controller logic does
       // Assuming service handles spaces
       when(() => mockRemote.publicLookup(validIco)).thenAnswer((_) async => validResult);
-      
+
       final result = await service.lookupByIco(' 35 742 364 ');
       expect(result.icoNorm, validIco);
     });

@@ -90,15 +90,12 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
       if (kIsWeb) {
         final GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider.addScope('email');
-        googleProvider.setCustomParameters({
-          'login_hint': 'user@example.com',
-        });
         await FirebaseAuth.instance.signInWithPopup(googleProvider);
       } else {
         // Platform (macOS, Android, iOS) native flow
         final googleUser = await GoogleSignIn().signIn();
         final googleAuth = await googleUser?.authentication;
-        
+
         if (googleAuth != null) {
           final credential = GoogleAuthProvider.credential(
             accessToken: googleAuth.accessToken,
@@ -206,10 +203,12 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.business_center_rounded,
-                        size: 40,
-                        color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Image.asset(
+                          'assets/icon/app_icon_1024.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
 

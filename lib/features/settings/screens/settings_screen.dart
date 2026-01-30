@@ -9,6 +9,7 @@ import '../../../shared/utils/biz_snackbar.dart';
 import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/services/company_lookup_service.dart';
 import '../../../core/services/local_persistence_service.dart';
+import '../../../core/services/security_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -260,6 +261,54 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: const Text('Jazyk'),
                 trailing: const Text('Slovenčina'),
                 onTap: () {},
+              ),
+              const Divider(height: 32),
+              _buildSectionTitle('Zabezpečenie'),
+              SwitchListTile(
+                title: const Text('Biometrické overenie'),
+                subtitle: const Text('Rýchly prístup cez FaceID/Odtlačok'),
+                secondary: const Icon(Icons.fingerprint),
+                value: settings.biometricEnabled,
+                onChanged: (val) async {
+                  if (val) {
+                    final security = ref.read(securityServiceProvider);
+                    final canBio = await security.canCheckBiometrics();
+                    if (!canBio) {
+                      if (context.mounted) {
+                        BizSnackbar.showError(context, 'Biometria nie je podporovaná na tomto zariadení.');
+                      }
+                      return;
+                    }
+                    final authenticated = await security.authenticateWithBiometrics(
+                      reason: 'Povoliť biometrické overenie pre BizAgent'
+                    );
+                    if (!authenticated) return;
+                  }
+                  ref.read(settingsControllerProvider.notifier).updateBiometricEnabled(val);
+                },
+              ),
+              ListTile(
+                title: const Text('4-miestny PIN kód'),
+                subtitle: Text(settings.pinEnabled ? 'PIN je aktívny' : 'PIN je vypnutý'),
+                leading: const Icon(Icons.pin_outlined),
+                trailing: Switch(
+                  value: settings.pinEnabled,
+                  onChanged: (val) async {
+                    if (val) {
+                      // Trigger PIN Setup Flow
+                      final result = await context.push<String?>('/settings/pin-setup');
+                      if (result == null) return; // Cancelled
+                    } else {
+                      // Verification required to disable PIN
+                      final result = await context.push<bool>('/settings/pin-verify');
+                      if (result != true) return; // Failed verification
+                    }
+                    ref.read(settingsControllerProvider.notifier).updatePinEnabled(val);
+                  },
+                ),
+                onTap: settings.pinEnabled 
+                  ? () => context.push('/settings/pin-setup') // Change PIN
+                  : null,
               ),
               const Divider(height: 32),
               _buildSectionTitle('Správa dát'),

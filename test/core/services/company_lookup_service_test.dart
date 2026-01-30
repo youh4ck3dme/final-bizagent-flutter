@@ -25,14 +25,14 @@ void main() {
     name: 'Test Company',
     status: 'Active',
     city: 'Bratislava',
-    cachedAt: DateTime.now(),
+    fetchedAt: DateTime.now(),
   );
 
   test('returns cached result if not expired', () async {
     // 1. Seed Cache
     await fakeDb.collection('companies').doc('12345678').set({
       ...sampleResult.toFirestore(),
-      'cachedAt': Timestamp.fromDate(DateTime.now()), // Fresh
+      'fetchedAt': Timestamp.fromDate(DateTime.now()), // Fresh
     });
 
     // 2. Call
@@ -48,7 +48,7 @@ void main() {
     final staleDate = DateTime.now().subtract(const Duration(days: 2));
     await fakeDb.collection('companies').doc('12345678').set({
       ...sampleResult.toFirestore(),
-      'cachedAt': Timestamp.fromDate(staleDate),
+      'fetchedAt': Timestamp.fromDate(staleDate),
       'name': 'Old Name',
     });
 
@@ -58,7 +58,7 @@ void main() {
       name: 'New Name',
       status: 'Active',
       city: 'Bratislava',
-      cachedAt: DateTime.now(),
+      fetchedAt: DateTime.now(),
     );
 
     // Stub remote to return fresh data
@@ -74,7 +74,7 @@ void main() {
     // Allow microtask queue to process
     await Future.delayed(const Duration(milliseconds: 50));
     verify(() => mockRemote.publicLookup('12345678')).called(1);
-    
+
     // 5. Verify DB is updated
     final doc = await fakeDb.collection('companies').doc('12345678').get();
     expect(doc.data()?['name'], 'New Name');
@@ -89,7 +89,7 @@ void main() {
 
     // 3. Verify
     expect(result.name, 'Test Company');
-    
+
     // 4. Check it was saved to cache
     final doc = await fakeDb.collection('companies').doc('12345678').get();
     expect(doc.exists, true);

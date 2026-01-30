@@ -95,7 +95,7 @@ class CompanyLookupService {
   }
 
   bool _isExpired(IcoLookupResult result) {
-    final ts = result.cachedAt;
+    final ts = result.fetchedAt;
     if (ts == null) return true;
     return DateTime.now().difference(ts) > _ttl;
   }

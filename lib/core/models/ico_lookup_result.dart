@@ -76,10 +76,10 @@ class IcoLookupResult {
     String? hash,
     String? lastSyncFrom,
   }) {
-    final effectiveIcoNorm = icoNorm.isNotEmpty 
-        ? icoNorm 
+    final effectiveIcoNorm = icoNorm.isNotEmpty
+        ? icoNorm
         : ico.replaceAll(RegExp(r'\D'), '');
-        
+
     return IcoLookupResult._(
       ico: ico,
       icoNorm: effectiveIcoNorm,
@@ -198,7 +198,10 @@ class IcoLookupResult {
   };
 
   factory IcoLookupResult.fromMap(Map<String, dynamic> map) {
-    final addr = map['address'] as Map<String, dynamic>?;
+    final rawAddr = map['address'];
+    final Map<String, dynamic>? addr = rawAddr is Map<String, dynamic> ? rawAddr : null;
+    final String? addrString = rawAddr is String ? rawAddr : null;
+
     final verdict = map['ai_verdict'] as Map<String, dynamic>?;
     final rawIco = map['ico']?.toString() ?? '';
 
@@ -206,7 +209,7 @@ class IcoLookupResult {
       ico: rawIco,
       name: map['name'] ?? '',
       status: map['status'] ?? '',
-      street: addr?['street'] ?? '',
+      street: addr?['street'] ?? addrString ?? '',
       city: addr?['city'] ?? map['city'] ?? '',
       postalCode: addr?['postalCode'] ?? '',
       dic: map['dic'],
@@ -229,7 +232,7 @@ class IcoLookupResult {
     final identifiers = json['identifiers'] as Map<String, dynamic>?;
     final snapshot = json['snapshot'] as Map<String, dynamic>?;
     final address = snapshot?['address_current'] as Map<String, dynamic>?;
-    
+
     final rawIco = identifiers?['ico']?.toString() ?? '';
     final normIco = rawIco.replaceAll(RegExp(r'\D'), '');
 
@@ -244,14 +247,14 @@ class IcoLookupResult {
       dic: identifiers?['dic'],
       icDph: identifiers?['ic_dph'],
       isRateLimited: false,
-      cachedAt: DateTime.now(),
+      fetchedAt: DateTime.now(),
     );
   }
 
   // --- Getters ---
 
   bool get isValid => name.isNotEmpty;
-  
+
   String get fullAddress {
     final parts = [street, postalCode, city].where((s) => s.isNotEmpty).toList();
     return parts.join(', ');

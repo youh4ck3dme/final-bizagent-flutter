@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 admin.initializeApp();
 const db = admin.firestore();
 
-const ICOATLAS = "https://icoatlas.sk/api/lookup";
+const ICOATLAS = "https://icoatlas.sk/api/company";
 
 export const batchRefreshWatched = functions.pubsub
   .schedule("every 24 hours")
@@ -39,7 +39,7 @@ export const refreshCompanyNow = functions.https.onRequest(
 );
 
 async function refreshCompany(icoNorm: string, uid: string) {
-  const res = await fetch(`${ICOATLAS}?ico=${icoNorm}`, {
+  const res = await fetch(`${ICOATLAS}/${icoNorm}`, {
     headers: {
       "X-Api-Key": process.env.ICOATLAS_API_KEY!,
     },

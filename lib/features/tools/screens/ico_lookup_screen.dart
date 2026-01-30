@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:firebase_app_check/firebase_app_check.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../core/models/ico_lookup_result.dart';
 import '../../../shared/widgets/watched_company_button.dart';
@@ -12,6 +16,7 @@ import '../../limits/usage_limiter.dart';
 import '../../billing/billing_service.dart';
 import '../services/web_sync_service.dart';
 import '../providers/ico_lookup_provider.dart';
+import '../../../shared/utils/biz_snackbar.dart';
 
 
 
@@ -53,6 +58,31 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
         _handleSearch(isAuto: true);
       }
     });
+  }
+
+  Future<void> _testSecurityPing() async {
+    try {
+      final token = await FirebaseAppCheck.instance.getToken();
+      final response = await http.get(
+        Uri.parse('https://bizagent.sk/api/auth/ping'),
+        headers: {
+          'X-Firebase-AppCheck': token ?? '',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (mounted) {
+          BizSnackbar.showSuccess(context, 'Gateway Ping OK: enforced=${data['enforced']} (Vercel)');
+        }
+      } else {
+        throw Exception('Gateway error: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (mounted) {
+        BizSnackbar.showError(context, 'Gateway Ping Failed: $e');
+      }
+    }
   }
 
   void _handleSearch({bool isAuto = false}) {
@@ -106,7 +136,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
               style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: BizTheme.spacingXl),
-            
+
             // Search Field
             Container(
               decoration: BoxDecoration(
@@ -131,7 +161,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                   counterText: '',
                   prefixIcon: const Icon(Icons.search, color: BizTheme.slovakBlue),
                   suffixIcon: IconButton(
-                    icon: isLoading 
+                    icon: isLoading
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
                         : const Icon(Icons.arrow_forward_rounded, color: BizTheme.slovakBlue),
                     onPressed: isLoading ? null : () => _handleSearch(),
@@ -145,15 +175,30 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                 onSubmitted: (_) => _handleSearch(),
               ),
             ),
-            
+
             // Web Synced List
             const SizedBox(height: BizTheme.spacingMd),
             _buildWebSyncSection(context, ref),
-            
+
             const SizedBox(height: BizTheme.spacing2xl),
-            
+
             // Result Area
             _buildResultContent(context, ref, lookupState),
+
+            if (kDebugMode) ...[
+              const SizedBox(height: BizTheme.spacing3xl),
+              Center(
+                child: TextButton.icon(
+                  onPressed: _testSecurityPing,
+                  icon: const Icon(Icons.security, size: 16),
+                  label: const Text('DIAGNOSTIKA APP CHECK'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.colorScheme.onSurfaceVariant,
+                    textStyle: theme.textTheme.labelSmall,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -221,12 +266,12 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                   ),
                 const SizedBox(width: 6),
                 Text(
-                  status == IcoLookupStatus.cachedStaleRefreshing 
-                    ? 'AKTUALIZUJEM NA POZADÍ...' 
+                  status == IcoLookupStatus.cachedStaleRefreshing
+                    ? 'AKTUALIZUJEM NA POZADÍ...'
                     : (isCached ? 'DÁTA Z CACHE (BLESKOVÉ)' : 'DÁTA AKTUALIZOVANÉ'),
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: status == IcoLookupStatus.cachedStaleRefreshing 
-                      ? BizTheme.slovakBlue 
+                    color: status == IcoLookupStatus.cachedStaleRefreshing
+                      ? BizTheme.slovakBlue
                       : (isCached ? Colors.amber : Colors.green),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.1,
@@ -235,7 +280,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
               ],
             ).animate().fadeIn().slideX(begin: -0.1),
           ),
-          
+
         Card(
           child: Padding(
             padding: const EdgeInsets.all(BizTheme.spacingLg),
@@ -341,7 +386,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     ),
                   ),
                 ],
-                
+
                 // Risk Badge (LOW / MEDIUM / HIGH)
                 if (result.riskLevel != null || result.riskHint != null) ...[
                   const SizedBox(height: BizTheme.spacingMd),
@@ -433,7 +478,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
     return webSyncAsync.when(
       data: (leads) {
         if (leads.isEmpty) return const SizedBox.shrink();
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -469,8 +514,8 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
 
                   return ActionChip(
                     avatar: Icon(
-                      isNew ? Icons.bolt : Icons.history, 
-                      size: 14, 
+                      isNew ? Icons.bolt : Icons.history,
+                      size: 14,
                       color: isNew ? Colors.amber : Colors.grey
                     ),
                     label: Text(
@@ -504,11 +549,11 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
 
   Widget _buildRiskBadge(String? level, String? hint) {
     if (level == null && hint == null) return const SizedBox.shrink();
-    
+
     final theme = Theme.of(context);
     Color color;
     IconData icon;
-    
+
     switch (level?.toLowerCase()) {
       case 'high':
       case 'vysoké':

@@ -3,6 +3,10 @@ import 'package:flutter/foundation.dart'
   show TargetPlatform, defaultTargetPlatform, kDebugMode, kIsWeb, debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:cloud_functions/cloud_functions.dart'; // Removed
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
@@ -14,7 +18,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'features/limits/usage_limiter.dart';
 
 Future<void> _initFirebaseAppCheck() async {
-  const webSiteKey = String.fromEnvironment('APP_CHECK_WEB_SITE_KEY');
+  const webSiteKey = String.fromEnvironment(
+    'APP_CHECK_WEB_SITE_KEY',
+    defaultValue: '6LfwZ1YsAAAAANYS3BP1DwHQ6o1ue8iDmlxjuLJN',
+  );
 
   if (kIsWeb) {
     if (webSiteKey.isEmpty) {
@@ -23,7 +30,7 @@ Future<void> _initFirebaseAppCheck() async {
     }
 
     await FirebaseAppCheck.instance.activate(
-      webProvider: ReCaptchaV3Provider(webSiteKey),
+      webProvider: ReCaptchaEnterpriseProvider(webSiteKey),
     );
     return;
   }
@@ -47,7 +54,7 @@ Future<void> _initFirebaseAppCheck() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   if (kDebugMode && !kIsWeb) {
     try {
       final r = await http.get(Uri.parse('https://www.google.com')).timeout(const Duration(seconds: 5));
@@ -64,13 +71,26 @@ void main() async {
   await persistenceService.init();
 
   final sharedPrefs = await SharedPreferences.getInstance();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   await _initFirebaseAppCheck();
-  
+
+  if (kDebugMode) {
+    try {
+      debugPrint('Using Firebase Emulators...');
+      // Use emulators in debug mode
+      // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      // FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      // await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+      // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+    } catch (e) {
+      debugPrint('Emulator init error: $e');
+    }
+  }
+
   runApp(
     ProviderScope(
       overrides: [

@@ -90,9 +90,10 @@ Android (`.aab`) je hotový. Pre iOS treba:
 *   [ ] Apple Developer Account (99$/rok).
 *   [ ] Spustiť `flutter build ipa`.
 
-### 4. 💳 IČ DPH Validácia (VIES API)
-Súčasné overovanie IČO je napojené na Slovensko.Digital.
-*   [ ] Pre obchodovanie s EU pridať validáciu cez VIES (EU Commission API) pre automatické overenie DPH.
+### 4. 💳 Validácia IČO/DIČ/IČ DPH (Unified)
+Súčasné overovanie je zjednotené cez BizAgent Gateway (Contract v1.0.0). napojené na Slovensko.Digital a IcoAtlas.
+* [x] **Unifikovaný Register:** Všetky klientské lookupy sú proxované cez serverless gateway.
+* [ ] **VIES API:** Pre obchodovanie s EU pridať validáciu cez VIES (EU Commission API) pre automatické overenie DPH.
 
 ---
 

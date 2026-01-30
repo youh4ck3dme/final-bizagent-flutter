@@ -1,0 +1,34 @@
+# Vercel Ignore File (Overrides .gitignore)
+
+# Flutter & Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# Platform native folders (we only need build/web)
+android/
+ios/
+macos/
+linux/
+windows/
+test/
+
+# Config & Secrets
+.env
+.env.local
+firebase.json
+firestore.rules
+storage.rules
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+
+# Node
+**/node_modules/

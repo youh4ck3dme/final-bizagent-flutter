@@ -40,7 +40,7 @@ class FakeCompanyLookupService implements CompanyLookupService {
         postalCode: '821 08',
         dic: '2020102636',
         icDph: 'SK2020102636',
-        cachedAt: DateTime.now(),
+          fetchedAt: DateTime.now(),
       );
     }
     throw Exception('Not found');

@@ -1,4 +1,13 @@
-# Changelog
+## [0.9.0] - 2026-01-25
+### Added
+- **Unified IČO Registry**: Canonical contract (v1.0.0) implemented across all layers.
+- **Fixture-based Simulation**: Deterministic testing using real Golden JSON data.
+- **IČO Recording Tool**: `scripts/record_ico_fixture.sh` for easy QA data capture.
+
+### Changed
+- **Zero Placeholder Truth**: Removed all hardcoded mock companies and fake strings.
+- **Redirected Legacy Services**: `IcoAtlasService` now proxied through the unified system.
+- **Improved 404 Handling**: Precise "Company not found" state instead of generic errors.
 
 All notable changes to BizAgent will be documented in this file.
 

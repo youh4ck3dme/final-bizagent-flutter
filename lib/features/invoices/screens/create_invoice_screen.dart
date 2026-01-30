@@ -642,9 +642,9 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                       children: [
                         Expanded(child: TextFormField(controller: _itemDescController, decoration: const InputDecoration(labelText: 'Popis'))),
                         const SizedBox(width: 8),
-                        SizedBox(width: 50, child: TextFormField(controller: _itemQtyController, decoration: const InputDecoration(labelText: 'Ks'), keyboardType: TextInputType.number)),
+                        SizedBox(width: 60, child: TextFormField(controller: _itemQtyController, decoration: const InputDecoration(labelText: 'Ks'), keyboardType: TextInputType.number)),
                         const SizedBox(width: 8),
-                        SizedBox(width: 80, child: TextFormField(controller: _itemPriceController, decoration: const InputDecoration(labelText: 'Cena/ks'), keyboardType: TextInputType.number)),
+                        SizedBox(width: 100, child: TextFormField(controller: _itemPriceController, decoration: const InputDecoration(labelText: 'Cena/ks'), keyboardType: TextInputType.number)),
                         const SizedBox(width: 8),
                         if (isVatPayer)
                           DropdownButton<double>(

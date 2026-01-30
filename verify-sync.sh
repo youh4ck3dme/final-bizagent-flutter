@@ -4,7 +4,7 @@ set -euo pipefail
 PORT="${PORT:-3000}"
 ICO="${1:-${ICO:-46359371}}"
 BASE="http://localhost:${PORT}"
-URL="${BASE}/api/public/ico/lookup?ico=${ICO}"
+URL="${BASE}/api/company/${ICO}"
 
 echo "🔍 Starting BizAgent Sync Verification (Port 3000)..."
 echo "--------------------------------------------------------"

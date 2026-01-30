@@ -20,6 +20,7 @@ import '../../features/ai_tools/screens/ai_expense_analysis_screen.dart';
 import '../../features/ai_tools/screens/ai_reminder_generator_screen.dart';
 import '../../features/ai_tools/screens/biz_bot_screen.dart';
 import '../../features/auth/screens/firebase_login_screen.dart';
+import '../../features/auth/screens/pin_auth_screen.dart';
 // import '../../features/auth/screens/chameleon_login_screen.dart'; // No longer used as default login
 import '../../features/auth/providers/auth_repository.dart';
 import '../../features/intro/providers/onboarding_provider.dart';
@@ -246,6 +247,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'email-generator',
+                    name: 'emailGenerator',
                     builder: (context, state) {
                       final extra = state.extra as Map<String, dynamic>?;
                       return AiEmailGeneratorScreen(
@@ -256,14 +258,17 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'expense-analysis',
+                    name: 'expenseAnalysis',
                     builder: (context, state) => const AiExpenseAnalysisScreen(),
                   ),
                   GoRoute(
                     path: 'reminder-generator',
+                    name: 'reminderGenerator',
                     builder: (context, state) => const AiReminderGeneratorScreen(),
                   ),
                   GoRoute(
                     path: 'ico-lookup/:initialIco?',
+                    name: 'icoLookup',
                     builder: (context, state) {
                       final initialIco = state.pathParameters['initialIco'];
                       return IcoLookupScreen(initialIco: initialIco);
@@ -271,10 +276,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'biz-bot',
+                    name: 'bizBot',
                     builder: (context, state) => const BizBotScreen(),
                   ),
                   GoRoute(
                     path: 'monitoring',
+                    name: 'monitoring',
                     builder: (context, state) => const WatchedCompaniesScreen(),
                   ),
                 ],
@@ -290,6 +297,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'trash',
                     builder: (context, state) => const TrashScreen(),
+                  ),
+                  GoRoute(
+                    path: 'pin-setup',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => const PinAuthScreen(initialMode: PinMode.setup),
+                  ),
+                  GoRoute(
+                    path: 'pin-verify',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => const PinAuthScreen(initialMode: PinMode.verify),
                   ),
                 ],
               ),

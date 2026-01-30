@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/biz_bot_service.dart';
 import '../../../core/ui/biz_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class BizBotMessage {
   final String text;
@@ -36,6 +37,14 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       timestamp: DateTime.now(),
     ));
   }
+
+  // Suggested prompts for quick actions
+  final List<String> _suggestedPrompts = [
+    'Ako vystavím faktúru?',
+    'Môžem si dať kávu do nákladov?',
+    'Aké sú aktuálne odvody pre SZČO?',
+    'Vypočítaj mi čistú mzdu z 2000€',
+  ];
 
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -71,7 +80,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       }
     } catch (e) {
       String errorMessage = 'Prepáč, vyskytla sa chyba pri spájaní s AI.';
-      
+
       if (e.toString().contains('API kľúč')) {
         errorMessage = 'Chyba API kľúča (403/Invalid). Kontaktujte podporu.';
       } else if (e.toString().contains('quota')) {
@@ -81,7 +90,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       } else {
         errorMessage = 'Chyba: $e';
       }
-      
+
       if (mounted) {
         setState(() {
           _messages.add(BizBotMessage(
@@ -142,6 +151,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
               padding: EdgeInsets.all(8.0),
               child: LinearProgressIndicator(backgroundColor: Colors.transparent),
             ),
+          if (_messages.length <= 1) _buildSuggestions(),
           _buildInput(),
         ],
       ),
@@ -183,14 +193,19 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
           ],
           border: msg.isUser ? null : Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         ),
-        child: SelectableText( // Allow copying text
-          msg.text,
-          style: TextStyle(
-            color: msg.isUser ? Colors.white : Colors.black87,
-            height: 1.5,
-            fontSize: 15,
-          ),
-        ),
+        child: msg.isUser
+            ? SelectableText(
+                msg.text,
+                style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.5),
+              )
+            : MarkdownBody(
+                data: msg.text,
+                selectable: true,
+                styleSheet: MarkdownStyleSheet(
+                  p: const TextStyle(fontSize: 15, height: 1.5, color: Colors.black87),
+                  listBullet: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
       ).animate().fade().slideY(begin: 0.1, duration: 300.ms, curve: Curves.easeOut),
     );
   }
@@ -243,6 +258,31 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
             ).animate(target: _isLoading ? 0 : 1).scale(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSuggestions() {
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemCount: _suggestedPrompts.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final prompt = _suggestedPrompts[index];
+          return ActionChip(
+            label: Text(prompt, style: const TextStyle(fontSize: 12)),
+            backgroundColor: Colors.white,
+            elevation: 1,
+            onPressed: () {
+              _controller.text = prompt;
+              _sendMessage();
+            },
+          );
+        },
       ),
     );
   }

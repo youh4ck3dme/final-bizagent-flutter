@@ -1,128 +1,73 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { defineString } = require("firebase-functions/params");
+const admin = require("firebase-admin");
+const sgMail = require("@sendgrid/mail");
+
+admin.initializeApp();
 
 const geminiApiKey = defineString("GEMINI_API_KEY");
 const openaiApiKey = defineString("OPENAI_API_KEY");
 const openaiModelPrimary = defineString("OPENAI_MODEL_PRIMARY");
 const openaiModelFallback = defineString("OPENAI_MODEL_FALLBACK");
 const icoAtlasApiKey = defineString("ICOATLAS_API_KEY");
-
-// Model configuration
-// UPDEJT: Prejdené na 2.0 flash (stable model)
-const MODEL_NAME = "gemini-2.0-flash";
+const sendgridApiKey = defineString("SENDGRID_API_KEY");
+const mailFrom = defineString("MAIL_FROM");
 
 /**
  * Generuje AI odpoveď cez OpenAI (server-side), s fallback modelom.
  * Používa sa pre chatbota a iné prompt-based AI funkcie z Flutter Web.
  */
+// --- 1. Chatbot (Gemini Fallback) ---
 exports.generateAiText = onCall(
   {
-    cors: true, // TODO: Pre produkciu obmedz origin(y)
+    cors: true,
+    enforceAppCheck: true, // Reject missing/invalid App Check tokens
+    secrets: [geminiApiKey],
   },
   async (request) => {
-    const { prompt, models } = request.data || {};
+    const { prompt } = request.data || {};
 
     if (!prompt || typeof prompt !== "string") {
       throw new HttpsError("invalid-argument", 'Chýba parameter "prompt".');
     }
 
-    const apiKey = openaiApiKey.value();
+    const apiKey = geminiApiKey.value();
     if (!apiKey) {
       throw new HttpsError(
         "failed-precondition",
-        "Server nie je správne nakonfigurovaný (chýba OPENAI_API_KEY)."
+        "Server nie je správne nakonfigurovaný (chýba GEMINI_API_KEY)."
       );
     }
 
-    const primary = (openaiModelPrimary.value() || "gpt-4o-mini").trim();
-    const fallback = (openaiModelFallback.value() || "gpt-4o").trim();
-    const requestedModels = Array.isArray(models)
-      ? models.filter((m) => typeof m === "string" && m.trim().length > 0)
-      : [];
-
-    // Whitelist to avoid arbitrary expensive models from clients.
-    const allowed = new Set([primary, fallback, "gpt-4o-mini", "gpt-4o"]);
-    const candidates = [
-      ...requestedModels.filter((m) => allowed.has(m)),
-      primary,
-      fallback,
-    ].filter((v, i, a) => a.indexOf(v) === i);
+    // Initialize Gemini
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const systemInstruction =
       "Si BizAgent AI - inteligentný asistent pre slovenských podnikateľov. Odpovedaj stručne, vecne a v slovenčine.";
 
-    const callOnce = async (model) => {
-      const resp = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model,
-          temperature: 0.2,
-          messages: [
-            { role: "system", content: systemInstruction },
-            { role: "user", content: prompt },
-          ],
-        }),
-      });
+    // Construct prompt with system instruction
+    const fullPrompt = `${systemInstruction}\n\nUser: ${prompt}`;
 
-      const json = await resp.json().catch(() => null);
-      if (!resp.ok) {
-        const message =
-          (json && json.error && json.error.message) ||
-          `OpenAI request failed with HTTP ${resp.status}`;
-        const err = new Error(message);
-        err.status = resp.status;
-        throw err;
-      }
-
-      const text =
-        json?.choices?.[0]?.message?.content ||
-        json?.choices?.[0]?.text ||
-        "";
-      return { text, model };
-    };
-
-    let lastError = null;
-    for (const model of candidates) {
-      try {
-        const result = await callOnce(model);
-        return { text: result.text, model: result.model };
-      } catch (err) {
-        lastError = err;
-
-        if (err?.status === 401 || err?.status === 403) {
-          throw new HttpsError(
-            "permission-denied",
-            "Neplatný alebo chýbajúci OpenAI API kľúč."
-          );
-        }
-
-        if (err?.status === 429) {
-          throw new HttpsError(
-            "resource-exhausted",
-            "Limit dopytov bol prekročený."
-          );
-        }
-
-        // Try next model.
-        continue;
-      }
+    try {
+      const result = await model.generateContent(fullPrompt);
+      const response = await result.response;
+      const text = response.text();
+      return { text: text };
+    } catch (error) {
+      console.error("Gemini Error:", error);
+      throw new HttpsError("internal", "Chyba pri generovaní AI odpovede: " + error.message);
     }
-
-    console.error("OpenAI generateAiText error:", lastError);
-    throw new HttpsError("internal", "Chyba pri generovaní AI odpovede.");
   }
 );
 
 /**
  * Generuje profesionálny e-mail na základe kontextu.
  */
-exports.generateEmail = onCall({ 
-  cors: true // TODO: Pre produkciu zmeň na ["https://bizagent-live-2026.web.app"]
+exports.generateEmail = onCall({
+  cors: true,
+  enforceAppCheck: true,
 }, async (request) => {
   if (!request.auth) {
     throw new HttpsError('unauthenticated', 'Funkcia musí byť volaná prihláseným používateľom.');
@@ -133,28 +78,44 @@ exports.generateEmail = onCall({
     throw new HttpsError('invalid-argument', 'Chýba parameter "context".');
   }
 
-  const apiKey = geminiApiKey.value();
+  const apiKey = openaiApiKey.value();
   if (!apiKey) {
-    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný (chýba API kľúč).');
+    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný (chýba OPENAI_API_KEY).');
   }
 
+  const systemInstruction = "Si profesionálny biznis asistent pre slovenských podnikateľov. Tvojou úlohou je písať e-maily, ktoré sú gramaticky správne, slušné a vecne presné podľa zadaného kontextu. Používaj spisovnú slovenčinu a profesionálne formátovanie.";
+  const prompt = `Napíš ${type} e-mail v ${tone} tóne. Kontext: ${context}`;
+
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: MODEL_NAME,
-      systemInstruction: "Si profesionálny biznis asistent pre slovenských podnikateľov. Tvojou úlohou je písať e-maily, ktoré sú gramaticky správne, slušné a vecne presné podľa zadaného kontextu. Používaj spisovnú slovenčinu a profesionálne formátovanie."
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        temperature: 0.7,
+        messages: [
+          { role: "system", content: systemInstruction },
+          { role: "user", content: prompt }
+        ]
+      })
     });
 
-    const prompt = `Napíš ${type} e-mail v ${tone} tóne. Kontext: ${context}`;
-    
-    const result = await model.generateContent(prompt);
-    return { text: result.response.text() };
+    if (!resp.ok) {
+       const text = await resp.text();
+       console.error("OpenAI Email Error:", resp.status, text);
+       throw new HttpsError("internal", `OpenAI API Error: ${resp.status}`);
+    }
+
+    const json = await resp.json();
+    const content = json.choices?.[0]?.message?.content || "";
+
+    return { text: content };
 
   } catch (error) {
-    console.error("Gemini Email Error:", error);
-    if (error.status === 403 || error.message.includes('API key')) {
-      throw new HttpsError('permission-denied', 'Neplatný API kľúč pre AI službu.');
-    }
+    console.error("OpenAI Email Exception:", error);
     throw new HttpsError('internal', 'Chyba pri generovaní e-mailu: ' + error.message);
   }
 });
@@ -162,8 +123,9 @@ exports.generateEmail = onCall({
 /**
  * Parsuje text z bločku pomocou AI pre presnejšie dáta.
  */
-exports.analyzeReceipt = onCall({ 
-  cors: true 
+exports.analyzeReceipt = onCall({
+  cors: true,
+  enforceAppCheck: true,
 }, async (request) => {
   if (!request.auth) {
     throw new HttpsError('unauthenticated', 'Prístup odmietnutý.');
@@ -174,16 +136,12 @@ exports.analyzeReceipt = onCall({
     throw new HttpsError('invalid-argument', 'Chýba text na analýzu.');
   }
 
-  const apiKey = geminiApiKey.value();
+  const apiKey = openaiApiKey.value();
   if (!apiKey) {
-    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný.');
+    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný (chýba OPENAI_API_KEY).');
   }
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: MODEL_NAME,
-      systemInstruction: `Si expert na analýzu slovenských pokladničných dokladov. 
+  const systemInstruction = `Si expert na analýzu slovenských pokladničných dokladov.
       Z extrahovaného textu vytiahni údaje do čistého JSONu v tejto štruktúre:
       {
         "vendor_name": "Názov obchodu",
@@ -199,15 +157,38 @@ exports.analyzeReceipt = onCall({
         },
         "confidence": 0.9 (odhad istoty)
       }
-      Ak údaj nevieš nájsť, nechaj ho null.`
+      Ak údaj nevieš nájsť, nechaj ho null. Odpovedaj iba čistým JSONom bez markdownu.`;
+
+  try {
+     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        temperature: 0.1, // Low temp for data extraction
+        messages: [
+          { role: "system", content: systemInstruction },
+          { role: "user", content: `Analyzuj text:\n\n${text}` }
+        ],
+        response_format: { type: "json_object" } // Enforce JSON mode
+      })
     });
 
-    const result = await model.generateContent(`Analyzuj text:\n\n${text}`);
-    const jsonString = result.response.text().replace(/```json|```/g, '').trim();
-    
-    return JSON.parse(jsonString);
+    if (!resp.ok) {
+       const errText = await resp.text();
+       console.error("OpenAI Receipt Error:", resp.status, errText);
+       throw new HttpsError("internal", `OpenAI API Error: ${resp.status}`);
+    }
+
+    const json = await resp.json();
+    const content = json.choices?.[0]?.message?.content || "{}";
+
+    return JSON.parse(content);
   } catch (error) {
-    console.error("Gemini Receipt Error:", error);
+    console.error("OpenAI Receipt Exception:", error);
     throw new HttpsError('internal', 'Chyba pri analýze dokladu: ' + error.message);
   }
 });
@@ -217,7 +198,8 @@ exports.analyzeReceipt = onCall({
  * Používa IcoAtlas.sk API s proxy cez server-side kľúčom.
  */
 exports.lookupCompany = onCall({
-  cors: true
+  cors: true,
+  enforceAppCheck: true,
 }, async (request) => {
   // Allow unauthenticated for onboarding flow (strictly rate limited in prod)
   // For now, allow it to speed up "Magic Setup"
@@ -230,45 +212,12 @@ exports.lookupCompany = onCall({
   // Pad ICO to 8 digits if numeric
   const paddedIco = ico.padStart(8, '0');
 
-  // 1. Try Mock Data (For Demo "Wow" Effect without API Key)
-  const MOCK_DB = {
-    '36396567': { // Google Slovakia
-      name: 'Google Slovakia, s. r. o.',
-      ico: '36396567',
-      dic: '2020102636',
-      icDph: 'SK2020102636',
-      address: 'Karadžičova 8/A, Bratislava 821 08'
-    },
-    '35757442': { // O2 Slovakia
-      name: 'O2 Slovakia, s.r.o.',
-      ico: '35757442',
-      dic: '2020216748',
-      icDph: 'SK2020216748',
-      address: 'Einsteinova 24, Bratislava 851 01'
-    },
-    '46113177': { // SkyToll
-      name: 'SkyToll, a. s.',
-      ico: '46113177',
-      dic: '2023247964',
-      icDph: 'SK2023247964',
-      address: 'Lamačská cesta 3/B, Bratislava 841 04'
-    }
-  };
-
   const apiKey = icoAtlasApiKey.value();
-
-  // Ak nemáme kľúč alebo je to známe testovacie IČO, vráť mock
-  if (!apiKey || MOCK_DB[ico]) {
-    console.log("Using Mock/Fallback for IČO:", ico);
-    if (MOCK_DB[ico]) return MOCK_DB[ico];
-
-    // Ak nemáme kľúč a nie je v mocku:
-    if (!apiKey) {
-       return null;
-    }
+  if (!apiKey) {
+    throw new HttpsError('failed-precondition', 'Server nie je správne nakonfigurovaný (chýba API kľúč).');
   }
 
-  // 2. Real API Call (IcoAtlas.sk)
+  // 1. Real API Call (IcoAtlas.sk)
   try {
     const response = await fetch(`https://icoatlas.sk/api/company/${paddedIco}`, {
       headers: {
@@ -278,8 +227,7 @@ exports.lookupCompany = onCall({
     });
 
     if (response.status === 404) {
-      console.log("Endpoint mismatch for IČO:", ico);
-      return null;
+      throw new HttpsError('not-found', 'Firma sa nenašla.');
     }
 
     if (response.status === 401 || response.status === 403) {
@@ -301,11 +249,75 @@ exports.lookupCompany = onCall({
       ico: data.ico || ico,
       dic: data.dic || '',
       icDph: data.ic_dph || '',
-      address: data.address || ''
+      address: data.address || '',
+      source: 'icoatlas.sk',
+      fetchedAt: new Date().toISOString()
     };
 
   } catch (error) {
     console.error("Lookup Error:", error);
     throw new HttpsError('internal', 'Chyba pri hľadaní firmy.');
+  }
+});
+/**
+ * Security Ping to verify App Check enforcement.
+ */
+exports.securityPing = onCall({
+  enforceAppCheck: true,
+}, async (request) => {
+  return {
+    ok: true,
+    appId: request.app?.appId ?? null,
+    enforced: true,
+    timestamp: new Date().toISOString(),
+  };
+});
+/**
+ * Send invoice email via SendGrid.
+ */
+exports.sendInvoiceEmail = onCall({
+  enforceAppCheck: true,
+  secrets: [sendgridApiKey],
+}, async (request) => {
+  const { to, subject, html } = request.data || {};
+  if (!to || !subject || !html) {
+    throw new HttpsError("invalid-argument", "Missing required fields (to, subject, html).");
+  }
+
+  const apiKey = sendgridApiKey.value();
+  if (!apiKey) {
+    throw new HttpsError("failed-precondition", "Missing SENDGRID_API_KEY.");
+  }
+  sgMail.setApiKey(apiKey);
+
+  const from = mailFrom.value() || "BizAgent <no-reply@bizagent.sk>";
+  const msg = { to, from, subject, html };
+
+  try {
+    const [resp] = await sgMail.send(msg);
+
+    await admin.firestore().collection("mail_logs").add({
+      to,
+      subject,
+      status: "sent",
+      sendgridStatus: resp.statusCode,
+      at: admin.firestore.FieldValue.serverTimestamp(),
+      uid: request.auth?.uid ?? null,
+    });
+
+    return { ok: true };
+  } catch (error) {
+    console.error("SendGrid Error:", error);
+
+    await admin.firestore().collection("mail_logs").add({
+      to,
+      subject,
+      status: "failed",
+      error: error.message,
+      at: admin.firestore.FieldValue.serverTimestamp(),
+      uid: request.auth?.uid ?? null,
+    });
+
+    throw new HttpsError("internal", "Email sending failed: " + error.message);
   }
 });

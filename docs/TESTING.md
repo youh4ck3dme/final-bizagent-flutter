@@ -350,6 +350,21 @@ testWidgets('InvoiceScreen golden test', (tester) async {
     matchesGoldenFile('goldens/invoice_screen.png'),
   );
 });
+
+## Golden Data Fixtures (Truth-based Testing)
+Pre externé registre (ako IČO) nepoužívame statické mocky v kóde, ale deterministické JSON fixtúry nahrané z reality.
+
+### Nahrávanie Fixtúr
+Ak chcete pridať novú firmu do testov, použite skript, ktorý stiahne "ostrú" pravdu z gateway:
+```bash
+chmod +x scripts/record_ico_fixture.sh
+./scripts/record_ico_fixture.sh 36396567
+```
+Výsledok sa uloží do `test/fixtures/ico_[ico].json`.
+
+### Simulačné Testy
+Test `test/features/tools/screens/ico_lookup_simulation_test.dart` používa tieto fixtúry na overenie, že UI presne zodpovedá realite bez falšovania dát.
+Oveľa lepšie ako mockovanie, pretože testuje aj parsovanie reálneho JSONu z API.
 ```
 
 **Generate goldens:**

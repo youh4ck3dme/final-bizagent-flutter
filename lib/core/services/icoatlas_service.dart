@@ -1,27 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import '../models/company_info.dart';
 import '../models/ico_lookup_result.dart';
 
 final icoAtlasServiceProvider = Provider<IcoAtlasService>((ref) {
-  // Always use the gateway to avoid shipping vendor API keys in the client.
-  // The gateway can decide (server-side) whether to call real providers.
   const baseUrl = 'https://bizagent.sk';
-  
-  final headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  };
 
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl,
     connectTimeout: null,
     receiveTimeout: null,
-    headers: headers,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
   ));
 
-  // Logger only for development
   if (kDebugMode) {
     dio.interceptors.add(LogInterceptor(
       request: true,
@@ -33,6 +29,21 @@ final icoAtlasServiceProvider = Provider<IcoAtlasService>((ref) {
     ));
   }
 
+  // Security Interceptor for App Check
+  dio.interceptors.add(InterceptorsWrapper(
+    onRequest: (options, handler) async {
+      try {
+        final token = await FirebaseAppCheck.instance.getToken();
+        if (token != null) {
+          options.headers['X-Firebase-AppCheck'] = token;
+        }
+      } catch (e) {
+        debugPrint('App Check Token Error: $e');
+      }
+      return handler.next(options);
+    },
+  ));
+
   const isDemo = String.fromEnvironment('ICO_MODE') != 'REAL';
   return IcoAtlasService(dio, isDemoMode: isDemo);
 });
@@ -43,85 +54,43 @@ class IcoAtlasService {
 
   IcoAtlasService(this._dio, {this.isDemoMode = true});
 
-  /// Performs a public IČO lookup via the secure gateway.
-  /// Handles 200 (Success) and 429 (Rate Limited).
   Future<IcoLookupResult?> publicLookup(String ico) async {
     try {
-      // DEMO/GATEWAY MODE (always via gateway)
-      const endpoint = '/api/public/ico/lookup';
-      final response = await _dio.get(endpoint, queryParameters: {'ico': ico});
+      final endpoint = '/api/company/${ico.trim()}';
+      final response = await _dio.get(
+        endpoint,
+        options: Options(headers: {'X-ICO-LOOKUP-CONTRACT': '1.0.0'}),
+      );
 
-      if (response.statusCode == 200 && response.data != null && response.data['ok'] == true) {
-        return IcoLookupResult.fromMap(response.data['summary'] ?? {});
+      if (response.statusCode == 200 && response.data != null) {
+        return IcoLookupResult.fromMap(response.data);
       }
       return null;
     } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return null;
       if (e.response?.statusCode == 429) {
         final resetIn = e.response?.data?['resetIn'];
         return IcoLookupResult.rateLimited(
           resetIn: resetIn != null ? int.tryParse(resetIn.toString()) : null,
         );
       }
-      debugPrint('Public IČO lookup failed: ${e.message}');
       return null;
     } catch (e) {
-      debugPrint('Public IČO lookup error: $e');
       return null;
     }
   }
 
-  /// Fetches company data by normalized IČO.
-  /// Used for background referesh logic.
   Future<IcoLookupResult> fetchByIco(String icoNorm) async {
-    // Re-use public lookup logic but throw on failure for the background service
     final result = await publicLookup(icoNorm);
-    if (result == null || result.isRateLimited) {
-      throw Exception('Refresh failed');
-    }
+    if (result == null || result.isRateLimited) throw Exception('Fetch failed');
     return result;
   }
 
-  /// Performs a secure IČO lookup for paid users (fetches full data + AI verdict).
-  Future<IcoLookupResult?> secureLookup(String ico, String? token) async {
-    if (token == null) return null;
+  Future<IcoLookupResult?> secureLookup(String ico, String? token) => publicLookup(ico);
 
-    try {
-      const endpoint = '/api/internal/ico/full';
-      final response = await _dio.get(
-        endpoint, 
-        queryParameters: {'ico': ico},
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );
-
-      if (response.statusCode == 200 && response.data != null && response.data['ok'] == true) {
-        // Map full data response to result model
-        return IcoLookupResult.fromMap(response.data['payload'] ?? {});
-      }
-      return null;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 429) {
-        final resetIn = e.response?.data?['resetIn'];
-        return IcoLookupResult.rateLimited(
-          resetIn: resetIn != null ? int.tryParse(resetIn.toString()) : null,
-        );
-      }
-      if (e.response?.statusCode == 402) {
-        return IcoLookupResult.paymentRequired();
-      }
-      debugPrint('Secure IČO lookup failed: ${e.message}');
-      return null;
-    } catch (e) {
-      debugPrint('Secure IČO lookup error: $e');
-      return null;
-    }
-  }
-
-  /// Looks up a company by its IČO (Legacy/Proxy method).
   Future<CompanyInfo?> lookupCompany(String ico) async {
     try {
-      // Proxying through the public lookup for now as per architecture rules
       final result = await publicLookup(ico);
-      
       if (result != null && !result.isRateLimited && result.name.isNotEmpty) {
         return CompanyInfo(
           name: result.name,
@@ -137,21 +106,32 @@ class IcoAtlasService {
     }
   }
 
-  /// Provides company suggestions based on a search query.
-  /// Note: This should also be gated or proxied if needed.
   Future<List<Map<String, dynamic>>> autocomplete(String query) async {
     if (query.length < 2) return [];
-    
     try {
-      // Assuming gateway might have an autocomplete proxy later
       final response = await _dio.get('/api/public/ico/autocomplete', queryParameters: {'q': query});
-      
       if (response.statusCode == 200 && response.data is List) {
         return List<Map<String, dynamic>>.from(response.data);
       }
       return [];
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<IcoLookupResult?> viesLookup(String countryCode, String vatNumber) async {
+    try {
+      final endpoint = '/api/vies/validate';
+      final response = await _dio.get(
+        endpoint,
+        queryParameters: {'country': countryCode, 'vat': vatNumber},
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        return IcoLookupResult.fromMap(response.data);
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 }

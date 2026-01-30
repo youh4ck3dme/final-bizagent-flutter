@@ -1,26 +1,37 @@
-// IcoAtlas API proxy for Vercel (serverless function)
-declare const process: any;
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import * as admin from 'firebase-admin';
 
-type VercelRequest = {
-  method: string;
-  query: { ico?: string };
-  url: string;
-  headers: Record<string, string>;
-  body: any;
-  cookies: Record<string, string>;
-};
+// Initialize Firebase Admin
+if (!admin.apps.length) {
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    : undefined;
 
-type VercelResponse = {
-  status(code: number): VercelResponse;
-  json(data: any): void;
-};
+  admin.initializeApp({
+    credential: serviceAccount ? admin.credential.cert(serviceAccount) : admin.credential.applicationDefault(),
+    projectId: process.env.FIREBASE_PROJECT_ID || 'bizagent-live-2026'
+  });
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const ico = req.query.ico;
+  // Security: Verify App Check Token
+  const appCheckToken = req.headers['x-firebase-appcheck'] as string;
+  if (!appCheckToken) {
+    return res.status(401).json({ error: 'Missing App Check token' });
+  }
+
+  try {
+    await admin.appCheck().verifyToken(appCheckToken);
+  } catch (err) {
+    console.error('App Check verification failed:', err);
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const ico = req.query.ico as string;
 
   if (!ico) {
     return res.status(400).json({ error: 'Missing IČO parameter' });
@@ -63,7 +74,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ico: data.ico || ico,
       dic: data.dic || '',
       icDph: data.ic_dph || '',
-      address: data.address || ''
+      address: data.address || '',
+      source: 'icoatlas.sk',
+      fetchedAt: new Date().toISOString()
     };
 
     return res.status(200).json(result);

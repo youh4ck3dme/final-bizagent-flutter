@@ -1,0 +1,15 @@
+{
+  "name": "bizagent-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@sendgrid/mail": "^8.0.0",
+    "@vercel/node": "^5.5.27",
+    "firebase-admin": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.30",
+    "typescript": "^5.0.0"
+  }
+}

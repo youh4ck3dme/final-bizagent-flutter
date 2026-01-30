@@ -21,7 +21,12 @@ git grep -nE "apiKey|AIza|secret|token|PRIVATE_KEY|BEGIN PRIVATE KEY|firebaseCon
 ```
 lib/firebase_options.dart:22:    apiKey: 'REPLACE_ME',
 ```
-✅ Placeholder hodnoty sú OK - reálne keys sú mimo git.
+✅ Placeholder hodnoty sú OK - reálne keys sú mimo git. Dáta sú prenášané cez HTTPS (TLS 1.3).
+
+## IČO Lookup Security
+- **No Client Keys**: Vendor API kľúče (IcoAtlas) nie sú nikdy uložené v Flutter/PWA balíčku.
+- **Gateway Proxy**: Všetky dopyty sú proxované cez BizAgent Gateway na Vercel (server-side).
+- **Contract Enforcement**: Gateway vynucuje validný formát IČO a verziu kontraktu (1.0.0), čo zabraňuje "injection" útokom na upstream registre.
 
 ### .gitignore Setup
 
