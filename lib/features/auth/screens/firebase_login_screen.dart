@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
+import '../providers/auth_repository.dart';
 import '../../../core/ui/biz_theme.dart';
 
 class FirebaseLoginScreen extends ConsumerStatefulWidget {
@@ -44,12 +45,14 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      await ref.read(authRepositoryProvider).signIn(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
       _showError(_getFirebaseErrorMessage(e.code));
+    } catch (e) {
+      _showError('Došlo k chybe: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -73,12 +76,14 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      await ref.read(authRepositoryProvider).signUp(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
     } on FirebaseAuthException catch (e) {
       _showError(_getFirebaseErrorMessage(e.code));
+    } catch (e) {
+      _showError('Došlo k chybe: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -87,27 +92,7 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      if (kIsWeb) {
-        final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-        googleProvider.addScope('email');
-        await FirebaseAuth.instance.signInWithPopup(googleProvider);
-      } else {
-        // Platform (macOS, Android, iOS) native flow
-        final googleUser = await GoogleSignIn().signIn();
-        final googleAuth = await googleUser?.authentication;
-
-        if (googleAuth != null) {
-          final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
-          );
-          await FirebaseAuth.instance.signInWithCredential(credential);
-        } else {
-          // User cancelled the login
-          if (mounted) setState(() => _isLoading = false);
-          return;
-        }
-      }
+      await ref.read(authRepositoryProvider).signInWithGoogle();
     } on FirebaseAuthException catch (e) {
       _showError(_getFirebaseErrorMessage(e.code));
     } catch (e) {
@@ -336,7 +321,7 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                       children: [
                         Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Text(
                             'alebo',
                             style: TextStyle(color: Colors.grey.withValues(alpha: 0.6)),

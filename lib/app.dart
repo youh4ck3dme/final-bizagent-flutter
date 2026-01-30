@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/ui/biz_theme.dart';
-import 'core/providers/theme_provider.dart';
-import 'core/router/app_router.dart';
-
-import 'core/i18n/l10n.dart';
-
-import 'core/services/review_service.dart';
-import 'features/notifications/services/notification_service.dart';
-import 'features/notifications/services/notification_scheduler.dart';
+import 'package:bizagent/core/ui/biz_theme.dart';
+import 'package:bizagent/core/providers/theme_provider.dart';
+import 'package:bizagent/core/router/app_router.dart';
+import 'package:bizagent/core/i18n/l10n.dart';
+import 'package:bizagent/core/services/review_service.dart';
+import 'package:bizagent/features/notifications/services/notification_service.dart';
+import 'package:bizagent/features/notifications/services/notification_scheduler.dart';
 
 class BizAgentApp extends ConsumerStatefulWidget {
   const BizAgentApp({super.key});
@@ -33,7 +31,7 @@ class _BizAgentAppState extends ConsumerState<BizAgentApp> {
       if (!mounted) return;
       ref.read(notificationServiceProvider).requestPermissions();
       ref.read(notificationSchedulerProvider).scheduleAllAlerts();
-      
+
       // Start Monitoring (Firestore Listener)
       // ref.read(monitoringServiceProvider).notifications(); // Stream is lazy loaded by UI
     });

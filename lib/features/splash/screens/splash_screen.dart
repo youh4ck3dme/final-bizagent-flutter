@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../features/auth/providers/auth_repository.dart';
-import '../../../features/intro/providers/onboarding_provider.dart';
-import '../../../core/services/initialization_service.dart';
-import '../../../core/ui/biz_theme.dart';
+import 'package:bizagent/features/auth/providers/auth_repository.dart';
+import 'package:bizagent/features/intro/providers/onboarding_provider.dart';
+import 'package:bizagent/core/services/initialization_service.dart';
+import 'package:bizagent/core/ui/biz_theme.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -30,7 +30,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
      final authState = ref.read(authStateProvider);
      final onboardingState = ref.read(onboardingProvider);
-     
+
      if (authState.valueOrNull != null) {
        if (onboardingState.valueOrNull == true) {
          context.go('/dashboard');
@@ -63,7 +63,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             'assets/images/splash_branding.webp',
             fit: BoxFit.cover,
           ),
-          
+
           // 2. Overlay Gradient for readability
           Container(
             decoration: BoxDecoration(
