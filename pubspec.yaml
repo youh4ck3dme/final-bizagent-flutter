@@ -111,6 +111,10 @@ dependencies:
   universal_io: ^2.3.1
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.8
+  google_sign_in_platform_interface: ^2.4.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
@@ -125,7 +129,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/icon/
 
 flutter_launcher_icons:
   android: true

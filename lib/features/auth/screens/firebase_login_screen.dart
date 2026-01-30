@@ -169,31 +169,13 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Logo/Icon Section
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [BizTheme.slovakBlue, BizTheme.nationalRed],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: BizTheme.slovakBlue.withValues(alpha: 0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Image.asset(
-                          'assets/icon/app_icon_1024.png',
-                          fit: BoxFit.contain,
-                        ),
+                    // Logo Section (Simplified to only the new icon)
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: Image.asset(
+                        'assets/images/icon.png',
+                        fit: BoxFit.contain,
                       ),
                     ),
 

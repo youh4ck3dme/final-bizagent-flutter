@@ -58,10 +58,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 1. Branding Image (Fullscreen or large)
-          Image.asset(
-            'assets/images/splash_branding.webp',
-            fit: BoxFit.cover,
+          // 1. Branding Image (Centered logo instead of old fullscreen image)
+          Center(
+            child: SizedBox(
+              width: 180,
+              height: 180,
+              child: Image.asset(
+                'assets/images/splash_branding.png',
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
 
           // 2. Overlay Gradient for readability
