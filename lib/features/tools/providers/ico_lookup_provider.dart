@@ -19,11 +19,7 @@ class IcoLookupState {
   final IcoLookupResult? result;
   final String? errorMessage;
 
-  IcoLookupState({
-    required this.status,
-    this.result,
-    this.errorMessage,
-  });
+  IcoLookupState({required this.status, this.result, this.errorMessage});
 
   IcoLookupState copyWith({
     IcoLookupStatus? status,
@@ -38,9 +34,11 @@ class IcoLookupState {
   }
 }
 
-final icoLookupProvider = NotifierProvider<IcoLookupController, IcoLookupState>(() {
-  return IcoLookupController();
-});
+final icoLookupProvider = NotifierProvider<IcoLookupController, IcoLookupState>(
+  () {
+    return IcoLookupController();
+  },
+);
 
 class IcoLookupController extends Notifier<IcoLookupState> {
   @override
@@ -55,7 +53,7 @@ class IcoLookupController extends Notifier<IcoLookupState> {
     state = state.copyWith(status: IcoLookupStatus.loading);
 
     final repo = ref.read(companyRepositoryProvider);
-    final user = ref.read(authStateProvider).valueOrNull;
+    final user = ref.read(authStateProvider).asData?.value;
 
     try {
       // 1. Check local cache FIRST
@@ -63,8 +61,9 @@ class IcoLookupController extends Notifier<IcoLookupState> {
       final now = DateTime.now();
 
       if (cached != null) {
-        final isFresh = cached.expiresAt != null && cached.expiresAt!.isAfter(now);
-        
+        final isFresh =
+            cached.expiresAt != null && cached.expiresAt!.isAfter(now);
+
         if (isFresh) {
           state = state.copyWith(
             status: IcoLookupStatus.cachedFresh,
@@ -83,10 +82,7 @@ class IcoLookupController extends Notifier<IcoLookupState> {
       }
 
       // 2. Refresh from backend (Background or Initial)
-      final refreshed = await repo.refresh(
-        ico, 
-        existingHash: cached?.hash,
-      );
+      final refreshed = await repo.refresh(ico, existingHash: cached?.hash);
 
       // 3. Handle result
       if (refreshed != null) {
@@ -106,7 +102,6 @@ class IcoLookupController extends Notifier<IcoLookupState> {
       if (user != null && (refreshed != null || cached != null)) {
         await repo.markAsOpened(user.id, ico);
       }
-
     } catch (e) {
       // If we have cached data, don't strictly show error screen, maybe just a toast
       if (state.result != null) {
@@ -116,7 +111,10 @@ class IcoLookupController extends Notifier<IcoLookupState> {
         if (e.toString().contains('SocketException')) {
           state = state.copyWith(status: IcoLookupStatus.errorOffline);
         } else {
-          state = state.copyWith(status: IcoLookupStatus.errorServer, errorMessage: e.toString());
+          state = state.copyWith(
+            status: IcoLookupStatus.errorServer,
+            errorMessage: e.toString(),
+          );
         }
       }
     }

@@ -41,13 +41,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
       vsync: this,
     );
 
-    _micScaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _micAnimationController,
-      curve: Curves.easeInOut,
-    ));
+    _micScaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _micAnimationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -108,7 +104,10 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         });
       } else {
         setState(() => _voiceState = VoiceState.error);
-        BizSnackbar.showInfo(context, 'Nepodarilo sa rozpoznať výdavok. Skúste to znova.');
+        BizSnackbar.showInfo(
+          context,
+          'Nepodarilo sa rozpoznať výdavok. Skúste to znova.',
+        );
       }
     } catch (e) {
       if (!mounted) return;
@@ -134,7 +133,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         description: _parsedExpense!.description,
         amount: _parsedExpense!.amount,
         date: _parsedExpense!.date,
-        category: expenseCategoryFromString(_parsedExpense!.category.toLowerCase()),
+        category: expenseCategoryFromString(
+          _parsedExpense!.category.toLowerCase(),
+        ),
         categorizationConfidence: (_parsedExpense!.confidence * 100).toInt(),
         receiptUrls: [],
         isOcrVerified: false,
@@ -142,7 +143,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
 
       await ref.read(expensesControllerProvider.notifier).addExpense(expense);
 
-      ref.read(analyticsServiceProvider).logVoiceExpenseCompleted(success: true);
+      ref
+          .read(analyticsServiceProvider)
+          .logVoiceExpenseCompleted(success: true);
 
       if (!mounted) return;
       BizSnackbar.showSuccess(context, 'Výdavok uložený cez hlas! 🎉');
@@ -187,10 +190,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           if (_voiceState != VoiceState.idle)
             TextButton(
               onPressed: _resetToIdle,
-              child: Text(
-                'Reset',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
+              child: Text('Reset', style: TextStyle(color: Colors.grey[600])),
             ),
         ],
       ),
@@ -199,11 +199,8 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
-              Expanded(
-                child: _buildMainContent(),
-              ),
-              if (_voiceState == VoiceState.idle)
-                _buildActionButton(),
+              Expanded(child: _buildMainContent()),
+              if (_voiceState == VoiceState.idle) _buildActionButton(),
             ],
           ),
         ),
@@ -249,18 +246,18 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           const SizedBox(height: 32),
           Text(
             'Pridajte výdavok hlasom',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           Text(
             'Povedzte niečo ako:\n"Kúpil som kávu za 3,50€"',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.grey[600],
-              height: 1.5,
-            ),
+                  color: Colors.grey[600],
+                  height: 1.5,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -285,11 +282,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
                     color: Colors.red.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.mic,
-                    size: 60,
-                    color: Colors.red,
-                  ),
+                  child: const Icon(Icons.mic, size: 60, color: Colors.red),
                 ),
               );
             },
@@ -297,9 +290,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           const SizedBox(height: 32),
           Text(
             'Počúvam...',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
           Container(
@@ -309,7 +302,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              _transcription.isNotEmpty ? _transcription : 'Povedzte svoj výdavok...',
+              _transcription.isNotEmpty
+                  ? _transcription
+                  : 'Povedzte svoj výdavok...',
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
@@ -334,9 +329,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           const SizedBox(height: 32),
           Text(
             'Spracovávam...',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
           Container(
@@ -376,17 +371,13 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.check_circle,
-              size: 64,
-              color: Colors.green,
-            ),
+            const Icon(Icons.check_circle, size: 64, color: Colors.green),
             const SizedBox(height: 24),
             Text(
               'Rozpoznané údaje',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 24),
             _buildExpenseDetails(),
@@ -485,9 +476,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
           const SizedBox(height: 32),
           Text(
             'Ukladám výdavok...',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -499,25 +490,18 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.orange,
-          ),
+          const Icon(Icons.error_outline, size: 64, color: Colors.orange),
           const SizedBox(height: 24),
           Text(
             'Nepodarilo sa rozpoznať',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
           Text(
             'Skúste to znova s jasnejším hlasom',
-            style: TextStyle(
-              color: Colors.grey[600],
-              height: 1.5,
-            ),
+            style: TextStyle(color: Colors.grey[600], height: 1.5),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -557,10 +541,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
             SizedBox(width: 12),
             Text(
               'Začať nahrávať',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -573,11 +554,4 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen>
   }
 }
 
-enum VoiceState {
-  idle,
-  listening,
-  processing,
-  confirmation,
-  saving,
-  error,
-}
+enum VoiceState { idle, listening, processing, confirmation, saving, error }

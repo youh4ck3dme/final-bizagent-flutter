@@ -10,7 +10,9 @@ import 'package:bizagent/core/i18n/l10n.dart';
 
 void main() {
   testWidgets('Dashboard shows 5 quick action tiles when empty state is active',
-      (tester) async {
+      (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -23,9 +25,7 @@ void main() {
         ],
         child: const L10n(
           locale: AppLocale.sk,
-          child: MaterialApp(
-            home: DashboardScreen(),
-          ),
+          child: MaterialApp(home: DashboardScreen()),
         ),
       ),
     );
@@ -56,8 +56,10 @@ void main() {
     expect(find.text('AI vyčítanie a automatické vyplnenie'), findsOneWidget);
 
     // 3. Pridať výdavok
-    expect(find.text('Pridať výdavok'),
-        findsAtLeastNWidgets(1)); // May appear in banner too
+    expect(
+      find.text('Pridať výdavok'),
+      findsAtLeastNWidgets(1),
+    ); // May appear in banner too
     expect(find.text('Evidencia nákladov'), findsOneWidget);
 
     // 4. Import bank CSV

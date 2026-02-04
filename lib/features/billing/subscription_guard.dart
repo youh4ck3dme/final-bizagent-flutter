@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import '../../core/remote_config.dart';
 import '../billing/billing_service.dart';
 
@@ -17,6 +18,9 @@ class SubscriptionGuard {
   SubscriptionGuard(this.ref);
 
   bool canAccess(BizFeature feature) {
+    // DEV BYPASS: Allow everything on localhost/debug
+    if (kDebugMode) return true;
+
     final billingState = ref.read(billingProvider);
     final isPro = billingState.entitlements.isPro;
     final isBusiness = billingState.entitlements.isBusiness;
@@ -29,15 +33,18 @@ class SubscriptionGuard {
         if (isPro) return true;
         // Check local usage limit (mocked for now, needs persistent storage)
         // ideally usage is tracked in a separate provider
-        return billingState.entitlements.invoiceCount < remoteConfig.invoiceLimit;
-        
+        return billingState.entitlements.invoiceCount <
+            remoteConfig.invoiceLimit;
+
       case BizFeature.icoLookup:
-         if (isPro) return true; // Pro has high limits, effectively unlimited for casual use
-         return billingState.entitlements.icoLookupsCount < 5;
+        if (isPro) {
+          return true; // Pro has high limits, effectively unlimited for casual use
+        }
+        return billingState.entitlements.icoLookupsCount < 5;
 
       case BizFeature.aiAnalysis:
         if (isBusiness) return true;
-        if (isPro) return billingState.entitlements.aiRequestsCount < 50; 
+        if (isPro) return billingState.entitlements.aiRequestsCount < 50;
         return billingState.entitlements.aiRequestsCount < 1;
 
       case BizFeature.exportExcel:
@@ -48,27 +55,28 @@ class SubscriptionGuard {
 
       case BizFeature.watchedCompanies:
         if (isBusiness || isPro) return true;
-        // Limit for Free tier is 3. 
+        // Limit for Free tier is 3.
         // We rely on the button/UI to check current count against this entitlement.
         // BUT wait, the pattern here is checking if they are allowed to do X.
-        // For limits based features, we usually just return true if they are NOT capped by tier, 
+        // For limits based features, we usually just return true if they are NOT capped by tier,
         // or we need to inject the current count.
         // User requested `final canWatch = ref.read(subscriptionGuardProvider).canWatchCompanies;`
         // which implies a property that returns bool.
         // Let's implement that Specific getter as requested by user instructions.
-        return true; 
+        return true;
     }
   }
 
   // Requested by user instruction: "final canWatch = ref.read(subscriptionGuardProvider).canWatchCompanies;"
-  // This likely means "Is the user ALLOWED to act on watched companies generally?" 
+  // This likely means "Is the user ALLOWED to act on watched companies generally?"
   // OR "Is the user UNLIMITED?".
   // Given the context of `_checkLimit` in button, the user wants us to replace:
   // `if (entitlements.isPro)` with `if (guard.canWatchCompanies)`.
   // So `canWatchCompanies` should basically mean "Is Pro / Unlimited".
   bool get canWatchCompanies {
     final billingState = ref.read(billingProvider);
-    return billingState.entitlements.isPro || billingState.entitlements.isBusiness;
+    return billingState.entitlements.isPro ||
+        billingState.entitlements.isBusiness;
   }
 
   String getUpgradeMessage(BizFeature feature) {

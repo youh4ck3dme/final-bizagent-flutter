@@ -78,9 +78,7 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Center(
-            child: CameraPreview(_controller!),
-          ),
+          Center(child: CameraPreview(_controller!)),
           // Overlay UI
           SafeArea(
             child: Column(
@@ -119,7 +117,8 @@ class _CameraScannerWidgetState extends State<CameraScannerWidget> {
                       child: Center(
                         child: _isCapturing
                             ? const CircularProgressIndicator(
-                                color: Colors.white)
+                                color: Colors.white,
+                              )
                             : Container(
                                 height: 60,
                                 width: 60,

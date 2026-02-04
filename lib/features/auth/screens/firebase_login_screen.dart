@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:go_router/go_router.dart';
 import '../providers/auth_repository.dart';
 import '../../../core/ui/biz_theme.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class FirebaseLoginScreen extends ConsumerStatefulWidget {
   const FirebaseLoginScreen({super.key});
 
   @override
-  ConsumerState<FirebaseLoginScreen> createState() => _FirebaseLoginScreenState();
+  ConsumerState<FirebaseLoginScreen> createState() =>
+      _FirebaseLoginScreenState();
 }
 
 class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
@@ -45,10 +47,9 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await ref.read(authRepositoryProvider).signIn(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+      await ref
+          .read(authRepositoryProvider)
+          .signIn(_emailController.text.trim(), _passwordController.text);
     } on FirebaseAuthException catch (e) {
       _showError(_getFirebaseErrorMessage(e.code));
     } catch (e) {
@@ -76,10 +77,9 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await ref.read(authRepositoryProvider).signUp(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+      await ref
+          .read(authRepositoryProvider)
+          .signUp(_emailController.text.trim(), _passwordController.text);
     } on FirebaseAuthException catch (e) {
       _showError(_getFirebaseErrorMessage(e.code));
     } catch (e) {
@@ -89,25 +89,9 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
     }
   }
 
-  Future<void> _signInWithGoogle() async {
-    setState(() => _isLoading = true);
-    try {
-      await ref.read(authRepositoryProvider).signInWithGoogle();
-    } on FirebaseAuthException catch (e) {
-      _showError(_getFirebaseErrorMessage(e.code));
-    } catch (e) {
-      _showError('Došlo k chybe pri prihlasovaní: $e');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: BizTheme.nationalRed,
-      ),
+      SnackBar(content: Text(message), backgroundColor: BizTheme.nationalRed),
     );
   }
 
@@ -267,7 +251,9 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : (_isSignIn ? _signInWithEmail : _signUpWithEmail),
+                        onPressed: _isLoading
+                            ? null
+                            : (_isSignIn ? _signInWithEmail : _signUpWithEmail),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: BizTheme.slovakBlue,
                           foregroundColor: Colors.white,
@@ -275,7 +261,9 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           elevation: 4,
-                          shadowColor: BizTheme.slovakBlue.withValues(alpha: 0.3),
+                          shadowColor: BizTheme.slovakBlue.withValues(
+                            alpha: 0.3,
+                          ),
                         ),
                         child: _isLoading
                             ? const SizedBox(
@@ -283,7 +271,9 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                                 height: 24,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
                                 ),
                               )
                             : Text(
@@ -301,44 +291,38 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                     // Divider
                     Row(
                       children: [
-                        Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.grey.withValues(alpha: 0.3),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Text(
                             'alebo',
-                            style: TextStyle(color: Colors.grey.withValues(alpha: 0.6)),
+                            style: TextStyle(
+                              color: Colors.grey.withValues(alpha: 0.6),
+                            ),
                           ),
                         ),
-                        Expanded(child: Divider(color: Colors.grey.withValues(alpha: 0.3))),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.grey.withValues(alpha: 0.3),
+                          ),
+                        ),
                       ],
                     ),
 
                     const SizedBox(height: 16),
 
                     // Google Sign In Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: OutlinedButton.icon(
-                        onPressed: _isLoading ? null : _signInWithGoogle,
-                        icon: Image.asset(
-                          'assets/icons/google_g.png',
-                          height: 24,
-                          width: 24,
-                        ),
-                        label: Text(
-                          'Pokračovať s Google',
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 56),
+                      child: const GoogleSignInButton(
+                        clientId:
+                            '542280140779-c5m14rqpih1j9tmf9km52aq1684l9qjd.apps.googleusercontent.com',
+                        loadingIndicator: Center(
+                          child: CircularProgressIndicator(),
                         ),
                       ),
                     ),
@@ -358,6 +342,27 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                         ),
                       ),
                     ),
+
+                    // Dev Bypass (Only for debugging localhost)
+                    if (kDebugMode) ...[
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () async {
+                          await ref
+                              .read(authRepositoryProvider)
+                              .signInAnonymously();
+                          if (!context.mounted) return;
+                          context.go('/ai-tools/ico-lookup');
+                        },
+                        child: const Text(
+                          'Preskočiť na overenie (Real Anon Login)',
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
 
                     const SizedBox(height: 8),
 
@@ -392,7 +397,7 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                     color: Colors.orange.withValues(alpha: 0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
-                  )
+                  ),
                 ],
               ),
               child: Row(

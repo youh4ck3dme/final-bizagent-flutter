@@ -5,21 +5,25 @@ import 'package:bizagent/shared/widgets/biz_widgets.dart'; // Correct package im
 
 void main() {
   group('BizInvoiceCard Widget Test', () {
-    testWidgets('BizInvoiceCard displays correct info', (WidgetTester tester) async {
+    testWidgets('BizInvoiceCard displays correct info', (
+      WidgetTester tester,
+    ) async {
       final date = DateTime(2025, 12, 31);
-      
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: BizInvoiceCard(
-            title: 'Firma XYZ',
-            subtitle: 'FA-2025001',
-            amount: 150.50,
-            date: date,
-            status: 'Odoslaná',
-            onTap: (){},
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: BizInvoiceCard(
+              title: 'Firma XYZ',
+              subtitle: 'FA-2025001',
+              amount: 150.50,
+              date: date,
+              status: 'Odoslaná',
+              onTap: () {},
+            ),
           ),
         ),
-      ));
+      );
 
       // Let flutter_animate and formatting settle.
       await tester.pump();

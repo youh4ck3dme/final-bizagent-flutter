@@ -10,9 +10,9 @@ class SmartDashboardEmptyState extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider).valueOrNull;
-    final invoices = ref.watch(invoicesProvider).valueOrNull ?? [];
-    final expenses = ref.watch(expensesProvider).valueOrNull ?? [];
+    final settings = ref.watch(settingsProvider).asData?.value;
+    final invoices = ref.watch(invoicesProvider).asData?.value ?? [];
+    final expenses = ref.watch(expensesProvider).asData?.value ?? [];
 
     final isSettingsCompleted = settings != null &&
         settings.companyName.isNotEmpty &&
@@ -173,10 +173,7 @@ class SmartDashboardEmptyState extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
                     ),
                   ],
                 ),

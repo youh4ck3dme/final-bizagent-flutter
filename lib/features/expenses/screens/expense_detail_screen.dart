@@ -38,9 +38,7 @@ class ExpenseDetailScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: category.color.withValues(alpha: 0.05),
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200),
-                ),
+                border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
               ),
               child: Column(
                 children: [
@@ -84,15 +82,24 @@ class ExpenseDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoRow(Icons.calendar_today, 'Dátum',
-                      DateFormat('d. MMMM yyyy', 'sk').format(expense.date)),
+                  _buildInfoRow(
+                    Icons.calendar_today,
+                    'Dátum',
+                    DateFormat('d. MMMM yyyy', 'sk').format(expense.date),
+                  ),
                   const SizedBox(height: 16),
-                  _buildInfoRow(Icons.category_outlined, 'Kategória',
-                      category.displayName),
+                  _buildInfoRow(
+                    Icons.category_outlined,
+                    'Kategória',
+                    category.displayName,
+                  ),
                   if (expense.description.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    _buildInfoRow(Icons.description_outlined, 'Popis',
-                        expense.description),
+                    _buildInfoRow(
+                      Icons.description_outlined,
+                      'Popis',
+                      expense.description,
+                    ),
                   ],
                   if (expense.categorizationConfidence != null) ...[
                     const SizedBox(height: 16),
@@ -101,7 +108,8 @@ class ExpenseDetailScreen extends ConsumerWidget {
                       'Istota AI',
                       '${expense.categorizationConfidence}%',
                       trailing: _buildConfidenceIndicator(
-                          expense.categorizationConfidence!),
+                        expense.categorizationConfidence!,
+                      ),
                     ),
                   ],
                   const SizedBox(height: 32),
@@ -118,10 +126,13 @@ class ExpenseDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     GestureDetector(
                       onTap: () {
-                        context.push('/expenses/receipt-viewer', extra: {
-                          'url': expense.receiptUrls.first,
-                          'isLocal': false
-                        });
+                        context.push(
+                          '/expenses/receipt-viewer',
+                          extra: {
+                            'url': expense.receiptUrls.first,
+                            'isLocal': false,
+                          },
+                        );
                       },
                       child: Container(
                         height: 300,
@@ -139,7 +150,8 @@ class ExpenseDetailScreen extends ConsumerWidget {
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
                               return const Center(
-                                  child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(),
+                              );
                             },
                           ),
                         ),
@@ -155,8 +167,12 @@ class ExpenseDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value,
-      {Widget? trailing}) {
+  Widget _buildInfoRow(
+    IconData icon,
+    String label,
+    String value, {
+    Widget? trailing,
+  }) {
     return Row(
       children: [
         Icon(icon, size: 20, color: BizTheme.gray600),
@@ -165,17 +181,21 @@ class ExpenseDetailScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey)),
-              Text(value,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500)),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
-        if (trailing != null) ...[
-          trailing,
-        ],
+        if (trailing != null) ...[trailing],
       ],
     );
   }
@@ -196,8 +216,11 @@ class ExpenseDetailScreen extends ConsumerWidget {
       ),
       child: Text(
         confidence > 80 ? 'Vysoká' : (confidence > 50 ? 'Stredná' : 'Nízka'),
-        style:
-            TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -210,12 +233,14 @@ class ExpenseDetailScreen extends ConsumerWidget {
         content: Text('Naozaj chcete zmazať výdavok "${expense.vendorName}"?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Zrušiť')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Zrušiť'),
+          ),
           TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              style: TextButton.styleFrom(foregroundColor: BizTheme.nationalRed),
-              child: const Text('Zmazať')),
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: BizTheme.nationalRed),
+            child: const Text('Zmazať'),
+          ),
         ],
       ),
     );

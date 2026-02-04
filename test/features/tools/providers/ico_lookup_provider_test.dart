@@ -43,34 +43,35 @@ void main() {
     expect(state.status, IcoLookupStatus.idle);
   });
 
-  test('Lookup should cycle through loading to success when repo returns data (USING FIXTURE)', () async {
-    // Arrange
-    final fixtureData = loadFixture('ico_36396567.json');
-    final mockResult = IcoLookupResult.fromMap(fixtureData);
-    final ico = mockResult.ico;
+  test(
+    'Lookup should cycle through loading to success when repo returns data (USING FIXTURE)',
+    () async {
+      // Arrange
+      final fixtureData = loadFixture('ico_36396567.json');
+      final mockResult = IcoLookupResult.fromMap(fixtureData);
+      final ico = mockResult.ico;
 
-    // Simulate no cache, fetch from backend
-    when(mockRepository.getFromCache(ico)).thenAnswer((_) async => null);
-    when(mockRepository.refresh(ico, existingHash: anyNamed('existingHash')))
-        .thenAnswer((_) async => mockResult);
+      // Simulate no cache, fetch from backend
+      when(mockRepository.getFromCache(ico)).thenAnswer((_) async => null);
+      when(
+        mockRepository.refresh(ico, existingHash: anyNamed('existingHash')),
+      ).thenAnswer((_) async => mockResult);
 
-    // Act
-    final future = container.read(icoLookupProvider.notifier).lookup(ico);
+      // Act
+      final future = container.read(icoLookupProvider.notifier).lookup(ico);
 
-    // Assert - Check loading state
-    expect(
-      container.read(icoLookupProvider).status,
-      IcoLookupStatus.loading,
-    );
+      // Assert - Check loading state
+      expect(container.read(icoLookupProvider).status, IcoLookupStatus.loading);
 
-    await future;
+      await future;
 
-    // Assert - Check success state
-    final state = container.read(icoLookupProvider);
-    expect(state.status, IcoLookupStatus.success);
-    expect(state.result, mockResult);
-    expect(state.result?.name, fixtureData['name']);
-  });
+      // Assert - Check success state
+      final state = container.read(icoLookupProvider);
+      expect(state.status, IcoLookupStatus.success);
+      expect(state.result, mockResult);
+      expect(state.result?.name, fixtureData['name']);
+    },
+  );
 
   test('Lookup should return notFound when repo returns null', () async {
     // Arrange
@@ -85,16 +86,24 @@ void main() {
     expect(container.read(icoLookupProvider).status, IcoLookupStatus.notFound);
   });
 
-  test('Lookup should handle errors and set errorOffline state on SocketException', () async {
-    // Arrange
-    const ico = '99999999';
-    when(mockRepository.getFromCache(ico)).thenAnswer((_) async => null);
-    when(mockRepository.refresh(ico)).thenThrow(Exception('SocketException: No internet'));
+  test(
+    'Lookup should handle errors and set errorOffline state on SocketException',
+    () async {
+      // Arrange
+      const ico = '99999999';
+      when(mockRepository.getFromCache(ico)).thenAnswer((_) async => null);
+      when(
+        mockRepository.refresh(ico),
+      ).thenThrow(Exception('SocketException: No internet'));
 
-    // Act
-    await container.read(icoLookupProvider.notifier).lookup(ico);
+      // Act
+      await container.read(icoLookupProvider.notifier).lookup(ico);
 
-    // Assert
-    expect(container.read(icoLookupProvider).status, IcoLookupStatus.errorOffline);
-  });
+      // Assert
+      expect(
+        container.read(icoLookupProvider).status,
+        IcoLookupStatus.errorOffline,
+      );
+    },
+  );
 }

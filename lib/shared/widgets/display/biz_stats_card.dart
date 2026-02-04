@@ -52,7 +52,9 @@ class BizStatsCard extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: primaryColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+                      borderRadius: BorderRadius.circular(
+                        BizTheme.radiusMd,
+                      ),
                     ),
                     child: Icon(icon, color: primaryColor, size: 20),
                   ),
@@ -86,7 +88,10 @@ class BizStatsCard extends StatelessWidget {
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 600.ms).scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut);
+    )
+        .animate()
+        .fadeIn(duration: 600.ms)
+        .scale(begin: const Offset(0.95, 0.95), curve: Curves.easeOut);
   }
 }
 

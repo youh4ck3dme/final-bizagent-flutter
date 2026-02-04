@@ -29,8 +29,10 @@ class BankTx {
   })  : counterparty = counterparty ?? counterpartyName ?? '',
         vs = vs ?? variableSymbol,
         message = message ?? '',
-        assert(counterparty != null || counterpartyName != null,
-            'counterparty required');
+        assert(
+          counterparty != null || counterpartyName != null,
+          'counterparty required',
+        );
 
   // Backward/expected getters used by matcher + UI
   String get counterpartyName => counterparty;

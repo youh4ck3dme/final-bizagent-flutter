@@ -5,24 +5,26 @@ class ExportPeriod {
   final DateTime to;
   final String label;
 
-  const ExportPeriod({
-    required this.from,
-    required this.to,
-    this.label = '',
-  });
+  const ExportPeriod({required this.from, required this.to, this.label = ''});
 
   static ExportPeriod thisMonth(DateTime now) {
     final from = DateTime(now.year, now.month, 1);
-    final to =
-        DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
+    final to = DateTime(
+      now.year,
+      now.month + 1,
+      1,
+    ).subtract(const Duration(days: 1));
     return ExportPeriod(from: from, to: to, label: 'This month');
   }
 
   static ExportPeriod lastMonth(DateTime now) {
     final prev = DateTime(now.year, now.month - 1, 1);
     final from = DateTime(prev.year, prev.month, 1);
-    final to = DateTime(prev.year, prev.month + 1, 1)
-        .subtract(const Duration(days: 1));
+    final to = DateTime(
+      prev.year,
+      prev.month + 1,
+      1,
+    ).subtract(const Duration(days: 1));
     return ExportPeriod(from: from, to: to, label: 'Last month');
   }
 

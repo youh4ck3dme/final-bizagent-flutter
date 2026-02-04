@@ -49,14 +49,17 @@ void main() {
   }
 
   test('ProfitMetrics should calculate profit correctly', () async {
-    final revenue =
-        createRevenueMetrics(totalRevenue: 1000.0, thisMonthRevenue: 500.0);
+    final revenue = createRevenueMetrics(
+      totalRevenue: 1000.0,
+      thisMonthRevenue: 500.0,
+    );
     final expenses = [
       createExpense(id: '1', amount: 200.0, date: DateTime.now()),
       createExpense(
-          id: '2',
-          amount: 300.0,
-          date: DateTime.now().subtract(const Duration(days: 60))), // Older
+        id: '2',
+        amount: 300.0,
+        date: DateTime.now().subtract(const Duration(days: 60)),
+      ), // Older
     ];
 
     container = ProviderContainer(
@@ -85,14 +88,17 @@ void main() {
     final now = DateTime.now();
     final thisMonthExpDate = DateTime(now.year, now.month, 10);
 
-    final revenue =
-        createRevenueMetrics(totalRevenue: 1000.0, thisMonthRevenue: 500.0);
+    final revenue = createRevenueMetrics(
+      totalRevenue: 1000.0,
+      thisMonthRevenue: 500.0,
+    );
     final expenses = [
       createExpense(id: '1', amount: 100.0, date: thisMonthExpDate),
       createExpense(
-          id: '2',
-          amount: 300.0,
-          date: now.subtract(const Duration(days: 60))), // Old
+        id: '2',
+        amount: 300.0,
+        date: now.subtract(const Duration(days: 60)),
+      ), // Old
     ];
 
     container = ProviderContainer(
@@ -114,25 +120,30 @@ void main() {
     expect(metrics.thisMonthProfit, 400.0);
   });
 
-  test('ProfitMetrics should handle zero revenue for margin calculation',
-      () async {
-    final revenue = createRevenueMetrics(totalRevenue: 0, thisMonthRevenue: 0);
+  test(
+    'ProfitMetrics should handle zero revenue for margin calculation',
+    () async {
+      final revenue = createRevenueMetrics(
+        totalRevenue: 0,
+        thisMonthRevenue: 0,
+      );
 
-    container = ProviderContainer(
-      overrides: [
-        revenueMetricsProvider.overrideWith((ref) => Future.value(revenue)),
-        expensesProvider.overrideWith((ref) => Stream.value([])),
-      ],
-    );
+      container = ProviderContainer(
+        overrides: [
+          revenueMetricsProvider.overrideWith((ref) => Future.value(revenue)),
+          expensesProvider.overrideWith((ref) => Stream.value([])),
+        ],
+      );
 
-    // Keep alive
-    container.listen(profitMetricsProvider, (_, __) {});
+      // Keep alive
+      container.listen(profitMetricsProvider, (_, __) {});
 
-    // Check that expenses are loaded
-    await container.read(expensesProvider.future);
+      // Check that expenses are loaded
+      await container.read(expensesProvider.future);
 
-    final metrics = await container.read(profitMetricsProvider.future);
+      final metrics = await container.read(profitMetricsProvider.future);
 
-    expect(metrics.profitMargin, 0.0);
-  });
+      expect(metrics.profitMargin, 0.0);
+    },
+  );
 }

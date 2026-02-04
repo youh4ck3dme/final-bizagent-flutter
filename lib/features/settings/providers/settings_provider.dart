@@ -10,107 +10,121 @@ final settingsProvider = StreamProvider<UserSettingsModel>((ref) {
 });
 
 final settingsControllerProvider =
-    StateNotifierProvider<SettingsController, AsyncValue<void>>((ref) {
-  return SettingsController(ref);
+    NotifierProvider<SettingsController, AsyncValue<void>>(() {
+  return SettingsController();
 });
 
-class SettingsController extends StateNotifier<AsyncValue<void>> {
-  final Ref _ref;
-
-  SettingsController(this._ref) : super(const AsyncValue.data(null));
+class SettingsController extends Notifier<AsyncValue<void>> {
+  @override
+  AsyncValue<void> build() => const AsyncValue.data(null);
 
   Future<void> updateSettings(UserSettingsModel settings) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, settings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, settings),
+    );
   }
 
   Future<void> updateIban(String iban) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     final currentSettings =
-        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+        await ref.read(settingsRepositoryProvider).getSettings(user.id);
     final updatedSettings = currentSettings.copyWith(iban: iban);
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, updatedSettings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, updatedSettings),
+    );
   }
 
   Future<void> updateShowQrOnInvoice(bool showQrOnInvoice) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     final currentSettings =
-        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
-    final updatedSettings =
-        currentSettings.copyWith(showQrOnInvoice: showQrOnInvoice);
+        await ref.read(settingsRepositoryProvider).getSettings(user.id);
+    final updatedSettings = currentSettings.copyWith(
+      showQrOnInvoice: showQrOnInvoice,
+    );
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, updatedSettings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, updatedSettings),
+    );
   }
 
   Future<void> updateVatPayer(bool isVatPayer) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     final currentSettings =
-        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+        await ref.read(settingsRepositoryProvider).getSettings(user.id);
     final updatedSettings = currentSettings.copyWith(isVatPayer: isVatPayer);
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, updatedSettings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, updatedSettings),
+    );
   }
 
   Future<void> updateBiometricEnabled(bool enabled) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     final currentSettings =
-        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+        await ref.read(settingsRepositoryProvider).getSettings(user.id);
     final updatedSettings = currentSettings.copyWith(biometricEnabled: enabled);
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, updatedSettings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, updatedSettings),
+    );
   }
 
   Future<void> updatePinEnabled(bool enabled) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     final currentSettings =
-        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+        await ref.read(settingsRepositoryProvider).getSettings(user.id);
     final updatedSettings = currentSettings.copyWith(pinEnabled: enabled);
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, updatedSettings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, updatedSettings),
+    );
   }
 
   Future<void> updateLanguage(String language) async {
-    final user = _ref.read(authStateProvider).value;
+    final user = ref.read(authStateProvider).asData?.value;
     if (user == null) return;
 
     final currentSettings =
-        await _ref.read(settingsRepositoryProvider).getSettings(user.id);
+        await ref.read(settingsRepositoryProvider).getSettings(user.id);
     final updatedSettings = currentSettings.copyWith(language: language);
 
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _ref
-        .read(settingsRepositoryProvider)
-        .updateSettings(user.id, updatedSettings));
+    state = await AsyncValue.guard(
+      () => ref
+          .read(settingsRepositoryProvider)
+          .updateSettings(user.id, updatedSettings),
+    );
   }
 }

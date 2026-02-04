@@ -1,4 +1,3 @@
-
 /// Base model for soft-deletable items following Google/Firebase data retention policies
 abstract class SoftDeleteModel {
   final String id;
@@ -69,9 +68,8 @@ abstract class SoftDeleteModel {
     SoftDeleteModel Function(Map<String, dynamic>) factory,
   ) {
     // If permanently deleted (older than 7 days), don't return
-    final deletedAt = data['deletedAt'] != null
-        ? DateTime.parse(data['deletedAt'])
-        : null;
+    final deletedAt =
+        data['deletedAt'] != null ? DateTime.parse(data['deletedAt']) : null;
 
     if (deletedAt != null) {
       final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));

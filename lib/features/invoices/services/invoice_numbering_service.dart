@@ -8,10 +8,7 @@ class InvoiceNumberResult {
 }
 
 class InvoiceNumberingService {
-  InvoiceNumberingService({
-    required this.repo,
-    this.blockSize = 25,
-  });
+  InvoiceNumberingService({required this.repo, this.blockSize = 25});
 
   final InvoiceNumberingRepository repo;
   final int blockSize;
@@ -36,20 +33,27 @@ class InvoiceNumberingService {
       final seq = pool.next;
       await repo.saveLocalPool(pool.allocateOne());
       return InvoiceNumberResult(
-          number: formatNumber(year, seq), isProvisional: false);
+        number: formatNumber(year, seq),
+        isProvisional: false,
+      );
     }
 
     // 2) try reserve a new block (requires online / firestore)
     try {
-      final block =
-          await repo.reserveBlock(uid: uid, year: year, blockSize: blockSize);
+      final block = await repo.reserveBlock(
+        uid: uid,
+        year: year,
+        blockSize: blockSize,
+      );
       final newPool = LocalPool(year: year, next: block.start, end: block.end);
 
       // allocate first immediately
       final seq = newPool.next;
       await repo.saveLocalPool(newPool.allocateOne());
       return InvoiceNumberResult(
-          number: formatNumber(year, seq), isProvisional: false);
+        number: formatNumber(year, seq),
+        isProvisional: false,
+      );
     } catch (_) {
       // 3) offline fallback (TMP)
       final tmp = _tmpNumber(year);

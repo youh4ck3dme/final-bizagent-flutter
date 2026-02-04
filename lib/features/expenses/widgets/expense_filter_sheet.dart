@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/expense_category.dart';
 
-enum ExpenseSortOption {
-  dateDesc,
-  dateAsc,
-  amountDesc,
-  amountAsc,
-}
+enum ExpenseSortOption { dateDesc, dateAsc, amountDesc, amountAsc }
 
 class ExpenseFilterCriteria {
   final ExpenseSortOption sortOption;
@@ -69,12 +64,14 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
   }
 
   void _applyFilters() {
-    widget.onApply(ExpenseFilterCriteria(
-      sortOption: _sortOption,
-      selectedCategories: _selectedCategories,
-      dateRange: _dateRange,
-      amountRange: _amountRange,
-    ));
+    widget.onApply(
+      ExpenseFilterCriteria(
+        sortOption: _sortOption,
+        selectedCategories: _selectedCategories,
+        dateRange: _dateRange,
+        amountRange: _amountRange,
+      ),
+    );
     Navigator.pop(context);
   }
 
@@ -121,8 +118,10 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Sort Options
-                  const Text('Zoradiť podľa',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Zoradiť podľa',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -130,16 +129,22 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                       _buildSortChip('Najnovšie', ExpenseSortOption.dateDesc),
                       _buildSortChip('Najstaršie', ExpenseSortOption.dateAsc),
                       _buildSortChip(
-                          'Najvyššia suma', ExpenseSortOption.amountDesc),
+                        'Najvyššia suma',
+                        ExpenseSortOption.amountDesc,
+                      ),
                       _buildSortChip(
-                          'Najnižšia suma', ExpenseSortOption.amountAsc),
+                        'Najnižšia suma',
+                        ExpenseSortOption.amountAsc,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
 
                   // Date Range
-                  const Text('Obdobie',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Obdobie',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   InkWell(
                     onTap: () async {
@@ -158,15 +163,20 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 12),
+                        horizontal: 12,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.calendar_today,
-                              size: 20, color: Colors.grey),
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             _dateRange == null
@@ -178,8 +188,11 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                           if (_dateRange != null)
                             GestureDetector(
                               onTap: () => setState(() => _dateRange = null),
-                              child: const Icon(Icons.close,
-                                  size: 20, color: Colors.grey),
+                              child: const Icon(
+                                Icons.close,
+                                size: 20,
+                                color: Colors.grey,
+                              ),
                             ),
                         ],
                       ),
@@ -191,10 +204,13 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Suma (€)',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Suma (€)',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
-                          '${_amountRange.start.round()} - ${_amountRange.end.round()} €'),
+                        '${_amountRange.start.round()} - ${_amountRange.end.round()} €',
+                      ),
                     ],
                   ),
                   RangeSlider(
@@ -215,8 +231,10 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                   const SizedBox(height: 16),
 
                   // Categories
-                  const Text('Kategórie',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Kategórie',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
@@ -226,9 +244,11 @@ class _ExpenseFilterSheetState extends State<ExpenseFilterSheet> {
                       return FilterChip(
                         label: Text(category.displayName),
                         selected: isSelected,
-                        avatar: Icon(category.icon,
-                            size: 16,
-                            color: isSelected ? Colors.white : category.color),
+                        avatar: Icon(
+                          category.icon,
+                          size: 16,
+                          color: isSelected ? Colors.white : category.color,
+                        ),
                         onSelected: (selected) {
                           setState(() {
                             if (selected) {

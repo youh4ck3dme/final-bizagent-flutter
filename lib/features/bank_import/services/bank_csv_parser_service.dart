@@ -31,9 +31,10 @@ class BankCsvParserService {
     final normalized = _stripBom(csvText).trim();
     if (normalized.isEmpty) {
       return const BankCsvParseResult(
-          profile: BankCsvProfile.generic,
-          txs: [],
-          warnings: ['Empty CSV']);
+        profile: BankCsvProfile.generic,
+        txs: [],
+        warnings: ['Empty CSV'],
+      );
     }
 
     final delimiter = _detectDelimiter(normalized);
@@ -44,9 +45,10 @@ class BankCsvParserService {
 
     if (rows.isEmpty) {
       return const BankCsvParseResult(
-          profile: BankCsvProfile.generic,
-          txs: [],
-          warnings: ['No rows parsed']);
+        profile: BankCsvProfile.generic,
+        txs: [],
+        warnings: ['No rows parsed'],
+      );
     }
 
     final headerRow = rows.first.map((e) => (e ?? '').toString()).toList();
@@ -70,8 +72,11 @@ class BankCsvParserService {
       final debitStr = _at(row, map['debit']);
       final creditStr = _at(row, map['credit']);
 
-      final amount = _parseAmountPreferSigned(amountStr,
-          debitStr: debitStr, creditStr: creditStr);
+      final amount = _parseAmountPreferSigned(
+        amountStr,
+        debitStr: debitStr,
+        creditStr: creditStr,
+      );
       if (amount == null) continue;
 
       final date = _parseDate(_at(row, map['date']));
@@ -99,7 +104,8 @@ class BankCsvParserService {
 
     if (txs.isEmpty) {
       warnings.add(
-          'No transactions parsed (check delimiter / headers / date format)');
+        'No transactions parsed (check delimiter / headers / date format)',
+      );
     }
 
     return BankCsvParseResult(profile: profile, txs: txs, warnings: warnings);
@@ -126,8 +132,9 @@ class BankCsvParserService {
       '\t': _count(sample, '\t'),
       '|': _count(sample, '|'),
     };
-    final best =
-        candidates.entries.reduce((a, b) => a.value >= b.value ? a : b);
+    final best = candidates.entries.reduce(
+      (a, b) => a.value >= b.value ? a : b,
+    );
     return best.value == 0 ? ',' : best.key;
   }
 
@@ -151,7 +158,9 @@ class BankCsvParserService {
   }
 
   Map<String, int?> _buildHeaderIndexMap(
-      List<String> headers, BankCsvProfile p) {
+    List<String> headers,
+    BankCsvProfile p,
+  ) {
     int? findIndex(List<String> candidates) {
       final norms = headers.map(_normKey).toList();
       for (final c in candidates) {
@@ -162,10 +171,19 @@ class BankCsvParserService {
     }
 
     // special: some banks export debit/credit separately; keep hook
-    final debitIdx = findIndex(
-        const ['debit', 'na ťarchu', 'na tarchu', 'výdavok', 'vydavok']);
-    final creditIdx =
-        findIndex(const ['credit', 'v prospech', 'príjem', 'prijem']);
+    final debitIdx = findIndex(const [
+      'debit',
+      'na ťarchu',
+      'na tarchu',
+      'výdavok',
+      'vydavok',
+    ]);
+    final creditIdx = findIndex(const [
+      'credit',
+      'v prospech',
+      'príjem',
+      'prijem',
+    ]);
 
     return {
       'date': findIndex(p.dateHeaders),
@@ -216,8 +234,11 @@ class BankCsvParserService {
 
   String _normalizeIban(String s) => s.replaceAll(' ', '').toUpperCase();
 
-  double? _parseAmountPreferSigned(String s,
-      {required String debitStr, required String creditStr}) {
+  double? _parseAmountPreferSigned(
+    String s, {
+    required String debitStr,
+    required String creditStr,
+  }) {
     // If explicit debit/credit exist, use those (credit positive, debit negative)
     final d = _parseDouble(debitStr);
     final c = _parseDouble(creditStr);
@@ -265,8 +286,9 @@ class BankCsvParserService {
     if (iso != null) return DateTime(iso.year, iso.month, iso.day);
 
     // Try dd.mm.yyyy or dd/mm/yyyy
-    final m =
-        RegExp(r'^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})').firstMatch(x);
+    final m = RegExp(
+      r'^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})',
+    ).firstMatch(x);
     if (m != null) {
       final d = int.parse(m.group(1)!);
       final mo = int.parse(m.group(2)!);
@@ -275,8 +297,9 @@ class BankCsvParserService {
     }
 
     // Try yyyy-mm-dd somewhere in string
-    final m2 =
-        RegExp(r'(\d{4})[\.\/\-](\d{1,2})[\.\/\-](\d{1,2})').firstMatch(x);
+    final m2 = RegExp(
+      r'(\d{4})[\.\/\-](\d{1,2})[\.\/\-](\d{1,2})',
+    ).firstMatch(x);
     if (m2 != null) {
       final y = int.parse(m2.group(1)!);
       final mo = int.parse(m2.group(2)!);

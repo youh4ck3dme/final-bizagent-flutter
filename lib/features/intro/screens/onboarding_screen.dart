@@ -15,7 +15,6 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -115,7 +114,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     color: Colors.orange.withValues(alpha: 0.3),
                     blurRadius: 10,
                     spreadRadius: 2,
-                  )
+                  ),
                 ],
               ),
               child: Row(
@@ -178,8 +177,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         _AnimatedNextButton(
                           isLast: _currentPage == _contents.length - 1,
                           color: _contents[_currentPage].isFullScreen
-                                  ? Colors.white // White button on dark images
-                                  : _contents[_currentPage].accentColor,
+                              ? Colors.white // White button on dark images
+                              : _contents[_currentPage].accentColor,
                           onPressed: () {
                             if (_currentPage == _contents.length - 1) {
                               ref
@@ -268,13 +267,18 @@ class _OnboardingPage extends StatelessWidget {
 
           // Text Content (Bottom Aligned)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 40.0,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Spacer(flex: 3), // Push text down but keep some flexibility
-                
+                const Spacer(
+                  flex: 3,
+                ), // Push text down but keep some flexibility
+
                 Text(
                   content.title,
                   textAlign: TextAlign.center,
@@ -285,12 +289,12 @@ class _OnboardingPage extends StatelessWidget {
                     height: 1.1,
                     letterSpacing: -1.0,
                     shadows: [
-                       Shadow(
+                      Shadow(
                         blurRadius: 10.0,
                         color: Colors.black.withValues(alpha: 0.5),
                         offset: const Offset(0, 2),
                       ),
-                    ]
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -302,19 +306,19 @@ class _OnboardingPage extends StatelessWidget {
                     color: const Color(0xFF4B5563),
                     height: 1.5,
                     fontWeight: FontWeight.w500,
-                     shadows: [
-                       Shadow(
+                    shadows: [
+                      Shadow(
                         blurRadius: 4.0,
                         color: Colors.black.withValues(alpha: 0.5),
                         offset: const Offset(0, 1),
                       ),
-                    ]
+                    ],
                   ),
                 ),
                 const SizedBox(height: 140), // Space for bottom controls
               ],
             ),
-          )
+          ),
         ],
       );
     }
@@ -325,7 +329,7 @@ class _OnboardingPage extends StatelessWidget {
       builder: (context, constraints) {
         return SingleChildScrollView(
           child: ConstrainedBox(
-             // Ensure it takes full height to center content vertically
+            // Ensure it takes full height to center content vertically
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -349,7 +353,9 @@ class _OnboardingPage extends StatelessWidget {
                             color: content.accentColor.withValues(alpha: 0.1),
                             boxShadow: [
                               BoxShadow(
-                                color: content.accentColor.withValues(alpha: 0.1),
+                                color: content.accentColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 blurRadius: 60,
                                 spreadRadius: 20,
                               ),
@@ -366,8 +372,9 @@ class _OnboardingPage extends StatelessWidget {
                                 content.svgPath!,
                                 height: 280,
                                 fit: BoxFit.contain,
-                                placeholderBuilder: (context) =>
-                                    const Center(child: CircularProgressIndicator()),
+                                placeholderBuilder: (context) => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
                               ),
                       ],
                     ),
@@ -405,7 +412,7 @@ class _OnboardingPage extends StatelessWidget {
             ),
           ),
         );
-      }
+      },
     );
   }
 }
@@ -458,7 +465,7 @@ class _AnimatedNextButton extends StatelessWidget {
               color: color.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
-            )
+            ),
           ],
         ),
         child: Stack(
@@ -467,8 +474,11 @@ class _AnimatedNextButton extends StatelessWidget {
             AnimatedOpacity(
               opacity: isLast ? 0.0 : 1.0,
               duration: const Duration(milliseconds: 200),
-              child: const Icon(Icons.arrow_forward_rounded,
-                  color: Colors.white, size: 28),
+              child: const Icon(
+                Icons.arrow_forward_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
             ),
             AnimatedOpacity(
               opacity: isLast ? 1.0 : 0.0,
@@ -485,8 +495,11 @@ class _AnimatedNextButton extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Icon(Icons.check_circle_outline_rounded,
-                      color: Colors.white, size: 20),
+                  const Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ],
               ),
             ),
@@ -514,4 +527,3 @@ class OnboardingContent {
     this.isFullScreen = true,
   }) : assert(svgPath != null || imagePath != null);
 }
-

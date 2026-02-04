@@ -12,6 +12,9 @@ import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/services/tutorial_service.dart';
 import '../../billing/subscription_guard.dart';
 import '../../billing/paywall_screen.dart';
+import '../../onboarding/services/onboarding_service.dart';
+import '../../auth/providers/auth_repository.dart';
+import 'package:flutter/scheduler.dart';
 
 class InvoicesScreen extends ConsumerStatefulWidget {
   const InvoicesScreen({super.key});
@@ -24,6 +27,32 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
   final Set<String> _selectedIds = {};
   final GlobalKey _fabKey = GlobalKey();
   final GlobalKey _remindersKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _checkAndShowTutorial();
+    });
+  }
+
+  Future<void> _checkAndShowTutorial() async {
+    final user = ref.watch(authStateProvider).asData?.value;
+    if (user == null) return;
+
+    final onboarding = ref.read(onboardingServiceProvider);
+    final hasSeen = await onboarding.hasSeenInvoicesTour(user.id);
+
+    if (!hasSeen && mounted) {
+      if (!mounted) return;
+      TutorialService.showInvoicesTutorial(
+        context: context,
+        fabKey: _fabKey,
+        remindersKey: _remindersKey,
+      );
+      await onboarding.markInvoicesTourSeen(user.id);
+    }
+  }
 
   bool get _isSelectionMode => _selectedIds.isNotEmpty;
 
@@ -51,8 +80,9 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
         content: Text('Naozaj chcete zmazať ${_selectedIds.length} faktúr?'),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Zrušiť')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Zrušiť'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Zmazať', style: TextStyle(color: Colors.red)),
@@ -67,9 +97,9 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
           .deleteInvoices(_selectedIds.toList());
       _clearSelection();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Faktúry boli zmazané')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Faktúry boli zmazané')));
       }
     }
   }
@@ -112,7 +142,7 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
               tooltip: 'Upomienky',
               onPressed: () => context.push('/invoices/reminders'),
             ),
-          ]
+          ],
         ],
       ),
       floatingActionButton: _isSelectionMode
@@ -137,7 +167,7 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
         onRefresh: () async {
           ref.invalidate(invoicesProvider);
           await ref.read(invoicesProvider.future);
-           _clearSelection(); // Clear selection on refresh
+          _clearSelection(); // Clear selection on refresh
         },
         child: invoicesAsync.when(
           data: (invoices) {
@@ -147,12 +177,15 @@ class _InvoicesScreenState extends ConsumerState<InvoicesScreen> {
                   return SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraints.maxHeight),
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 24),
+                            horizontal: 16,
+                            vertical: 24,
+                          ),
                           child: BizEmptyState(
                             title: context.t(AppStr.invoiceEmptyTitle),
                             body: context.t(AppStr.invoiceEmptyMsg),

@@ -2,9 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/gemini_service.dart';
 
 enum ReminderTone {
-  polite,      // "Mäkký" - for good clients
+  polite, // "Mäkký" - for good clients
   professional, // "Profesionálny" - standard
-  strict,       // "Prísny" - for late payers
+  strict, // "Prísny" - for late payers
 }
 
 class AiReminderService {

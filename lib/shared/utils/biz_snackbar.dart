@@ -8,7 +8,10 @@ class BizSnackbar {
       message,
       const Icon(Icons.check_circle_rounded, color: Colors.white, size: 28),
       const LinearGradient(
-        colors: [Color(0xFF059669), Color(0xFF10B981)], // Emerald Green (kept for success)
+        colors: [
+          Color(0xFF059669),
+          Color(0xFF10B981),
+        ], // Emerald Green (kept for success)
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -34,10 +37,7 @@ class BizSnackbar {
       message,
       const Icon(Icons.info_outline_rounded, color: Colors.white, size: 28),
       const LinearGradient(
-        colors: [
-          BizTheme.slovakBlue,
-          Color(0xFF3B82F6)
-        ],
+        colors: [BizTheme.slovakBlue, Color(0xFF3B82F6)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),

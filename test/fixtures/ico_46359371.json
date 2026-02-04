@@ -1,0 +1,21 @@
+{
+  "name": "WebSupport, s.r.o.",
+  "ico": "46359371",
+  "dic": "2023348100",
+  "icDph": "SK2023348100",
+  "address": {
+    "street": "Karadžičova 12",
+    "city": "Bratislava",
+    "postalCode": "821 08"
+  },
+  "status": "Aktívna",
+  "riskLevel": "Low",
+  "riskHint": "Firma je stabilná a bez dlhov.",
+  "ai_verdict": {
+    "headline": "Spoľahlivý partner",
+    "explanation": "WebSupport je dlhoročný líder na trhu hostingových služieb s vynikajúcou platobnou disciplínou."
+  },
+  "confidence": 0.98,
+  "registrationDate": "14.12.2011",
+  "source": "icoatlas.sk"
+}

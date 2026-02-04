@@ -2,14 +2,7 @@ import 'bank_csv_profile.dart';
 import 'bank_tx.dart';
 import 'invoice_like.dart';
 
-enum BankMatchType {
-  none,
-  exactVs,
-  amountVs,
-  fuzzyName,
-  amountOnly,
-  manual,
-}
+enum BankMatchType { none, exactVs, amountVs, fuzzyName, amountOnly, manual }
 
 class BankMatch {
   final BankTx tx;

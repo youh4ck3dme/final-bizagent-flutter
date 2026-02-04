@@ -40,6 +40,65 @@ test/
 └── widget_test.dart                              # App smoke test
 ```
 
+## Demo Mode & AI Testovací modul
+
+Pre **Proaktívny AI účtovník** a **Bloček Detective** existuje kompletný demo a testovací modul.
+
+### Štruktúra
+
+```
+lib/core/demo_mode/
+├── demo_scenarios.dart        # DemoScenario enum (standard, taxOptimization, receiptMissing, …)
+├── demo_data_generator.dart   # Realistické demo výdavky, faktúry, alerty, návrhy
+├── demo_mode_service.dart     # Singleton: aktivácia (triple-tap na logo), scenáre, getDemo*()
+└── demo_scenario_runner.dart  # runFullDemo() pre prezentácie
+
+test/
+├── e2e/
+│   ├── ai_accountant_e2e_test.dart   # Proaktívny AI – predikcie, daňové odporúčania
+│   ├── receipt_detective_e2e_test.dart # Bloček Detective – návrhy, confidence
+│   └── full_flow_test.dart            # Demo mode + oba moduly
+├── performance/
+│   └── performance_test.dart   # Alert generation & receipt detective pod 500ms / 2s
+└── golden/
+    ├── golden_test.dart       # UI regression – ProactiveAlertsWidget, ReceiptDetectiveScreen
+    └── goldens/               # PNG (vygenerované cez --update-goldens)
+```
+
+### Spustenie
+
+```bash
+# Všetky testy (vrátane E2E, performance, golden)
+flutter test
+
+# Len E2E AI testy
+flutter test test/e2e/
+
+# Performance benchmarky
+flutter test test/performance/
+
+# Golden testy (porovnanie s uloženými obrázkami)
+flutter test test/golden/
+
+# Aktualizácia golden screenshots po zmene UI
+flutter test test/golden/ --update-goldens
+```
+
+### Demo mode v aplikácii
+
+- **Aktivácia:** triple-tap na logo (alebo `DemoModeService.instance.activateDemoMode(DemoScenario.standard)` v debug).
+- **Scenáre:** `standard`, `taxOptimization`, `approachingVat`, `anomalyDetection`, `receiptMissing`, `cashflowCrisis`.
+- V demo mode môže appka override-ovať `expensesProvider` / `invoicesProvider` cez `DemoModeService.instance.getDemoExpenses()` a `getDemoInvoices()`.
+
+### CI/CD
+
+Workflow `.github/workflows/test.yml` pri push/PR na `main`/`master`/`develop`:
+- `flutter analyze`
+- `flutter test` (unit + widget)
+- `flutter test test/e2e/`
+- `flutter test test/performance/`
+- `flutter test test/golden/`
+
 ## Running Tests
 
 ### All Tests
@@ -49,6 +108,14 @@ flutter test
 
 # Expected output:
 # 00:06 +17: All tests passed!
+```
+
+### Integrity Test (kritické cesty, Share extension, router)
+
+Overuje štruktúru aplikácie: router (`/create-expense`, `sharedImagePath`), OcrService (`scanReceiptFromPath`), CreateExpenseScreen, Share intent v shelli, Android manifest.
+
+```bash
+flutter test test/integrity/app_integrity_test.dart
 ```
 
 ### Specific Test File
@@ -272,10 +339,14 @@ void main() {
 }
 ```
 
-**Run:**
+**Run (vyžaduje zariadenie alebo emulátor):**
 ```bash
-flutter test integration_test/invoice_flow_test.dart
+# Android emulator alebo pripojený telefón
+flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_test.dart -d <deviceId>
+
+# Zoznam zariadení: flutter devices
 ```
+Pozn.: Web a niektoré platformy nie sú pre integration_test podporované; použite Android/iOS zariadenie alebo emulátor.
 
 ## Common Test Issues
 

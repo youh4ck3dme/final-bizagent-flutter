@@ -6,17 +6,16 @@ import 'package:bizagent/features/invoices/providers/invoices_provider.dart';
 import 'package:bizagent/features/expenses/providers/expenses_provider.dart';
 
 void main() {
-  testWidgets('CashflowAnalyticsScreen displays title',
-      (WidgetTester tester) async {
+  testWidgets('CashflowAnalyticsScreen displays title', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
         ],
-        child: const MaterialApp(
-          home: CashflowAnalyticsScreen(),
-        ),
+        child: const MaterialApp(home: CashflowAnalyticsScreen()),
       ),
     );
 
@@ -30,17 +29,16 @@ void main() {
     expect(find.text('Rozdelenie výdavkov'), findsOneWidget);
   });
 
-  testWidgets('CashflowAnalyticsScreen shows loading indicator',
-      (WidgetTester tester) async {
+  testWidgets('CashflowAnalyticsScreen shows loading indicator', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           invoicesProvider.overrideWith((ref) => const Stream.empty()),
           expensesProvider.overrideWith((ref) => const Stream.empty()),
         ],
-        child: const MaterialApp(
-          home: CashflowAnalyticsScreen(),
-        ),
+        child: const MaterialApp(home: CashflowAnalyticsScreen()),
       ),
     );
 

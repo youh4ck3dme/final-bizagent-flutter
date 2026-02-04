@@ -13,7 +13,8 @@ class BusinessProfileScreen extends ConsumerStatefulWidget {
   const BusinessProfileScreen({super.key});
 
   @override
-  ConsumerState<BusinessProfileScreen> createState() => _BusinessProfileScreenState();
+  ConsumerState<BusinessProfileScreen> createState() =>
+      _BusinessProfileScreenState();
 }
 
 class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
@@ -31,7 +32,8 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final settings = ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+    final settings =
+        ref.read(settingsProvider).asData?.value ?? UserSettingsModel.empty();
     _nameController = TextEditingController(text: settings.companyName);
     _addressController = TextEditingController(text: settings.companyAddress);
     _icoController = TextEditingController(text: settings.companyIco);
@@ -39,7 +41,9 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     _icDphController = TextEditingController(text: settings.companyIcDph);
     _ibanController = TextEditingController(text: settings.bankAccount);
     _swiftController = TextEditingController(text: settings.swift);
-    _registerInfoController = TextEditingController(text: settings.registerInfo);
+    _registerInfoController = TextEditingController(
+      text: settings.registerInfo,
+    );
   }
 
   @override
@@ -88,7 +92,8 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
 
   void _save() async {
     if (_formKey.currentState!.validate()) {
-      final current = ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+      final current =
+          ref.read(settingsProvider).asData?.value ?? UserSettingsModel.empty();
       final updated = current.copyWith(
         companyName: _nameController.text,
         companyAddress: _addressController.text,
@@ -100,8 +105,10 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
         registerInfo: _registerInfoController.text,
       );
 
-      await ref.read(settingsControllerProvider.notifier).updateSettings(updated);
-      
+      await ref
+          .read(settingsControllerProvider.notifier)
+          .updateSettings(updated);
+
       if (mounted) {
         BizSnackbar.showSuccess(context, 'Profil firmy bol úspešne uložený');
         Navigator.pop(context);
@@ -112,7 +119,8 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+    final settings =
+        ref.watch(settingsProvider).asData?.value ?? UserSettingsModel.empty();
 
     return Scaffold(
       appBar: AppBar(
@@ -125,10 +133,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
               activeColor: Colors.white,
               inactiveColor: Colors.white70,
             ),
-          IconButton(
-            onPressed: _save,
-            icon: const Icon(Icons.check),
-          ),
+          IconButton(onPressed: _save, icon: const Icon(Icons.check)),
         ],
       ),
       body: SingleChildScrollView(
@@ -143,20 +148,30 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
               Autocomplete<Map<String, dynamic>>(
                 optionsBuilder: (TextEditingValue textEditingValue) async {
                   if (textEditingValue.text.length < 2) return [];
-                  return await ref.read(icoAtlasServiceProvider).autocomplete(textEditingValue.text);
+                  return await ref
+                      .read(icoAtlasServiceProvider)
+                      .autocomplete(textEditingValue.text);
                 },
                 displayStringForOption: (option) => option['name'] ?? '',
                 onSelected: (Map<String, dynamic> selection) {
                   setState(() {
                     _nameController.text = selection['name'] ?? '';
-                    _icoController.text = selection['ico'] ?? selection['cin'] ?? '';
-                    _addressController.text = selection['formatted_address'] ?? selection['address'] ?? '';
-                    _dicController.text = selection['dic'] ?? selection['tin'] ?? '';
-                    _icDphController.text = selection['v_tin'] ?? selection['ic_dph'] ?? '';
+                    _icoController.text =
+                        selection['ico'] ?? selection['cin'] ?? '';
+                    _addressController.text = selection['formatted_address'] ??
+                        selection['address'] ??
+                        '';
+                    _dicController.text =
+                        selection['dic'] ?? selection['tin'] ?? '';
+                    _icDphController.text =
+                        selection['v_tin'] ?? selection['ic_dph'] ?? '';
                   });
                 },
-                fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
-                  if (controller.text != _nameController.text && _nameController.text.isNotEmpty && controller.text.isEmpty) {
+                fieldViewBuilder:
+                    (context, controller, focusNode, onFieldSubmitted) {
+                  if (controller.text != _nameController.text &&
+                      _nameController.text.isNotEmpty &&
+                      controller.text.isEmpty) {
                     controller.text = _nameController.text;
                   }
                   controller.addListener(() {
@@ -169,7 +184,8 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                     focusNode: focusNode,
                     label: 'Obchodné meno',
                     icon: Icons.business,
-                    validator: (v) => v!.isEmpty ? 'Zadajte obchodné meno' : null,
+                    validator: (v) =>
+                        v!.isEmpty ? 'Zadajte obchodné meno' : null,
                   );
                 },
               ),
@@ -183,7 +199,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                 validator: (v) => v!.isEmpty ? 'Zadajte adresu' : null,
               ),
               const SizedBox(height: BizTheme.spacingMd),
-               _buildTextField(
+              _buildTextField(
                 context,
                 controller: _registerInfoController,
                 label: 'Registrácia (OR SR / ŽR SR)',
@@ -191,7 +207,6 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                 placeholder: 'Zapísaná v OR OS Bratislava I...',
               ),
               const SizedBox(height: BizTheme.spacingLg),
-              
               _buildHeader(context, 'Identifikačné údaje'),
               const SizedBox(height: BizTheme.spacingMd),
               Row(
@@ -238,15 +253,16 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
               ),
               const SizedBox(height: BizTheme.spacingSm),
               SwitchListTile(
-                 title: Text('Platca DPH', style: theme.textTheme.bodyMedium),
-                 value: settings.isVatPayer,
-                 contentPadding: EdgeInsets.zero,
-                 onChanged: (val) {
-                   ref.read(settingsControllerProvider.notifier).updateVatPayer(val);
-                 },
+                title: Text('Platca DPH', style: theme.textTheme.bodyMedium),
+                value: settings.isVatPayer,
+                contentPadding: EdgeInsets.zero,
+                onChanged: (val) {
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .updateVatPayer(val);
+                },
               ),
               const SizedBox(height: BizTheme.spacingLg),
-
               _buildHeader(context, 'Bankové spojenie'),
               const SizedBox(height: BizTheme.spacingMd),
               _buildTextField(
@@ -263,7 +279,6 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
                 label: 'SWIFT / BIC',
                 icon: Icons.language,
               ),
-              
               const SizedBox(height: BizTheme.spacing3xl),
               SizedBox(
                 width: double.infinity,
@@ -284,10 +299,10 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     return Text(
       title.toUpperCase(),
       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-        fontWeight: FontWeight.bold,
-        color: Theme.of(context).colorScheme.primary,
-        letterSpacing: 1.5,
-      ),
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+            letterSpacing: 1.5,
+          ),
     );
   }
 

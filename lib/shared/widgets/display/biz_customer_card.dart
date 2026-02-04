@@ -21,7 +21,13 @@ class BizCustomerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final initials = name.trim().split(' ').take(2).map((e) => e.isNotEmpty ? e[0] : '').join().toUpperCase();
+    final initials = name
+        .trim()
+        .split(' ')
+        .take(2)
+        .map((e) => e.isNotEmpty ? e[0] : '')
+        .join()
+        .toUpperCase();
 
     return Card(
       elevation: 0,
@@ -37,7 +43,8 @@ class BizCustomerCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         child: Semantics(
-          label: 'Zákazník $name${email != null ? ', email $email' : ''}${phone != null ? ', telefón $phone' : ''}',
+          label:
+              'Zákazník $name${email != null ? ', email $email' : ''}${phone != null ? ', telefón $phone' : ''}',
           button: onTap != null,
           child: Padding(
             padding: const EdgeInsets.all(BizTheme.spacingMd),
@@ -48,8 +55,11 @@ class BizCustomerCard extends StatelessWidget {
                   backgroundColor: theme.colorScheme.primaryContainer,
                   foregroundColor: theme.colorScheme.primary,
                   child: Text(
-                    initials, 
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+                    initials,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
                 const SizedBox(width: BizTheme.spacingMd),
@@ -58,8 +68,10 @@ class BizCustomerCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        name, 
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)
+                        name,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       if (email != null || phone != null) ...[
                         const SizedBox(height: 2),
@@ -91,11 +103,17 @@ class BizCustomerCard extends StatelessWidget {
                     },
                     style: IconButton.styleFrom(
                       foregroundColor: BizTheme.slovakBlue,
-                      backgroundColor: BizTheme.slovakBlue.withValues(alpha: 0.1),
+                      backgroundColor: BizTheme.slovakBlue.withValues(
+                        alpha: 0.1,
+                      ),
                     ),
                   ),
                 const SizedBox(width: 4),
-                const Icon(Icons.chevron_right, color: BizTheme.gray300, size: 20),
+                const Icon(
+                  Icons.chevron_right,
+                  color: BizTheme.gray300,
+                  size: 20,
+                ),
               ],
             ),
           ),

@@ -27,8 +27,9 @@ class ReceiptStorageService {
 
       final fileName =
           '${DateTime.now().millisecondsSinceEpoch}_${path.basename(filePath)}';
-      final storageRef =
-          _storage.ref().child('users/${user.id}/receipts/$fileName');
+      final storageRef = _storage.ref().child(
+            'users/${user.id}/receipts/$fileName',
+          );
 
       // Upload file
       // Setup metadata if needed (e.g. content type)

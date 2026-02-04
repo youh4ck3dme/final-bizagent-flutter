@@ -14,8 +14,10 @@ class MissingIbanCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.t(AppStr.missingIbanTitle),
-              style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            context.t(AppStr.missingIbanTitle),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 6),
           Text(context.t(AppStr.missingIbanBody)),
           const SizedBox(height: 12),

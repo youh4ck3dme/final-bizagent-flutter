@@ -31,8 +31,9 @@ class _AiEmailGeneratorScreenState
   @override
   void initState() {
     super.initState();
-    _contextController =
-        TextEditingController(text: widget.initialContext ?? '');
+    _contextController = TextEditingController(
+      text: widget.initialContext ?? '',
+    );
     _selectedType = widget.initialType ?? 'reminder';
   }
 
@@ -146,8 +147,9 @@ class _AiEmailGeneratorScreenState
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               )
                             : const Icon(Icons.auto_awesome),
                         label: const Text('Generovať E-mail'),
@@ -179,10 +181,12 @@ class _AiEmailGeneratorScreenState
                             icon: const Icon(Icons.copy),
                             onPressed: () {
                               Clipboard.setData(
-                                  ClipboardData(text: _generatedEmail));
+                                ClipboardData(text: _generatedEmail),
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('Skopírované do schránky')),
+                                  content: Text('Skopírované do schránky'),
+                                ),
                               );
                             },
                           ),

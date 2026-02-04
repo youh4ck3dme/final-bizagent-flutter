@@ -22,16 +22,22 @@ class BankTxTable extends StatelessWidget {
           DataColumn(label: Text('Message')),
         ],
         rows: txs.take(200).map((t) {
-          return DataRow(cells: [
-            DataCell(Text(
-                '${t.date.year}-${_pad2(t.date.month)}-${_pad2(t.date.day)}')),
-            DataCell(Text(t.amount.toStringAsFixed(2))),
-            DataCell(Text(t.currency ?? '')),
-            DataCell(Text(t.variableSymbol ?? '')),
-            DataCell(Text(t.counterpartyName)),
-            DataCell(
-                Text(t.message, maxLines: 2, overflow: TextOverflow.ellipsis)),
-          ]);
+          return DataRow(
+            cells: [
+              DataCell(
+                Text(
+                  '${t.date.year}-${_pad2(t.date.month)}-${_pad2(t.date.day)}',
+                ),
+              ),
+              DataCell(Text(t.amount.toStringAsFixed(2))),
+              DataCell(Text(t.currency ?? '')),
+              DataCell(Text(t.variableSymbol ?? '')),
+              DataCell(Text(t.counterpartyName)),
+              DataCell(
+                Text(t.message, maxLines: 2, overflow: TextOverflow.ellipsis),
+              ),
+            ],
+          );
         }).toList(),
       ),
     );

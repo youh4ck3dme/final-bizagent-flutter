@@ -41,10 +41,16 @@ class BankMatchSuggestions extends StatelessWidget {
               Row(
                 children: [
                   _buildSummaryItem(
-                      'Spárované', confidentMatches.length, Colors.green),
+                    'Spárované',
+                    confidentMatches.length,
+                    Colors.green,
+                  ),
                   const SizedBox(width: 16),
                   _buildSummaryItem(
-                      'Neisté', uncertainMatches.length, Colors.orange),
+                    'Neisté',
+                    uncertainMatches.length,
+                    Colors.orange,
+                  ),
                 ],
               ),
             ],
@@ -70,8 +76,9 @@ class BankMatchSuggestions extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 8),
-          ...uncertainMatches.map((match) =>
-              _buildMatchCard(context, match, showManualOptions: true)),
+          ...uncertainMatches.map(
+            (match) => _buildMatchCard(context, match, showManualOptions: true),
+          ),
         ],
       ],
     );
@@ -83,10 +90,7 @@ class BankMatchSuggestions extends StatelessWidget {
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 4),
         Text('$count $label'),
@@ -94,8 +98,11 @@ class BankMatchSuggestions extends StatelessWidget {
     );
   }
 
-  Widget _buildMatchCard(BuildContext context, BankMatch match,
-      {bool showManualOptions = false}) {
+  Widget _buildMatchCard(
+    BuildContext context,
+    BankMatch match, {
+    bool showManualOptions = false,
+  }) {
     final tx = match.transaction;
     final confidencePercent = (match.confidence * 100).round();
 
@@ -112,10 +119,9 @@ class BankMatchSuggestions extends StatelessWidget {
                   children: [
                     Text(
                       DateFormat('dd.MM.yyyy').format(tx.date),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     ...[
                       const SizedBox(height: 2),
@@ -128,10 +134,9 @@ class BankMatchSuggestions extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         tx.message,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.grey),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -185,10 +190,9 @@ class BankMatchSuggestions extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   'VS: ${match.transaction.variableSymbol ?? ''}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.grey),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
               ],
             ],
@@ -204,8 +208,10 @@ class BankMatchSuggestions extends StatelessWidget {
                   icon: const Icon(Icons.edit, size: 16),
                   label: const Text('Manuálne spárovanie'),
                   style: OutlinedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
                 ),
               ],
@@ -269,7 +275,10 @@ class BankMatchSuggestions extends StatelessWidget {
                       // Future: Implement invoice picker dialog
                       Navigator.of(context).pop();
                       onManualMatch(
-                          match.transaction.id ?? '', 'mock_invoice_id', null);
+                        match.transaction.id ?? '',
+                        'mock_invoice_id',
+                        null,
+                      );
                     },
                     child: const Text('Faktúra'),
                   ),
@@ -281,7 +290,10 @@ class BankMatchSuggestions extends StatelessWidget {
                       // Future: Implement expense picker dialog
                       Navigator.of(context).pop();
                       onManualMatch(
-                          match.transaction.id ?? '', null, 'mock_expense_id');
+                        match.transaction.id ?? '',
+                        null,
+                        'mock_expense_id',
+                      );
                     },
                     child: const Text('Výdavok'),
                   ),

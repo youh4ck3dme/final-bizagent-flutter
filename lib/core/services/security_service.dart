@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as fr;
 import 'package:flutter/services.dart';
 
 class SecurityService {
@@ -13,7 +13,8 @@ class SecurityService {
   Future<bool> canCheckBiometrics() async {
     try {
       final bool canAuthenticateWithBiometrics = await _auth.canCheckBiometrics;
-      final bool canAuthenticate = canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
+      final bool canAuthenticate =
+          canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
       return canAuthenticate;
     } on PlatformException catch (_) {
       return false;
@@ -21,14 +22,12 @@ class SecurityService {
   }
 
   /// Attempts to authenticate using biometrics.
-  Future<bool> authenticateWithBiometrics({String reason = 'Potvrďte identitu pre prístup k BizAgent'}) async {
+  Future<bool> authenticateWithBiometrics({
+    String reason = 'Potvrďte identitu pre prístup k BizAgent',
+  }) async {
     try {
       return await _auth.authenticate(
         localizedReason: reason,
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
       );
     } on PlatformException catch (_) {
       return false;
@@ -58,8 +57,16 @@ class SecurityService {
   }
 }
 
-final securityServiceProvider = Provider<SecurityService>((ref) {
+final securityServiceProvider = fr.Provider<SecurityService>((ref) {
   return SecurityService();
 });
 
-final sessionUnlockedProvider = StateProvider<bool>((ref) => false);
+class SessionUnlockedNotifier extends fr.Notifier<bool> {
+  @override
+  bool build() => false;
+  void setUnlocked(bool value) => state = value;
+}
+
+final sessionUnlockedProvider = fr.NotifierProvider<SessionUnlockedNotifier, bool>(() {
+  return SessionUnlockedNotifier();
+});

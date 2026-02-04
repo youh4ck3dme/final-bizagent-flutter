@@ -103,8 +103,11 @@ class ReceiptViewerScreen extends StatelessWidget {
                       return const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.broken_image,
-                              color: Colors.white, size: 64),
+                          Icon(
+                            Icons.broken_image,
+                            color: Colors.white,
+                            size: 64,
+                          ),
                           SizedBox(height: 16),
                           Text(
                             'Obrázok sa nepodarilo načítať',

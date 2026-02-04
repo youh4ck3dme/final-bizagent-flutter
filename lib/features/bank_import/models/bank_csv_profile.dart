@@ -38,14 +38,14 @@ class BankCsvProfile {
       'nazov protistrany',
       'receiver',
       'sender',
-      'name'
+      'name',
     ],
     counterpartyIbanHeaders: ['iban', 'ucet', 'účet', 'account'],
     variableSymbolHeaders: [
       'vs',
       'variable symbol',
       'variabilny symbol',
-      'variabilný symbol'
+      'variabilný symbol',
     ],
     messageHeaders: [
       'message',
@@ -53,7 +53,7 @@ class BankCsvProfile {
       'poznamka',
       'popis',
       'description',
-      'purpose'
+      'purpose',
     ],
     referenceHeaders: ['reference', 'ref', 'id', 'transaction id', 'bank ref'],
   );
@@ -72,14 +72,14 @@ class BankCsvProfile {
       'príjemca',
       'prijemca',
       'odosielateľ',
-      'odosielatel'
+      'odosielatel',
     ],
     counterpartyIbanHeaders: [
       'iban',
       'účet protistrany',
       'ucet protistrany',
       'číslo účtu',
-      'cislo uctu'
+      'cislo uctu',
     ],
     variableSymbolHeaders: ['vs', 'variabilný symbol', 'variabilny symbol'],
     messageHeaders: [
@@ -87,7 +87,7 @@ class BankCsvProfile {
       'poznamka',
       'popis',
       'správa pre prijímateľa',
-      'sprava pre prijimatela'
+      'sprava pre prijimatela',
     ],
     referenceHeaders: ['referencia', 'reference', 'id transakcie', 'id'],
   );
@@ -105,14 +105,14 @@ class BankCsvProfile {
       'príjemca',
       'prijemca',
       'odosielateľ',
-      'odosielatel'
+      'odosielatel',
     ],
     counterpartyIbanHeaders: [
       'iban',
       'účet protistrany',
       'ucet protistrany',
       'číslo účtu',
-      'cislo uctu'
+      'cislo uctu',
     ],
     variableSymbolHeaders: ['vs', 'variabilný symbol', 'variabilny symbol'],
     messageHeaders: ['poznámka', 'poznamka', 'popis', 'správa', 'sprava'],
@@ -121,7 +121,7 @@ class BankCsvProfile {
       'reference',
       'id',
       'identifikátor',
-      'identifikator'
+      'identifikator',
     ],
   );
 
@@ -135,7 +135,7 @@ class BankCsvProfile {
       'description',
       'merchant',
       'counterparty',
-      'name'
+      'name',
     ],
     counterpartyIbanHeaders: ['iban', 'counterparty iban', 'account'],
     variableSymbolHeaders: ['vs', 'variable symbol'],

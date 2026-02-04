@@ -32,21 +32,44 @@ class InvoicesRepository {
           .orderBy('dateIssued', descending: true)
           .get(const GetOptions(source: Source.serverAndCache));
 
-      final remoteInvoices = snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        final invoice = InvoiceModel.fromMap(data, doc.id);
-        // Only save to local cache if not soft deleted
-        if (!invoice.isDeleted) {
-          _persistence.saveInvoice(doc.id, data);
-        }
-        return invoice;
-      }).where((invoice) => !invoice.isDeleted).toList(); // Filter out soft deleted
+      final remoteInvoices = snapshot.docs
+          .map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            final invoice = InvoiceModel.fromMap(data, doc.id);
+            // Only save to local cache if not soft deleted
+            if (!invoice.isDeleted) {
+              _persistence.saveInvoice(doc.id, data);
+            }
+            return invoice;
+          })
+          .where((invoice) => !invoice.isDeleted)
+          .toList(); // Filter out soft deleted
 
       return remoteInvoices;
     } catch (e) {
       // Return local if remote fails
       return localInvoices;
+    }
+  }
+
+  Future<InvoiceModel?> getInvoice(String userId, String invoiceId) async {
+    try {
+      final doc = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('invoices')
+          .doc(invoiceId)
+          .get();
+
+      if (doc.exists && doc.data() != null) {
+        final data = doc.data()!;
+        data['id'] = doc.id;
+        return InvoiceModel.fromMap(data, doc.id);
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -66,16 +89,19 @@ class InvoicesRepository {
         .snapshots();
 
     await for (final snapshot in stream) {
-      final invoices = snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        final invoice = InvoiceModel.fromMap(data, doc.id);
-        // Only save to local cache if not soft deleted
-        if (!invoice.isDeleted) {
-          _persistence.saveInvoice(doc.id, data);
-        }
-        return invoice;
-      }).where((invoice) => !invoice.isDeleted).toList(); // Filter out soft deleted
+      final invoices = snapshot.docs
+          .map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            final invoice = InvoiceModel.fromMap(data, doc.id);
+            // Only save to local cache if not soft deleted
+            if (!invoice.isDeleted) {
+              _persistence.saveInvoice(doc.id, data);
+            }
+            return invoice;
+          })
+          .where((invoice) => !invoice.isDeleted)
+          .toList(); // Filter out soft deleted
 
       yield invoices;
     }
@@ -83,7 +109,9 @@ class InvoicesRepository {
 
   Future<void> addInvoice(String userId, InvoiceModel invoice) async {
     // Optimistic local save
-    final id = invoice.id.isEmpty ? DateTime.now().millisecondsSinceEpoch.toString() : invoice.id;
+    final id = invoice.id.isEmpty
+        ? DateTime.now().millisecondsSinceEpoch.toString()
+        : invoice.id;
     final data = invoice.toMap();
     data['id'] = id;
     await _persistence.saveInvoice(id, data);
@@ -110,7 +138,10 @@ class InvoicesRepository {
   }
 
   Future<void> updateInvoiceStatus(
-      String userId, String invoiceId, InvoiceStatus status) async {
+    String userId,
+    String invoiceId,
+    InvoiceStatus status,
+  ) async {
     // Update local cache first
     final localInvoices = _persistence.getInvoices();
     final index = localInvoices.indexWhere((inv) => inv['id'] == invoiceId);

@@ -35,7 +35,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       vsync: this,
       duration: const Duration(seconds: 4),
     )..repeat();
-
   }
 
   @override
@@ -145,7 +144,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           backgroundColor: BizTheme.slovakBlue,
                           foregroundColor: Colors.white,
                           elevation: 4,
-                          shadowColor: BizTheme.slovakBlue.withValues(alpha: 0.4),
+                          shadowColor: BizTheme.slovakBlue.withValues(
+                            alpha: 0.4,
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -170,12 +171,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.error_outline, color: Colors.red.shade700),
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red.shade700,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     authState.error.toString(),
-                                    style: TextStyle(color: Colors.red.shade700),
+                                    style: TextStyle(
+                                      color: Colors.red.shade700,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -202,7 +208,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           const Expanded(child: Divider()),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 24),
 
                       // Google Sign In with Neon Orbit Effect
@@ -221,7 +227,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
                                       gradient: SweepGradient(
-                                        transform: GradientRotation(_rotationController.value * 2 * 3.14159),
+                                        transform: GradientRotation(
+                                          _rotationController.value *
+                                              2 *
+                                              3.14159,
+                                        ),
                                         colors: const [
                                           Color(0xFF4285F4), // Google Blue
                                           Color(0xFFDB4437), // Google Red
@@ -229,11 +239,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                           Color(0xFF0F9D58), // Google Green
                                           Color(0xFF4285F4), // Closing Loop
                                         ],
-                                        stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
+                                        stops: const [
+                                          0.0,
+                                          0.25,
+                                          0.5,
+                                          0.75,
+                                          1.0,
+                                        ],
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFF4285F4).withValues(alpha: 0.4),
+                                          color: const Color(
+                                            0xFF4285F4,
+                                          ).withValues(alpha: 0.4),
                                           blurRadius: 12,
                                           spreadRadius: 1,
                                         ),
@@ -244,7 +262,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               ),
                               // 2. The Button (White Overlay)
                               Container(
-                                margin: const EdgeInsets.all(2), // 2px border width
+                                margin: const EdgeInsets.all(
+                                  2,
+                                ), // 2px border width
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
@@ -254,19 +274,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                       ? null
                                       : () async {
                                           await ref
-                                              .read(authControllerProvider.notifier)
+                                              .read(
+                                                authControllerProvider.notifier,
+                                              )
                                               .signInWithGoogle();
                                         },
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    side: BorderSide.none, // Hide default border
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    side:
+                                        BorderSide.none, // Hide default border
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    backgroundColor: Colors.transparent, // Let Container color show
-                                    splashFactory: NoSplash.splashFactory, // Disable ripple effect
-                                    overlayColor: Colors.transparent, // Disable hover tint
-                                    minimumSize: const Size(double.infinity, 50),
+                                    backgroundColor: Colors
+                                        .transparent, // Let Container color show
+                                    splashFactory: NoSplash
+                                        .splashFactory, // Disable ripple effect
+                                    overlayColor: Colors
+                                        .transparent, // Disable hover tint
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      50,
+                                    ),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -276,7 +307,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                         child: SizedBox(
                                           height: 24,
                                           width: 24,
-                                          child: Image.asset('assets/icons/google_g.png'),
+                                          child: Image.asset(
+                                            'assets/icons/google_g.png',
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: 8),
@@ -299,7 +332,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
                       TextButton(
                         onPressed: authState.isLoading

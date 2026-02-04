@@ -23,7 +23,7 @@
 
     <!-- SEO & Open Graph -->
     <meta name="description" content="BizAgent - Inteligentný Business Asistent pre SZČO a malé firmy. Faktúry, výdavky a AI nástroje na jednom mieste.">
-    
+
     <!-- Facebook / Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bizagent-live-2026.web.app/">
@@ -46,10 +46,16 @@
     <meta name="theme-color" content="#F0F4F8">
 
     <!-- Google Sign-In -->
-    <meta name="google-signin-client_id" content="542280140779-fnbgni0vvqb9dgpl6q4k64p6s91s6jdi.apps.googleusercontent.com">
-    
+    <!-- Google Sign-In -->
+    <meta name="google-signin-client_id" content="542280140779-c5m14rqpih1j9tmf9km52aq1684l9qjd.apps.googleusercontent.com">
+
     <!-- ReCaptcha Enterprise -->
     <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf7dFQsAAAAALJbTSS5yaomUSvSNTpP4nr6GzlA"></script>
+
+    <script>
+      // Enable App Check Debug Token for Localhost
+      self.FIREBASE_APPCHECK_DEBUG_TOKEN = "3659b401-b1f9-435d-abe7-4f056cff70cc";
+    </script>
 
     <script src="flutter.js" defer></script>
   </head>
@@ -78,21 +84,20 @@
 
     <script>
       window.addEventListener('load', function(ev) {
-        // 1. Initialize Flutter Engine
-        _flutter.loader.loadEntrypoint({
+        // Modern Flutter Loader API
+        _flutter.loader.load({
+          serviceWorker: {
+            serviceWorkerVersion: null,
+          },
           onEntrypointLoaded: function(engineInitializer) {
-            engineInitializer.initializeEngine({
-              renderer: "auto"
-            }).then(function(appRunner) {
+            engineInitializer.initializeEngine().then(function(appRunner) {
               appRunner.runApp();
-              
+
               // Fade out loading indicator
               var loader = document.querySelector('#loading-indicator');
               if (loader) {
                 loader.style.opacity = '0';
-                setTimeout(function() {
-                  loader.remove();
-                }, 500);
+                setTimeout(function() { loader.remove(); }, 500);
               }
             });
           }
@@ -100,14 +105,24 @@
 
         // Custom "Na Mieru" Service Worker Logic
         if ('serviceWorker' in navigator) {
+          // Register BizAgent extended offline SW first
+          navigator.serviceWorker.register('bizagent-sw.js')
+            .then(function(reg) {
+              console.log('✅ [PWA] BizAgent offline SW registered');
+            })
+            .catch(function(err) {
+              console.warn('[PWA] BizAgent SW failed:', err);
+            });
+
+          // Then register Flutter's service worker
           navigator.serviceWorker.register('flutter_service_worker.js')
             .then(function(reg) {
-              
+
               function showUpdateToast(worker) {
                 const toast = document.getElementById('pwa-update-toast');
                 const btn = document.getElementById('pwa-update-button');
                 toast.style.display = 'flex';
-                
+
                 btn.onclick = function() {
                   btn.innerText = 'Inštalujem...';
                   btn.style.opacity = '0.7';

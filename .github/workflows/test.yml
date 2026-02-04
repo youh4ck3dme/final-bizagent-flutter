@@ -1,0 +1,62 @@
+name: BizAgent AI Tests
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  test:
+    name: Unit & E2E & Performance Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.7'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Unit & widget tests
+        run: flutter test --no-pub --reporter expanded
+
+      - name: E2E tests (AI Accountant & Receipt Detective)
+        run: flutter test test/e2e/ --no-pub --reporter expanded
+
+      - name: Performance tests
+        run: flutter test test/performance/ --no-pub --reporter expanded
+
+      - name: Golden tests (compare only)
+        run: flutter test test/golden/ --no-pub --reporter expanded
+
+  # Optional: update goldens on main when needed (uncomment and use workflow_dispatch)
+  # update-goldens:
+  #   name: Update Golden Screenshots
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: '3.38.7'
+  #         channel: stable
+  #     - run: flutter pub get
+  #     - run: flutter test test/golden/ --update-goldens
+  #     - name: Commit goldens
+  #       run: |
+  #         git config user.name "github-actions"
+  #         git config user.email "actions@github.com"
+  #         git add test/golden/goldens/
+  #         git diff --staged --quiet || git commit -m "chore: update golden screenshots"
+  #         git push || true

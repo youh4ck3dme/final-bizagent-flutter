@@ -3,7 +3,7 @@ class UserEntitlements {
   final bool isBusiness;
   final String? activePlanId;
   final DateTime? expiryDate;
-  
+
   // Usage counters (would normally be synced with specific UsageService)
   final int invoiceCount;
   final int icoLookupsCount;

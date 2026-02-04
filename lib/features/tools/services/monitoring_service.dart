@@ -8,7 +8,7 @@ final monitoringServiceProvider = Provider<MonitoringService>((ref) {
 
 class MonitoringService {
   final _db = FirebaseFirestore.instance;
-  
+
   String? get _uid => FirebaseAuth.instance.currentUser?.uid;
 
   /// Stream of notifications for the current user
@@ -22,18 +22,20 @@ class MonitoringService {
         .orderBy('createdAt', descending: true)
         .limit(20) // Good practice to limit
         .snapshots()
-        .map((s) => s.docs.map((d) {
-              final data = d.data();
-              data['id'] = d.id; // Include doc ID for actions
-              return data;
-            }).toList());
+        .map(
+          (s) => s.docs.map((d) {
+            final data = d.data();
+            data['id'] = d.id; // Include doc ID for actions
+            return data;
+          }).toList(),
+        );
   }
 
   /// Mark notification as read
   Future<void> markAsRead(String id) async {
     final uid = _uid;
     if (uid == null) return;
-    
+
     // Safety check: ensure we only update our own notifications (optional but good)
     // For now direct update is fine as per rules
     return _db.collection('notifications').doc(id).update({'read': true});

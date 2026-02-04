@@ -31,7 +31,10 @@ class LocalPool {
   Map<String, dynamic> toJson() => {'year': year, 'next': next, 'end': end};
 
   static LocalPool fromJson(Map<String, dynamic> j) => LocalPool(
-      year: j['year'] as int, next: j['next'] as int, end: j['end'] as int);
+        year: j['year'] as int,
+        next: j['next'] as int,
+        end: j['end'] as int,
+      );
 
   String encode() => jsonEncode(toJson());
   static LocalPool decode(String s) =>

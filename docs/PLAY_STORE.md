@@ -48,15 +48,19 @@ version: 1.0.0+1
 
 ## Store Listing
 
-### App Information
+### App Information (ASO optimalizované pre SK trh)
 
-**App name:** BizAgent - Fakturácia pre SZČO  
+**App name (max 30 znakov):** BizAgent - AI Účtovný Asistent  
+*Alternatíva:* BizAgent: Faktúry & Bločky AI
+
 **Short description (80 chars):**
 ```
-Jednoduché fakturácie, výdavky a accounting pre slovenských podnikateľov
+Skenuj bločky, spravuj výdavky a faktúry s AI. Pre SZČO a firmy na Slovensku.
 ```
 
-**Full description (4000 chars):**
+**Full description (4000 chars):**  
+*ASO-optimalizovaná verzia s kľúčovými slovami a sekciami „Prečo BizAgent?“ / „Čo hovoria používatelia“ je v [GOOGLE_PLAY_SUBMISSION.md](GOOGLE_PLAY_SUBMISSION.md). Nižšie rozšírená verzia.*
+
 ```
 🚀 BizAgent - Tvoj digitálny asistent pre podnikanie
 
@@ -386,21 +390,25 @@ More: https://github.com/youh4ck3dme/BizAgent
 
 ## App Store Optimization (ASO)
 
-### Keywords (SK)
+### Kľúčové slová pre SK trh (odporúčané v dokumente)
 
-Primary:
-- faktúry
-- fakturácia
-- SZČO
-- živnosť
-- účtovníctvo
+Slová, ktoré ľudia skutočne hľadajú – zahrň ich prirodzene v názve, popise a dlhom popise:
 
-Secondary:
-- DPH
-- QR platba
-- bloček
-- export
-- účtovník
+| účtovníctvo | faktúry | bločky | SZČO | výdavky | daňové priznanie |
+| skener účteniek | OCR | živnostník | evidencia | DPH | podnikanie |
+
+Primary: faktúry, bločky, SZČO, výdavky, účtovníctvo, živnostník  
+Secondary: DPH, daňové priznanie, skener účteniek, OCR, evidencia, podnikanie
+
+### Screenshot stratégia (5 screenshotov, ktoré predávajú)
+
+1. **Hero shot** – hlavný benefit (napr. „Skenuj bločky za sekundy“)
+2. **AI skenovanie bločkov** – ukážka OCR / Magic Scan
+3. **Dashboard a prehľad** – príjmy, výdavky, zisk
+4. **Faktúry a export** – tvorba faktúry, QR platba, export
+5. **Bezpečnosť a biometria** – Face ID / otlačok, šifrovanie
+
+**Pro tip:** Použi slovenské texty v UI, ukáž slovenské bločky a faktúry. Lokalizované screenshoty zvyšujú konverziu.
 
 ### Competitor Analysis
 

@@ -1,12 +1,6 @@
 import '../../../core/models/soft_delete_model.dart';
 
-enum NotepadItemType {
-  note,
-  receipt,
-  memo,
-  reminder,
-  other,
-}
+enum NotepadItemType { note, receipt, memo, reminder, other }
 
 extension NotepadItemTypeX on NotepadItemType {
   String toSlovak() {
@@ -30,7 +24,8 @@ class NotepadItemModel extends SoftDeleteModel {
   final String content;
   final NotepadItemType type;
   final List<String>? attachments; // URLs to attached files/images
-  final Map<String, dynamic>? metadata; // Additional data like OCR results, amounts, etc.
+  final Map<String, dynamic>?
+      metadata; // Additional data like OCR results, amounts, etc.
   final DateTime lastModified;
 
   NotepadItemModel({
@@ -83,9 +78,8 @@ class NotepadItemModel extends SoftDeleteModel {
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])
           : DateTime.now(),
-      deletedAt: map['deletedAt'] != null
-          ? DateTime.parse(map['deletedAt'])
-          : null,
+      deletedAt:
+          map['deletedAt'] != null ? DateTime.parse(map['deletedAt']) : null,
       deleteReason: map['deleteReason'],
       title: map['title'] ?? 'Bez názvu',
       content: map['content'] ?? '',
@@ -117,7 +111,6 @@ class NotepadItemModel extends SoftDeleteModel {
   // Helper getters for receipt-specific data
   double? get receiptAmount => metadata?['amount'] as double?;
   String? get receiptVendor => metadata?['vendor'] as String?;
-  DateTime? get receiptDate => metadata?['date'] != null
-      ? DateTime.parse(metadata!['date'])
-      : null;
+  DateTime? get receiptDate =>
+      metadata?['date'] != null ? DateTime.parse(metadata!['date']) : null;
 }

@@ -18,7 +18,8 @@ class CacheService {
 
       if (lastVersion != _currentVersion) {
         debugPrint(
-            '🧹 [CACHE] Version mismatch detected ($lastVersion -> $_currentVersion). Starting light cleanup...');
+          '🧹 [CACHE] Version mismatch detected ($lastVersion -> $_currentVersion). Starting light cleanup...',
+        );
 
         // 1. Clear Image Cache (Safe & helpful for UI consistency)
         PaintingBinding.instance.imageCache.clear();
@@ -40,7 +41,8 @@ class CacheService {
           // On Web, tell the browser to check for service worker updates
           // This is handled via index.html scripts usually, but we can log here
           debugPrint(
-              '🌐 [CACHE] Web environment detected. PWA service worker should handle asset cleanup.');
+            '🌐 [CACHE] Web environment detected. PWA service worker should handle asset cleanup.',
+          );
         }
 
         await prefs.setString(_versionKey, _currentVersion);
@@ -61,11 +63,11 @@ class CacheService {
       if (!kIsWeb) {
         final tempDir = await getTemporaryDirectory();
         await _clearDirectory(tempDir);
-        
+
         final docDir = await getApplicationDocumentsDirectory();
         await _clearDirectory(docDir);
       } else {
-        // On web, we can't easily clear IndexedDB from here without specific packages 
+        // On web, we can't easily clear IndexedDB from here without specific packages
         // like 'drift' or 'hive'. But we can clear standard image cache.
         PaintingBinding.instance.imageCache.clear();
         debugPrint('✅ [CACHE] Web image cache cleared.');

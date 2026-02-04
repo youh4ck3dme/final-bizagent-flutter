@@ -8,20 +8,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('SmartDashboardEmptyState renders correctly',
-      (WidgetTester tester) async {
+  testWidgets('SmartDashboardEmptyState renders correctly', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          settingsProvider
-              .overrideWith((ref) => Stream.value(UserSettingsModel.empty())),
+          settingsProvider.overrideWith(
+            (ref) => Stream.value(UserSettingsModel.empty()),
+          ),
           invoicesProvider.overrideWith((ref) => Stream.value([])),
           expensesProvider.overrideWith((ref) => Stream.value([])),
         ],
         child: const MaterialApp(
-          home: Scaffold(
-            body: SmartDashboardEmptyState(),
-          ),
+          home: Scaffold(body: SmartDashboardEmptyState()),
         ),
       ),
     );

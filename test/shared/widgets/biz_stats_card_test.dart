@@ -4,16 +4,20 @@ import 'package:bizagent/shared/widgets/biz_widgets.dart';
 
 void main() {
   group('BizStatsCard Widget Test', () {
-    testWidgets('BizStatsCard displays metric and icon', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Scaffold(
-          body: BizStatsCard(
-            title: 'Tržby',
-            metric: '12 500 €',
-            icon: Icons.attach_money,
+    testWidgets('BizStatsCard displays metric and icon', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: BizStatsCard(
+              title: 'Tržby',
+              metric: '12 500 €',
+              icon: Icons.attach_money,
+            ),
           ),
         ),
-      ));
+      );
 
       // Let flutter_animate settle.
       await tester.pumpAndSettle();
@@ -27,18 +31,22 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('BizStatsCard displays positive trend correctly', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Scaffold(
-          body: BizStatsCard(
-            title: 'Zisk',
-            metric: '5 000 €',
-            icon: Icons.trending_up,
-            trend: '+15%',
-            isPositive: true,
+    testWidgets('BizStatsCard displays positive trend correctly', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: BizStatsCard(
+              title: 'Zisk',
+              metric: '5 000 €',
+              icon: Icons.trending_up,
+              trend: '+15%',
+              isPositive: true,
+            ),
           ),
         ),
-      ));
+      );
 
       await tester.pumpAndSettle();
 
@@ -50,18 +58,22 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('BizStatsCard displays negative trend correctly', (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: Scaffold(
-          body: BizStatsCard(
-            title: 'Náklady',
-            metric: '2 000 €',
-            icon: Icons.trending_down,
-            trend: '-5%',
-            isPositive: false,
+    testWidgets('BizStatsCard displays negative trend correctly', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: BizStatsCard(
+              title: 'Náklady',
+              metric: '2 000 €',
+              icon: Icons.trending_down,
+              trend: '-5%',
+              isPositive: false,
+            ),
           ),
         ),
-      ));
+      );
 
       await tester.pumpAndSettle();
 

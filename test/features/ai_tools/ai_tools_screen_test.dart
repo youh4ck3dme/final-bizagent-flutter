@@ -19,16 +19,13 @@ class MockOcrService extends OcrService {
 }
 
 void main() {
-  testWidgets('AiToolsScreen displays parsed receipt data',
-      (WidgetTester tester) async {
+  testWidgets('AiToolsScreen displays parsed receipt data', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          ocrServiceProvider.overrideWithValue(MockOcrService()),
-        ],
-        child: const MaterialApp(
-          home: AiToolsScreen(),
-        ),
+        overrides: [ocrServiceProvider.overrideWithValue(MockOcrService())],
+        child: const MaterialApp(home: AiToolsScreen()),
       ),
     );
 

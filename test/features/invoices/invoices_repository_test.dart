@@ -21,7 +21,10 @@ void main() {
 
     setUp(() {
       fakeFirestore = FakeFirebaseFirestore();
-      repository = InvoicesRepository(fakeFirestore, FakeLocalPersistenceService());
+      repository = InvoicesRepository(
+        fakeFirestore,
+        FakeLocalPersistenceService(),
+      );
     });
 
     final dummyInvoice = InvoiceModel(
@@ -32,9 +35,7 @@ void main() {
       clientName: 'Test Client',
       dateIssued: DateTime(2023, 10, 1),
       dateDue: DateTime(2023, 10, 15),
-      items: [
-        InvoiceItemModel(title: 'Service A', amount: 100, vatRate: 0.2),
-      ],
+      items: [InvoiceItemModel(title: 'Service A', amount: 100, vatRate: 0.2)],
       totalAmount: 120,
       status: InvoiceStatus.sent,
     );
@@ -55,36 +56,40 @@ void main() {
       expect(data['items'], isNotEmpty);
     });
 
-    test('getInvoices returns list of invoices sorted by dateIssued desc',
-        () async {
-      // Add multiple invoices
-      final invoice1 = dummyInvoice; // Oct 1
-      final invoice2 = InvoiceModel(
-        id: 'invoice-2',
-        userId: userId,
-        createdAt: DateTime(2023, 11, 1),
-        number: '2023002',
-        clientName: 'Client 2',
-        dateIssued: DateTime(2023, 11, 1), // Newer
-        dateDue: DateTime(2023, 11, 15),
-        items: [],
-        totalAmount: 0,
-        status: InvoiceStatus.draft,
-      );
+    test(
+      'getInvoices returns list of invoices sorted by dateIssued desc',
+      () async {
+        // Add multiple invoices
+        final invoice1 = dummyInvoice; // Oct 1
+        final invoice2 = InvoiceModel(
+          id: 'invoice-2',
+          userId: userId,
+          createdAt: DateTime(2023, 11, 1),
+          number: '2023002',
+          clientName: 'Client 2',
+          dateIssued: DateTime(2023, 11, 1), // Newer
+          dateDue: DateTime(2023, 11, 15),
+          items: [],
+          totalAmount: 0,
+          status: InvoiceStatus.draft,
+        );
 
-      // Add to firestore manually to mock existing data
-      final collection =
-          fakeFirestore.collection('users').doc(userId).collection('invoices');
-      await collection.doc(invoice1.id).set(invoice1.toMap());
-      await collection.doc(invoice2.id).set(invoice2.toMap());
+        // Add to firestore manually to mock existing data
+        final collection = fakeFirestore
+            .collection('users')
+            .doc(userId)
+            .collection('invoices');
+        await collection.doc(invoice1.id).set(invoice1.toMap());
+        await collection.doc(invoice2.id).set(invoice2.toMap());
 
-      final results = await repository.getInvoices(userId);
+        final results = await repository.getInvoices(userId);
 
-      expect(results.length, 2);
-      // specific assertion for descending order
-      expect(results[0].number, '2023002'); // Newer should be first
-      expect(results[1].number, '2023001');
-    });
+        expect(results.length, 2);
+        // specific assertion for descending order
+        expect(results[0].number, '2023002'); // Newer should be first
+        expect(results[1].number, '2023001');
+      },
+    );
 
     test('updateInvoice updates existing document', () async {
       // Add initial

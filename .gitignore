@@ -4,15 +4,19 @@
 .flutter-plugins-dependencies
 .packages
 .pub-cache/
+.pub_cache/
 .pub/
 build/
 
 # Firebase
 **/.firebase/
 
-# Environment
+# Environment (templates: .env.*.example)
 .env
 .env.local
+.env.flutter
+.env.gateway
+.env.functions
 
 # IDE
 .idea/

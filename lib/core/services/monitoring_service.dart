@@ -49,7 +49,7 @@ class MonitoringService {
 
   void _handleNewNotification(DocumentSnapshot doc) {
     if (!doc.exists) return;
-    
+
     final data = doc.data() as Map<String, dynamic>;
     final title = data['title'] ?? 'Zmena u klienta';
     final body = data['body'] ?? 'Zistili sme novú zmenu v obchodnom registri.';
@@ -59,11 +59,11 @@ class MonitoringService {
 
     // Trigger local push notification
     _ref.read(notificationServiceProvider).showNotification(
-      id: doc.id.hashCode,
-      title: title,
-      body: body,
-      payload: 'type=$type;id=${doc.id}',
-    );
+          id: doc.id.hashCode,
+          title: title,
+          body: body,
+          payload: 'type=$type;id=${doc.id}',
+        );
   }
 
   void stopListening() {

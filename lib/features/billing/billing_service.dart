@@ -21,10 +21,10 @@ class BillingState {
   });
 
   BillingState copyWith({
-     UserEntitlements? entitlements,
-     List<ProductDetails>? products,
-     bool? isLoading,
-     String? errorMessage,
+    UserEntitlements? entitlements,
+    List<ProductDetails>? products,
+    bool? isLoading,
+    String? errorMessage,
   }) {
     return BillingState(
       entitlements: entitlements ?? this.entitlements,
@@ -36,21 +36,25 @@ class BillingState {
 }
 
 // Provider
-final billingProvider = StateNotifierProvider<BillingService, BillingState>((ref) {
-  final usageLimiter = ref.watch(usageLimiterProvider);
-  return BillingService(usageLimiter);
+final billingProvider = NotifierProvider<BillingService, BillingState>(() {
+  return BillingService();
 });
 
-class BillingService extends StateNotifier<BillingState> {
+class BillingService extends Notifier<BillingState> {
   final InAppPurchase _iap = InAppPurchase.instance;
-  final UsageLimiter _usageLimiter;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
 
-  BillingService(this._usageLimiter) : super(BillingState(entitlements: UserEntitlements.free())) {
-    _init();
+  @override
+  BillingState build() {
+    // Subscription should be initialized here or lazily
+    Future.microtask(() => _init());
+    return BillingState(entitlements: UserEntitlements.free());
   }
 
+  UsageLimiter get _usageLimiter => ref.read(usageLimiterProvider);
+
   Future<void> _init() async {
+    ref.onDispose(() => _subscription.cancel());
     final available = await _iap.isAvailable();
     if (!available) {
       state = state.copyWith(errorMessage: "Store not available");
@@ -100,13 +104,15 @@ class BillingService extends StateNotifier<BillingState> {
         BizConfig.productBusinessMonthly,
         BizConfig.productOneTimeStarter,
       };
-      
-      final ProductDetailsResponse response = await _iap.queryProductDetails(productIds);
-      
+
+      final ProductDetailsResponse response = await _iap.queryProductDetails(
+        productIds,
+      );
+
       if (response.notFoundIDs.isNotEmpty) {
         debugPrint('Products not found: ${response.notFoundIDs}');
       }
-      
+
       state = state.copyWith(
         products: response.productDetails,
         isLoading: false,
@@ -118,14 +124,14 @@ class BillingService extends StateNotifier<BillingState> {
 
   Future<void> purchaseProduct(ProductDetails product) async {
     final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
-    
+
     // For subscriptions, we might need to handle upgrades/downgrades here
     // But keeping it simple for now
-    
+
     if (BizConfig.allProducts.contains(product.id)) {
-        // Consumables vs Non-consumables handling
-        // Subscriptions are non-consumable in context of buying again immediately
-        await _iap.buyNonConsumable(purchaseParam: purchaseParam);
+      // Consumables vs Non-consumables handling
+      // Subscriptions are non-consumable in context of buying again immediately
+      await _iap.buyNonConsumable(purchaseParam: purchaseParam);
     }
   }
 
@@ -139,13 +145,15 @@ class BillingService extends StateNotifier<BillingState> {
         state = state.copyWith(isLoading: true);
       } else {
         if (purchaseDetails.status == PurchaseStatus.error) {
-          state = state.copyWith(isLoading: false, errorMessage: purchaseDetails.error?.message);
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage: purchaseDetails.error?.message,
+          );
         } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-                   purchaseDetails.status == PurchaseStatus.restored) {
-          
+            purchaseDetails.status == PurchaseStatus.restored) {
           _verifyAndDeliverProduct(purchaseDetails);
         }
-        
+
         if (purchaseDetails.pendingCompletePurchase) {
           _iap.completePurchase(purchaseDetails);
         }
@@ -156,14 +164,14 @@ class BillingService extends StateNotifier<BillingState> {
   Future<void> _verifyAndDeliverProduct(PurchaseDetails purchaseDetails) async {
     // Ideally, verify purchase with backend here (Cloud Function)
     // For now, optimistic local grant
-    
+
     bool isPro = false;
     bool isBusiness = false;
-    
+
     final id = purchaseDetails.productID;
-    
-    if (id == BizConfig.productProMonthly || 
-        id == BizConfig.productProYearly || 
+
+    if (id == BizConfig.productProMonthly ||
+        id == BizConfig.productProYearly ||
         id == BizConfig.productOneTimeStarter) {
       isPro = true;
     } else if (id == BizConfig.productBusinessMonthly) {
@@ -182,9 +190,4 @@ class BillingService extends StateNotifier<BillingState> {
     );
   }
 
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
 }

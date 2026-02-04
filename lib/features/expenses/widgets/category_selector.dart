@@ -42,9 +42,7 @@ class _CategorySelectorState extends State<CategorySelector> {
           decoration: InputDecoration(
             hintText: 'Hľadať kategóriu...',
             prefixIcon: const Icon(Icons.search),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             filled: true,
             fillColor: Colors.grey.shade100,
           ),
@@ -63,9 +61,7 @@ class _CategorySelectorState extends State<CategorySelector> {
         const SizedBox(height: 16),
 
         // Categories Grid
-        Expanded(
-          child: _buildCategoriesGrid(),
-        ),
+        Expanded(child: _buildCategoriesGrid()),
       ],
     );
   }
@@ -86,11 +82,7 @@ class _CategorySelectorState extends State<CategorySelector> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.auto_awesome,
-            color: category.color,
-            size: 24,
-          ),
+          Icon(Icons.auto_awesome, color: category.color, size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -127,10 +119,7 @@ class _CategorySelectorState extends State<CategorySelector> {
               ),
               Text(
                 'istota',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
               ),
             ],
           ),
@@ -204,18 +193,11 @@ class _CategorySelectorState extends State<CategorySelector> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
+            Icon(Icons.search_off, size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
             Text(
               'Žiadne kategórie',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
             ),
           ],
         ),
@@ -315,11 +297,7 @@ class _CategorySelectorState extends State<CategorySelector> {
               const Positioned(
                 top: 4,
                 right: 4,
-                child: Icon(
-                  Icons.check_circle,
-                  size: 20,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.check_circle, size: 20, color: Colors.white),
               ),
           ],
         ),

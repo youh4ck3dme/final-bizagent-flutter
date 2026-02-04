@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../widgets/glass_container.dart';
+import 'glass_container.dart';
 import '../../core/ui/biz_theme.dart';
 
 class BizGlassCard extends StatelessWidget {
@@ -21,7 +21,7 @@ class BizGlassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return GlassContainer(
       blurAmount: blurAmount,
       opacity: isDark ? 0.05 : opacity,

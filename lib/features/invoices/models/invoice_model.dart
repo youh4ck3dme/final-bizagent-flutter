@@ -127,6 +127,8 @@ class InvoiceModel extends SoftDeleteModel {
   final DateTime? paymentDate;
   final String? paymentMethod;
   final bool isNumberProvisional;
+  final String currency;
+  final double exchangeRate; // 1.0 for EUR
 
   InvoiceModel({
     required super.id,
@@ -151,13 +153,34 @@ class InvoiceModel extends SoftDeleteModel {
     this.paymentDate,
     this.paymentMethod,
     this.isNumberProvisional = false,
+    this.currency = 'EUR',
+    this.exchangeRate = 1.0,
   });
+
+  factory InvoiceModel.empty() {
+    return InvoiceModel(
+      id: '',
+      userId: '',
+      createdAt: DateTime.now(),
+      number: '',
+      clientName: '',
+      dateIssued: DateTime.now(),
+      dateDue: DateTime.now().add(const Duration(days: 14)),
+      items: [],
+      totalAmount: 0.0,
+      status: InvoiceStatus.draft,
+    );
+  }
 
   // VAT Calculations
   double get totalBeforeVat =>
       items.fold(0, (sum, item) => sum + item.subtotal);
   double get totalVat => items.fold(0, (sum, item) => sum + item.vatAmount);
   double get grandTotal => totalBeforeVat + totalVat;
+
+  // In EUR (for reporting)
+  double get totalAmountEur => totalAmount / exchangeRate;
+  double get grandTotalEur => grandTotal / exchangeRate;
 
   Map<double, double> get vatBreakdown {
     final breakdown = <double, double>{};
@@ -191,6 +214,8 @@ class InvoiceModel extends SoftDeleteModel {
     DateTime? paymentDate,
     String? paymentMethod,
     bool? isNumberProvisional,
+    String? currency,
+    double? exchangeRate,
   }) {
     return InvoiceModel(
       id: id ?? this.id,
@@ -215,6 +240,8 @@ class InvoiceModel extends SoftDeleteModel {
       paymentDate: paymentDate ?? this.paymentDate,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       isNumberProvisional: isNumberProvisional ?? this.isNumberProvisional,
+      currency: currency ?? this.currency,
+      exchangeRate: exchangeRate ?? this.exchangeRate,
     );
   }
 
@@ -225,9 +252,8 @@ class InvoiceModel extends SoftDeleteModel {
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])
           : DateTime.parse(map['dateIssued']), // fallback for old data
-      deletedAt: map['deletedAt'] != null
-          ? DateTime.parse(map['deletedAt'])
-          : null,
+      deletedAt:
+          map['deletedAt'] != null ? DateTime.parse(map['deletedAt']) : null,
       deleteReason: map['deleteReason'],
       number: map['number'] ?? '',
       clientName: map['clientName'] ?? '',
@@ -254,6 +280,8 @@ class InvoiceModel extends SoftDeleteModel {
           : null,
       paymentMethod: map['paymentMethod'],
       isNumberProvisional: map['isNumberProvisional'] ?? false,
+      currency: map['currency'] ?? 'EUR',
+      exchangeRate: (map['exchangeRate'] ?? 1.0).toDouble(),
     );
   }
 
@@ -278,6 +306,8 @@ class InvoiceModel extends SoftDeleteModel {
       'paymentDate': paymentDate?.toIso8601String(),
       'paymentMethod': paymentMethod,
       'isNumberProvisional': isNumberProvisional,
+      'currency': currency,
+      'exchangeRate': exchangeRate,
     };
   }
 

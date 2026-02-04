@@ -48,24 +48,31 @@ class DashboardTaxWidget extends ConsumerWidget {
             // 3. Deadlines Section
             Row(
               children: [
-                Icon(Icons.calendar_month_outlined,
-                    color: colorScheme.primary, size: 20),
+                Icon(
+                  Icons.calendar_month_outlined,
+                  color: colorScheme.primary,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
-                Text(context.t(AppStr.taxCalendar),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: colorScheme.onSurface,
-                    )),
+                Text(
+                  context.t(AppStr.taxCalendar),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 16),
 
             if (deadlines.isEmpty)
               Text(
-                  context.t(AppStr
-                      .invoiceEmptyTitle), // Or a specific "no deadlines" string
-                  style: TextStyle(color: colorScheme.onSurfaceVariant))
+                context.t(
+                  AppStr.invoiceEmptyTitle,
+                ), // Or a specific "no deadlines" string
+                style: TextStyle(color: colorScheme.onSurfaceVariant),
+              )
             else
               ...deadlines
                   .take(2)
@@ -75,11 +82,13 @@ class DashboardTaxWidget extends ConsumerWidget {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Text('+ ${deadlines.length - 2} ďalšie',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colorScheme.onSurfaceVariant,
-                      )),
+                  child: Text(
+                    '+ ${deadlines.length - 2} ďalšie',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
               ),
           ],
@@ -89,7 +98,9 @@ class DashboardTaxWidget extends ConsumerWidget {
   }
 
   Widget _buildThermometer(
-      BuildContext context, AsyncValue<TaxThermometerResult> asyncValue) {
+    BuildContext context,
+    AsyncValue<TaxThermometerResult> asyncValue,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
     return asyncValue.when(
       loading: () => const LinearProgressIndicator(),
@@ -120,15 +131,17 @@ class DashboardTaxWidget extends ConsumerWidget {
                     Text(
                       context.t(AppStr.turnoverLTM),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
-                      ),
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                          ),
                     ),
                   ],
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(BizTheme.radiusMd),
@@ -136,9 +149,10 @@ class DashboardTaxWidget extends ConsumerWidget {
                   child: Text(
                     statusText,
                     style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10),
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    ),
                   ),
                 ),
               ],
@@ -180,7 +194,9 @@ class DashboardTaxWidget extends ConsumerWidget {
   }
 
   Widget _buildEstimates(
-      BuildContext context, AsyncValue<TaxEstimationModel> asyncValue) {
+    BuildContext context,
+    AsyncValue<TaxEstimationModel> asyncValue,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return asyncValue.when(
@@ -192,7 +208,11 @@ class DashboardTaxWidget extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.analytics_outlined, color: colorScheme.primary, size: 20),
+                Icon(
+                  Icons.analytics_outlined,
+                  color: colorScheme.primary,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Odhady daní (YTD)',
@@ -236,8 +256,13 @@ class DashboardTaxWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildEstimateItem(BuildContext context, String title, double amount,
-      IconData icon, Color color) {
+  Widget _buildEstimateItem(
+    BuildContext context,
+    String title,
+    double amount,
+    IconData icon,
+    Color color,
+  ) {
     final currency = NumberFormat.currency(locale: 'sk_SK', symbol: '€');
     return Row(
       children: [

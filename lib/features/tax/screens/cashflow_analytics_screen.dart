@@ -16,9 +16,7 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
     final expensesAsync = ref.watch(expensesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Analytika Cashflow'),
-      ),
+      appBar: AppBar(title: const Text('Analytika Cashflow')),
       body: (invoicesAsync.isLoading || expensesAsync.isLoading)
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -26,13 +24,19 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildMainChart(context, invoicesAsync.value ?? [],
-                      expensesAsync.value ?? []),
+                  _buildMainChart(
+                    context,
+                    invoicesAsync.value ?? [],
+                    expensesAsync.value ?? [],
+                  ),
                   const SizedBox(height: 24),
                   _buildCategoryBreakdown(context, expensesAsync.value ?? []),
                   const SizedBox(height: 24),
-                  _buildProfitLossCard(context, invoicesAsync.value ?? [],
-                      expensesAsync.value ?? []),
+                  _buildProfitLossCard(
+                    context,
+                    invoicesAsync.value ?? [],
+                    expensesAsync.value ?? [],
+                  ),
                 ],
               ),
             ),
@@ -40,13 +44,18 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
   }
 
   Widget _buildMainChart(
-      BuildContext context, List<dynamic> invoices, List<dynamic> expenses) {
+    BuildContext context,
+    List<dynamic> invoices,
+    List<dynamic> expenses,
+  ) {
     return BizCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Príjmy vs Výdavky (6 mesiacov)',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const Text(
+            'Príjmy vs Výdavky (6 mesiacov)',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 24),
           SizedBox(
             height: 250,
@@ -57,11 +66,14 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
                 barGroups: _generateBarGroups(),
                 titlesData: FlTitlesData(
                   leftTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false)),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
@@ -72,10 +84,12 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
                           'Mar',
                           'Apr',
                           'Maj',
-                          'Jun'
+                          'Jun',
                         ];
-                        return Text(titles[value.toInt() % titles.length],
-                            style: const TextStyle(fontSize: 10));
+                        return Text(
+                          titles[value.toInt() % titles.length],
+                          style: const TextStyle(fontSize: 10),
+                        );
                       },
                     ),
                   ),
@@ -106,9 +120,15 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
         x: i,
         barRods: [
           BarChartRodData(
-              toY: 2000 + (i * 300.0), color: BizTheme.slovakBlue, width: 12),
+            toY: 2000 + (i * 300.0),
+            color: BizTheme.slovakBlue,
+            width: 12,
+          ),
           BarChartRodData(
-              toY: 1500 + (i * 200.0), color: BizTheme.richCrimson, width: 12),
+            toY: 1500 + (i * 200.0),
+            color: BizTheme.richCrimson,
+            width: 12,
+          ),
         ],
       );
     });
@@ -119,8 +139,10 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Rozdelenie výdavkov',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const Text(
+            'Rozdelenie výdavkov',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           const SizedBox(height: 24),
           SizedBox(
             height: 200,
@@ -128,33 +150,45 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
               PieChartData(
                 sections: [
                   PieChartSectionData(
-                      color: BizTheme.slovakBlue,
-                      value: 40,
-                      title: 'Služby',
-                      radius: 50,
-                      titleStyle:
-                          const TextStyle(color: Colors.white, fontSize: 12)),
+                    color: BizTheme.slovakBlue,
+                    value: 40,
+                    title: 'Služby',
+                    radius: 50,
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
                   PieChartSectionData(
-                      color: BizTheme.fusionAzure,
-                      value: 30,
-                      title: 'Nákup',
-                      radius: 50,
-                      titleStyle:
-                          const TextStyle(color: Colors.white, fontSize: 12)),
+                    color: BizTheme.fusionAzure,
+                    value: 30,
+                    title: 'Nákup',
+                    radius: 50,
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
                   PieChartSectionData(
-                      color: BizTheme.nationalRed,
-                      value: 20,
-                      title: 'Doprava',
-                      radius: 50,
-                      titleStyle:
-                          const TextStyle(color: Colors.white, fontSize: 12)),
+                    color: BizTheme.nationalRed,
+                    value: 20,
+                    title: 'Doprava',
+                    radius: 50,
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
                   PieChartSectionData(
-                      color: BizTheme.slate,
-                      value: 10,
-                      title: 'Iné',
-                      radius: 50,
-                      titleStyle:
-                          const TextStyle(color: Colors.white, fontSize: 12)),
+                    color: BizTheme.slate,
+                    value: 10,
+                    title: 'Iné',
+                    radius: 50,
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
                 centerSpaceRadius: 40,
               ),
@@ -166,14 +200,19 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
   }
 
   Widget _buildProfitLossCard(
-      BuildContext context, List<dynamic> invoices, List<dynamic> expenses) {
+    BuildContext context,
+    List<dynamic> invoices,
+    List<dynamic> expenses,
+  ) {
     final totalIncome = invoices.fold(0.0, (sum, i) => sum + i.totalAmount);
     final totalExpense = expenses.fold(0.0, (sum, e) => sum + e.amount);
     final profit = totalIncome - totalExpense;
 
     return Container(
       decoration: BoxDecoration(
-        color: profit >= 0 ? BizTheme.slovakBlue.withValues(alpha: 0.1) : BizTheme.richCrimson.withValues(alpha: 0.1),
+        color: profit >= 0
+            ? BizTheme.slovakBlue.withValues(alpha: 0.1)
+            : BizTheme.richCrimson.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(16),
@@ -183,8 +222,10 @@ class CashflowAnalyticsScreen extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Čistý zisk / strata',
-                  style: TextStyle(color: Colors.black54)),
+              const Text(
+                'Čistý zisk / strata',
+                style: TextStyle(color: Colors.black54),
+              ),
               Text(
                 NumberFormat.currency(symbol: '€').format(profit),
                 style: TextStyle(

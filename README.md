@@ -1,6 +1,6 @@
 # BizAgent 🚀
 
-**AI Business Assistant pre SZČO a malé firmy na Slovensku**
+**Skenuj bločky, spravuj výdavky a faktúry s AI. Účtovný asistent pre SZČO a firmy na Slovensku.**
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.13.0+-02569B?logo=flutter)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Cloud-FFCA28?logo=firebase)](https://firebase.google.com)
@@ -13,7 +13,11 @@
 
 ## 📚 Dokumentácia
 
-*   **[Google Play Submission Guide](docs/GOOGLE_PLAY_SUBMISSION.md):** Podrobný návod, ako vyplniť formuláre (Data Safety, App Access) v Play Console.
+*   **[Google Play Submission Guide](docs/GOOGLE_PLAY_SUBMISSION.md):** Podrobný návod, ako vyplniť formuláre (Data Safety, App Access) v Play Console. Obsahuje ASO-optimalizované texty (názov, krátky/dlhý popis, kľúčové slová).
+*   **[Play Store Checklist](docs/PLAY_STORE.md):** Release checklist, ASO kľúčové slová, screenshot stratégia.
+*   **[Roadmap 2026](docs/ROADMAP_2026.md):** Feature roadmap (Q1–Q4), Quick Wins, budúce AI inovácie.
+*   **[Marketingová stratégia](docs/MARKETING_STRATEGY.md):** Kanály, materiály, partnerstvá, promo video.
+*   **[ASO Screenshots & Quick Wins](docs/ASO_SCREENSHOTS_AND_QUICK_WINS.md):** 5 screenshotov pre Play Store, promo video, Quick Wins.
 *   **[Privacy Policy Template](docs/PRIVACY_POLICY.md):** Pripravený text pre Zásady ochrany súkromia (potrebné pre Play Store).
 
 ---

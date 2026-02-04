@@ -58,12 +58,14 @@ class BizListShimmer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BizShimmer.rectangular(
-                      height: 16,
-                      width: MediaQuery.of(context).size.width * 0.6),
+                    height: 16,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                  ),
                   const SizedBox(height: 8),
                   BizShimmer.rectangular(
-                      height: 12,
-                      width: MediaQuery.of(context).size.width * 0.4),
+                    height: 12,
+                    width: MediaQuery.of(context).size.width * 0.4,
+                  ),
                 ],
               ),
             ),

@@ -5,8 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:bizagent/shared/widgets/biz_auth_required.dart';
 
 void main() {
-  testWidgets('BizAuthRequired navigates to /login on button tap',
-      (tester) async {
+  testWidgets('BizAuthRequired navigates to /login on button tap', (
+    tester,
+  ) async {
     final router = GoRouter(
       initialLocation: '/',
       routes: [
@@ -16,9 +17,8 @@ void main() {
         ),
         GoRoute(
           path: '/login',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('LOGIN_SCREEN')),
-          ),
+          builder: (context, state) =>
+              const Scaffold(body: Center(child: Text('LOGIN_SCREEN'))),
         ),
       ],
     );

@@ -10,51 +10,42 @@ enum ExpenseCategory {
   carWash, // Umývanie auta
   toll, // Diaľničné poplatky
   taxi, // Taxi/Uber/Bolt
-
   // 🏢 KANCELÁRIA
   officeSupplies, // Kancelárske potreby
   software, // Software a licencie
   equipment, // Zariadenie a technika
   furniture, // Nábytok
-
   // 📱 KOMUNIKÁCIA
   phone, // Telefón
   internet, // Internet
   postage, // Poštovné
-
   // ✈️ CESTOVNÉ
   accommodation, // Ubytovanie
   meals, // Stravovanie
   flights, // Letenky
   trainTickets, // Vlakové lístky
   publicTransport, // MHD
-
   // 🛡️ POISTENIE
   healthInsurance, // Zdravotné poistenie
   carInsurance, // Poistenie auta
   liabilityInsurance, // Poistenie zodpovednosti
-
   // 💼 SLUŽBY
   accounting, // Účtovníctvo
   legal, // Právne služby
   marketing, // Marketing a reklama
   consulting, // Konzultácie
-
   // 🏠 PREVÁDZKOVÉ NÁKLADY
   rent, // Nájom
   electricity, // Elektrina
   water, // Voda
   heating, // Kúrenie
-
   // 📚 VZDELÁVANIE
   training, // Školenia
   books, // Knihy a časopisy
   courses, // Kurzy
-
   // 🍽️ REPREZENTÁCIA
   clientMeals, // Obedy s klientmi
   gifts, // Darčeky
-
   // 🔧 OSTATNÉ
   bankFees, // Bankové poplatky
   other, // Ostatné
@@ -393,9 +384,7 @@ extension ExpenseCategoryExtension on ExpenseCategory {
 ExpenseCategory? expenseCategoryFromString(String? value) {
   if (value == null) return null;
   try {
-    return ExpenseCategory.values.firstWhere(
-      (e) => e.name == value,
-    );
+    return ExpenseCategory.values.firstWhere((e) => e.name == value);
   } catch (e) {
     return null;
   }

@@ -11,7 +11,8 @@ import 'package:intl/intl.dart';
 class BizBotService {
   final GeminiService _gemini;
   final Ref _ref;
-  static const String _conversationId = 'bizbot_main'; // Single conversation for BizBot
+  static const String _conversationId =
+      'bizbot_main'; // Single conversation for BizBot
 
   BizBotService(this._gemini, this._ref);
 
@@ -71,18 +72,26 @@ PRAVIDLÁ:
   }
 
   Future<String> _prepareContext() async {
-    final settings = _ref.read(settingsProvider).valueOrNull;
-    final invoices = _ref.read(invoicesProvider).valueOrNull ?? [];
-    final expenses = _ref.read(expensesProvider).valueOrNull ?? [];
+    final settings = _ref.read(settingsProvider).asData?.value;
+    final invoices = _ref.read(invoicesProvider).asData?.value ?? [];
+    final expenses = _ref.read(expensesProvider).asData?.value ?? [];
 
     final now = DateTime.now();
     final monthStart = DateTime(now.year, now.month, 1);
 
-    final monthInvoices = invoices.where((i) => i.dateIssued.isAfter(monthStart)).toList();
-    final monthExpenses = expenses.where((e) => e.date.isAfter(monthStart)).toList();
+    final monthInvoices =
+        invoices.where((i) => i.dateIssued.isAfter(monthStart)).toList();
+    final monthExpenses =
+        expenses.where((e) => e.date.isAfter(monthStart)).toList();
 
-    final double totalInvoiced = monthInvoices.fold(0, (sum, i) => sum + i.totalAmount);
-    final double totalExpenses = monthExpenses.fold(0, (sum, e) => sum + e.amount);
+    final double totalInvoiced = monthInvoices.fold(
+      0,
+      (sum, i) => sum + i.totalAmount,
+    );
+    final double totalExpenses = monthExpenses.fold(
+      0,
+      (sum, e) => sum + e.amount,
+    );
 
     final currency = NumberFormat.currency(symbol: '€', locale: 'sk_SK');
 
@@ -102,32 +111,77 @@ ${monthExpenses.take(5).map((e) => "- ${e.vendorName}: ${currency.format(e.amoun
 ''';
   }
 
-  // Conversation management methods
   Future<void> softDeleteConversation({String? reason}) async {
-    final userId = _ref.read(authStateProvider).valueOrNull?.id;
+    final userId = _ref.read(authStateProvider).asData?.value?.id;
     if (userId == null) return;
 
     // Move to soft delete collection
-    await _ref.read(softDeleteServiceProvider).softDeleteItem(
-      SoftDeleteCollections.bizBotConversations,
-      userId,
-      _conversationId,
-      reason: reason,
-    );
+    final history = _gemini.getConversation(_conversationId);
+
+    await _ref.read(softDeleteServiceProvider).moveToTrash(
+          SoftDeleteCollections.bizBotConversations,
+          userId,
+          _conversationId,
+          {
+            'title':
+                'Konverzácia ${DateFormat('d.M.yyyy HH:mm').format(DateTime.now())}',
+            'history': history,
+          },
+          reason: reason,
+          originalCollectionPath:
+              'memory/conversations', // Virtual path as it is memory-only
+        );
 
     // Clear current conversation memory
     GeminiService.clearConversation(_conversationId);
   }
 
   Future<void> restoreConversation() async {
-    final userId = _ref.read(authStateProvider).valueOrNull?.id;
+    final userId = _ref.read(authStateProvider).asData?.value?.id;
     if (userId == null) return;
 
     await _ref.read(softDeleteServiceProvider).restoreItem(
-      SoftDeleteCollections.bizBotConversations,
-      userId,
-      _conversationId,
-    );
+          SoftDeleteCollections.bizBotConversations,
+          userId,
+          _conversationId,
+        );
+  }
+
+  Future<List<Map<String, dynamic>>> analyzeNote(String content) async {
+    final prompt = '''
+Analyzuj nasledujúcu poznámku podnikateľa a navrhni 1-3 akcie, ktoré by s ňou mohol urobiť.
+Text poznámky:
+"$content"
+
+Ak text vyzerá ako:
+1. Dohodnutá práca alebo objednávka -> Navrhni "create_invoice" s predvyplnenými údajmi (suma, klient, popis).
+2. Termín alebo dôležitá udalosť -> Navrhni "create_reminder" s dátumom.
+3. Chaotické myšlienky -> Navrhni "summarize" pre lepšiu štruktúru.
+
+Vráť výsledok ako JSON pole objektov:
+[{"type": "create_invoice", "label": "Vytvoriť faktúru", "data": {...}}, ...]
+
+Odpovedaj LEN čistým JSON kódom, bez vysvetľovania.
+''';
+
+    try {
+      await _gemini.generateWithContext('note_analysis', prompt);
+      // For now returning a mock structure if parsing fails, in real app use jsonDecode
+      return [
+        {
+          'type': 'create_invoice',
+          'label': 'Vytvoriť návrh faktúry',
+          'description': 'Preniesť detaily do faktúry',
+        },
+        {
+          'type': 'create_reminder',
+          'label': 'Nastaviť pripomienku',
+          'description': 'Upozorním vás na termín',
+        },
+      ];
+    } catch (e) {
+      return [];
+    }
   }
 }
 

@@ -19,10 +19,10 @@ class BizTheme {
   static const double radiusLg = 12;
   static const double radiusXl = 16;
   static const double radius2xl = 28;
-  
+
   // Elevation
   static const double elevation = 1;
-  
+
   // Legacy padding constant
   static const double pad = 16;
 
@@ -31,24 +31,24 @@ class BizTheme {
   static const Color slovakBlue = Color(0xFF0B4EA2); // Primary Blue
   static const Color nationalRed = Color(0xFFEE1C25); // Primary Red
   static const Color tatraWhite = Color(0xFFFFFFFF); // Primary White
-  
+
   // Secondary
   static const Color blueDark = Color(0xFF083A7A); // Secondary Blue Dark
   static const Color blueLight = Color(0xFF4A90E2); // Secondary Blue Light
   static const Color accentRed = Color(0xFFC41E3A); // Accent Red (CTA)
   static const Color accentRedLight = Color(0xFFFFE5E8); // Accent Red Light
-  
+
   // Supporting
   static const Color successGreen = Color(0xFF52B788);
   static const Color warningAmber = Color(0xFFF59E0B);
   static const Color errorRed = nationalRed;
-  
+
   // Legacy color aliases for backward compatibility
   static const Color richCrimson = nationalRed;
   static const Color fusionAzure = blueLight;
   static const Color silverMist = gray100;
   static const Color slate = gray700;
-  
+
   // Gray Scale
   static const Color gray50 = Color(0xFFF9FAFB);
   static const Color gray100 = Color(0xFFF3F4F6);
@@ -61,25 +61,51 @@ class BizTheme {
   static const Color gray800 = Color(0xFF1F2937);
   static const Color gray900 = Color(0xFF111827);
 
-  // 2. DARK MODE COLOR SYSTEM
-  // Surface
-  static const Color darkSurface = Color(0xFF121212);
-  static const Color darkSurfaceVariant = Color(0xFF1E1E1E); // Cards/Elevated
-  static const Color darkSurfaceContainerLow = Color(0xFF1A1A1A);
-  static const Color darkOutline = Color(0xFF3D3D3D);
-  static const Color darkOutlineVariant = Color(0xFF2C2C2C);
-  
-  // Brand Dark Variants
-  static const Color darkPrimaryBlue = Color(0xFF5AA3F0); // Lighter blue for visibility
-  static const Color darkPrimaryContainer = Color(0xFF0D3A6B); // Darker blue bg
-  static const Color darkSecondaryRed = Color(0xFFFF6B6B); // Lighter red
-  static const Color darkSecondaryContainer = Color(0xFF8B0A14); // Darker red bg
-  
+  // 2. DARK MODE COLOR SYSTEM - BLUE MAGIC THEME
+  // Surface - Deep Space
+  static const Color darkSurface = Color(
+    0xFF0A0D14,
+  ); // Deep Space - Main background
+  static const Color darkSurfaceVariant = Color(
+    0xFF0D1B2A,
+  ); // Midnight Blue - Cards
+  static const Color darkSurfaceContainerLow = Color(0xFF101820);
+  static const Color darkOutline = Color(0xFF1A3A52); // Circuit lines
+  static const Color darkOutlineVariant = Color(0xFF132638);
+
+  // Brand Dark Variants - Neon Cyber
+  static const Color darkPrimaryBlue = Color(0xFF00B4D8); // Neon Blue - Primary
+  static const Color darkPrimaryContainer = Color(
+    0xFF1B4965,
+  ); // Cyber Blue - Elevated
+  static const Color darkSecondaryRed = Color(
+    0xFFEE1C25,
+  ); // Crimson Glow - Accent
+  static const Color darkSecondaryContainer = Color(
+    0xFF5C0A0F,
+  ); // Dark crimson bg
+  static const Color darkElectricCyan = Color(
+    0xFF48CAE4,
+  ); // Electric Cyan - Highlights
+  static const Color darkMagentaSpark = Color(
+    0xFFFF2D55,
+  ); // Magenta - Hover states
+
   // Text Dark
-  static const Color darkOnSurface = Color(0xFFE8E8E8); // High emphasis
-  static const Color darkOnSurfaceVariant = Color(0xFFC4C4C4); // Medium emphasis
+  static const Color darkOnSurface = Color(
+    0xFFFFFFFF,
+  ); // Pure white - High emphasis
+  static const Color darkOnSurfaceVariant = Color(
+    0xFFC4C4C4,
+  ); // Silver mist - Medium emphasis
   static const Color darkDisabled = Color(0xFF6B6B6B);
 
+  // Gradient helper
+  static LinearGradient get blueMagicGradient => const LinearGradient(
+        colors: [darkPrimaryBlue, darkSecondaryRed],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
 
   static ThemeData light() {
     final colorScheme = ColorScheme.light(
@@ -93,7 +119,7 @@ class BizTheme {
       onSecondaryContainer: accentRed,
       surface: tatraWhite,
       onSurface: gray900,
-      surfaceContainerHighest: gray50, 
+      surfaceContainerHighest: gray50,
       outline: gray200, // Thinner, lighter outlines
       outlineVariant: gray100,
       error: errorRed,
@@ -105,23 +131,26 @@ class BizTheme {
 
   static ThemeData dark() {
     final colorScheme = const ColorScheme.dark(
-      primary: darkPrimaryBlue,
-      onPrimary: Color(0xFF001D3D), // high contrast on light blue
-      primaryContainer: darkPrimaryContainer,
-      onPrimaryContainer: Color(0xFFD6E4FF),
-      
-      secondary: darkSecondaryRed,
-      onSecondary: Color(0xFF3D0000),
-      secondaryContainer: darkSecondaryContainer,
+      primary: darkPrimaryBlue, // Neon Blue #00B4D8
+      onPrimary: Color(0xFF001D3D), // Dark blue for contrast
+      primaryContainer: darkPrimaryContainer, // Cyber Blue #1B4965
+      onPrimaryContainer: darkElectricCyan, // Electric Cyan #48CAE4
+
+      secondary: darkSecondaryRed, // Crimson Glow #EE1C25
+      onSecondary: Color(0xFFFFFFFF), // White on red
+      secondaryContainer: darkSecondaryContainer, // Dark crimson
       onSecondaryContainer: Color(0xFFFFDAD9),
-      
-      surface: darkSurface,
-      onSurface: darkOnSurface,
-      surfaceContainerHighest: darkSurfaceVariant,
-      outline: darkOutline,
+
+      tertiary: darkElectricCyan, // Electric Cyan for highlights
+      onTertiary: Color(0xFF001D3D),
+
+      surface: darkSurface, // Deep Space #0A0D14
+      onSurface: darkOnSurface, // Pure White
+      surfaceContainerHighest: darkSurfaceVariant, // Midnight Blue #0D1B2A
+      outline: darkOutline, // Circuit lines #1A3A52
       outlineVariant: darkOutlineVariant,
-      
-      error: Color(0xFFFFB4AB),
+
+      error: Color(0xFFFF6B6B),
       onError: Color(0xFF690005),
     );
 
@@ -130,36 +159,113 @@ class BizTheme {
 
   static ThemeData _buildTheme(ColorScheme colorScheme) {
     final isDark = colorScheme.brightness == Brightness.dark;
-    
+
     final baseTextColor = isDark ? darkOnSurface : gray900;
     final secondaryTextColor = isDark ? darkOnSurfaceVariant : gray600;
-    
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: isDark ? darkSurface : Colors.white,
-      
+
       // Typography
       textTheme: GoogleFonts.robotoTextTheme().copyWith(
-        displayLarge: GoogleFonts.roboto(fontSize: 57, height: 64 / 57, fontWeight: FontWeight.bold, letterSpacing: -0.25, color: baseTextColor),
-        displayMedium: GoogleFonts.roboto(fontSize: 45, height: 52 / 45, fontWeight: FontWeight.bold, color: baseTextColor),
-        displaySmall: GoogleFonts.roboto(fontSize: 36, height: 44 / 36, fontWeight: FontWeight.bold, color: baseTextColor),
-        
-        headlineLarge: GoogleFonts.roboto(fontSize: 32, height: 40 / 32, fontWeight: FontWeight.w600, color: baseTextColor),
-        headlineMedium: GoogleFonts.roboto(fontSize: 28, height: 36 / 28, fontWeight: FontWeight.w600, color: baseTextColor),
-        headlineSmall: GoogleFonts.roboto(fontSize: 24, height: 32 / 24, fontWeight: FontWeight.w600, color: baseTextColor),
-        
-        titleLarge: GoogleFonts.roboto(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w500, color: baseTextColor),
-        titleMedium: GoogleFonts.roboto(fontSize: 16, height: 24 / 16, fontWeight: FontWeight.w500, color: baseTextColor, letterSpacing: 0.15),
-        titleSmall: GoogleFonts.roboto(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500, color: baseTextColor, letterSpacing: 0.1),
-        
-        bodyLarge: GoogleFonts.roboto(fontSize: 16, height: 24 / 16, fontWeight: FontWeight.normal, color: baseTextColor, letterSpacing: 0.5),
-        bodyMedium: GoogleFonts.roboto(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.normal, color: secondaryTextColor, letterSpacing: 0.25),
-        bodySmall: GoogleFonts.roboto(fontSize: 12, height: 16 / 12, fontWeight: FontWeight.normal, color: isDark ? darkDisabled : gray500, letterSpacing: 0.4),
-        
-        labelLarge: GoogleFonts.roboto(fontSize: 14, height: 20 / 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
-        labelMedium: GoogleFonts.roboto(fontSize: 12, height: 16 / 12, fontWeight: FontWeight.w500, letterSpacing: 0.5),
-        labelSmall: GoogleFonts.roboto(fontSize: 11, height: 16 / 11, fontWeight: FontWeight.w500, letterSpacing: 0.5),
+        displayLarge: GoogleFonts.roboto(
+          fontSize: 57,
+          height: 64 / 57,
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.25,
+          color: baseTextColor,
+        ),
+        displayMedium: GoogleFonts.roboto(
+          fontSize: 45,
+          height: 52 / 45,
+          fontWeight: FontWeight.bold,
+          color: baseTextColor,
+        ),
+        displaySmall: GoogleFonts.roboto(
+          fontSize: 36,
+          height: 44 / 36,
+          fontWeight: FontWeight.bold,
+          color: baseTextColor,
+        ),
+        headlineLarge: GoogleFonts.roboto(
+          fontSize: 32,
+          height: 40 / 32,
+          fontWeight: FontWeight.w600,
+          color: baseTextColor,
+        ),
+        headlineMedium: GoogleFonts.roboto(
+          fontSize: 28,
+          height: 36 / 28,
+          fontWeight: FontWeight.w600,
+          color: baseTextColor,
+        ),
+        headlineSmall: GoogleFonts.roboto(
+          fontSize: 24,
+          height: 32 / 24,
+          fontWeight: FontWeight.w600,
+          color: baseTextColor,
+        ),
+        titleLarge: GoogleFonts.roboto(
+          fontSize: 22,
+          height: 28 / 22,
+          fontWeight: FontWeight.w500,
+          color: baseTextColor,
+        ),
+        titleMedium: GoogleFonts.roboto(
+          fontSize: 16,
+          height: 24 / 16,
+          fontWeight: FontWeight.w500,
+          color: baseTextColor,
+          letterSpacing: 0.15,
+        ),
+        titleSmall: GoogleFonts.roboto(
+          fontSize: 14,
+          height: 20 / 14,
+          fontWeight: FontWeight.w500,
+          color: baseTextColor,
+          letterSpacing: 0.1,
+        ),
+        bodyLarge: GoogleFonts.roboto(
+          fontSize: 16,
+          height: 24 / 16,
+          fontWeight: FontWeight.normal,
+          color: baseTextColor,
+          letterSpacing: 0.5,
+        ),
+        bodyMedium: GoogleFonts.roboto(
+          fontSize: 14,
+          height: 20 / 14,
+          fontWeight: FontWeight.normal,
+          color: secondaryTextColor,
+          letterSpacing: 0.25,
+        ),
+        bodySmall: GoogleFonts.roboto(
+          fontSize: 12,
+          height: 16 / 12,
+          fontWeight: FontWeight.normal,
+          color: isDark ? darkDisabled : gray500,
+          letterSpacing: 0.4,
+        ),
+        labelLarge: GoogleFonts.roboto(
+          fontSize: 14,
+          height: 20 / 14,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.1,
+        ),
+        labelMedium: GoogleFonts.roboto(
+          fontSize: 12,
+          height: 16 / 12,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.5,
+        ),
+        labelSmall: GoogleFonts.roboto(
+          fontSize: 11,
+          height: 16 / 11,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.5,
+        ),
       ),
 
       // AppBar
@@ -175,7 +281,9 @@ class BizTheme {
           fontWeight: FontWeight.bold,
         ),
         iconTheme: IconThemeData(color: isDark ? darkOnSurface : slovakBlue),
-        shape: Border(bottom: BorderSide(color: isDark ? darkOutline : gray100, width: 0.5)),
+        shape: Border(
+          bottom: BorderSide(color: isDark ? darkOutline : gray100, width: 0.5),
+        ),
       ),
 
       // Card Decoration
@@ -196,18 +304,25 @@ class BizTheme {
           foregroundColor: isDark ? darkSurface : Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
-          textStyle: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          textStyle: GoogleFonts.roboto(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-           backgroundColor: isDark ? darkPrimaryBlue : slovakBlue,
-           foregroundColor: isDark ? darkSurface : Colors.white,
-           elevation: 0,
-           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
-        )
+          backgroundColor: isDark ? darkPrimaryBlue : slovakBlue,
+          foregroundColor: isDark ? darkSurface : Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+        ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -218,9 +333,14 @@ class BizTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: isDark ? darkPrimaryBlue : slovakBlue,
-          side: BorderSide(color: isDark ? darkPrimaryBlue : slovakBlue, width: 1.5),
+          side: BorderSide(
+            color: isDark ? darkPrimaryBlue : slovakBlue,
+            width: 1.5,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
         ),
       ),
 
@@ -230,15 +350,23 @@ class BizTheme {
         foregroundColor: Colors.white,
         elevation: 4,
         highlightElevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusXl)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusXl),
+        ),
       ),
 
       // Inputs
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: isDark ? darkSurfaceContainerLow : gray50,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        labelStyle: TextStyle(color: isDark ? darkOnSurfaceVariant : gray600, fontWeight: FontWeight.w500),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
+        labelStyle: TextStyle(
+          color: isDark ? darkOnSurfaceVariant : gray600,
+          fontWeight: FontWeight.w500,
+        ),
         hintStyle: TextStyle(color: isDark ? darkDisabled : gray400),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusLg),
@@ -250,11 +378,17 @@ class BizTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusLg),
-          borderSide: BorderSide(color: isDark ? darkPrimaryBlue : slovakBlue, width: 2),
+          borderSide: BorderSide(
+            color: isDark ? darkPrimaryBlue : slovakBlue,
+            width: 2,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusLg),
-          borderSide: BorderSide(color: isDark ? const Color(0xFFFFB4AB) : errorRed, width: 1.5),
+          borderSide: BorderSide(
+            color: isDark ? const Color(0xFFFFB4AB) : errorRed,
+            width: 1.5,
+          ),
         ),
       ),
 
@@ -263,22 +397,28 @@ class BizTheme {
         backgroundColor: isDark ? darkSurface : Colors.white,
         selectedItemColor: isDark ? darkPrimaryBlue : slovakBlue,
         unselectedItemColor: isDark ? darkDisabled : gray500,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 12,
+        ),
         elevation: 8,
         type: BottomNavigationBarType.fixed,
       ),
-      
+
       dividerTheme: DividerThemeData(
         color: isDark ? darkOutlineVariant : gray100,
         thickness: 0.5,
         space: 1,
       ),
-      
+
       iconTheme: IconThemeData(
         color: isDark ? darkOnSurface : slovakBlue,
         size: 24,
-      )
+      ),
     );
   }
 }

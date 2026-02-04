@@ -21,13 +21,17 @@ class PaywallScreen extends ConsumerWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/paywall_bg.webp'), // Placeholder
+                image: AssetImage(
+                  'assets/images/paywall_bg.webp',
+                ), // Placeholder
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Container(
-            color: const Color(0xFF0F172A).withValues(alpha: 0.85), // Dark overlay
+            color: const Color(
+              0xFF0F172A,
+            ).withValues(alpha: 0.85), // Dark overlay
           ),
 
           SafeArea(
@@ -61,29 +65,36 @@ class PaywallScreen extends ConsumerWidget {
                         const SizedBox(height: 12),
                         const Text(
                           "Neobmedzené faktúry, AI analýza a exporty.",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white70,
-                          ),
+                          style: TextStyle(fontSize: 16, color: Colors.white70),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 40),
-
                         if (billingState.isLoading)
                           const Center(child: CircularProgressIndicator())
                         else if (billingState.errorMessage != null)
-                          Text("Chyba: ${billingState.errorMessage}", style: const TextStyle(color: Colors.red))
+                          Text(
+                            "Chyba: ${billingState.errorMessage}",
+                            style: const TextStyle(color: Colors.red),
+                          )
                         else
-                          ..._buildProductList(ref, billingState.products, remoteConfig),
-                        
+                          ..._buildProductList(
+                            ref,
+                            billingState.products,
+                            remoteConfig,
+                          ),
                         const SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            ref.read(billingProvider.notifier).restorePurchases();
+                            ref
+                                .read(billingProvider.notifier)
+                                .restorePurchases();
                           },
-                          child: const Text("Obnoviť nákupy", style: TextStyle(color: Colors.white54)),
+                          child: const Text(
+                            "Obnoviť nákupy",
+                            style: TextStyle(color: Colors.white54),
+                          ),
                         ),
-                         const SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         const Text(
                           "Predplatné sa automaticky obnovuje. Zrušiť môžete kedykoľvek v Google Play.",
                           style: TextStyle(color: Colors.white24, fontSize: 10),
@@ -101,11 +112,24 @@ class PaywallScreen extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildProductList(WidgetRef ref, List<ProductDetails> products, BizRemoteConfig config) {
+  List<Widget> _buildProductList(
+    WidgetRef ref,
+    List<ProductDetails> products,
+    BizRemoteConfig config,
+  ) {
     // Basic sorting: Yearly first if discounted, else Monthly
-    final yearly = products.firstWhere((p) => p.id == BizConfig.productProYearly, orElse: () => _mockProduct(BizConfig.productProYearly));
-    final monthly = products.firstWhere((p) => p.id == BizConfig.productProMonthly, orElse: () => _mockProduct(BizConfig.productProMonthly));
-    final oneTime = products.firstWhere((p) => p.id == BizConfig.productOneTimeStarter, orElse: () => _mockProduct(BizConfig.productOneTimeStarter));
+    final yearly = products.firstWhere(
+      (p) => p.id == BizConfig.productProYearly,
+      orElse: () => _mockProduct(BizConfig.productProYearly),
+    );
+    final monthly = products.firstWhere(
+      (p) => p.id == BizConfig.productProMonthly,
+      orElse: () => _mockProduct(BizConfig.productProMonthly),
+    );
+    final oneTime = products.firstWhere(
+      (p) => p.id == BizConfig.productOneTimeStarter,
+      orElse: () => _mockProduct(BizConfig.productOneTimeStarter),
+    );
 
     return [
       const _FeatureRow(icon: Icons.check, text: "Neobmedzené faktúry"),
@@ -127,34 +151,40 @@ class PaywallScreen extends ConsumerWidget {
       _PricingCard(
         product: monthly,
         isBestValue: false,
-        onTap: () => ref.read(billingProvider.notifier).purchaseProduct(monthly),
+        onTap: () =>
+            ref.read(billingProvider.notifier).purchaseProduct(monthly),
       ),
-      
+
       // Anchor Price (One Time)
       if (config.enableOneTimePurchase) ...[
-         const SizedBox(height: 16),
-         const Divider(color: Colors.white12),
-         const SizedBox(height: 16),
-         _PricingCard(
+        const SizedBox(height: 16),
+        const Divider(color: Colors.white12),
+        const SizedBox(height: 16),
+        _PricingCard(
           product: oneTime,
           isBestValue: false,
           isOneTime: true,
-          onTap: () => ref.read(billingProvider.notifier).purchaseProduct(oneTime),
+          onTap: () =>
+              ref.read(billingProvider.notifier).purchaseProduct(oneTime),
         ),
-      ]
+      ],
     ];
   }
 
   // Mock for development if store not connected
   ProductDetails _mockProduct(String id) {
-     return ProductDetails(
-       id: id,
-       title: id.contains('year') ? "Ročné PRO" : (id.contains('one') ? "Doživotný Štart" : "Mesačné PRO"),
-       description: "Description",
-       price: id.contains('year') ? "99.99 €" : (id.contains('one') ? "14.99 €" : "9.99 €"),
-       rawPrice: 10,
-       currencyCode: "EUR",
-     );
+    return ProductDetails(
+      id: id,
+      title: id.contains('year')
+          ? "Ročné PRO"
+          : (id.contains('one') ? "Doživotný Štart" : "Mesačné PRO"),
+      description: "Description",
+      price: id.contains('year')
+          ? "99.99 €"
+          : (id.contains('one') ? "14.99 €" : "9.99 €"),
+      rawPrice: 10,
+      currencyCode: "EUR",
+    );
   }
 }
 
@@ -185,15 +215,24 @@ class _PricingCard extends StatelessWidget {
         alignment: Alignment.center,
         border: 2,
         linearGradient: LinearGradient(
-          colors: isBestValue 
-              ? [Colors.blue.withValues(alpha: 0.3), Colors.purple.withValues(alpha: 0.3)]
-              : [Colors.white.withValues(alpha: 0.1), Colors.white.withValues(alpha: 0.05)],
+          colors: isBestValue
+              ? [
+                  Colors.blue.withValues(alpha: 0.3),
+                  Colors.purple.withValues(alpha: 0.3),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.1),
+                  Colors.white.withValues(alpha: 0.05),
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderGradient: LinearGradient(
           colors: isBestValue
-              ? [Colors.blueAccent.withValues(alpha: 0.5), Colors.purpleAccent.withValues(alpha: 0.5)]
+              ? [
+                  Colors.blueAccent.withValues(alpha: 0.5),
+                  Colors.purpleAccent.withValues(alpha: 0.5),
+                ]
               : [Colors.white24, Colors.white10],
         ),
         child: Padding(
@@ -205,9 +244,12 @@ class _PricingCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    isOneTime ? "JEDNORAZOVO" : (product.id.contains('year') ? "ROČNE" : "MESAČNE"),
+                    isOneTime
+                        ? "JEDNORAZOVO"
+                        : (product.id.contains('year') ? "ROČNE" : "MESAČNE"),
                     style: TextStyle(
-                      color: isBestValue ? Colors.blueAccent[100] : Colors.white70,
+                      color:
+                          isBestValue ? Colors.blueAccent[100] : Colors.white70,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -226,14 +268,21 @@ class _PricingCard extends StatelessWidget {
               const Spacer(),
               if (isBestValue && discountPercent != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     "UŠETRÍTE $discountPercent%",
-                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
             ],
@@ -252,15 +301,15 @@ class _FeatureRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     return Padding(
-       padding: const EdgeInsets.only(bottom: 12),
-       child: Row(
-         children: [
-           Icon(icon, color: Colors.greenAccent, size: 20),
-           const SizedBox(width: 12),
-           Text(text, style: const TextStyle(color: Colors.white, fontSize: 14)),
-         ],
-       ),
-     );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.greenAccent, size: 20),
+          const SizedBox(width: 12),
+          Text(text, style: const TextStyle(color: Colors.white, fontSize: 14)),
+        ],
+      ),
+    );
   }
 }

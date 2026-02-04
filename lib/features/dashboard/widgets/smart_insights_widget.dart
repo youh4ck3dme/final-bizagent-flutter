@@ -107,9 +107,13 @@ class _InsightCard extends StatelessWidget {
                               if (insight.priority == InsightPriority.high)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: BizTheme.richCrimson.withValues(alpha: 0.1),
+                                    color: BizTheme.richCrimson.withValues(
+                                      alpha: 0.1,
+                                    ),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
@@ -133,8 +137,11 @@ class _InsightCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Icon(Icons.auto_awesome,
-                        color: Colors.amber.withValues(alpha: 0.6), size: 18),
+                    Icon(
+                      Icons.auto_awesome,
+                      color: Colors.amber.withValues(alpha: 0.6),
+                      size: 18,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -149,23 +156,29 @@ class _InsightCard extends StatelessWidget {
                 if (insight.potentialSavings != null) ...[
                   const SizedBox(height: 16),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: BizTheme.successGreen.withValues(alpha: 0.1),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.trending_up,
-                            color: BizTheme.successGreen, size: 16),
+                        const Icon(
+                          Icons.trending_up,
+                          color: BizTheme.successGreen,
+                          size: 16,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '+12%',
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: BizTheme.successGreen,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: BizTheme.successGreen,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ],
                     ),
@@ -185,9 +198,6 @@ class _LoadingShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BizShimmer.rectangular(
-      height: 140,
-      width: double.infinity,
-    );
+    return const BizShimmer.rectangular(height: 140, width: double.infinity);
   }
 }

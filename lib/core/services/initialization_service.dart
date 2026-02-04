@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../services/local_persistence_service.dart';
 
@@ -23,10 +24,10 @@ class InitState {
   }
 }
 
-class InitializationService extends StateNotifier<InitState> {
-  InitializationService(this._ref) : super(const InitState(progress: 0.0, message: 'Inicializácia...'));
-
-  final Ref _ref;
+class InitializationService extends Notifier<InitState> {
+  @override
+  InitState build() =>
+      const InitState(progress: 0.0, message: 'Inicializácia...');
 
   Future<void> initializeApp() async {
     // 1. Start
@@ -34,14 +35,19 @@ class InitializationService extends StateNotifier<InitState> {
     await Future.delayed(const Duration(milliseconds: 500)); // Visual delay
 
     // 2. Connectivity Check (Simulating network stabilization)
-    state = state.copyWith(progress: 0.3, message: 'Stabilizujem pripojenie...');
-    await Connectivity().checkConnectivity();
+    state = state.copyWith(
+      progress: 0.3,
+      message: 'Stabilizujem pripojenie...',
+    );
+    if (!kIsWeb) {
+      await Connectivity().checkConnectivity();
+    }
     // In a real app we might ping a server here
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     // 3. Database Warmup
     state = state.copyWith(progress: 0.6, message: 'Načítavam lokálne dáta...');
-    _ref.read(localPersistenceServiceProvider);
+    ref.read(localPersistenceServiceProvider);
     // Ensure boxes are open (they are init in main, but we can verify)
     await Future.delayed(const Duration(milliseconds: 600));
 
@@ -50,14 +56,22 @@ class InitializationService extends StateNotifier<InitState> {
     await Future.delayed(const Duration(milliseconds: 400));
 
     // 5. Finalizing
-    state = state.copyWith(progress: 0.95, message: 'Pripravujem prostredie...');
+    state = state.copyWith(
+      progress: 0.95,
+      message: 'Pripravujem prostredie...',
+    );
     await Future.delayed(const Duration(milliseconds: 300));
 
     // Done
-    state = state.copyWith(progress: 1.0, message: 'Hotovo!', isCompleted: true);
+    state = state.copyWith(
+      progress: 1.0,
+      message: 'Hotovo!',
+      isCompleted: true,
+    );
   }
 }
 
-final initializationServiceProvider = StateNotifierProvider<InitializationService, InitState>((ref) {
-  return InitializationService(ref);
+final initializationServiceProvider =
+    NotifierProvider<InitializationService, InitState>(() {
+  return InitializationService();
 });

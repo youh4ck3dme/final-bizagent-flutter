@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/i18n/app_strings.dart';
 import '../../../core/i18n/l10n.dart';
@@ -56,7 +57,9 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
       }
       if (next.error != null && previous?.error != next.error) {
         BizSnackbar.showError(
-            context, 'Chyba pri generovaní exportu: ${next.error}');
+          context,
+          'Chyba pri generovaní exportu: ${next.error}',
+        );
       }
     });
 
@@ -64,14 +67,22 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
     final ctrl = ref.read(exportProvider.notifier);
 
     final items = [
-      BizProgressItem(context.t(AppStr.exportInvoicesPdf),
-          done: st.progress.pdfDone),
-      BizProgressItem(context.t(AppStr.exportExpensesPhotos),
-          done: st.progress.photosDone),
-      BizProgressItem(context.t(AppStr.exportSummaryCsv),
-          done: st.progress.csvDone),
-      BizProgressItem(context.t(AppStr.exportDataJson),
-          done: st.progress.jsonDone),
+      BizProgressItem(
+        context.t(AppStr.exportInvoicesPdf),
+        done: st.progress.pdfDone,
+      ),
+      BizProgressItem(
+        context.t(AppStr.exportExpensesPhotos),
+        done: st.progress.photosDone,
+      ),
+      BizProgressItem(
+        context.t(AppStr.exportSummaryCsv),
+        done: st.progress.csvDone,
+      ),
+      BizProgressItem(
+        context.t(AppStr.exportDataJson),
+        done: st.progress.jsonDone,
+      ),
     ];
 
     return Scaffold(
@@ -122,6 +133,18 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                       ? null
                       : () => ctrl.run(uid: widget.uid, period: _period),
                 ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    side: const BorderSide(
+                      color: Color(0xFF003153),
+                    ), // Use hex instead of BizTheme if const is forced or just remove const
+                  ),
+                  onPressed: () => context.push('/export/reports'),
+                  icon: const Icon(Icons.analytics_outlined),
+                  label: const Text('Manažérske PDF Reporty'),
+                ),
               ],
             ),
           ),
@@ -131,14 +154,17 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.t(AppStr.exportReady),
-                      style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    context.t(AppStr.exportReady),
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 6),
                   Text(
-                      st.result!.zipPath.isNotEmpty
-                          ? st.result!.zipPath
-                          : 'Súbor pripravený na zdieľanie/stiahnutie',
-                      style: Theme.of(context).textTheme.bodySmall),
+                    st.result!.zipPath.isNotEmpty
+                        ? st.result!.zipPath
+                        : 'Súbor pripravený na zdieľanie/stiahnutie',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                   const SizedBox(height: 12),
                   Wrap(
                     spacing: 10,
@@ -171,8 +197,10 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                   ),
                   if (st.result!.hasMissing) ...[
                     const SizedBox(height: 12),
-                    Text(context.t(AppStr.missingItemsTitle),
-                        style: Theme.of(context).textTheme.titleSmall),
+                    Text(
+                      context.t(AppStr.missingItemsTitle),
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     const SizedBox(height: 6),
                     Text(context.t(AppStr.missingItemsBody)),
                     const SizedBox(height: 8),
@@ -190,14 +218,18 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.t(AppStr.errorGeneric),
-                      style: Theme.of(context).textTheme.titleSmall),
+                  Text(
+                    context.t(AppStr.errorGeneric),
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 8),
-                  Text('${st.error}',
-                      style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    '${st.error}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ],
       ),

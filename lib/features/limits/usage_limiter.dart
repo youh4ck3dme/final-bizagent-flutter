@@ -24,7 +24,7 @@ class UsageLimiter {
   Future<void> checkAndResetMonthly() async {
     final lastResetStr = prefs.getString(_kLastReset);
     final now = DateTime.now();
-    
+
     if (lastResetStr != null) {
       final lastReset = DateTime.parse(lastResetStr);
       if (now.month != lastReset.month || now.year != lastReset.year) {

@@ -36,7 +36,9 @@ void main() {
     });
 
     // 2. Call
-    final result = await service.lookupByIco('12 345 678'); // Spaces should be stripped
+    final result = await service.lookupByIco(
+      '12 345 678',
+    ); // Spaces should be stripped
 
     // 3. Verify
     expect(result.name, 'Test Company');
@@ -62,7 +64,9 @@ void main() {
     );
 
     // Stub remote to return fresh data
-    when(() => mockRemote.publicLookup('12345678')).thenAnswer((_) async => freshResult);
+    when(
+      () => mockRemote.publicLookup('12345678'),
+    ).thenAnswer((_) async => freshResult);
 
     // 2. Call
     final result = await service.lookupByIco('12345678');
@@ -82,7 +86,9 @@ void main() {
 
   test('calls remote if cache miss', () async {
     // 1. Stub remote
-    when(() => mockRemote.publicLookup('12345678')).thenAnswer((_) async => sampleResult);
+    when(
+      () => mockRemote.publicLookup('12345678'),
+    ).thenAnswer((_) async => sampleResult);
 
     // 2. Call
     final result = await service.lookupByIco('12345678');

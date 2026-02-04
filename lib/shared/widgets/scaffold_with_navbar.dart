@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart'; // For kDebugMode, kIsWeb
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import '../../core/ui/biz_theme.dart';
+import '../../core/router/app_router.dart';
 import '../../features/ai_tools/screens/biz_bot_screen.dart';
 import '../../core/services/security_service.dart';
 import '../../features/settings/models/user_settings_model.dart';
@@ -9,10 +13,7 @@ import '../../features/settings/providers/settings_provider.dart';
 import '../../features/auth/screens/pin_auth_screen.dart';
 
 class ScaffoldWithNavBar extends ConsumerStatefulWidget {
-  const ScaffoldWithNavBar({
-    required this.navigationShell,
-    super.key,
-  });
+  const ScaffoldWithNavBar({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
 
@@ -21,6 +22,8 @@ class ScaffoldWithNavBar extends ConsumerStatefulWidget {
 }
 
 class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
+  StreamSubscription<List<SharedMediaFile>>? _shareIntentSub;
+
   void _goBranch(int index) {
     widget.navigationShell.goBranch(
       index,
@@ -32,20 +35,58 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
   void initState() {
     super.initState();
     _checkSecurity();
+    if (!kIsWeb) {
+      ReceiveSharingIntent.instance.getInitialMedia().then((list) {
+        if (list.isNotEmpty && mounted) {
+          final path = list.first.path;
+          if (path.isNotEmpty) {
+            ref
+                .read(routerProvider)
+                .go('/create-expense', extra: {'sharedImagePath': path});
+            ReceiveSharingIntent.instance.reset();
+          }
+        }
+      });
+      _shareIntentSub = ReceiveSharingIntent.instance.getMediaStream().listen((
+        list,
+      ) {
+        if (list.isNotEmpty && mounted) {
+          final path = list.first.path;
+          if (path.isNotEmpty) {
+            ref
+                .read(routerProvider)
+                .go('/create-expense', extra: {'sharedImagePath': path});
+            ReceiveSharingIntent.instance.reset();
+          }
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _shareIntentSub?.cancel();
+    super.dispose();
   }
 
   Future<void> _checkSecurity() async {
     // Wait for settings to load
     final settings = await ref.read(settingsProvider.future);
     final isUnlocked = ref.read(sessionUnlockedProvider);
-    
+
     if (isUnlocked) return;
+
+    // DEV BYPASS: Auto-unlock in debug mode on web to prevent emulator stalls
+    if (kDebugMode && kIsWeb) {
+      ref.read(sessionUnlockedProvider.notifier).setUnlocked(true);
+      return;
+    }
 
     if (settings.biometricEnabled || settings.pinEnabled) {
       _showSecurityChallenge(settings);
     } else {
       // No security enabled, unlock session automatically
-      ref.read(sessionUnlockedProvider.notifier).state = true;
+      ref.read(sessionUnlockedProvider.notifier).setUnlocked(true);
     }
   }
 
@@ -56,28 +97,30 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
       final security = ref.read(securityServiceProvider);
       final success = await security.authenticateWithBiometrics();
       if (success) {
-        ref.read(sessionUnlockedProvider.notifier).state = true;
+        ref.read(sessionUnlockedProvider.notifier).setUnlocked(true);
         return;
       }
     }
 
+    if (!mounted) return;
     if (settings.pinEnabled) {
       final success = await showGeneralDialog<bool>(
         context: context,
         barrierDismissible: false,
-        pageBuilder: (context, _, __) => const PinAuthScreen(initialMode: PinMode.verify),
+        pageBuilder: (context, _, __) =>
+            const PinAuthScreen(initialMode: PinMode.verify),
       );
-      
+
       if (success == true) {
-        ref.read(sessionUnlockedProvider.notifier).state = true;
+        ref.read(sessionUnlockedProvider.notifier).setUnlocked(true);
       } else {
         // If cancelled or failed, we stay locked.
         // User is effectively stuck on the locked screen until they authenticate.
       }
     } else if (!settings.biometricEnabled) {
-       // Only reach here if biometric failed but PIN is not enabled
-       // In a real app, we might fallback to login or similar.
-       ref.read(sessionUnlockedProvider.notifier).state = true;
+      // Only reach here if biometric failed but PIN is not enabled
+      // In a real app, we might fallback to login or similar.
+      ref.read(sessionUnlockedProvider.notifier).setUnlocked(true);
     }
   }
 
@@ -86,6 +129,26 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
     final width = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
     final isUnlocked = ref.watch(sessionUnlockedProvider);
+    final settingsAsync = ref.watch(settingsProvider);
+
+    // Show loading while we don't know the settings or the unlock state
+    if (settingsAsync.isLoading && !isUnlocked) {
+      return const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: BizTheme.slovakBlue),
+              SizedBox(height: 24),
+              Text(
+                'Overujem zabezpečenie...',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     if (!isUnlocked) {
       // Locked State - Premium "Original" Minimalist Look
@@ -94,15 +157,39 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lock_outline, size: 64, color: BizTheme.slovakBlue),
+              const Icon(
+                Icons.lock_outline,
+                size: 64,
+                color: BizTheme.slovakBlue,
+              ),
               const SizedBox(height: 24),
               const Text(
                 'BizAgent je uzamknutý',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                child: Text(
+                  'Pre prístup k vašim citlivým dátam je potrebné overenie identity.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+              const SizedBox(height: 32),
               ElevatedButton.icon(
                 onPressed: _checkSecurity,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: BizTheme.slovakBlue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 icon: const Icon(Icons.lock_open),
                 label: const Text('ODOMKNÚŤ'),
               ),
@@ -132,6 +219,11 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
         icon: Icon(Icons.attach_money),
         selectedIcon: Icon(Icons.attach_money),
         label: 'Výdavky',
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.note_alt_outlined),
+        selectedIcon: Icon(Icons.note_alt),
+        label: 'Poznámky',
       ),
       const NavigationDestination(
         icon: Icon(Icons.auto_awesome_outlined),
@@ -168,7 +260,7 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
         ),
       );
     }
-    
+
     return Scaffold(
       body: Row(
         children: [
@@ -179,13 +271,16 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
               labelType: NavigationRailLabelType.all,
               backgroundColor: theme.colorScheme.surface,
               indicatorColor: theme.colorScheme.primaryContainer,
-              destinations: destinations.map((d) => NavigationRailDestination(
-                icon: d.icon,
-                selectedIcon: d.selectedIcon,
-                label: Text(d.label),
-              )).toList(),
+              destinations: destinations
+                  .map(
+                    (d) => NavigationRailDestination(
+                      icon: d.icon,
+                      selectedIcon: d.selectedIcon,
+                      label: Text(d.label),
+                    ),
+                  )
+                  .toList(),
             ),
-            
           if (isDesktop)
             NavigationDrawer(
               selectedIndex: widget.navigationShell.currentIndex,
@@ -193,24 +288,25 @@ class _ScaffoldWithNavBarState extends ConsumerState<ScaffoldWithNavBar> {
               backgroundColor: theme.colorScheme.surface,
               indicatorColor: theme.colorScheme.primaryContainer,
               children: [
-                 Padding(
-                   padding: const EdgeInsets.all(BizTheme.spacingLg),
-                   child: Text(
-                     'BizAgent',
-                     style: theme.textTheme.headlineSmall?.copyWith(
-                       color: theme.colorScheme.primary, 
-                       fontWeight: FontWeight.bold
-                     ),
-                   ),
-                 ),
-                 ...destinations.map((d) => NavigationDrawerDestination(
-                  icon: d.icon,
-                  selectedIcon: d.selectedIcon,
-                  label: Text(d.label),
-                )),
+                Padding(
+                  padding: const EdgeInsets.all(BizTheme.spacingLg),
+                  child: Text(
+                    'BizAgent',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ...destinations.map(
+                  (d) => NavigationDrawerDestination(
+                    icon: d.icon,
+                    selectedIcon: d.selectedIcon,
+                    label: Text(d.label),
+                  ),
+                ),
               ],
             ),
-            
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(child: widget.navigationShell),
         ],

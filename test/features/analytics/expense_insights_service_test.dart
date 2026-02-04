@@ -27,7 +27,8 @@ void main() {
     });
 
     test('should parse AI JSON response into insights', () async {
-      final service = ExpenseInsightsService(FakeGeminiService('''
+      final service = ExpenseInsightsService(
+        FakeGeminiService('''
 [
   {
     "id": "1",
@@ -41,7 +42,8 @@ void main() {
     "createdAt": "2026-01-24T00:00:00.000Z"
   }
 ]
-'''));
+'''),
+      );
 
       final expenses = <ExpenseModel>[
         ExpenseModel(

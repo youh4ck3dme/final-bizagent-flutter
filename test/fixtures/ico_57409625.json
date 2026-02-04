@@ -1,0 +1,63 @@
+{
+  "data": {
+    "ico": "57409625",
+    "name": "Diamant Clean s. r. o.",
+    "dic": null,
+    "ic_dph": null,
+    "legal_form": "s. r. o.",
+    "status": "Aktívna",
+    "activities": [],
+    "sk_nace": null,
+    "capital": null,
+    "address": "Bajkalská 14083/2C",
+    "address_street": null,
+    "city": "Bratislava - mestská časť Nové Mesto",
+    "zip": "83104",
+    "district": null,
+    "region": null,
+    "country": "SK",
+    "email": null,
+    "phone": null,
+    "website": null,
+    "source": "orsr",
+    "registration_id": null,
+    "registered_court": null,
+    "established_at": null,
+    "terminated_on": null,
+    "data_sources": null,
+    "confidence_score": null,
+    "risk_flags": null,
+    "financials_summary": {
+      "revenue": 0,
+      "profit": 0,
+      "assets": 0,
+      "year": 2025,
+      "debt_fs": 0,
+      "debt_sp": 0
+    },
+    "documents": null
+  },
+  "related": [],
+  "persons": [
+    {
+      "name": "Alica Škrabáková",
+      "role": "konateľ",
+      "address": "Hviezdna, 12634/22, Bratislava - mestská časť Podunajské Biskupice, 821 06, (od: 23.01.2026)",
+      "city": null,
+      "zip": "821 06",
+      "appointed_at": "2026-01-23"
+    },
+    {
+      "name": "Jozef Škrabák",
+      "role": "konateľ",
+      "address": "Hviezdna, 12634/22, Bratislava - mestská časť Podunajské Biskupice, 821 06, (od: 23.01.2026)",
+      "city": null,
+      "zip": "821 06",
+      "appointed_at": "2026-01-23"
+    }
+  ],
+  "meta": {
+    "cached": false,
+    "latency_ms": 3524
+  }
+}

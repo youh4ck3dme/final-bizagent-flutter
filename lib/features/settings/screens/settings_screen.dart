@@ -10,6 +10,9 @@ import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/services/company_lookup_service.dart';
 import '../../../core/services/local_persistence_service.dart';
 import '../../../core/services/security_service.dart';
+import '../../tools/providers/trash_provider.dart';
+import '../widgets/logo_upload_widget.dart';
+import '../widgets/google_backup_settings_widget.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -37,7 +40,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     final settings =
-        ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+        ref.read(settingsProvider).asData?.value ?? UserSettingsModel.empty();
     _nameController = TextEditingController(text: settings.companyName);
     _addressController = TextEditingController(text: settings.companyAddress);
     _icoController = TextEditingController(text: settings.companyIco);
@@ -63,7 +66,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final current =
-        ref.read(settingsProvider).valueOrNull ?? UserSettingsModel.empty();
+        ref.read(settingsProvider).asData?.value ?? UserSettingsModel.empty();
     final updated = current.copyWith(
       companyName: _nameController.text,
       companyAddress: _addressController.text,
@@ -128,7 +131,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               );
             },
           ),
-          IconButton(key: _saveKey, onPressed: _save, icon: const Icon(Icons.save)),
+          IconButton(
+            key: _saveKey,
+            onPressed: _save,
+            icon: const Icon(Icons.save),
+          ),
         ],
       ),
       body: settingsAsync.when(
@@ -150,6 +157,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 maxLines: 2,
               ),
               const SizedBox(height: 16),
+              const LogoUploadWidget(),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -163,8 +172,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 child: SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 ),
                               )
                             : IconButton(
@@ -209,6 +219,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               TextFormField(
                 controller: _swiftController,
                 decoration: const InputDecoration(labelText: 'SWIFT / BIC'),
+              ),
+              const Divider(height: 32),
+              _buildSectionTitle('Pomoc a Spätná väzba'),
+              ListTile(
+                leading: const Icon(Icons.feedback_outlined),
+                title: const Text('Odoslať spätnú väzbu'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push('/settings/feedback'),
               ),
               const Divider(height: 32),
               _buildSectionTitle('Aplikácia'),
@@ -263,6 +281,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: () {},
               ),
               const Divider(height: 32),
+              _buildSectionTitle('Cloud Backup'),
+              const GoogleBackupSettingsWidget(),
+              const Divider(height: 32),
               _buildSectionTitle('Zabezpečenie'),
               SwitchListTile(
                 title: const Text('Biometrické overenie'),
@@ -275,48 +296,75 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     final canBio = await security.canCheckBiometrics();
                     if (!canBio) {
                       if (context.mounted) {
-                        BizSnackbar.showError(context, 'Biometria nie je podporovaná na tomto zariadení.');
+                        BizSnackbar.showError(
+                          context,
+                          'Biometria nie je podporovaná na tomto zariadení.',
+                        );
                       }
                       return;
                     }
-                    final authenticated = await security.authenticateWithBiometrics(
-                      reason: 'Povoliť biometrické overenie pre BizAgent'
+                    final authenticated =
+                        await security.authenticateWithBiometrics(
+                      reason: 'Povoliť biometrické overenie pre BizAgent',
                     );
                     if (!authenticated) return;
                   }
-                  ref.read(settingsControllerProvider.notifier).updateBiometricEnabled(val);
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .updateBiometricEnabled(val);
                 },
               ),
               ListTile(
                 title: const Text('4-miestny PIN kód'),
-                subtitle: Text(settings.pinEnabled ? 'PIN je aktívny' : 'PIN je vypnutý'),
+                subtitle: Text(
+                  settings.pinEnabled ? 'PIN je aktívny' : 'PIN je vypnutý',
+                ),
                 leading: const Icon(Icons.pin_outlined),
                 trailing: Switch(
                   value: settings.pinEnabled,
                   onChanged: (val) async {
                     if (val) {
                       // Trigger PIN Setup Flow
-                      final result = await context.push<String?>('/settings/pin-setup');
+                      final result = await context.push<String?>(
+                        '/settings/pin-setup',
+                      );
                       if (result == null) return; // Cancelled
                     } else {
                       // Verification required to disable PIN
-                      final result = await context.push<bool>('/settings/pin-verify');
+                      final result = await context.push<bool>(
+                        '/settings/pin-verify',
+                      );
                       if (result != true) return; // Failed verification
                     }
-                    ref.read(settingsControllerProvider.notifier).updatePinEnabled(val);
+                    ref
+                        .read(settingsControllerProvider.notifier)
+                        .updatePinEnabled(val);
                   },
                 ),
-                onTap: settings.pinEnabled 
-                  ? () => context.push('/settings/pin-setup') // Change PIN
-                  : null,
+                onTap: settings.pinEnabled
+                    ? () => context.push('/settings/pin-setup') // Change PIN
+                    : null,
               ),
               const Divider(height: 32),
               _buildSectionTitle('Správa dát'),
-              ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: const Text('Kôš (obnovenie zmazaných položiek)'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push('/settings/trash'),
+              Consumer(
+                builder: (context, ref, _) {
+                  final countAsync = ref.watch(trashCountProvider);
+                  return ListTile(
+                    leading: const Icon(Icons.delete_outline),
+                    title: const Text('Kôš (obnovenie zmazaných položiek)'),
+                    trailing: countAsync.maybeWhen(
+                      data: (count) => count > 0
+                          ? Badge(
+                              label: Text('$count'),
+                              child: const Icon(Icons.chevron_right),
+                            )
+                          : const Icon(Icons.chevron_right),
+                      orElse: () => const Icon(Icons.chevron_right),
+                    ),
+                    onTap: () => context.push('/settings/trash'),
+                  );
+                },
               ),
               const Divider(height: 32),
               _buildSectionTitle('Právne dokumenty'),
@@ -335,8 +383,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _save,
-                style:
-                    ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(16),
+                ),
                 child: const Text('Uložiť zmeny'),
               ),
               const SizedBox(height: 16),
@@ -360,11 +409,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       builder: (context) => AlertDialog(
         title: const Text('Naozaj resetovať?'),
         content: const Text(
-            'Týmto nenávratne vymažete všetky faktúry, výdavky a nastavenia firmy. Aplikácia bude ako po prvej inštalácii.'),
+          'Týmto nenávratne vymažete všetky faktúry, výdavky a nastavenia firmy. Aplikácia bude ako po prvej inštalácii.',
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Zrušiť')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Zrušiť'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -378,7 +429,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       await ref.read(localPersistenceServiceProvider).clearAll();
       // Restart app or invalidate providers
       if (!context.mounted) return;
-      BizSnackbar.showSuccess(context, 'Dáta boli vymazané. Reštartujte aplikáciu.');
+      BizSnackbar.showSuccess(
+        context,
+        'Dáta boli vymazané. Reštartujte aplikáciu.',
+      );
     }
   }
 

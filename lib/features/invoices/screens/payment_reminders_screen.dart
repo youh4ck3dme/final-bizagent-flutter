@@ -25,11 +25,16 @@ class PaymentRemindersScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle_outline,
-                      size: 64, color: BizTheme.slovakBlue),
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 64,
+                    color: BizTheme.slovakBlue,
+                  ),
                   SizedBox(height: 16),
-                  Text('Žiadne faktúry po splatnosti! 🎉',
-                      style: TextStyle(fontSize: 18)),
+                  Text(
+                    'Žiadne faktúry po splatnosti! 🎉',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ],
               ),
             );
@@ -41,8 +46,10 @@ class PaymentRemindersScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final invoice = overdueInvoices[index];
               final daysOverdue = reminderService.getDaysOverdue(invoice);
-              final amount = NumberFormat.currency(symbol: '€', locale: 'sk')
-                  .format(invoice.grandTotal);
+              final amount = NumberFormat.currency(
+                symbol: '€',
+                locale: 'sk',
+              ).format(invoice.grandTotal);
 
               return Card(
                 elevation: 2,
@@ -50,8 +57,13 @@ class PaymentRemindersScreen extends ConsumerWidget {
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
                   leading: CircleAvatar(
-                    backgroundColor: BizTheme.richCrimson.withValues(alpha: 0.1),
-                    child: const Icon(Icons.warning_amber, color: BizTheme.richCrimson),
+                    backgroundColor: BizTheme.richCrimson.withValues(
+                      alpha: 0.1,
+                    ),
+                    child: const Icon(
+                      Icons.warning_amber,
+                      color: BizTheme.richCrimson,
+                    ),
                   ),
                   title: Text(
                     'Faktúra ${invoice.number}',
@@ -65,18 +77,23 @@ class PaymentRemindersScreen extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: BizTheme.richCrimson.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: BizTheme.richCrimson.withValues(alpha: 0.3)),
+                          border: Border.all(
+                            color: BizTheme.richCrimson.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Text(
                           '$daysOverdue dní po splatnosti',
                           style: const TextStyle(
-                              color: BizTheme.richCrimson,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12),
+                            color: BizTheme.richCrimson,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -95,10 +112,10 @@ class PaymentRemindersScreen extends ConsumerWidget {
                       final contextText =
                           'Faktúra č. ${invoice.number} pre ${invoice.clientName} v sume $amount je $daysOverdue dní po splatnosti.';
 
-                      context.push('/ai-tools/email-generator', extra: {
-                        'type': 'reminder',
-                        'context': contextText,
-                      });
+                      context.push(
+                        '/ai-tools/email-generator',
+                        extra: {'type': 'reminder', 'context': contextText},
+                      );
                     },
                   ),
                 ),

@@ -34,10 +34,18 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      // Wait for async initialization
-      await Future.delayed(const Duration(milliseconds: 100));
+      // We need to wait for the initialization in the constructor to finish.
+      // Using a listener ensures we catch the state change.
+      ThemeMode? captured;
+      container.listen<ThemeMode>(themeProvider, (prev, next) {
+        captured = next;
+      }, fireImmediately: true);
+
+      // Give it time to hit the async _loadTheme
+      await Future.delayed(const Duration(milliseconds: 50));
 
       expect(container.read(themeProvider), ThemeMode.dark);
-    }, skip: 'Async initialization timing issue');
+      expect(captured, ThemeMode.dark);
+    });
   });
 }

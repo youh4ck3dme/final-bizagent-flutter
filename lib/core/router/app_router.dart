@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:bizagent/features/dashboard/screens/dashboard_screen.dart';
 import 'package:bizagent/core/services/initialization_service.dart';
 import 'package:bizagent/features/splash/screens/splash_screen.dart';
@@ -11,6 +11,7 @@ import 'package:bizagent/features/expenses/screens/expense_analytics_screen.dart
 import 'package:bizagent/features/expenses/screens/receipt_viewer_screen.dart';
 import 'package:bizagent/features/settings/screens/settings_screen.dart';
 import 'package:bizagent/features/settings/screens/trash_screen.dart';
+import 'package:bizagent/features/settings/screens/feedback_screen.dart';
 import 'package:bizagent/features/expenses/screens/expense_detail_screen.dart';
 import 'package:bizagent/features/ai_tools/screens/ai_tools_screen.dart';
 import 'package:bizagent/features/ai_tools/screens/ai_email_generator_screen.dart';
@@ -33,39 +34,51 @@ import 'package:bizagent/features/expenses/screens/create_expense_screen.dart';
 import 'package:bizagent/features/expenses/screens/voice_expense_screen.dart';
 import 'package:bizagent/features/bank_import/screens/bank_import_screen.dart';
 import 'package:bizagent/features/export/screens/export_screen.dart';
+import 'package:bizagent/features/export/screens/reports_screen.dart';
 import 'package:bizagent/features/legal/screens/terms_and_conditions_screen.dart';
 import 'package:bizagent/features/legal/screens/privacy_policy_screen.dart';
 import 'package:bizagent/features/tools/screens/ico_lookup_screen.dart';
 import 'package:bizagent/features/tools/screens/watched_companies_screen.dart';
+import 'package:bizagent/features/receipt_detective/screens/receipt_detective_screen.dart';
+import 'package:bizagent/features/documents/screens/notepad_screen.dart';
+import 'package:bizagent/features/documents/screens/note_editor_screen.dart';
+import 'package:bizagent/features/documents/models/notepad_model.dart';
 import 'package:bizagent/shared/widgets/scaffold_with_navbar.dart';
 import 'package:bizagent/shared/widgets/biz_auth_required.dart';
+import 'package:bizagent/features/notifications/screens/notifications_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final firebaseAnalyticsProvider = Provider((ref) => FirebaseAnalytics.instance);
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
-  final onboardingState = ref.watch(onboardingProvider);
-  final analytics = ref.watch(firebaseAnalyticsProvider);
-  final init = ref.watch(initializationServiceProvider);
+
+  // We use ValueNotifier to bridge Riverpod states to GoRouter refreshListenable
+  final refreshListenable = ValueNotifier<bool>(false);
+
+  // Listen to changes and notify GoRouter
+  ref.listen(authStateProvider, (_, __) => refreshListenable.value = !refreshListenable.value);
+  ref.listen(onboardingProvider, (_, __) => refreshListenable.value = !refreshListenable.value);
+  ref.listen(initializationServiceProvider, (_, __) => refreshListenable.value = !refreshListenable.value);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
-    observers: [
-      FirebaseAnalyticsObserver(analytics: analytics),
-    ],
+    refreshListenable: refreshListenable,
+    observers: [],
     redirect: (context, state) {
       final path = state.uri.path;
+      final authState = ref.read(authStateProvider);
+      final onboardingState = ref.read(onboardingProvider);
+      final init = ref.read(initializationServiceProvider);
 
       // 1. Loading states
       if (authState.isLoading || onboardingState.isLoading) {
+        if (kDebugMode && path.contains('ico-lookup')) return null;
         return path == '/splash' ? null : '/splash';
       }
 
       // 1b. Initialization (Force Splash)
-      // This ensures the splash screen runs its course even if auth loads fast.
       if (!init.isCompleted) {
+        if (kDebugMode && path.contains('ico-lookup')) return null;
         return path == '/splash' ? null : '/splash';
       }
 
@@ -74,22 +87,28 @@ final routerProvider = Provider<GoRouter>((ref) {
         return path == '/login' ? null : '/login';
       }
 
-      final isLoggedIn = authState.valueOrNull != null;
-      final seenOnboarding = onboardingState.valueOrNull ?? false;
+      final isLoggedIn = authState.asData?.value != null;
+      final seenOnboarding = onboardingState.asData?.value ?? false;
 
       // 3. Onboarding Flow
       if (!seenOnboarding) {
+        if (kDebugMode && path.contains('ico-lookup')) return null;
         return path == '/onboarding' ? null : '/onboarding';
       }
 
       // 4. Not Logged In
       if (!isLoggedIn) {
-        if (path == '/login' || path == '/onboarding') return null;
+        if (path == '/login' ||
+            path == '/onboarding' ||
+            path.contains('ico-lookup')) {
+          return null;
+        }
         return '/login';
       }
 
       // 5. Already Logged In
       if (path == '/login' || path == '/splash' || path == '/onboarding') {
+        if (kDebugMode && kIsWeb) return null;
         return '/dashboard';
       }
 
@@ -103,6 +122,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const FirebaseLoginScreen(),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
       ),
       GoRoute(
         path: '/onboarding',
@@ -120,8 +143,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/create-expense',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final text = state.extra as String?;
-          return CreateExpenseScreen(initialText: text);
+          final extra = state.extra;
+          final String? initialText = extra is String
+              ? extra
+              : (extra is Map<String, dynamic>
+                  ? extra['initialText'] as String?
+                  : null);
+          final String? sharedImagePath = extra is Map<String, dynamic>
+              ? extra['sharedImagePath'] as String?
+              : null;
+          return CreateExpenseScreen(
+            initialText: initialText,
+            sharedImagePath: sharedImagePath,
+          );
         },
       ),
       GoRoute(
@@ -135,6 +169,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const BankImportScreen(),
       ),
       GoRoute(
+        path: '/receipt-detective',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ReceiptDetectiveScreen(),
+      ),
+      GoRoute(
+        path: '/documents/notepad/new',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const NoteEditorScreen(),
+      ),
+      GoRoute(
+        path: '/documents/notepad/edit',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final note = state.extra as NotepadItemModel;
+          return NoteEditorScreen(note: note);
+        },
+      ),
+      GoRoute(
         path: '/analytics',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const CashflowAnalyticsScreen(),
@@ -145,12 +197,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           return Consumer(
             builder: (context, ref, _) {
-              final user = ref.watch(authStateProvider).valueOrNull;
+              final user = ref.watch(authStateProvider).asData?.value;
               if (user == null) return const BizAuthRequired();
               return ExportScreen(uid: user.id);
             },
           );
         },
+        routes: [
+          GoRoute(
+            path: 'reports',
+            parentNavigatorKey: _rootNavigatorKey,
+            builder: (context, state) => const ReportsScreen(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/legal/terms',
@@ -238,6 +297,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: '/documents',
+                builder: (context, state) => const NotepadScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: '/ai-tools',
                 builder: (context, state) => const AiToolsScreen(),
                 routes: [
@@ -255,12 +322,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'expense-analysis',
                     name: 'expenseAnalysis',
-                    builder: (context, state) => const AiExpenseAnalysisScreen(),
+                    builder: (context, state) =>
+                        const AiExpenseAnalysisScreen(),
                   ),
                   GoRoute(
                     path: 'reminder-generator',
                     name: 'reminderGenerator',
-                    builder: (context, state) => const AiReminderGeneratorScreen(),
+                    builder: (context, state) =>
+                        const AiReminderGeneratorScreen(),
                   ),
                   GoRoute(
                     path: 'ico-lookup/:initialIco?',
@@ -297,12 +366,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'pin-setup',
                     parentNavigatorKey: _rootNavigatorKey,
-                    builder: (context, state) => const PinAuthScreen(initialMode: PinMode.setup),
+                    builder: (context, state) =>
+                        const PinAuthScreen(initialMode: PinMode.setup),
                   ),
                   GoRoute(
                     path: 'pin-verify',
                     parentNavigatorKey: _rootNavigatorKey,
-                    builder: (context, state) => const PinAuthScreen(initialMode: PinMode.verify),
+                    builder: (context, state) =>
+                        const PinAuthScreen(initialMode: PinMode.verify),
+                  ),
+                  GoRoute(
+                    path: 'feedback',
+                    builder: (context, state) => const FeedbackScreen(),
                   ),
                 ],
               ),

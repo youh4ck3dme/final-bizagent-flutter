@@ -24,8 +24,11 @@ class OfflineBanner extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.wifi_off_rounded,
-                    color: colorScheme.onError, size: 20),
+                Icon(
+                  Icons.wifi_off_rounded,
+                  color: colorScheme.onError,
+                  size: 20,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   context.t(AppStr.offlineTitle),

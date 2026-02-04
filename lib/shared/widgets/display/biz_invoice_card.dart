@@ -36,16 +36,18 @@ class BizInvoiceCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final currency = NumberFormat.currency(locale: 'sk', symbol: '€');
     final activeStatusColor = statusColor ?? theme.colorScheme.primary;
-    
+
     return Card(
       elevation: isSelected ? 4 : 0,
       shadowColor: theme.colorScheme.primary.withValues(alpha: 0.1),
-      color: isSelected && !isDark ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5) : null,
+      color: isSelected && !isDark
+          ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5)
+          : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         side: BorderSide(
-          color: isSelected 
-              ? theme.colorScheme.primary 
+          color: isSelected
+              ? theme.colorScheme.primary
               : (isDark ? BizTheme.darkOutline : BizTheme.gray100),
           width: isSelected ? 2 : 1,
         ),
@@ -56,7 +58,8 @@ class BizInvoiceCard extends StatelessWidget {
         onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(BizTheme.radiusLg),
         child: Semantics(
-          label: 'Faktúra $subtitle pre $title, suma ${currency.format(amount)}, dátum ${DateFormat('dd.MM.yyyy').format(date)}',
+          label:
+              'Faktúra $subtitle pre $title, suma ${currency.format(amount)}, dátum ${DateFormat('dd.MM.yyyy').format(date)}',
           button: true,
           child: Padding(
             padding: const EdgeInsets.all(BizTheme.spacingMd),
@@ -77,7 +80,7 @@ class BizInvoiceCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: BizTheme.spacingMd),
-                
+
                 // Main Info
                 Expanded(
                   child: Column(
@@ -94,7 +97,11 @@ class BizInvoiceCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          Icon(Icons.numbers, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                          Icon(
+                            Icons.numbers,
+                            size: 12,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             subtitle,
@@ -107,7 +114,7 @@ class BizInvoiceCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 // Amount & Date
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

@@ -5,8 +5,10 @@ void main() {
   group('QrPaymentService', () {
     test('normalizes IBAN', () {
       final s = QrPaymentService();
-      expect(s.normalizeIban('sk12 3456 7890 1234 5678 9012'),
-          'SK1234567890123456789012');
+      expect(
+        s.normalizeIban('sk12 3456 7890 1234 5678 9012'),
+        'SK1234567890123456789012',
+      );
     });
 
     test('validates likely SK IBAN', () {
@@ -17,13 +19,15 @@ void main() {
 
     test('builds EPC payload with required lines', () {
       final s = QrPaymentService();
-      final payload = s.buildEpcPayload(QrPaymentInput(
-        iban: 'SK1234567890123456789012',
-        beneficiaryName: 'BizAgent s.r.o.',
-        amountEur: 148.14,
-        paymentReference: '2026001',
-        remittanceInfo: 'Faktura 2026/001',
-      ));
+      final payload = s.buildEpcPayload(
+        QrPaymentInput(
+          iban: 'SK1234567890123456789012',
+          beneficiaryName: 'BizAgent s.r.o.',
+          amountEur: 148.14,
+          paymentReference: '2026001',
+          remittanceInfo: 'Faktura 2026/001',
+        ),
+      );
 
       // základné signatúry
       expect(payload.startsWith('BCD\n001\n1\nSCT\n'), true);

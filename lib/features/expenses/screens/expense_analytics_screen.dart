@@ -40,10 +40,7 @@ class _ExpenseAnalyticsScreenState
                   _showWeekly = index == 0;
                 });
               },
-              children: const [
-                Text('7 dní'),
-                Text('Mesiac'),
-              ],
+              children: const [Text('7 dní'), Text('Mesiac')],
             ),
           ),
         ],
@@ -58,20 +55,18 @@ class _ExpenseAnalyticsScreenState
 
   Widget _buildContent(List<ExpenseModel> allExpenses) {
     if (allExpenses.isEmpty) {
-      return const Center(
-        child: Text('Žiadne výdavky na analýzu'),
-      );
+      return const Center(child: Text('Žiadne výdavky na analýzu'));
     }
 
     final filteredExpenses = _filterExpensesByPeriod(allExpenses);
     if (filteredExpenses.isEmpty) {
-      return const Center(
-        child: Text('Žiadne výdavky vo vybranom období'),
-      );
+      return const Center(child: Text('Žiadne výdavky vo vybranom období'));
     }
 
-    final totalAmount =
-        filteredExpenses.fold(0.0, (sum, item) => sum + item.amount);
+    final totalAmount = filteredExpenses.fold(
+      0.0,
+      (sum, item) => sum + item.amount,
+    );
     final categoryTotals = _calculateCategoryTotals(filteredExpenses);
 
     return SingleChildScrollView(
@@ -86,10 +81,9 @@ class _ExpenseAnalyticsScreenState
           // Pie Chart Section
           Text(
             'Podľa kategórie',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -117,16 +111,15 @@ class _ExpenseAnalyticsScreenState
                       borderData: FlBorderData(show: false),
                       sectionsSpace: 2,
                       centerSpaceRadius: 40,
-                      sections:
-                          _generatePieSections(categoryTotals, totalAmount),
+                      sections: _generatePieSections(
+                        categoryTotals,
+                        totalAmount,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
-                Expanded(
-                  flex: 1,
-                  child: _buildLegend(categoryTotals),
-                ),
+                Expanded(flex: 1, child: _buildLegend(categoryTotals)),
               ],
             ),
           ),
@@ -135,17 +128,14 @@ class _ExpenseAnalyticsScreenState
           // Bar Chart Section (Trend)
           Text(
             'Vývoj v čase',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SizedBox(
             height: 200,
-            child: BarChart(
-              _generateBarChartData(filteredExpenses),
-            ),
+            child: BarChart(_generateBarChartData(filteredExpenses)),
           ),
 
           const SizedBox(height: 32),
@@ -153,10 +143,9 @@ class _ExpenseAnalyticsScreenState
           // Top Spending List
           Text(
             'Top výdavky',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           ..._buildTopExpensesList(filteredExpenses),
@@ -284,8 +273,10 @@ class _ExpenseAnalyticsScreenState
               size: 20,
             ),
           ),
-          title: Text(expense.vendorName,
-              style: const TextStyle(fontWeight: FontWeight.w500)),
+          title: Text(
+            expense.vendorName,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
           subtitle: Text(DateFormat('d.M.yyyy').format(expense.date)),
           trailing: Text(
             NumberFormat.currency(symbol: '€').format(expense.amount),
@@ -297,7 +288,9 @@ class _ExpenseAnalyticsScreenState
   }
 
   List<PieChartSectionData> _generatePieSections(
-      Map<ExpenseCategory, double> categoryTotals, double total) {
+    Map<ExpenseCategory, double> categoryTotals,
+    double total,
+  ) {
     if (categoryTotals.isEmpty) return [];
 
     final sortedEntries = categoryTotals.entries.toList()
@@ -380,10 +373,7 @@ class _ExpenseAnalyticsScreenState
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             return BarTooltipItem(
               '${rod.toY.toStringAsFixed(2)} €',
-              const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             );
           },
         ),
@@ -399,14 +389,18 @@ class _ExpenseAnalyticsScreenState
                 final date = now.subtract(Duration(days: 6 - value.toInt()));
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: Text(DateFormat('E', 'sk').format(date),
-                      style: const TextStyle(fontSize: 10)),
+                  child: Text(
+                    DateFormat('E', 'sk').format(date),
+                    style: const TextStyle(fontSize: 10),
+                  ),
                 );
               } else {
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: Text('${value.toInt() + 1}. týž.',
-                      style: const TextStyle(fontSize: 10)),
+                  child: Text(
+                    '${value.toInt() + 1}. týž.',
+                    style: const TextStyle(fontSize: 10),
+                  ),
                 );
               }
             },
@@ -415,8 +409,9 @@ class _ExpenseAnalyticsScreenState
         ),
         leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles:
-            const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
       ),
       gridData: const FlGridData(show: false),
       borderData: FlBorderData(show: false),
@@ -428,8 +423,9 @@ class _ExpenseAnalyticsScreenState
               toY: entry.value,
               color: Colors.blue.shade400,
               width: 12,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(4)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(4),
+              ),
             ),
           ],
         );
@@ -452,7 +448,8 @@ class _ExpenseAnalyticsScreenState
   }
 
   Map<ExpenseCategory, double> _calculateCategoryTotals(
-      List<ExpenseModel> expenses) {
+    List<ExpenseModel> expenses,
+  ) {
     final Map<ExpenseCategory, double> totals = {};
     for (var expense in expenses) {
       final category = expense.category ?? ExpenseCategory.other;

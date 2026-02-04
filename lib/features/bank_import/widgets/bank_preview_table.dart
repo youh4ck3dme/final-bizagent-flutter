@@ -35,12 +35,14 @@ class BankPreviewTable extends StatelessWidget {
   List<DataColumn> _buildColumns(int count) {
     final columns = <DataColumn>[];
     for (int i = 0; i < count; i++) {
-      columns.add(DataColumn(
-        label: Text(
-          'Stĺpec ${i + 1}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+      columns.add(
+        DataColumn(
+          label: Text(
+            'Stĺpec ${i + 1}',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
         ),
-      ));
+      );
     }
     return columns;
   }

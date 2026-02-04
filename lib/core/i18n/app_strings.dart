@@ -273,8 +273,10 @@ class AppStringsSK {
     AppStr.approachingLimit: "Blížite sa k limitu",
     AppStr.everythingOk: "Všetko v poriadku",
     AppStr.tutorialWelcomeTitle: "Vitajte v BizAgent",
-    AppStr.tutorialWelcomeBody: "Tento zoznam vás prevedie nastavením firmy a prvými krokmi.",
+    AppStr.tutorialWelcomeBody:
+        "Tento zoznam vás prevedie nastavením firmy a prvými krokmi.",
     AppStr.tutorialBotTitle: "Váš osobný BizBot",
-    AppStr.tutorialBotBody: "Opýtajte sa umelej inteligencie na čokoľvek ohľadom vašich financií alebo daní.",
+    AppStr.tutorialBotBody:
+        "Opýtajte sa umelej inteligencie na čokoľvek ohľadom vašich financií alebo daní.",
   };
 }

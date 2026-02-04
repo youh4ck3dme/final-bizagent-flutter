@@ -23,8 +23,9 @@ class TaxThermometerResult {
         isCritical = (currentTurnover / vatRegistrationThreshold) >= 1.0;
 }
 
-final taxThermometerProvider =
-    Provider<AsyncValue<TaxThermometerResult>>((ref) {
+final taxThermometerProvider = Provider<AsyncValue<TaxThermometerResult>>((
+  ref,
+) {
   final invoicesAsync = ref.watch(invoicesProvider);
 
   return invoicesAsync.whenData((invoices) {
@@ -42,8 +43,10 @@ final taxThermometerProvider =
       return isWithinWindow && isNotCancelled && isValidStatus;
     });
 
-    final double turnover =
-        validInvoices.fold(0.0, (sum, invoice) => sum + invoice.totalAmount);
+    final double turnover = validInvoices.fold(
+      0.0,
+      (sum, invoice) => sum + invoice.totalAmount,
+    );
 
     return TaxThermometerResult(currentTurnover: turnover);
   });

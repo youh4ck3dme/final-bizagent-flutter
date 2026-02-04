@@ -31,7 +31,10 @@ class AiTaxAssistantService {
 
   AiTaxAssistantService(this._gemini);
 
-  Future<VatAnalysisResult> analyzeExpenseItem(String itemName, double amount) async {
+  Future<VatAnalysisResult> analyzeExpenseItem(
+    String itemName,
+    double amount,
+  ) async {
     final schema = '''
     {
       "isTaxDeductible": boolean,
@@ -54,7 +57,8 @@ class AiTaxAssistantService {
 
     try {
       final response = await _gemini.analyzeJson(prompt, schema);
-      final cleanJson = response.replaceAll('```json', '').replaceAll('```', '').trim();
+      final cleanJson =
+          response.replaceAll('```json', '').replaceAll('```', '').trim();
       final Map<String, dynamic> data = jsonDecode(cleanJson);
       return VatAnalysisResult.fromJson(data);
     } catch (e) {

@@ -33,6 +33,8 @@ class AuthRepository {
     yield* _authStateController.stream;
   }
 
+  bool _isAutoLoggingIn = false;
+
   void _initInitialValue() {
     final user = _auth.currentUser;
     if (user != null) {
@@ -42,6 +44,14 @@ class AuthRepository {
         displayName: user.displayName,
         isAnonymous: user.isAnonymous,
       );
+    } else if (kDebugMode && kIsWeb && !_isAutoLoggingIn) {
+      // DEV BYPASS: Real anonymous login on localhost to satisfy Firestore rules
+      _isAutoLoggingIn = true;
+      signInAnonymously().catchError((e) {
+        debugPrint('Auto-login failed: $e');
+        _isAutoLoggingIn = false;
+        return null;
+      });
     }
     _authStateController.add(_currentUser);
   }
@@ -51,8 +61,6 @@ class AuthRepository {
     _auth.setPersistence(Persistence.LOCAL);
 
     _authSubscription = _auth.authStateChanges().listen((User? user) {
-      if (_currentUser != null && _currentUser!.id == 'fake-id-123') return;
-
       if (user == null) {
         _currentUser = null;
       } else {
@@ -125,7 +133,13 @@ class AuthRepository {
   Future<UserModel?> signInWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn(
-        clientId: '542280140779-fnbgni0vvqb9dgpl6q4k64p6s91s6jdi.apps.googleusercontent.com',
+        clientId:
+            '542280140779-c5m14rqpih1j9tmf9km52aq1684l9qjd.apps.googleusercontent.com',
+        scopes: [
+          'email',
+          'profile',
+          'https://www.googleapis.com/auth/drive.file',
+        ],
       );
 
       GoogleSignInAccount? googleUser;

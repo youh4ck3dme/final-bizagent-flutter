@@ -28,7 +28,7 @@ class BizPrimaryButton extends StatelessWidget {
                   color: colorScheme.primary.withValues(alpha: 0.2),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
-                )
+                ),
               ]
             : null,
       ),

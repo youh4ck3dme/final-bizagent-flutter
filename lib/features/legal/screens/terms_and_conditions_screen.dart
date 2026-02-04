@@ -8,9 +8,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Obchodné podmienky'),
-      ),
+      appBar: AppBar(title: const Text('Obchodné podmienky')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -27,10 +25,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Platné od: 21. januára 2026',
-              style: GoogleFonts.roboto(
-                fontSize: 14,
-                color: BizTheme.gray600,
-              ),
+              style: GoogleFonts.roboto(fontSize: 14, color: BizTheme.gray600),
             ),
             const SizedBox(height: 24),
             _buildSection(
@@ -67,7 +62,9 @@ class TermsAndConditionsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: BizTheme.slovakBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.2)),
+                border: Border.all(
+                  color: BizTheme.slovakBlue.withValues(alpha: 0.2),
+                ),
               ),
               child: Row(
                 children: [

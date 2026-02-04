@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/i18n/app_strings.dart';
@@ -13,11 +13,21 @@ import '../widgets/expense_filter_sheet.dart';
 import '../../../shared/widgets/biz_widgets.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../../../core/services/tutorial_service.dart';
+import '../../onboarding/services/onboarding_service.dart';
+import '../../auth/providers/auth_repository.dart';
+import 'package:flutter/scheduler.dart';
 
-// Provider pre filtre
-final expenseFilterProvider = StateProvider<ExpenseFilterCriteria>((ref) {
-  return const ExpenseFilterCriteria();
+final expenseFilterProvider =
+    NotifierProvider<ExpenseFilterNotifier, ExpenseFilterCriteria>(() {
+  return ExpenseFilterNotifier();
 });
+
+class ExpenseFilterNotifier extends Notifier<ExpenseFilterCriteria> {
+  @override
+  ExpenseFilterCriteria build() => const ExpenseFilterCriteria();
+
+  void updateCriteria(ExpenseFilterCriteria value) => state = value;
+}
 
 class ExpensesScreen extends ConsumerStatefulWidget {
   const ExpensesScreen({super.key});
@@ -30,6 +40,33 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   final GlobalKey _fabKey = GlobalKey();
   final GlobalKey _filterKey = GlobalKey();
   final GlobalKey _analyticsKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _checkAndShowTutorial();
+    });
+  }
+
+  Future<void> _checkAndShowTutorial() async {
+    final user = ref.watch(authStateProvider).asData?.value;
+    if (user == null) return;
+
+    final onboarding = ref.read(onboardingServiceProvider);
+    final hasSeen = await onboarding.hasSeenExpensesTour(user.id);
+
+    if (!hasSeen && mounted) {
+      if (!mounted) return;
+      TutorialService.showExpensesTutorial(
+        context: context,
+        fabKey: _fabKey,
+        filterKey: _filterKey,
+        analyticsKey: _analyticsKey,
+      );
+      await onboarding.markExpensesTourSeen(user.id);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,12 +140,15 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                   return SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraints.maxHeight),
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 24),
+                            horizontal: 16,
+                            vertical: 24,
+                          ),
                           child: BizEmptyState(
                             title: context.t(AppStr.expensesEmptyTitle),
                             body: context.t(AppStr.expensesEmptyMsg),
@@ -129,14 +169,17 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.filter_alt_off,
-                        size: 64, color: BizTheme.gray400),
+                    const Icon(
+                      Icons.filter_alt_off,
+                      size: 64,
+                      color: BizTheme.gray400,
+                    ),
                     const SizedBox(height: 16),
                     const Text('Žiadne výdavky vyhovujúce filtrom'),
                     TextButton(
                       onPressed: () {
-                        ref.read(expenseFilterProvider.notifier).state =
-                            const ExpenseFilterCriteria();
+                        ref.read(expenseFilterProvider.notifier).updateCriteria(
+                            const ExpenseFilterCriteria());
                       },
                       child: const Text('Zrušiť filtre'),
                     ),
@@ -148,8 +191,10 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
             // Group by month
             final grouped = <String, List<ExpenseModel>>{};
             for (var e in filteredExpenses) {
-              final month =
-                  DateFormat('MMMM yyyy', 'sk').format(e.date); // Slovak locale
+              final month = DateFormat(
+                'MMMM yyyy',
+                'sk',
+              ).format(e.date); // Slovak locale
               grouped.putIfAbsent(month, () => []).add(e);
             }
 
@@ -168,7 +213,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 4.0),
+                        vertical: 8.0,
+                        horizontal: 4.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -185,20 +232,22 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                           Text(
                             // Calculate total for month
                             NumberFormat.currency(symbol: '€').format(
-                                monthExpenses.fold(
-                                    0.0, (sum, e) => sum + e.amount)),
+                              monthExpenses.fold(
+                                0.0,
+                                (sum, e) => sum + e.amount,
+                              ),
+                            ),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall
-                                ?.copyWith(
-                                  color: BizTheme.gray600,
-                                ),
+                                ?.copyWith(color: BizTheme.gray600),
                           ),
                         ],
                       ),
                     ),
                     ...monthExpenses.map(
-                        (expense) => _buildExpenseItem(context, ref, expense)),
+                      (expense) => _buildExpenseItem(context, ref, expense),
+                    ),
                     const SizedBox(height: 16),
                   ],
                 );
@@ -220,8 +269,11 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
         (criteria.amountRange?.end ?? 1000) != 1000;
   }
 
-  void _showFilterSheet(BuildContext context, WidgetRef ref,
-      ExpenseFilterCriteria currentCriteria) {
+  void _showFilterSheet(
+    BuildContext context,
+    WidgetRef ref,
+    ExpenseFilterCriteria currentCriteria,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -231,7 +283,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
         child: ExpenseFilterSheet(
           initialCriteria: currentCriteria,
           onApply: (newCriteria) {
-            ref.read(expenseFilterProvider.notifier).state = newCriteria;
+            ref.read(expenseFilterProvider.notifier).updateCriteria(newCriteria);
           },
         ),
       ),
@@ -239,7 +291,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   }
 
   List<ExpenseModel> _applyFilters(
-      List<ExpenseModel> expenses, ExpenseFilterCriteria criteria) {
+    List<ExpenseModel> expenses,
+    ExpenseFilterCriteria criteria,
+  ) {
     var result = List<ExpenseModel>.from(expenses);
 
     // 1. Categories
@@ -252,20 +306,26 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     // 2. Date Range
     if (criteria.dateRange != null) {
       result = result
-          .where((e) =>
-              e.date.isAfter(criteria.dateRange!.start
-                  .subtract(const Duration(days: 1))) &&
-              e.date.isBefore(
-                  criteria.dateRange!.end.add(const Duration(days: 1))))
+          .where(
+            (e) =>
+                e.date.isAfter(
+                  criteria.dateRange!.start.subtract(const Duration(days: 1)),
+                ) &&
+                e.date.isBefore(
+                  criteria.dateRange!.end.add(const Duration(days: 1)),
+                ),
+          )
           .toList();
     }
 
     // 3. Amount Range
     if (criteria.amountRange != null) {
       result = result
-          .where((e) =>
-              e.amount >= criteria.amountRange!.start &&
-              e.amount <= criteria.amountRange!.end)
+          .where(
+            (e) =>
+                e.amount >= criteria.amountRange!.start &&
+                e.amount <= criteria.amountRange!.end,
+          )
           .toList();
     }
 
@@ -303,10 +363,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
           children: [
             const Text(
               'Pridať výdavok',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 24),
             Row(
@@ -359,7 +416,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isPrimary ? BizTheme.slovakBlue.withValues(alpha: 0.1) : Colors.grey[50],
+          color: isPrimary
+              ? BizTheme.slovakBlue.withValues(alpha: 0.1)
+              : Colors.grey[50],
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isPrimary ? BizTheme.slovakBlue : Colors.grey[200]!,
@@ -392,10 +451,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
           ],
@@ -405,7 +461,10 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
   }
 
   Widget _buildExpenseItem(
-      BuildContext context, WidgetRef ref, ExpenseModel expense) {
+    BuildContext context,
+    WidgetRef ref,
+    ExpenseModel expense,
+  ) {
     final category = expense.category ?? ExpenseCategory.other;
 
     return Dismissible(
@@ -416,16 +475,21 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Zmazať výdavok?'),
-            content:
-                Text('Naozaj chcete zmazať výdavok "${expense.vendorName}"?'),
+            content: Text(
+              'Naozaj chcete zmazať výdavok "${expense.vendorName}"?',
+            ),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Zrušiť')),
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Zrušiť'),
+              ),
               TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  style: TextButton.styleFrom(foregroundColor: BizTheme.nationalRed),
-                  child: const Text('Zmazať')),
+                onPressed: () => Navigator.pop(context, true),
+                style: TextButton.styleFrom(
+                  foregroundColor: BizTheme.nationalRed,
+                ),
+                child: const Text('Zmazať'),
+              ),
             ],
           ),
         );
@@ -473,7 +537,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                       Text(
                         expense.vendorName,
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       if (expense.description.isNotEmpty)
                         Text(
@@ -481,24 +547,31 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 12),
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
                         ),
                       if (expense.receiptUrls.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: InkWell(
                             onTap: () {
-                              context.push('/expenses/receipt-viewer', extra: {
-                                'url': expense.receiptUrls.first,
-                                'isLocal': false,
-                              });
+                              context.push(
+                                '/expenses/receipt-viewer',
+                                extra: {
+                                  'url': expense.receiptUrls.first,
+                                  'isLocal': false,
+                                },
+                              );
                             },
                             child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.attach_file,
-                                    size: 14,
-                                    color: BizTheme.slovakBlue),
+                                Icon(
+                                  Icons.attach_file,
+                                  size: 14,
+                                  color: BizTheme.slovakBlue,
+                                ),
                                 SizedBox(width: 4),
                                 Text(
                                   'Účtenka',
@@ -521,7 +594,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                     Text(
                       NumberFormat.currency(symbol: '€').format(expense.amount),
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     Row(
                       children: [
@@ -529,13 +604,18 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
                             expense.categorizationConfidence! < 100)
                           const Padding(
                             padding: EdgeInsets.only(right: 4),
-                            child: Icon(Icons.auto_awesome,
-                                size: 12, color: BizTheme.warningAmber),
+                            child: Icon(
+                              Icons.auto_awesome,
+                              size: 12,
+                              color: BizTheme.warningAmber,
+                            ),
                           ),
                         Text(
                           DateFormat('d.M.').format(expense.date),
                           style: TextStyle(
-                              color: Colors.grey.shade500, fontSize: 12),
+                            color: Colors.grey.shade500,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),

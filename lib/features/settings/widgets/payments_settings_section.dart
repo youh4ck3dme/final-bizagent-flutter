@@ -15,7 +15,9 @@ class PaymentsSettingsSection extends ConsumerWidget {
 
     return settingsAsync.when(
       loading: () => const SizedBox(
-          height: 56, child: Center(child: CircularProgressIndicator())),
+        height: 56,
+        child: Center(child: CircularProgressIndicator()),
+      ),
       error: (e, st) => Text(context.t(AppStr.errorGeneric)),
       data: (settings) {
         return Column(
@@ -28,8 +30,9 @@ class PaymentsSettingsSection extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    controller:
-                        TextEditingController(text: settings.iban ?? ''),
+                    controller: TextEditingController(
+                      text: settings.iban ?? '',
+                    ),
                     decoration: InputDecoration(
                       labelText: context.t(AppStr.ibanLabel),
                       hintText: context.t(AppStr.ibanHint),

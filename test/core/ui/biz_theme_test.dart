@@ -14,11 +14,23 @@ void main() {
       final scheme = theme.colorScheme;
 
       // Primary Blue
-      expect(scheme.primary, const Color(0xFF0B4EA2), reason: 'Primary color must optionally match Slovak Blue');
+      expect(
+        scheme.primary,
+        const Color(0xFF0B4EA2),
+        reason: 'Primary color must optionally match Slovak Blue',
+      );
       // Primary Red
-      expect(scheme.secondary, const Color(0xFFEE1C25), reason: 'Secondary color must match Slovak Red');
+      expect(
+        scheme.secondary,
+        const Color(0xFFEE1C25),
+        reason: 'Secondary color must match Slovak Red',
+      );
       // Surface
-      expect(scheme.surface, const Color(0xFFFFFFFF), reason: 'Surface must be pure white');
+      expect(
+        scheme.surface,
+        const Color(0xFFFFFFFF),
+        reason: 'Surface must be pure white',
+      );
     });
 
     testWidgets('Dark theme should use accessible variants', (tester) async {
@@ -27,8 +39,12 @@ void main() {
 
       // Checking high contrast variants
       expect(scheme.brightness, Brightness.dark);
-      expect(scheme.primary.toARGB32(), isNot(0xFF0B4EA2), reason: 'Dark primary should be lighter than slovak blue');
-      expect(scheme.surface, const Color(0xFF121212));
+      expect(
+        scheme.primary.toARGB32(),
+        isNot(0xFF0B4EA2),
+        reason: 'Dark primary should be lighter than slovak blue',
+      );
+      expect(scheme.surface, const Color(0xFF0A0D14));
     });
 
     testWidgets('Theme should enable Material 3', (tester) async {
@@ -39,14 +55,18 @@ void main() {
     testWidgets('Buttons should have correct border radius', (tester) async {
       final theme = BizTheme.light();
       final buttonStyle = theme.elevatedButtonTheme.style;
-      
+
       final shape = buttonStyle?.shape?.resolve({});
       expect(shape, isA<RoundedRectangleBorder>());
-      
+
       final rounded = shape as RoundedRectangleBorder;
       final borderRadius = rounded.borderRadius as BorderRadius;
-      
-      expect(borderRadius.topLeft.x, BizTheme.radiusMd, reason: 'Buttons should use radiusMd (8.0)');
+
+      expect(
+        borderRadius.topLeft.x,
+        BizTheme.radiusMd,
+        reason: 'Buttons should use radiusMd (8.0)',
+      );
     });
   });
 }

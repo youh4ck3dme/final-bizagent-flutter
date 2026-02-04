@@ -8,7 +8,7 @@ class BizTransactionRow extends StatelessWidget {
   final double amount;
   final bool isExpense;
   final String? category;
-  
+
   const BizTransactionRow({
     super.key,
     required this.title,
@@ -24,13 +24,17 @@ class BizTransactionRow extends StatelessWidget {
     final currency = NumberFormat.currency(locale: 'sk', symbol: '€');
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: BizTheme.spacingSm, horizontal: BizTheme.spacingMd),
+      padding: const EdgeInsets.symmetric(
+        vertical: BizTheme.spacingSm,
+        horizontal: BizTheme.spacingMd,
+      ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: (isExpense ? BizTheme.accentRed : BizTheme.successGreen).withValues(alpha: 0.1),
+              color: (isExpense ? BizTheme.accentRed : BizTheme.successGreen)
+                  .withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(BizTheme.radiusMd),
             ),
             child: Icon(
@@ -44,10 +48,15 @@ class BizTransactionRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Text(
                   DateFormat('d. MMM yyyy').format(date),
-                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -57,7 +66,11 @@ class BizTransactionRow extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: isExpense ? BizTheme.errorRed : BizTheme.successGreen,
-            ).copyWith(color: isExpense ? theme.colorScheme.error : theme.colorScheme.primary),
+            ).copyWith(
+              color: isExpense
+                  ? theme.colorScheme.error
+                  : theme.colorScheme.primary,
+            ),
           ),
         ],
       ),

@@ -204,13 +204,11 @@ ExportScreen
 - **Supports:** 0%, 10%, 20% VAT rates
 - **Testované:** `test/core/services/tax_calculation_service_test.dart`
 
-### Unified IČO Registry (v1.0.0)
-Zabezpečuje jeden zdroj pravdy pre údaje firiem naprieč Flutterom a PWA.
-- **Contract:** Verziovaný JSON kontrakt (v1.0.0) so zárukou konzistencie.
-- **Gateway:** Všetky požiadavky idú cez `/api/company/[ico]` (Vercel).
-- **Backend:** Firebase Cloud Functions (`lookupCompany`) zdieľajú identický model.
-- **Security:** Vendor kľúče (IcoAtlas) nie sú nikdy v klientskom kóde.
-- **Stav:** `loading` → `success` → `notFound` (404) → `errorOffline/errorServer`.
+### Unified IČO Registry (normalized)
+- **Source of truth:** Company data comes **only** from `https://icoatlas.sk/api/company/{ico}`. See **docs/ARCHITECTURE_FINAL.md**.
+- **Flutter:** `IcoAtlasService` uses icoatlas.sk for company lookup; optional `GATEWAY_BASE_URL` for autocomplete/VIES via Next.js gateway.
+- **Firestore:** Optional cache in `companies/{ico}`; on miss or expiry data is refetched from IcoAtlas only. No legacy `ICO_MODE` / data-source flags.
+- **Stav:** `loading` → `success` → `notFound` (404) → `errorOffline` / `errorServer`.
 
 ## Firebase Integration
 

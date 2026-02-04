@@ -19,16 +19,15 @@ class MockAiEmailService implements AiEmailService {
 }
 
 void main() {
-  testWidgets('AiEmailGeneratorScreen generates text on button press',
-      (WidgetTester tester) async {
+  testWidgets('AiEmailGeneratorScreen generates text on button press', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           aiEmailServiceProvider.overrideWithValue(MockAiEmailService()),
         ],
-        child: const MaterialApp(
-          home: AiEmailGeneratorScreen(),
-        ),
+        child: const MaterialApp(home: AiEmailGeneratorScreen()),
       ),
     );
 
@@ -51,16 +50,15 @@ void main() {
     expect(find.text('Výsledok:'), findsOneWidget);
   });
 
-  testWidgets('AiEmailGeneratorScreen validates empty context',
-      (WidgetTester tester) async {
+  testWidgets('AiEmailGeneratorScreen validates empty context', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           aiEmailServiceProvider.overrideWithValue(MockAiEmailService()),
         ],
-        child: const MaterialApp(
-          home: AiEmailGeneratorScreen(),
-        ),
+        child: const MaterialApp(home: AiEmailGeneratorScreen()),
       ),
     );
 
@@ -70,7 +68,9 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
 
     // Verify error message from service
-    expect(find.text('Prosím, zadajte kontext pre vygenerovanie e-mailu.'),
-        findsOneWidget);
+    expect(
+      find.text('Prosím, zadajte kontext pre vygenerovanie e-mailu.'),
+      findsOneWidget,
+    );
   });
 }

@@ -86,9 +86,8 @@ class BizBotConversationModel extends SoftDeleteModel {
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])
           : DateTime.now(), // fallback
-      deletedAt: map['deletedAt'] != null
-          ? DateTime.parse(map['deletedAt'])
-          : null,
+      deletedAt:
+          map['deletedAt'] != null ? DateTime.parse(map['deletedAt']) : null,
       deleteReason: map['deleteReason'],
       title: map['title'] ?? 'Bez názvu',
       messages: (map['messages'] as List<dynamic>?)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizagent/features/auth/providers/auth_repository.dart';
@@ -24,22 +25,28 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _checkAuth() {
-     // Don't redirect if initialization is still in progress
-     final init = ref.read(initializationServiceProvider);
-     if (!init.isCompleted) return;
+    // Don't redirect if initialization is still in progress
+    final init = ref.read(initializationServiceProvider);
+    if (!init.isCompleted) return;
 
-     final authState = ref.read(authStateProvider);
-     final onboardingState = ref.read(onboardingProvider);
+    final authState = ref.read(authStateProvider);
+    final onboardingState = ref.read(onboardingProvider);
 
-     if (authState.valueOrNull != null) {
-       if (onboardingState.valueOrNull == true) {
-         context.go('/dashboard');
-       } else {
-         context.go('/onboarding');
-       }
-     } else {
-       context.go('/login');
-     }
+    // DEV BYPASS: If on localhost web, jump directly to ico-lookup to avoid Google login bugs
+    if (kIsWeb && kDebugMode) {
+      context.go('/ai-tools/ico-lookup');
+      return;
+    }
+
+    if (authState.asData?.value != null) {
+      if (onboardingState.asData?.value == true) {
+        context.go('/dashboard');
+      } else {
+        context.go('/onboarding');
+      }
+    } else {
+      context.go('/login');
+    }
   }
 
   @override

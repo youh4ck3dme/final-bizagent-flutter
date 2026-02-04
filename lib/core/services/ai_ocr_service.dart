@@ -12,8 +12,10 @@ class AiOcrService {
   final GeminiService _gemini;
   AiOcrService(this._gemini);
 
-  Future<ParsedReceipt?> refineWithAi(String rawText,
-      {String? imagePath}) async {
+  Future<ParsedReceipt?> refineWithAi(
+    String rawText, {
+    String? imagePath,
+  }) async {
     try {
       const schema = '''
       {
@@ -24,9 +26,10 @@ class AiOcrService {
       ''';
 
       final jsonString = await _gemini.analyzeJson(rawText, schema);
-      
+
       // Clean the response (sometimes AI adds markdown blocks even if asked for PURE JSON)
-      final cleaned = jsonString.replaceAll('```json', '').replaceAll('```', '').trim();
+      final cleaned =
+          jsonString.replaceAll('```json', '').replaceAll('```', '').trim();
       final data = jsonDecode(cleaned) as Map<String, dynamic>;
 
       return ParsedReceipt(

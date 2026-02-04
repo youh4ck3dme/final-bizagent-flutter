@@ -46,8 +46,9 @@ class TaxCalculationService {
 
     final breakdown = <double, double>{};
     for (final l in lines) {
-      breakdown[l.vatRate] =
-          Money.round2((breakdown[l.vatRate] ?? 0) + l.vatAmount);
+      breakdown[l.vatRate] = Money.round2(
+        (breakdown[l.vatRate] ?? 0) + l.vatAmount,
+      );
     }
 
     return TaxTotals(

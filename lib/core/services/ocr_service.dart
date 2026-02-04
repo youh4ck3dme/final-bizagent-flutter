@@ -32,8 +32,9 @@ class OcrService {
   Future<void> _ensureInitialized() async {
     if (_textRecognizer == null) {
       await ml.loadLibrary();
-      _textRecognizer =
-          ml.TextRecognizer(script: ml.TextRecognitionScript.latin);
+      _textRecognizer = ml.TextRecognizer(
+        script: ml.TextRecognitionScript.latin,
+      );
     }
     _picker ??= ImagePicker();
   }
@@ -71,6 +72,25 @@ class OcrService {
     }
   }
 
+  /// Scan receipt from an existing file path (e.g. from Share intent / gallery).
+  Future<ParsedReceipt?> scanReceiptFromPath(String path) async {
+    if (kIsWeb) {
+      debugPrint('⚠️ OCR from path not supported on Web.');
+      return null;
+    }
+    if (path.isEmpty) return null;
+    try {
+      await _ensureInitialized();
+      final inputImage = ml.InputImage.fromFilePath(path);
+      final recognizedText = await _textRecognizer!.processImage(inputImage);
+      final text = recognizedText.text;
+      return parseReceipt(text, imagePath: path);
+    } catch (e) {
+      debugPrint('Error scanning receipt from path: $e');
+      return null;
+    }
+  }
+
   ParsedReceipt parseReceipt(String text, {String? imagePath}) {
     String? amount;
     String? date;
@@ -85,9 +105,12 @@ class OcrService {
     );
     // Matches DD.MM.YYYY or YYYY-MM-DD
     final datePattern = RegExp(
-        r'(\d{1,2}[\.-]\d{1,2}[\.-]\d{4})|(\d{4}[\.-]\d{1,2}[\.-]\d{1,2})');
-    final icoPattern =
-        RegExp(r'(?:IČO|ICO)[\s:.]*(\d{8})', caseSensitive: false);
+      r'(\d{1,2}[\.-]\d{1,2}[\.-]\d{4})|(\d{4}[\.-]\d{1,2}[\.-]\d{1,2})',
+    );
+    final icoPattern = RegExp(
+      r'(?:IČO|ICO)[\s:.]*(\d{8})',
+      caseSensitive: false,
+    );
 
     for (final line in lines) {
       if (amount == null) {

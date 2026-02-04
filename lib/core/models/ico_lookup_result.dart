@@ -21,9 +21,10 @@ class IcoLookupResult {
   final bool isOffline;
   final DateTime? fetchedAt; // Renamed from cachedAt to match schema
   final DateTime? expiresAt; // New field
-  final String? source;      // New field
-  final String? hash;        // New field
+  final String? source; // New field
+  final String? hash; // New field
   final String? lastSyncFrom; // New field
+  final String? registrationDate; // New field - "Založené"
 
   const IcoLookupResult._({
     this.ico = '',
@@ -49,6 +50,7 @@ class IcoLookupResult {
     this.source,
     this.hash,
     this.lastSyncFrom,
+    this.registrationDate,
   });
 
   factory IcoLookupResult({
@@ -75,10 +77,10 @@ class IcoLookupResult {
     String? source,
     String? hash,
     String? lastSyncFrom,
+    String? registrationDate,
   }) {
-    final effectiveIcoNorm = icoNorm.isNotEmpty
-        ? icoNorm
-        : ico.replaceAll(RegExp(r'\D'), '');
+    final effectiveIcoNorm =
+        icoNorm.isNotEmpty ? icoNorm : ico.replaceAll(RegExp(r'\D'), '');
 
     return IcoLookupResult._(
       ico: ico,
@@ -104,17 +106,14 @@ class IcoLookupResult {
       source: source,
       hash: hash,
       lastSyncFrom: lastSyncFrom,
+      registrationDate: registrationDate,
     );
   }
 
   // --- Factories for Service Logic ---
 
   factory IcoLookupResult.invalid() {
-    return IcoLookupResult(
-      name: '',
-      status: 'Neplatné dáta',
-      city: '',
-    );
+    return IcoLookupResult(name: '', status: 'Neplatné dáta', city: '');
   }
 
   factory IcoLookupResult.offline() {
@@ -164,7 +163,9 @@ class IcoLookupResult {
       icDph: json['icDph'],
       riskHint: json['riskHint'],
       riskLevel: json['riskLevel'],
-      confidence: json['confidence'] != null ? double.tryParse(json['confidence'].toString()) : null,
+      confidence: json['confidence'] != null
+          ? double.tryParse(json['confidence'].toString())
+          : null,
       headline: json['headline'],
       explanation: json['explanation'],
       fetchedAt: (json['fetchedAt'] as Timestamp?)?.toDate(),
@@ -172,34 +173,44 @@ class IcoLookupResult {
       source: json['source'],
       hash: json['hash'],
       lastSyncFrom: json['lastSyncFrom'],
+      registrationDate: json['registrationDate'],
     );
   }
 
   Map<String, dynamic> toFirestore() => {
-    'ico': ico,
-    'icoNorm': icoNorm,
-    'name': name,
-    'status': status,
-    'street': street,
-    'city': city,
-    'postalCode': postalCode,
-    'dic': dic,
-    'icDph': icDph,
-    'riskHint': riskHint,
-    'riskLevel': riskLevel,
-    'confidence': confidence,
-    'headline': headline,
-    'explanation': explanation,
-    'fetchedAt': fetchedAt != null ? Timestamp.fromDate(fetchedAt!) : FieldValue.serverTimestamp(),
-    'expiresAt': expiresAt != null ? Timestamp.fromDate(expiresAt!) : null,
-    'source': source,
-    'hash': hash,
-    'lastSyncFrom': lastSyncFrom,
-  };
+        'ico': ico,
+        'icoNorm': icoNorm,
+        'name': name,
+        'status': status,
+        'street': street,
+        'city': city,
+        'postalCode': postalCode,
+        'dic': dic,
+        'icDph': icDph,
+        'riskHint': riskHint,
+        'riskLevel': riskLevel,
+        'confidence': confidence,
+        'headline': headline,
+        'explanation': explanation,
+        'fetchedAt': fetchedAt != null
+            ? Timestamp.fromDate(fetchedAt!)
+            : FieldValue.serverTimestamp(),
+        'expiresAt': expiresAt != null ? Timestamp.fromDate(expiresAt!) : null,
+        'source': source,
+        'hash': hash,
+        'lastSyncFrom': lastSyncFrom,
+        'registrationDate': registrationDate,
+      };
 
-  factory IcoLookupResult.fromMap(Map<String, dynamic> map) {
+  factory IcoLookupResult.fromMap(Map<String, dynamic> inputMap) {
+    // Unpack 'data' wrapper if present (API v2)
+    final map = inputMap.containsKey('data') && inputMap['data'] is Map
+        ? inputMap['data'] as Map<String, dynamic>
+        : inputMap;
+
     final rawAddr = map['address'];
-    final Map<String, dynamic>? addr = rawAddr is Map<String, dynamic> ? rawAddr : null;
+    final Map<String, dynamic>? addr =
+        rawAddr is Map<String, dynamic> ? rawAddr : null;
     final String? addrString = rawAddr is String ? rawAddr : null;
 
     final verdict = map['ai_verdict'] as Map<String, dynamic>?;
@@ -215,16 +226,30 @@ class IcoLookupResult {
       dic: map['dic'],
       icDph: map['icDph'],
       riskHint: map['riskHint'] ?? (map['hints']?['riskHint']),
-      riskLevel: map['riskLevel'] ?? map['risk_level'] ?? (map['hints']?['riskLevel']),
-      confidence: map['confidence'] != null ? double.tryParse(map['confidence'].toString()) : null,
+      riskLevel:
+          map['riskLevel'] ?? map['risk_level'] ?? (map['hints']?['riskLevel']),
+      confidence: map['confidence'] != null
+          ? double.tryParse(map['confidence'].toString())
+          : null,
       headline: verdict?['headline'] ?? map['headline'],
       explanation: verdict?['explanation'] ?? map['explanation'],
-      resetIn: map['resetIn'] != null ? int.tryParse(map['resetIn'].toString()) : null,
-      fetchedAt: map['fetchedAt'] != null ? (map['fetchedAt'] is Timestamp ? (map['fetchedAt'] as Timestamp).toDate() : DateTime.tryParse(map['fetchedAt'].toString())) : null,
-      expiresAt: map['expiresAt'] != null ? (map['expiresAt'] is Timestamp ? (map['expiresAt'] as Timestamp).toDate() : DateTime.tryParse(map['expiresAt'].toString())) : null,
+      resetIn: map['resetIn'] != null
+          ? int.tryParse(map['resetIn'].toString())
+          : null,
+      fetchedAt: map['fetchedAt'] != null
+          ? (map['fetchedAt'] is Timestamp
+              ? (map['fetchedAt'] as Timestamp).toDate()
+              : DateTime.tryParse(map['fetchedAt'].toString()))
+          : null,
+      expiresAt: map['expiresAt'] != null
+          ? (map['expiresAt'] is Timestamp
+              ? (map['expiresAt'] as Timestamp).toDate()
+              : DateTime.tryParse(map['expiresAt'].toString()))
+          : null,
       source: map['source'],
       hash: map['hash'],
       lastSyncFrom: map['lastSyncFrom'],
+      registrationDate: map['registrationDate'],
     );
   }
 
@@ -256,7 +281,11 @@ class IcoLookupResult {
   bool get isValid => name.isNotEmpty;
 
   String get fullAddress {
-    final parts = [street, postalCode, city].where((s) => s.isNotEmpty).toList();
+    final parts = [
+      street,
+      postalCode,
+      city,
+    ].where((s) => s.isNotEmpty).toList();
     return parts.join(', ');
   }
 }

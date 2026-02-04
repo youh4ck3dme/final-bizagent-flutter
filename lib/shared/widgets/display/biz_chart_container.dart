@@ -21,12 +21,14 @@ class BizChartContainer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: BizTheme.spacingLg),
-            SizedBox(
-              height: height,
-              child: chart,
+            Text(
+              title,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: BizTheme.spacingLg),
+            SizedBox(height: height, child: chart),
           ],
         ),
       ),

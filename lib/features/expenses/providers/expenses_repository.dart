@@ -41,7 +41,9 @@ class ExpensesRepository {
   }
 
   Future<void> addExpense(String userId, ExpenseModel expense) async {
-    final id = expense.id.isEmpty ? DateTime.now().millisecondsSinceEpoch.toString() : expense.id;
+    final id = expense.id.isEmpty
+        ? DateTime.now().millisecondsSinceEpoch.toString()
+        : expense.id;
     final data = expense.toMap();
     data['id'] = id;
     await _persistence.saveExpense(id, data);

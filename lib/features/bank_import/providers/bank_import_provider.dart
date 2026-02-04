@@ -63,8 +63,10 @@ class BankImportController extends Notifier<BankImportState> {
 
   void parseNow() {
     state = state.copyWith(isLoading: true);
-    final res =
-        _parser.parse(csvText: state.csvText, profileHint: state.profile);
+    final res = _parser.parse(
+      csvText: state.csvText,
+      profileHint: state.profile,
+    );
     state = state.copyWith(
       isLoading: false,
       profile: res.profile,
@@ -80,14 +82,16 @@ class BankImportController extends Notifier<BankImportState> {
     final results = _matcher.match(txs: state.txs, invoices: invoices);
     // Convert BankMatchResult to BankMatch for UI compatibility
     final matches = results
-        .map((result) => BankMatch(
-              tx: result.tx,
-              profile: state.profile,
-              confidence: result.confidence,
-              invoice: result.invoice,
-              reason: result.reason,
-              matchType: BankMatchType.exactVs, // or determine based on result
-            ))
+        .map(
+          (result) => BankMatch(
+            tx: result.tx,
+            profile: state.profile,
+            confidence: result.confidence,
+            invoice: result.invoice,
+            reason: result.reason,
+            matchType: BankMatchType.exactVs, // or determine based on result
+          ),
+        )
         .toList();
     state = state.copyWith(isLoading: false, matches: matches);
   }

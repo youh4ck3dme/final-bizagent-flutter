@@ -4,14 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/biz_bot_service.dart';
 import '../../../core/ui/biz_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 class BizBotMessage {
   final String text;
   final bool isUser;
   final DateTime timestamp;
 
-  BizBotMessage({required this.text, required this.isUser, required this.timestamp});
+  BizBotMessage({
+    required this.text,
+    required this.isUser,
+    required this.timestamp,
+  });
 }
 
 class BizBotScreen extends ConsumerStatefulWidget {
@@ -31,11 +35,14 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
   void initState() {
     super.initState();
     // Welcome message
-    _messages.add(BizBotMessage(
-      text: 'Ahoj! Som tvoj BizAgent asistent. Ako ti môžem dnes pomôcť s tvojím podnikaním?',
-      isUser: false,
-      timestamp: DateTime.now(),
-    ));
+    _messages.add(
+      BizBotMessage(
+        text:
+            'Ahoj! Som tvoj BizAgent asistent. Ako ti môžem dnes pomôcť s tvojím podnikaním?',
+        isUser: false,
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   // Suggested prompts for quick actions
@@ -63,7 +70,9 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
     if (text.isEmpty || _isLoading) return;
 
     setState(() {
-      _messages.add(BizBotMessage(text: text, isUser: true, timestamp: DateTime.now()));
+      _messages.add(
+        BizBotMessage(text: text, isUser: true, timestamp: DateTime.now()),
+      );
       _controller.clear();
       _isLoading = true;
     });
@@ -73,7 +82,13 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       final response = await ref.read(bizBotServiceProvider).ask(text);
       if (mounted) {
         setState(() {
-          _messages.add(BizBotMessage(text: response, isUser: false, timestamp: DateTime.now()));
+          _messages.add(
+            BizBotMessage(
+              text: response,
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
           _isLoading = false;
         });
         _scrollToBottom();
@@ -85,7 +100,8 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
         errorMessage = 'Chyba API kľúča (403/Invalid). Kontaktujte podporu.';
       } else if (e.toString().contains('quota')) {
         errorMessage = 'Dosiahli ste denný limit bezplatných dopytov (429).';
-      } else if (e.toString().toLowerCase().contains('network') || e.toString().contains('ClientException')) {
+      } else if (e.toString().toLowerCase().contains('network') ||
+          e.toString().contains('ClientException')) {
         errorMessage = 'Sieťová chyba. Skontrolujte pripojenie na internet.';
       } else {
         errorMessage = 'Chyba: $e';
@@ -93,11 +109,13 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
 
       if (mounted) {
         setState(() {
-          _messages.add(BizBotMessage(
-            text: errorMessage,
-            isUser: false,
-            timestamp: DateTime.now(),
-          ));
+          _messages.add(
+            BizBotMessage(
+              text: errorMessage,
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
           _isLoading = false;
         });
         _scrollToBottom();
@@ -120,8 +138,17 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('BizBot', style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold)),
-                const Text('AI Asistent', style: TextStyle(fontSize: 12, color: Colors.green)),
+                Text(
+                  'BizBot',
+                  style: GoogleFonts.outfit(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Text(
+                  'AI Asistent',
+                  style: TextStyle(fontSize: 12, color: Colors.green),
+                ),
               ],
             ),
           ],
@@ -149,7 +176,9 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
           if (_isLoading)
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: LinearProgressIndicator(backgroundColor: Colors.transparent),
+              child: LinearProgressIndicator(
+                backgroundColor: Colors.transparent,
+              ),
             ),
           if (_messages.length <= 1) _buildSuggestions(),
           _buildInput(),
@@ -164,11 +193,16 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.8,
+        ),
         decoration: BoxDecoration(
           gradient: msg.isUser
               ? LinearGradient(
-                  colors: [BizTheme.slovakBlue, BizTheme.slovakBlue.withValues(alpha: 0.9)],
+                  colors: [
+                    BizTheme.slovakBlue,
+                    BizTheme.slovakBlue.withValues(alpha: 0.9),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
@@ -191,22 +225,39 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
               offset: const Offset(0, 2),
             ),
           ],
-          border: msg.isUser ? null : Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+          border: msg.isUser
+              ? null
+              : Border.all(color: Colors.grey.withValues(alpha: 0.1)),
         ),
         child: msg.isUser
             ? SelectableText(
                 msg.text,
-                style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.5),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  height: 1.5,
+                ),
               )
             : MarkdownBody(
                 data: msg.text,
                 selectable: true,
                 styleSheet: MarkdownStyleSheet(
-                  p: const TextStyle(fontSize: 15, height: 1.5, color: Colors.black87),
-                  listBullet: const TextStyle(fontSize: 16, color: Colors.black87),
+                  p: const TextStyle(
+                    fontSize: 15,
+                    height: 1.5,
+                    color: Colors.black87,
+                  ),
+                  listBullet: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
-      ).animate().fade().slideY(begin: 0.1, duration: 300.ms, curve: Curves.easeOut),
+      ).animate().fade().slideY(
+            begin: 0.1,
+            duration: 300.ms,
+            curve: Curves.easeOut,
+          ),
     );
   }
 
@@ -220,7 +271,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
             color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, -5),
-          )
+          ),
         ],
       ),
       child: SafeArea(
@@ -242,7 +293,10 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
                     hintText: 'Opýtaj sa na účtovníctvo...',
                     hintStyle: TextStyle(color: Colors.grey[500]),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     isDense: true,
                   ),
                 ),
@@ -254,7 +308,11 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
               onPressed: _sendMessage,
               backgroundColor: BizTheme.slovakBlue,
               elevation: 2,
-              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+              child: const Icon(
+                Icons.send_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
             ).animate(target: _isLoading ? 0 : 1).scale(),
           ],
         ),

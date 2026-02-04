@@ -9,6 +9,19 @@ import 'package:bizagent/features/dashboard/widgets/smart_insights_widget.dart';
 import 'package:bizagent/core/i18n/l10n.dart';
 import 'package:bizagent/shared/widgets/biz_shimmer.dart';
 
+class FakeExpenseInsightsNotifier extends ExpenseInsightsNotifier {
+  final List<ExpenseInsight>? initialData;
+  final Future<List<ExpenseInsight>>? mockFuture;
+
+  FakeExpenseInsightsNotifier({this.initialData, this.mockFuture});
+
+  @override
+  Future<List<ExpenseInsight>> build() async {
+    if (mockFuture != null) return mockFuture!;
+    return initialData ?? [];
+  }
+}
+
 void main() {
   group('SmartInsightsWidget', () {
     testWidgets('should display loading state', (tester) async {
@@ -17,14 +30,14 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            expenseInsightsProvider.overrideWith((ref) => completer.future),
+            expenseInsightsProvider.overrideWith(
+              () => FakeExpenseInsightsNotifier(mockFuture: completer.future),
+            ),
           ],
           child: const MaterialApp(
             home: L10n(
               locale: AppLocale.sk,
-              child: Scaffold(
-                body: SmartInsightsWidget(),
-              ),
+              child: Scaffold(body: SmartInsightsWidget()),
             ),
           ),
         ),
@@ -33,8 +46,9 @@ void main() {
       expect(find.byType(BizShimmer), findsOneWidget);
     });
 
-    testWidgets('should display insight card when data is available',
-        (tester) async {
+    testWidgets('should display insight card when data is available', (
+      tester,
+    ) async {
       final mockInsights = [
         ExpenseInsight(
           id: '1',
@@ -51,14 +65,14 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            expenseInsightsProvider.overrideWith((ref) => mockInsights),
+            expenseInsightsProvider.overrideWith(
+              () => FakeExpenseInsightsNotifier(initialData: mockInsights),
+            ),
           ],
           child: const MaterialApp(
             home: L10n(
               locale: AppLocale.sk,
-              child: Scaffold(
-                body: SmartInsightsWidget(),
-              ),
+              child: Scaffold(body: SmartInsightsWidget()),
             ),
           ),
         ),
@@ -71,43 +85,46 @@ void main() {
       expect(find.text('AI POSTREH'), findsOneWidget);
     });
 
-    testWidgets('should display high priority badge for high priority insights',
-        (tester) async {
-      final mockInsights = [
-        ExpenseInsight(
-          id: '1',
-          title: 'High Priority Insight',
-          description: 'This is a high priority insight',
-          icon: Icons.warning,
-          color: Colors.red,
-          priority: InsightPriority.high,
-          createdAt: DateTime.now(),
-          category: 'test',
-        ),
-      ];
+    testWidgets(
+      'should display high priority badge for high priority insights',
+      (tester) async {
+        final mockInsights = [
+          ExpenseInsight(
+            id: '1',
+            title: 'High Priority Insight',
+            description: 'This is a high priority insight',
+            icon: Icons.warning,
+            color: Colors.red,
+            priority: InsightPriority.high,
+            createdAt: DateTime.now(),
+            category: 'test',
+          ),
+        ];
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            expenseInsightsProvider.overrideWith((ref) => mockInsights),
-          ],
-          child: const MaterialApp(
-            home: L10n(
-              locale: AppLocale.sk,
-              child: Scaffold(
-                body: SmartInsightsWidget(),
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              expenseInsightsProvider.overrideWith(
+                () => FakeExpenseInsightsNotifier(initialData: mockInsights),
+              ),
+            ],
+            child: const MaterialApp(
+              home: L10n(
+                locale: AppLocale.sk,
+                child: Scaffold(body: SmartInsightsWidget()),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pump();
-      expect(find.text('DÔLEŽITÉ'), findsOneWidget);
-    });
+        await tester.pump();
+        expect(find.text('DÔLEŽITÉ'), findsOneWidget);
+      },
+    );
 
-    testWidgets('should display potential savings when available',
-        (tester) async {
+    testWidgets('should display potential savings when available', (
+      tester,
+    ) async {
       final mockInsights = [
         ExpenseInsight(
           id: '1',
@@ -125,14 +142,14 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            expenseInsightsProvider.overrideWith((ref) => mockInsights),
+            expenseInsightsProvider.overrideWith(
+              () => FakeExpenseInsightsNotifier(initialData: mockInsights),
+            ),
           ],
           child: const MaterialApp(
             home: L10n(
               locale: AppLocale.sk,
-              child: Scaffold(
-                body: SmartInsightsWidget(),
-              ),
+              child: Scaffold(body: SmartInsightsWidget()),
             ),
           ),
         ),
@@ -144,19 +161,20 @@ void main() {
       expect(find.byIcon(Icons.trending_up), findsWidgets);
     });
 
-    testWidgets('should be hidden when no insights are available',
-        (tester) async {
+    testWidgets('should be hidden when no insights are available', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            expenseInsightsProvider.overrideWith((ref) => []),
+            expenseInsightsProvider.overrideWith(
+              () => FakeExpenseInsightsNotifier(initialData: []),
+            ),
           ],
           child: const MaterialApp(
             home: L10n(
               locale: AppLocale.sk,
-              child: Scaffold(
-                body: SmartInsightsWidget(),
-              ),
+              child: Scaffold(body: SmartInsightsWidget()),
             ),
           ),
         ),
@@ -203,13 +221,13 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            expenseInsightsProvider.overrideWith((ref) => mockInsights),
+            expenseInsightsProvider.overrideWith(
+              () => FakeExpenseInsightsNotifier(initialData: mockInsights),
+            ),
           ],
           child: L10n(
             locale: AppLocale.sk,
-            child: MaterialApp.router(
-              routerConfig: router,
-            ),
+            child: MaterialApp.router(routerConfig: router),
           ),
         ),
       );

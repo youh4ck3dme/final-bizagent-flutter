@@ -52,8 +52,13 @@ class NotificationScheduler {
 
     // 3. Monthly Summary (1st of next month)
     final now = DateTime.now();
-    final nextMonthFirst =
-        DateTime(now.year, now.month + 1, 1, 9, 0); // 9:00 AM
+    final nextMonthFirst = DateTime(
+      now.year,
+      now.month + 1,
+      1,
+      9,
+      0,
+    ); // 9:00 AM
     await service.scheduleNotification(
       id: 9999,
       title: 'Mesačný prehľad BizAgent',

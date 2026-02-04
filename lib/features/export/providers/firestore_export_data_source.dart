@@ -23,8 +23,10 @@ class FirestoreExportDataSource implements ExportDataSource {
         .collection('users')
         .doc(userId)
         .collection('invoices')
-        .where('dateIssued',
-            isGreaterThanOrEqualTo: period.from.toIso8601String())
+        .where(
+          'dateIssued',
+          isGreaterThanOrEqualTo: period.from.toIso8601String(),
+        )
         .where('dateIssued', isLessThanOrEqualTo: period.to.toIso8601String())
         .get();
 
@@ -42,22 +44,30 @@ class FirestoreExportDataSource implements ExportDataSource {
           fileBytes = await _downloadBytes(inv.pdfUrl!);
         } else {
           try {
-            localPath = await _downloadFile(inv.pdfUrl!, 'inv_${inv.number}.pdf');
+            localPath = await _downloadFile(
+              inv.pdfUrl!,
+              'inv_${inv.number}.pdf',
+            );
           } catch (_) {
-             // ignore download errors
+            // ignore download errors
           }
         }
       }
-      exportItems.add(InvoiceExportItem(
-        id: inv.id,
-        number: inv.number,
-        issuedAt: inv.dateIssued,
-        clientName: inv.clientName,
-        totalEur: inv.totalAmount,
-        vatEur: inv.totalVat,
-        pdfLocalPath: localPath,
-        pdfData: fileBytes,
-      ));
+      exportItems.add(
+        InvoiceExportItem(
+          id: inv.id,
+          number: inv.number,
+          issuedAt: inv.dateIssued,
+          clientName: inv.clientName,
+          totalEur: inv.totalAmountEur,
+          vatEur: inv.totalVat / inv.exchangeRate,
+          currency: inv.currency,
+          exchangeRate: inv.exchangeRate,
+          amountOriginal: inv.totalAmount,
+          pdfLocalPath: localPath,
+          pdfData: fileBytes,
+        ),
+      );
     }
     return exportItems;
   }
@@ -89,21 +99,26 @@ class FirestoreExportDataSource implements ExportDataSource {
           final bytes = await _downloadBytes(url);
           if (bytes != null) fileDatas.add(bytes);
         } else {
-           try {
+          try {
             final path = await _downloadFile(url, name);
             if (path != null) localPaths.add(path);
-           } catch (_) {}
+          } catch (_) {}
         }
       }
-      exportItems.add(ExpenseExportItem(
-        id: ex.id,
-        date: ex.date,
-        vendor: ex.vendorName,
-        totalEur: ex.amount,
-        category: ex.category?.name ?? 'Other',
-        attachmentLocalPaths: localPaths,
-        attachmentDatas: fileDatas,
-      ));
+      exportItems.add(
+        ExpenseExportItem(
+          id: ex.id,
+          date: ex.date,
+          vendor: ex.vendorName,
+          totalEur: ex.amountInEur,
+          amountOriginal: ex.amount,
+          currency: ex.currency,
+          exchangeRate: ex.exchangeRate,
+          category: ex.category?.name ?? 'Other',
+          attachmentLocalPaths: localPaths,
+          attachmentDatas: fileDatas,
+        ),
+      );
     }
     return exportItems;
   }
@@ -117,7 +132,7 @@ class FirestoreExportDataSource implements ExportDataSource {
         'periodFrom': period.from.toIso8601String(),
         'periodTo': period.to.toIso8601String(),
         'exportedAt': DateTime.now().toIso8601String(),
-      }
+      },
     };
   }
 

@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/providers/auth_repository.dart';
 
-final webSyncServiceProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
-  final user = ref.watch(authStateProvider).valueOrNull;
+final webSyncServiceProvider = StreamProvider<List<Map<String, dynamic>>>((
+  ref,
+) {
+  final user = ref.read(authStateProvider).asData?.value;
   if (user == null) return Stream.value([]);
 
   return FirebaseFirestore.instance

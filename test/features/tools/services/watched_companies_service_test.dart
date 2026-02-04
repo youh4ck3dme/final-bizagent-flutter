@@ -29,7 +29,7 @@ void main() {
   test('unwatch removes company', () async {
     // Setup
     await service.watch('12345678', 'Test s.r.o.');
-    
+
     // Act
     await service.unwatch('12345678');
 
@@ -46,7 +46,10 @@ void main() {
 
   test('isWatched stream emits correct values', () async {
     // Expect false initially
-    expectLater(service.isWatched('12345678'), emitsInOrder([false, true, false]));
+    expectLater(
+      service.isWatched('12345678'),
+      emitsInOrder([false, true, false]),
+    );
 
     // Act
     await Future.delayed(Duration.zero);

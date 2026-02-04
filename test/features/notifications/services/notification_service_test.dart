@@ -15,31 +15,39 @@ void main() {
     service = NotificationService(plugin: mockPlugin);
 
     // Mock initialize
-    when(mockPlugin.initialize(
-      any,
-      onDidReceiveNotificationResponse:
-          anyNamed('onDidReceiveNotificationResponse'),
-    )).thenAnswer((_) async => true);
+    when(
+      mockPlugin.initialize(
+        settings: anyNamed('settings'),
+        onDidReceiveNotificationResponse: anyNamed(
+          'onDidReceiveNotificationResponse',
+        ),
+      ),
+    ).thenAnswer((_) async => true);
   });
 
   test('init should initialize the plugin and timezones', () async {
     await service.init();
 
-    verify(mockPlugin.initialize(
-      any,
-      onDidReceiveNotificationResponse:
-          anyNamed('onDidReceiveNotificationResponse'),
-    )).called(1);
+    verify(
+      mockPlugin.initialize(
+        settings: anyNamed('settings'),
+        onDidReceiveNotificationResponse: anyNamed(
+          'onDidReceiveNotificationResponse',
+        ),
+      ),
+    ).called(1);
   });
 
   test('showNotification should call plugin show', () async {
-    when(mockPlugin.show(
-      any,
-      any,
-      any,
-      any,
-      payload: anyNamed('payload'),
-    )).thenAnswer((_) async => {});
+    when(
+      mockPlugin.show(
+        id: anyNamed('id'),
+        title: anyNamed('title'),
+        body: anyNamed('body'),
+        notificationDetails: anyNamed('notificationDetails'),
+        payload: anyNamed('payload'),
+      ),
+    ).thenAnswer((_) async => {});
 
     await service.showNotification(
       id: 1,
@@ -48,12 +56,14 @@ void main() {
       payload: 'payload',
     );
 
-    verify(mockPlugin.show(
-      1,
-      'Test',
-      'Body',
-      any,
-      payload: 'payload',
-    )).called(1);
+    verify(
+      mockPlugin.show(
+        id: 1,
+        title: 'Test',
+        body: 'Body',
+        notificationDetails: anyNamed('notificationDetails'),
+        payload: 'payload',
+      ),
+    ).called(1);
   });
 }

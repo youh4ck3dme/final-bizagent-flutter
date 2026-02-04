@@ -2,11 +2,7 @@
 import 'package:flutter/material.dart';
 
 class BizSectionHeader extends StatelessWidget {
-  const BizSectionHeader({
-    super.key,
-    required this.title,
-    this.trailing,
-  });
+  const BizSectionHeader({super.key, required this.title, this.trailing});
 
   final String title;
   final Widget? trailing;
@@ -16,7 +12,8 @@ class BizSectionHeader extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-            child: Text(title, style: Theme.of(context).textTheme.titleSmall)),
+          child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+        ),
         if (trailing != null) trailing!,
       ],
     );

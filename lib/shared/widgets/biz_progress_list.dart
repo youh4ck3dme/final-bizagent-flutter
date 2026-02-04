@@ -20,8 +20,9 @@ class BizProgressList extends StatelessWidget {
         return ListTile(
           dense: true,
           contentPadding: EdgeInsets.zero,
-          leading:
-              Icon(it.done ? Icons.check_circle : Icons.radio_button_unchecked),
+          leading: Icon(
+            it.done ? Icons.check_circle : Icons.radio_button_unchecked,
+          ),
           title: Text(it.label),
           subtitle: it.subtitle == null ? null : Text(it.subtitle!),
         );

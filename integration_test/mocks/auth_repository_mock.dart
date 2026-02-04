@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:bizagent/features/auth/providers/auth_repository.dart';
 import 'package:bizagent/features/auth/models/user_model.dart';
 
@@ -43,8 +43,10 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<UserModel?> signInWithGoogle() async {
-    print('[MOCK] signInWithGoogle called');
-    _currentUser = UserModel(
+    if (kDebugMode) {
+      debugPrint('[MOCK] signInWithGoogle called');
+    }
+    _currentUser = const UserModel(
       id: 'mock-google-id',
       email: 'test@example.com',
       displayName: 'Google Mock User',
@@ -55,7 +57,7 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<UserModel?> signInAnonymously() async {
-    _currentUser = UserModel(
+    _currentUser = const UserModel(
       id: 'mock-anon-id',
       email: '',
       displayName: 'Anon Mock User',

@@ -50,13 +50,15 @@ class BizDialog extends StatelessWidget {
     return AlertDialog(
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
       content: Text(content),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BizTheme.radiusXl)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(BizTheme.radiusXl),
+      ),
       actions: [
         if (cancelText != null)
           TextButton(
             onPressed: () {
-               Navigator.of(context).pop();
-               onCancel?.call();
+              Navigator.of(context).pop();
+              onCancel?.call();
             },
             child: Text(cancelText!),
           ),
@@ -66,9 +68,13 @@ class BizDialog extends StatelessWidget {
             onConfirm();
           },
           style: TextButton.styleFrom(
-            foregroundColor: isDestructive ? BizTheme.errorRed : BizTheme.slovakBlue,
+            foregroundColor:
+                isDestructive ? BizTheme.errorRed : BizTheme.slovakBlue,
           ),
-          child: Text(confirmText, style: const TextStyle(fontWeight: FontWeight.bold)),
+          child: Text(
+            confirmText,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );

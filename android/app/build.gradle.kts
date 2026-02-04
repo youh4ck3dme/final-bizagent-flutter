@@ -64,13 +64,18 @@ android {
             isShrinkResources = true
             isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            // Enable native symbol upload for Crashlytics
+            configure<com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension> {
+                nativeSymbolUploadEnabled = true
+            }
         }
     }
 
     packaging {
         jniLibs {
-            // Disabled debug symbol keeping to avoid stripping issues in release builds
-            // Do not strip debug symbols - let Play Store handle this
+            // Keep debug symbols in the native libraries to allow Play Store to de-obfuscate crashes
+            keepDebugSymbols.add("**/*.so")
         }
     }
 }

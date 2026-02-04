@@ -11,10 +11,12 @@ class ModernOnboardingScreen extends ConsumerStatefulWidget {
   const ModernOnboardingScreen({super.key});
 
   @override
-  ConsumerState<ModernOnboardingScreen> createState() => _ModernOnboardingScreenState();
+  ConsumerState<ModernOnboardingScreen> createState() =>
+      _ModernOnboardingScreenState();
 }
 
-class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen> {
+class _ModernOnboardingScreenState
+    extends ConsumerState<ModernOnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   String _selectedBusinessType = 'IT služby';
@@ -125,8 +127,11 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
             itemBuilder: (context, index) => _OnboardingPage(
               step: _steps[index],
               selectedBusinessType: _selectedBusinessType,
-              onBusinessTypeChanged: (type) => setState(() => _selectedBusinessType = type),
-              onGenerateDemo: () => ref.read(onboardingDemoProvider.notifier).generateDemoInvoice(_selectedBusinessType),
+              onBusinessTypeChanged: (type) =>
+                  setState(() => _selectedBusinessType = type),
+              onGenerateDemo: () => ref
+                  .read(onboardingDemoProvider.notifier)
+                  .generateDemoInvoice(_selectedBusinessType),
             ),
           ),
           Positioned(
@@ -170,7 +175,10 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
                             onPressed: _skipToDemo,
                             child: Text(
                               'Preskočiť',
-                              style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                           const Spacer(),
@@ -182,15 +190,23 @@ class _ModernOnboardingScreenState extends ConsumerState<ModernOnboardingScreen>
                           style: ElevatedButton.styleFrom(
                             backgroundColor: BizTheme.slovakBlue,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                             elevation: 0,
                           ),
                           child: Text(
-                            _currentPage == _steps.length - 1 ? 'Začať používať' : 'Pokračovať',
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                            _currentPage == _steps.length - 1
+                                ? 'Začať používať'
+                                : 'Pokračovať',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
@@ -247,10 +263,7 @@ class _OnboardingPage extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           const Spacer(flex: 1),
-          Expanded(
-            flex: 4,
-            child: _buildStepContent(ref),
-          ),
+          Expanded(flex: 4, child: _buildStepContent(ref)),
           const Spacer(flex: 3),
         ],
       ),
@@ -260,9 +273,13 @@ class _OnboardingPage extends ConsumerWidget {
   Widget _buildStepContent(WidgetRef ref) {
     switch (step.type) {
       case OnboardingStepType.welcome:
-        return step.image != null ? _ImageContent(imagePath: step.image!) : _WelcomeContent();
+        return step.image != null
+            ? _ImageContent(imagePath: step.image!)
+            : _WelcomeContent();
       case OnboardingStepType.features:
-        return step.image != null ? _ImageContent(imagePath: step.image!) : _WelcomeContent();
+        return step.image != null
+            ? _ImageContent(imagePath: step.image!)
+            : _WelcomeContent();
       case OnboardingStepType.businessType:
         return _BusinessTypeSelector(
           selectedType: selectedBusinessType,
@@ -282,33 +299,29 @@ class _OnboardingPage extends ConsumerWidget {
 class _WelcomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(100),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Logo instead of circle
+          Image.asset(
+            'assets/images/icon.png',
+            width: 140,
+            height: 140,
+            fit: BoxFit.contain,
           ),
-          child: const Icon(
-            Icons.auto_awesome,
-            size: 80,
-            color: BizTheme.slovakBlue,
+          const SizedBox(height: 32),
+          Text(
+            'BizAgent používa umelú inteligenciu na automatizáciu vašich faktúr a sledovanie výdavkov.',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[700],
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        const SizedBox(height: 32),
-        Text(
-          'BizAgent používa umelú inteligenciu na automatizáciu vašich faktúr a sledovanie výdavkov.',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[700],
-            height: 1.5,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -322,10 +335,7 @@ class _ImageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: const BoxConstraints(maxWidth: 300, maxHeight: 300),
-      child: Image.asset(
-        imagePath,
-        fit: BoxFit.contain,
-      ),
+      child: Image.asset(imagePath, fit: BoxFit.contain),
     );
   }
 }
@@ -381,7 +391,9 @@ class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isSelected ? BizTheme.slovakBlue.withValues(alpha: 0.1) : Colors.white,
+              color: isSelected
+                  ? BizTheme.slovakBlue.withValues(alpha: 0.1)
+                  : Colors.white,
               border: Border.all(
                 color: isSelected ? BizTheme.slovakBlue : Colors.grey[300]!,
                 width: isSelected ? 2 : 1,
@@ -412,16 +424,14 @@ class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? BizTheme.slovakBlue : Colors.black,
+                          color:
+                              isSelected ? BizTheme.slovakBlue : Colors.black,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         type['description'] as String,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -536,11 +546,7 @@ class _ErrorDemo extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 48,
-            color: Colors.orange,
-          ),
+          const Icon(Icons.error_outline, size: 48, color: Colors.orange),
           const SizedBox(height: 16),
           Text(
             'Nepodarilo sa načítať demo',
@@ -553,16 +559,10 @@ class _ErrorDemo extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Použijeme predvolené údaje',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: const Text('Skúsiť znova'),
-          ),
+          ElevatedButton(onPressed: onRetry, child: const Text('Skúsiť znova')),
         ],
       ),
     );
@@ -606,7 +606,10 @@ class _InvoiceDemo extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: BizTheme.slovakBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -625,17 +628,11 @@ class _InvoiceDemo extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             invoiceData['clientName'] ?? 'Klient s.r.o.',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
           Text(
             'IČO: ${invoiceData['clientIco'] ?? 'XXXXXXXX'}',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 24),
           ...items.map((item) {
@@ -687,11 +684,7 @@ class _InvoiceDemo extends StatelessWidget {
           const SizedBox(height: 16),
           const Row(
             children: [
-              Icon(
-                Icons.auto_awesome,
-                size: 16,
-                color: BizTheme.slovakBlue,
-              ),
+              Icon(Icons.auto_awesome, size: 16, color: BizTheme.slovakBlue),
               SizedBox(width: 8),
               Text(
                 'Vygenerované AI pre váš typ podnikania',
@@ -731,18 +724,12 @@ class _FinishContent extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
-          Container(
+          // Logo instead of circle
+          Image.asset(
+            'assets/images/icon.png',
             width: 120,
             height: 120,
-            decoration: BoxDecoration(
-              color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(60),
-            ),
-            child: const Icon(
-              Icons.check_circle,
-              size: 60,
-              color: BizTheme.slovakBlue,
-            ),
+            fit: BoxFit.contain,
           ),
           const SizedBox(height: 32),
           Text(
@@ -755,35 +742,37 @@ class _FinishContent extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
-          ...features.map((feature) => Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    feature['icon'] as IconData,
-                    color: BizTheme.slovakBlue,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    feature['text'] as String,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+          ...features.map(
+            (feature) => Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: BizTheme.slovakBlue.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      feature['icon'] as IconData,
+                      color: BizTheme.slovakBlue,
+                      size: 20,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      feature['text'] as String,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );
@@ -791,10 +780,7 @@ class _FinishContent extends StatelessWidget {
 }
 
 class _ProgressDot extends StatelessWidget {
-  const _ProgressDot({
-    required this.isActive,
-    required this.isCompleted,
-  });
+  const _ProgressDot({required this.isActive, required this.isCompleted});
 
   final bool isActive;
   final bool isCompleted;
@@ -817,13 +803,7 @@ class _ProgressDot extends StatelessWidget {
   }
 }
 
-enum OnboardingStepType {
-  welcome,
-  features,
-  businessType,
-  demo,
-  finish,
-}
+enum OnboardingStepType { welcome, features, businessType, demo, finish }
 
 class ModernOnboardingStep {
   final String title;

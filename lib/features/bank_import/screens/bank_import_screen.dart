@@ -47,8 +47,9 @@ class BankImportScreen extends ConsumerWidget {
                     prefixIcon: Icon(Icons.account_balance),
                   ),
                   items: BankCsvProfile.all
-                      .map((p) =>
-                          DropdownMenuItem(value: p, child: Text(p.name)))
+                      .map(
+                        (p) => DropdownMenuItem(value: p, child: Text(p.name)),
+                      )
                       .toList(),
                   onChanged: (p) {
                     if (p != null) ctrl.setProfile(p);
@@ -76,16 +77,18 @@ class BankImportScreen extends ConsumerWidget {
                 ),
                 if (st.warnings.isNotEmpty) ...[
                   const SizedBox(height: 12),
-                  ...st.warnings.map((w) => Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.warning_amber_rounded, size: 18),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text(w)),
-                          ],
-                        ),
-                      )),
+                  ...st.warnings.map(
+                    (w) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.warning_amber_rounded, size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(w)),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -108,7 +111,8 @@ class BankImportScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                    'Repo invoices: ${(invoicesAsync.value ?? const []).length}'),
+                  'Repo invoices: ${(invoicesAsync.value ?? const []).length}',
+                ),
                 const SizedBox(height: 8),
                 const Text('MVP: match by VS + amount + counterparty name.'),
                 const SizedBox(height: 12),
@@ -125,8 +129,10 @@ class BankImportScreen extends ConsumerWidget {
                               matches.where((m) => m.invoice != null).length;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(
-                                    'Matched: $best / ${matches.length} (invoices: ${invoices.length})')),
+                              content: Text(
+                                'Matched: $best / ${matches.length} (invoices: ${invoices.length})',
+                              ),
+                            ),
                           );
                         },
                 ),

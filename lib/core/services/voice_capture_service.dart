@@ -77,7 +77,9 @@ class VoiceCaptureService {
     Timer(timeout, () {
       if (!completer.isCompleted) {
         _speechToText.stop();
-        completer.complete(hasFinalResult && finalResult.isNotEmpty ? finalResult : null);
+        completer.complete(
+          hasFinalResult && finalResult.isNotEmpty ? finalResult : null,
+        );
       }
     });
 
@@ -93,8 +95,6 @@ class VoiceCaptureService {
   void cancelListening() {
     _speechToText.cancel();
   }
-
-
 
   /// Check if currently listening
   bool get isListening => _speechToText.isListening;

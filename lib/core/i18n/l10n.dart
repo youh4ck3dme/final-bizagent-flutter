@@ -5,11 +5,7 @@ import 'app_strings.dart';
 enum AppLocale { sk /*, en */ }
 
 class L10n extends InheritedWidget {
-  const L10n({
-    super.key,
-    required this.locale,
-    required super.child,
-  });
+  const L10n({super.key, required this.locale, required super.child});
 
   final AppLocale locale;
 

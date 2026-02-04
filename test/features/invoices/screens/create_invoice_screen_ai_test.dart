@@ -32,19 +32,23 @@ void main() {
         // Keep user null so IČO lookup doesn't try secure (Firebase) path.
         authStateProvider.overrideWith((ref) => Stream.value(null)),
         // Mock Settings
-        settingsProvider.overrideWith((ref) => Stream.value(UserSettingsModel.empty().copyWith(
-          companyName: 'My Biz',
-          isVatPayer: true,
-        ))),
+        settingsProvider.overrideWith(
+          (ref) => Stream.value(
+            UserSettingsModel.empty().copyWith(
+              companyName: 'My Biz',
+              isVatPayer: true,
+            ),
+          ),
+        ),
         icoAtlasServiceProvider.overrideWithValue(FakeIcoAtlasService()),
       ],
-      child: const MaterialApp(
-        home: CreateInvoiceScreen(),
-      ),
+      child: const MaterialApp(home: CreateInvoiceScreen()),
     );
   }
 
-  testWidgets('AI Magic Fill populates fields and can be undone', (WidgetTester tester) async {
+  testWidgets('AI Magic Fill populates fields and can be undone', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(createTestWidget());
     await tester.pumpAndSettle();
 
@@ -52,31 +56,31 @@ void main() {
     final aiButton = find.text('AI Vyplniť');
     expect(aiButton, findsOneWidget);
     expect(find.text('Oatmeal Digital s.r.o.'), findsNothing);
-    
+
     // 2. Click AI Vyplniť
     await tester.tap(aiButton);
     await tester.pumpAndSettle();
 
     // 3. Verify data is populated
     expect(find.text('Oatmeal Digital s.r.o.'), findsOneWidget);
-    
+
     // 4. Verify highlighting: InputDecorations should have "Navrhnuté AI" helper
     expect(find.text('Navrhnuté AI'), findsAtLeast(1));
 
     // 5. Verify adaptive UI: Details should be hidden now
     expect(find.text('DIČ'), findsNothing);
-    
+
     // 6. Test Undo
     final undoButton = find.byIcon(Icons.undo);
     expect(undoButton, findsOneWidget);
-    
+
     await tester.tap(undoButton);
     await tester.pumpAndSettle();
-    
+
     // Data should be cleared (or restored to empty)
     expect(find.text('Oatmeal Digital s.r.o.'), findsNothing);
     expect(find.text('Navrhnuté AI'), findsNothing);
-    
+
     // 7. Re-apply and verify Item
     await tester.tap(aiButton);
     await tester.pumpAndSettle();
@@ -88,7 +92,7 @@ void main() {
       const Offset(0, -200),
     );
     await tester.pumpAndSettle();
-    
+
     expect(itemFinder, findsOneWidget);
     // Verified item presence via title, avoiding strict formatting checks for amount in unit tests
     expect(find.byType(ListTile), findsAtLeast(1));

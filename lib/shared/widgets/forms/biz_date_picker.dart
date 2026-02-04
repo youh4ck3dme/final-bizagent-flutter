@@ -22,7 +22,9 @@ class BizDatePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textController = TextEditingController(
-      text: selectedDate != null ? DateFormat('dd.MM.yyyy').format(selectedDate!) : '',
+      text: selectedDate != null
+          ? DateFormat('dd.MM.yyyy').format(selectedDate!)
+          : '',
     );
 
     return InkWell(

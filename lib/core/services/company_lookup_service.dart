@@ -32,7 +32,9 @@ class CompanyLookupService {
       return IcoLookupResult.invalid();
     }
 
-    final docRef = _db.collection('companies').doc(icoNorm); // Using 'companies' as per existing data, user suggested 'company_cache' but sticking to established schema is safer for now unless migration intended. Let's stick to 'companies' to match existing tests/data.
+    final docRef = _db.collection('companies').doc(
+          icoNorm,
+        ); // Using 'companies' as per existing data, user suggested 'company_cache' but sticking to established schema is safer for now unless migration intended. Let's stick to 'companies' to match existing tests/data.
     final snap = await docRef.get();
 
     if (snap.exists) {
@@ -63,9 +65,9 @@ class CompanyLookupService {
       final fresh = await _remote.publicLookup(ico);
 
       if (fresh == null) {
-         return IcoLookupResult.invalid(); // Not found or error
+        return IcoLookupResult.invalid(); // Not found or error
       }
-      
+
       if (!fresh.isValid) {
         return fresh; // Limit reached etc.
       }

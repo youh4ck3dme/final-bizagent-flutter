@@ -12,7 +12,7 @@ class MockBizBotService extends Mock implements BizBotService {
   Future<String> ask(String prompt) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 50));
-    
+
     if (prompt.contains('chyba')) {
       throw Exception('Simulated Network Error');
     }
@@ -28,16 +28,14 @@ void main() {
 
   Widget createWidgetUnderTest(MockBizBotService mockService) {
     return ProviderScope(
-      overrides: [
-        bizBotServiceProvider.overrideWithValue(mockService),
-      ],
-      child: const MaterialApp(
-        home: BizBotScreen(),
-      ),
+      overrides: [bizBotServiceProvider.overrideWithValue(mockService)],
+      child: const MaterialApp(home: BizBotScreen()),
     );
   }
 
-  testWidgets('BizBot Strict UI Test: Initial State', (WidgetTester tester) async {
+  testWidgets('BizBot Strict UI Test: Initial State', (
+    WidgetTester tester,
+  ) async {
     final mockService = MockBizBotService();
     await tester.pumpWidget(createWidgetUnderTest(mockService));
     await tester.pumpAndSettle();
@@ -47,20 +45,28 @@ void main() {
     expect(find.text('AI Asistent'), findsOneWidget);
 
     // 2. Verify Welcome Message
-    expect(find.textContaining('Ahoj! Som tvoj BizAgent asistent'), findsOneWidget);
+    expect(
+      find.textContaining('Ahoj! Som tvoj BizAgent asistent'),
+      findsOneWidget,
+    );
 
     // 3. Verify Input Field and Send Button exist
     expect(find.byKey(const Key('bizbot_input')), findsOneWidget);
     expect(find.byKey(const Key('bizbot_send_btn')), findsOneWidget);
   });
 
-  testWidgets('BizBot Strict Flow: Send Message & Receive Reply', (WidgetTester tester) async {
+  testWidgets('BizBot Strict Flow: Send Message & Receive Reply', (
+    WidgetTester tester,
+  ) async {
     final mockService = MockBizBotService();
     await tester.pumpWidget(createWidgetUnderTest(mockService));
     await tester.pumpAndSettle();
 
     // 1. Enter Text
-    await tester.enterText(find.byKey(const Key('bizbot_input')), 'Ako sa máš?');
+    await tester.enterText(
+      find.byKey(const Key('bizbot_input')),
+      'Ako sa máš?',
+    );
     await tester.pump();
 
     // 2. Tap Send
@@ -75,11 +81,16 @@ void main() {
     await tester.pumpAndSettle();
 
     // 5. Verify Bot Response
-    expect(find.textContaining('Toto je testovacia odpoveď na: Ako sa máš?'), findsOneWidget);
+    expect(
+      find.textContaining('Toto je testovacia odpoveď na: Ako sa máš?'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('BizBot Strict Flow: Error Handling', (WidgetTester tester) async {
-     final mockService = MockBizBotService();
+  testWidgets('BizBot Strict Flow: Error Handling', (
+    WidgetTester tester,
+  ) async {
+    final mockService = MockBizBotService();
     await tester.pumpWidget(createWidgetUnderTest(mockService));
     await tester.pumpAndSettle();
 

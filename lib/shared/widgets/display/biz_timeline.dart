@@ -42,19 +42,22 @@ class BizTimeline extends StatelessWidget {
                   width: 16,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: item.isCompleted ? BizTheme.successGreen : (item.isActive ? BizTheme.slovakBlue : BizTheme.gray300),
+                    color: item.isCompleted
+                        ? BizTheme.successGreen
+                        : (item.isActive
+                            ? BizTheme.slovakBlue
+                            : BizTheme.gray300),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
-                    ),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
                 ),
                 if (!isLast)
                   Container(
                     width: 2,
                     height: 40, // Fixed height or dynamic, usually expanded
-                    color: item.isCompleted ? BizTheme.successGreen.withValues(alpha: 0.5) : BizTheme.gray300,
+                    color: item.isCompleted
+                        ? BizTheme.successGreen.withValues(alpha: 0.5)
+                        : BizTheme.gray300,
                   ),
               ],
             ),
@@ -70,13 +73,18 @@ class BizTimeline extends StatelessWidget {
                       item.title,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: item.isActive || item.isCompleted ? Colors.black87 : Colors.black54,
+                        color: item.isActive || item.isCompleted
+                            ? Colors.black87
+                            : Colors.black54,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       item.description,
-                      style: const TextStyle(color: Colors.black54, fontSize: 13),
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),

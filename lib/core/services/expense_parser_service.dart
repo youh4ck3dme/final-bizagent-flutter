@@ -85,7 +85,10 @@ class ExpenseParserService {
   ParsedExpense? _fallbackParse(String text) {
     try {
       // Simple regex patterns for Slovak expense parsing
-      final amountRegex = RegExp(r'(\d+(?:[.,]\d{1,2})?)\s*(?:€|EUR|Sk|korun)', caseSensitive: false);
+      final amountRegex = RegExp(
+        r'(\d+(?:[.,]\d{1,2})?)\s*(?:€|EUR|Sk|korun)',
+        caseSensitive: false,
+      );
       final amountMatch = amountRegex.firstMatch(text);
 
       if (amountMatch == null) return null;
@@ -101,16 +104,24 @@ class ExpenseParserService {
 
       final lowerText = text.toLowerCase();
 
-      if (lowerText.contains('jedlo') || lowerText.contains('káva') || lowerText.contains('obed') || lowerText.contains('raňajky')) {
+      if (lowerText.contains('jedlo') ||
+          lowerText.contains('káva') ||
+          lowerText.contains('obed') ||
+          lowerText.contains('raňajky')) {
         category = 'Jedlo';
         description = 'Jedlo';
-      } else if (lowerText.contains('benzín') || lowerText.contains('doprava') || lowerText.contains('parkovanie')) {
+      } else if (lowerText.contains('benzín') ||
+          lowerText.contains('doprava') ||
+          lowerText.contains('parkovanie')) {
         category = 'Doprava';
         description = 'Doprava';
-      } else if (lowerText.contains('kancelária') || lowerText.contains('papier') || lowerText.contains('pero')) {
+      } else if (lowerText.contains('kancelária') ||
+          lowerText.contains('papier') ||
+          lowerText.contains('pero')) {
         category = 'Kancelária';
         description = 'Kancelárske potreby';
-      } else if (lowerText.contains('reklam') || lowerText.contains('marketing')) {
+      } else if (lowerText.contains('reklam') ||
+          lowerText.contains('marketing')) {
         category = 'Marketing';
         description = 'Marketing';
       }
@@ -118,7 +129,10 @@ class ExpenseParserService {
       // Extract merchant if present
       String? merchant;
       final merchantPatterns = [
-        RegExp(r'(?:v |vo |firme |obchode |u )\s*([A-Z][a-zA-Z\s]+)', caseSensitive: false),
+        RegExp(
+          r'(?:v |vo |firme |obchode |u )\s*([A-Z][a-zA-Z\s]+)',
+          caseSensitive: false,
+        ),
         RegExp(r'"([^"]+)"'),
       ];
 
@@ -161,9 +175,9 @@ class ExpenseParserService {
   /// Validate if parsed expense looks reasonable
   bool isValidExpense(ParsedExpense expense) {
     return expense.amount > 0 &&
-           expense.amount < 100000 && // Reasonable upper limit
-           expense.description.isNotEmpty &&
-           expense.confidence > 0.3; // Minimum confidence threshold
+        expense.amount < 100000 && // Reasonable upper limit
+        expense.description.isNotEmpty &&
+        expense.confidence > 0.3; // Minimum confidence threshold
   }
 }
 

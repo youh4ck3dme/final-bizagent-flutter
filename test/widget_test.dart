@@ -7,9 +7,7 @@ void main() {
     // and basic widgets can be pumped.
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('BizAgent')),
-        ),
+        home: Scaffold(body: Center(child: Text('BizAgent'))),
       ),
     );
 

@@ -56,7 +56,8 @@ class PayBySquareService {
     // Simple XML construction without external dependency for simplicity
     buffer.write('<?xml version="1.0" encoding="UTF-8"?>');
     buffer.write(
-        '<BySquare xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.bysquare.com/bysquare_schema.xsd">');
+      '<BySquare xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.bysquare.com/bysquare_schema.xsd">',
+    );
     buffer.write('<Invoice>');
     buffer.write('<DirectPayment>');
     buffer.write('<Payment>');

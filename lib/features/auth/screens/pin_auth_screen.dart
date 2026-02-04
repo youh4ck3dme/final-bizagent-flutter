@@ -46,7 +46,9 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
 
   void _onDelete() {
     if (_currentPin.isNotEmpty) {
-      setState(() => _currentPin = _currentPin.substring(0, _currentPin.length - 1));
+      setState(
+        () => _currentPin = _currentPin.substring(0, _currentPin.length - 1),
+      );
     }
   }
 
@@ -72,8 +74,8 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
       if (_currentPin == _tempPin) {
         await security.savePin(_currentPin);
         if (mounted) {
-           BizSnackbar.showSuccess(context, 'PIN kód úspešne nastavený');
-           context.pop(_currentPin);
+          BizSnackbar.showSuccess(context, 'PIN kód úspešne nastavený');
+          context.pop(_currentPin);
         }
       } else {
         setState(() {
@@ -81,7 +83,12 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
           _tempPin = null;
           _mode = PinMode.setup;
         });
-        if (mounted) BizSnackbar.showError(context, 'PIN kódy sa nezhodujú. Skúste znova.');
+        if (mounted) {
+          BizSnackbar.showError(
+            context,
+            'PIN kódy sa nezhodujú. Skúste znova.',
+          );
+        }
       }
     }
   }
@@ -101,9 +108,7 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
         children: [
           // Premium Blurry Background
           Positioned.fill(
-            child: Container(
-              color: isDark ? Colors.black87 : Colors.white70,
-            ),
+            child: Container(color: isDark ? Colors.black87 : Colors.white70),
           ),
           Positioned.fill(
             child: BackdropFilter(
@@ -111,7 +116,7 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
               child: Container(color: Colors.transparent),
             ),
           ),
-          
+
           // Floating animated orbs for "Originality"
           _buildFloatingOrb(context, 100, 100, Colors.blue, 4),
           _buildFloatingOrb(context, 300, 500, Colors.purple, 6),
@@ -120,7 +125,7 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
             child: Column(
               children: [
                 const Spacer(),
-                
+
                 // Header
                 Text(
                   title,
@@ -129,14 +134,16 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
                     color: isDark ? Colors.white : Colors.black87,
                   ),
                 ).animate().fadeIn().slideY(begin: -0.2),
-                
+
                 const SizedBox(height: 8),
                 Text(
-                  _mode == PinMode.verify 
-                    ? 'Zadajte prístupový kód pre BizAgent'
-                    : 'Zvoľte si 4-miestny kód pre zabezpečenie dát',
+                  _mode == PinMode.verify
+                      ? 'Zadajte prístupový kód pre BizAgent'
+                      : 'Zvoľte si 4-miestny kód pre zabezpečenie dát',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.6),
+                    color: (isDark ? Colors.white : Colors.black).withValues(
+                      alpha: 0.6,
+                    ),
                   ),
                 ).animate().fadeIn(delay: 100.ms),
 
@@ -153,15 +160,20 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isActive 
-                            ? BizTheme.slovakBlue 
+                        color: isActive
+                            ? BizTheme.slovakBlue
                             : (isDark ? Colors.white24 : Colors.black12),
                         border: Border.all(
-                          color: isActive ? BizTheme.slovakBlue : Colors.transparent,
+                          color: isActive
+                              ? BizTheme.slovakBlue
+                              : Colors.transparent,
                           width: 2,
                         ),
                       ),
-                    ).animate(target: isActive ? 1 : 0).scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2));
+                    ).animate(target: isActive ? 1 : 0).scale(
+                          begin: const Offset(0.8, 0.8),
+                          end: const Offset(1.2, 1.2),
+                        );
                   }),
                 ),
 
@@ -171,20 +183,21 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
                 _buildKeypad(isDark),
 
                 const SizedBox(height: 24),
-                
+
                 // Cancel
                 TextButton(
                   onPressed: () => context.pop(null),
                   child: Text(
                     'ZRUŠIŤ',
                     style: TextStyle(
-                      color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.5),
+                      color: (isDark ? Colors.white : Colors.black87)
+                          .withValues(alpha: 0.5),
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
               ],
             ),
@@ -238,11 +251,18 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white.withValues(alpha: 0.05),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 1),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.1),
+            width: 1,
+          ),
         ),
         child: Text(
           digit,
-          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.normal, color: Colors.white),
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.normal,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -258,13 +278,21 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
         alignment: Alignment.center,
         child: Icon(
           Icons.backspace_outlined,
-          color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.7),
+          color: (isDark ? Colors.white : Colors.black87).withValues(
+            alpha: 0.7,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildFloatingOrb(BuildContext context, double x, double y, Color color, int duration) {
+  Widget _buildFloatingOrb(
+    BuildContext context,
+    double x,
+    double y,
+    Color color,
+    int duration,
+  ) {
     return Positioned(
       left: x,
       top: y,
@@ -280,8 +308,12 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
             ],
           ),
         ),
-      ).animate(onPlay: (c) => c.repeat(reverse: true))
-       .move(begin: const Offset(-20, -20), end: const Offset(20, 20), duration: duration.seconds, curve: Curves.easeInOut),
+      ).animate(onPlay: (c) => c.repeat(reverse: true)).move(
+            begin: const Offset(-20, -20),
+            end: const Offset(20, 20),
+            duration: duration.seconds,
+            curve: Curves.easeInOut,
+          ),
     );
   }
 }

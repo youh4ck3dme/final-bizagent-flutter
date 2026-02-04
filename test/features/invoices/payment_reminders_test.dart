@@ -5,16 +5,13 @@ import 'package:bizagent/features/invoices/screens/payment_reminders_screen.dart
 import 'package:bizagent/features/invoices/providers/invoices_provider.dart';
 
 void main() {
-  testWidgets('PaymentRemindersScreen displays empty state when no invoices',
-      (WidgetTester tester) async {
+  testWidgets('PaymentRemindersScreen displays empty state when no invoices', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          invoicesProvider.overrideWith((ref) => Stream.value([])),
-        ],
-        child: const MaterialApp(
-          home: PaymentRemindersScreen(),
-        ),
+        overrides: [invoicesProvider.overrideWith((ref) => Stream.value([]))],
+        child: const MaterialApp(home: PaymentRemindersScreen()),
       ),
     );
 

@@ -63,149 +63,178 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-            _buildToolHeader(context),
-            const SizedBox(height: BizTheme.spacingMd),
-            _buildToolCard(
-              context,
-              title: 'BizBot AI Asistent',
-              subtitle: 'Váš inteligentný parťák pre biznis, dane a poradenstvo.',
-              icon: Icons.smart_toy,
-              color: BizTheme.slovakBlue,
-              onTap: () => context.pushNamed('bizBot'),
-              isProminent: true,
-              delay: 0.ms,
-            ),
-            const SizedBox(height: BizTheme.spacingMd),
-            _buildToolCard(
-              context,
-              title: 'AI Email Generátor',
-              subtitle: 'Vytvorte profesionálne e-maily (upomienky, ponuky) za pár sekúnd.',
-              icon: Icons.auto_awesome,
-              color: Colors.purple,
-              onTap: () => context.pushNamed('emailGenerator'),
-              delay: 100.ms,
-            ),
-            const SizedBox(height: BizTheme.spacingMd),
-            _buildToolCard(
-              context,
-              title: 'DPH Asistent',
-              subtitle: 'Overenie daňovej uznateľnosti a rizík pred zaúčtovaním.',
-              icon: Icons.receipt_long,
-              color: BizTheme.successGreen,
-              onTap: () => context.pushNamed('expenseAnalysis'),
-              delay: 200.ms,
-            ),
-            const SizedBox(height: BizTheme.spacingMd),
-            _buildToolCard(
-              context,
-              title: 'Generátor Upomienok',
-              subtitle: 'Vytvorte citlivé alebo prísne upomienky jediným kliknutím.',
-              icon: Icons.notifications_active,
-              color: Colors.orange,
-              onTap: () => context.pushNamed('reminderGenerator'),
-              delay: 300.ms,
-            ),
-            const SizedBox(height: BizTheme.spacingMd),
-            _buildToolCard(
-              context,
-              title: 'Overenie Firmy',
-              subtitle: 'Rýchla kontrola IČO cez zabezpečený register.',
-              icon: Icons.business,
-              color: BizTheme.slovakBlue,
-              onTap: () => context.pushNamed('icoLookup'),
-              isProminent: true,
-              delay: 400.ms,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed:
-                        _isScanning ? null : () => _scan(ImageSource.camera),
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Kamera'),
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(16)),
-                  ),
+              _buildToolHeader(context),
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildToolCard(
+                context,
+                title: 'BizBot AI Asistent',
+                subtitle:
+                    'Váš inteligentný parťák pre biznis, dane a poradenstvo.',
+                icon: Icons.smart_toy,
+                color: BizTheme.slovakBlue,
+                onTap: () => context.pushNamed('bizBot'),
+                isProminent: true,
+                delay: 0.ms,
+              ),
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildToolCard(
+                context,
+                title: 'AI Poznámkový Blok',
+                subtitle:
+                    'Zaznamenajte si myšlienky. AI ich premení na faktúry.',
+                icon: Icons.note_alt,
+                color: Colors.amber,
+                onTap: () => context.push('/documents'),
+                delay: 50.ms,
+              ),
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildToolCard(
+                context,
+                title: 'AI Email Generátor',
+                subtitle:
+                    'Vytvorte profesionálne e-maily (upomienky, ponuky) za pár sekúnd.',
+                icon: Icons.auto_awesome,
+                color: Colors.purple,
+                onTap: () => context.pushNamed('emailGenerator'),
+                delay: 100.ms,
+              ),
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildToolCard(
+                context,
+                title: 'DPH Asistent',
+                subtitle:
+                    'Overenie daňovej uznateľnosti a rizík pred zaúčtovaním.',
+                icon: Icons.receipt_long,
+                color: BizTheme.successGreen,
+                onTap: () => context.pushNamed('expenseAnalysis'),
+                delay: 200.ms,
+              ),
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildToolCard(
+                context,
+                title: 'Generátor Upomienok',
+                subtitle:
+                    'Vytvorte citlivé alebo prísne upomienky jediným kliknutím.',
+                icon: Icons.notifications_active,
+                color: Colors.orange,
+                onTap: () => context.pushNamed('reminderGenerator'),
+                delay: 300.ms,
+              ),
+              const SizedBox(height: BizTheme.spacingMd),
+              _buildToolCard(
+                context,
+                title: 'Overenie Firmy',
+                subtitle: 'Rýchla kontrola IČO cez zabezpečený register.',
+                icon: Icons.business,
+                color: BizTheme.slovakBlue,
+                onTap: () => context.pushNamed(
+                  'icoLookup',
+                  pathParameters: {'initialIco': 'new'},
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed:
-                        _isScanning ? null : () => _scan(ImageSource.gallery),
-                    icon: const Icon(Icons.photo_library),
-                    label: const Text('Galéria'),
-                    style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.all(16)),
+                isProminent: true,
+                delay: 400.ms,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed:
+                          _isScanning ? null : () => _scan(ImageSource.camera),
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text('Kamera'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(16),
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            if (_isScanning)
-              const Center(child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 32),
-                child: CircularProgressIndicator(),
-              ))
-            else if (_receipt != null)
-              Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(BizTheme.spacingMd),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Rozpoznané údaje:',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                      const Divider(height: 24),
-                      TextFormField(
-                        controller: _amountController,
-                        decoration: const InputDecoration(
-                          labelText: 'Suma',
-                          suffixText: 'EUR',
-                        ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed:
+                          _isScanning ? null : () => _scan(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_library),
+                      label: const Text('Galéria'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.all(16),
                       ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _dateController,
-                        decoration: const InputDecoration(
-                          labelText: 'Dátum',
-                          hintText: 'DD.MM.YYYY',
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _vendorController,
-                        decoration: const InputDecoration(
-                          labelText: 'IČO / ID',
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      ExpansionTile(
-                        title: const Text('Zobraziť celý text'),
-                        tilePadding: EdgeInsets.zero,
-                        children: [SelectableText(_receipt!.originalText)],
-                      ),
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.push('/create-expense',
-                                extra: _receipt!.originalText);
-                          },
-                          child: const Text('Vytvoriť výdavok'),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9)),
-          ],
+                ],
+              ),
+              const SizedBox(height: 24),
+              if (_isScanning)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              else if (_receipt != null)
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(BizTheme.spacingMd),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Rozpoznané údaje:',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const Divider(height: 24),
+                        TextFormField(
+                          controller: _amountController,
+                          decoration: const InputDecoration(
+                            labelText: 'Suma',
+                            suffixText: 'EUR',
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _dateController,
+                          decoration: const InputDecoration(
+                            labelText: 'Dátum',
+                            hintText: 'DD.MM.YYYY',
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _vendorController,
+                          decoration: const InputDecoration(
+                            labelText: 'IČO / ID',
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ExpansionTile(
+                          title: const Text('Zobraziť celý text'),
+                          tilePadding: EdgeInsets.zero,
+                          children: [SelectableText(_receipt!.originalText)],
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.push(
+                                '/create-expense',
+                                extra: _receipt!.originalText,
+                              );
+                            },
+                            child: const Text('Vytvoriť výdavok'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ).animate().fadeIn().scale(begin: const Offset(0.9, 0.9)),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -271,17 +300,20 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                   children: [
                     Text(
                       title,
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    Text(subtitle, style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: BizTheme.gray300),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: BizTheme.gray300,
+              ),
             ],
           ),
         ),

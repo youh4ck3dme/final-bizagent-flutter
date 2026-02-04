@@ -33,11 +33,14 @@ class BankMatchService {
 
       final best = candidates.isEmpty ? null : candidates.first;
       if (best == null || best.confidence < 0.55) {
-        results.add(BankMatchResult(
+        results.add(
+          BankMatchResult(
             tx: tx,
             invoice: null,
             confidence: best?.confidence ?? 0,
-            reason: 'No strong match'));
+            reason: 'No strong match',
+          ),
+        );
       } else {
         results.add(best);
       }

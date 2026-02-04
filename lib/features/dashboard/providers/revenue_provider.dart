@@ -31,30 +31,47 @@ Future<RevenueMetrics> revenueMetrics(Ref ref) async {
   final now = DateTime.now();
   final thisMonthStart = DateTime(now.year, now.month, 1);
   final lastMonthStart = DateTime(now.year, now.month - 1, 1);
-  final thisMonthInvoices = invoices.where((inv) => inv.dateIssued
-      .isAfter(thisMonthStart.subtract(const Duration(seconds: 1))));
+  final thisMonthInvoices = invoices.where(
+    (inv) => inv.dateIssued.isAfter(
+      thisMonthStart.subtract(const Duration(seconds: 1)),
+    ),
+  );
 
-  final lastMonthInvoices = invoices.where((inv) =>
-      inv.dateIssued
-          .isAfter(lastMonthStart.subtract(const Duration(seconds: 1))) &&
-      inv.dateIssued.isBefore(thisMonthStart));
+  final lastMonthInvoices = invoices.where(
+    (inv) =>
+        inv.dateIssued.isAfter(
+          lastMonthStart.subtract(const Duration(seconds: 1)),
+        ) &&
+        inv.dateIssued.isBefore(thisMonthStart),
+  );
 
-  final totalRevenue = invoices.fold(0.0, (sum, inv) => sum + inv.totalAmount);
-  final thisMonthRevenue =
-      thisMonthInvoices.fold(0.0, (sum, inv) => sum + inv.totalAmount);
-  final lastMonthRevenue =
-      lastMonthInvoices.fold(0.0, (sum, inv) => sum + inv.totalAmount);
+  final totalRevenue = invoices.fold(
+    0.0,
+    (sum, inv) => sum + inv.totalAmountEur,
+  );
+  final thisMonthRevenue = thisMonthInvoices.fold(
+    0.0,
+    (sum, inv) => sum + inv.totalAmountEur,
+  );
+  final lastMonthRevenue = lastMonthInvoices.fold(
+    0.0,
+    (sum, inv) => sum + inv.totalAmountEur,
+  );
 
   final unpaidAmount = invoices
-      .where((inv) =>
-          inv.status == InvoiceStatus.sent ||
-          inv.status == InvoiceStatus.overdue)
-      .fold(0.0, (sum, inv) => sum + inv.totalAmount);
+      .where(
+        (inv) =>
+            inv.status == InvoiceStatus.sent ||
+            inv.status == InvoiceStatus.overdue,
+      )
+      .fold(0.0, (sum, inv) => sum + inv.totalAmountEur);
 
   final overdueCount = invoices
-      .where((inv) =>
-          (inv.status == InvoiceStatus.overdue) ||
-          (inv.status == InvoiceStatus.sent && inv.dateDue.isBefore(now)))
+      .where(
+        (inv) =>
+            (inv.status == InvoiceStatus.overdue) ||
+            (inv.status == InvoiceStatus.sent && inv.dateDue.isBefore(now)),
+      )
       .length;
 
   final averageInvoiceValue =

@@ -11,9 +11,7 @@ class ZenLock extends StatelessWidget {
       size: 20,
       color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
     )
-        .animate(
-          onPlay: (controller) => controller.repeat(),
-        )
+        .animate(onPlay: (controller) => controller.repeat())
         .fadeIn(duration: 1500.ms)
         .then(delay: 500.ms)
         .shimmer(

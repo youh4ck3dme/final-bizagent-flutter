@@ -18,16 +18,14 @@ void main() {
 
   Widget createWidgetUnderTest() {
     return ProviderScope(
-      overrides: [
-        bizBotServiceProvider.overrideWithValue(mockBizBotService),
-      ],
-      child: const MaterialApp(
-        home: BizBotScreen(),
-      ),
+      overrides: [bizBotServiceProvider.overrideWithValue(mockBizBotService)],
+      child: const MaterialApp(home: BizBotScreen()),
     );
   }
 
-  testWidgets('BizBotScreen displays welcome message', (WidgetTester tester) async {
+  testWidgets('BizBotScreen displays welcome message', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
@@ -35,20 +33,30 @@ void main() {
     expect(find.text('BizBot'), findsOneWidget);
   });
 
-  testWidgets('Sending a message displays user message and AI response', (WidgetTester tester) async {
+  testWidgets('Sending a message displays user message and AI response', (
+    WidgetTester tester,
+  ) async {
     // Arrange
-    when(mockBizBotService.ask(any)).thenAnswer((_) async => 'Odpoveď AI na test');
+    when(
+      mockBizBotService.ask(any),
+    ).thenAnswer((_) async => 'Odpoveď AI na test');
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
     // Act - Enter text
-    await tester.enterText(find.byKey(const Key('bizbot_input')), 'Testovacia otázka');
+    await tester.enterText(
+      find.byKey(const Key('bizbot_input')),
+      'Testovacia otázka',
+    );
     await tester.tap(find.byKey(const Key('bizbot_send_btn')));
 
     // Re-render
     await tester.pump(); // Start animation
-    expect(find.text('Testovacia otázka'), findsOneWidget); // User message should be visible immediately
+    expect(
+      find.text('Testovacia otázka'),
+      findsOneWidget,
+    ); // User message should be visible immediately
 
     // Finish async gap
     await tester.pumpAndSettle();
@@ -58,10 +66,14 @@ void main() {
     verify(mockBizBotService.ask('Testovacia otázka')).called(1);
   });
 
-  testWidgets('Suggested prompts populate input and send message', (WidgetTester tester) async {
+  testWidgets('Suggested prompts populate input and send message', (
+    WidgetTester tester,
+  ) async {
     // Arrange
     const suggestion = 'Ako vystavím faktúru?';
-    when(mockBizBotService.ask(any)).thenAnswer((_) async => 'Takto vystavíš faktúru...');
+    when(
+      mockBizBotService.ask(any),
+    ).thenAnswer((_) async => 'Takto vystavíš faktúru...');
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
@@ -73,12 +85,20 @@ void main() {
     await tester.pumpAndSettle();
 
     // Assert
-    expect(find.text(suggestion), findsOneWidget); // Should appear as user message
-    expect(find.text('Takto vystavíš faktúru...'), findsOneWidget); // AI response
+    expect(
+      find.text(suggestion),
+      findsOneWidget,
+    ); // Should appear as user message
+    expect(
+      find.text('Takto vystavíš faktúru...'),
+      findsOneWidget,
+    ); // AI response
     verify(mockBizBotService.ask(suggestion)).called(1);
   });
 
-  testWidgets('Shows error message when service fails', (WidgetTester tester) async {
+  testWidgets('Shows error message when service fails', (
+    WidgetTester tester,
+  ) async {
     // Arrange
     when(mockBizBotService.ask(any)).thenThrow(Exception('Network error'));
 

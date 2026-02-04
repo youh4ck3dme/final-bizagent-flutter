@@ -335,12 +335,7 @@ class CategorizationService {
     }
 
     // 💧 VODA (95% confidence)
-    if (_matchesPattern(vendor, [
-      r'bvs',
-      r'vodaren',
-      r'voda',
-      r'water',
-    ])) {
+    if (_matchesPattern(vendor, [r'bvs', r'vodaren', r'voda', r'water'])) {
       return (ExpenseCategory.water, 95);
     }
 
@@ -371,8 +366,13 @@ class CategorizationService {
       r'panta\s*rhei',
       r'knihkupectvo',
     ])) {
-      if (_matchesPattern(vendor,
-          [r'kniha', r'book', r'martinus', r'panta\s*rhei', r'knihkupectvo'])) {
+      if (_matchesPattern(vendor, [
+        r'kniha',
+        r'book',
+        r'martinus',
+        r'panta\s*rhei',
+        r'knihkupectvo',
+      ])) {
         return (ExpenseCategory.books, 85);
       }
       return (ExpenseCategory.training, 85);
@@ -409,8 +409,10 @@ class CategorizationService {
 
   /// Získa históriu kategórií pre daného dodávateľa
   /// (Pre budúce učenie sa z histórie používateľa)
-  Future<ExpenseCategory?> getHistoricalCategory(String vendorName,
-      {required String userId}) async {
+  Future<ExpenseCategory?> getHistoricalCategory(
+    String vendorName, {
+    required String userId,
+  }) async {
     final snapshot = await _firestore
         .collection('users')
         .doc(userId)
@@ -436,14 +438,18 @@ class CategorizationService {
   }
 
   /// Kombinuje AI návrh s historickými dátami
-  Future<(ExpenseCategory, int)> suggestCategoryWithHistory(String vendorName,
-      {required String userId}) async {
+  Future<(ExpenseCategory, int)> suggestCategoryWithHistory(
+    String vendorName, {
+    required String userId,
+  }) async {
     // Najprv skús AI návrh
     final (aiCategory, aiConfidence) = suggestCategory(vendorName);
 
     // Potom skús historické dáta
-    final historicalCategory =
-        await getHistoricalCategory(vendorName, userId: userId);
+    final historicalCategory = await getHistoricalCategory(
+      vendorName,
+      userId: userId,
+    );
 
     // Ak sa zhodujú, zvýš confidence
     if (historicalCategory != null && historicalCategory == aiCategory) {

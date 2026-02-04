@@ -14,10 +14,21 @@ class LocalPersistenceService {
   }
 
   // --- Invoices ---
-  
+
   List<Map<String, dynamic>> getInvoices() {
     final box = Hive.box(invoicesBoxName);
     return box.values.map((e) => Map<String, dynamic>.from(e)).toList();
+  }
+
+  Map<dynamic, dynamic> getInvoicesMap() {
+    final box = Hive.box(invoicesBoxName);
+    return box.toMap();
+  }
+
+  Future<void> restoreInvoices(Map<dynamic, dynamic> data) async {
+    final box = Hive.box(invoicesBoxName);
+    await box.clear();
+    await box.putAll(data);
   }
 
   Future<void> saveInvoice(String id, Map<String, dynamic> data) async {
@@ -42,6 +53,17 @@ class LocalPersistenceService {
     return box.values.map((e) => Map<String, dynamic>.from(e)).toList();
   }
 
+  Map<dynamic, dynamic> getExpensesMap() {
+    final box = Hive.box(expensesBoxName);
+    return box.toMap();
+  }
+
+  Future<void> restoreExpenses(Map<dynamic, dynamic> data) async {
+    final box = Hive.box(expensesBoxName);
+    await box.clear();
+    await box.putAll(data);
+  }
+
   Future<void> saveExpense(String id, Map<String, dynamic> data) async {
     final box = Hive.box(expensesBoxName);
     await box.put(id, data);
@@ -53,10 +75,21 @@ class LocalPersistenceService {
   }
 
   // --- Settings ---
-  
+
   dynamic getSetting(String key, {dynamic defaultValue}) {
     final box = Hive.box(settingsBoxName);
     return box.get(key, defaultValue: defaultValue);
+  }
+
+  Map<dynamic, dynamic> getSettingsMap() {
+    final box = Hive.box(settingsBoxName);
+    return box.toMap();
+  }
+
+  Future<void> restoreSettings(Map<dynamic, dynamic> data) async {
+    final box = Hive.box(settingsBoxName);
+    await box.clear();
+    await box.putAll(data);
   }
 
   Future<void> saveSetting(String key, dynamic value) async {
@@ -65,7 +98,7 @@ class LocalPersistenceService {
   }
 
   // --- Business Profile ---
-  
+
   Map<String, dynamic>? getBusinessProfile() {
     final box = Hive.box(settingsBoxName);
     final data = box.get(businessProfileKey);
@@ -84,6 +117,8 @@ class LocalPersistenceService {
   }
 }
 
-final localPersistenceServiceProvider = Provider<LocalPersistenceService>((ref) {
+final localPersistenceServiceProvider = Provider<LocalPersistenceService>((
+  ref,
+) {
   return LocalPersistenceService();
 });

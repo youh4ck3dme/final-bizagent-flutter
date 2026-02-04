@@ -18,9 +18,7 @@ class BizFullscreenLoader extends StatelessWidget {
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                color: cs.surface.withValues(alpha: 0.2),
-              ),
+              child: Container(color: cs.surface.withValues(alpha: 0.2)),
             ),
           ),
           Center(

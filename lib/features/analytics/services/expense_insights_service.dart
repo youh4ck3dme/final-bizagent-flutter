@@ -17,16 +17,19 @@ class ExpenseInsightsService {
   ExpenseInsightsService(this._ai);
 
   Future<List<ExpenseInsight>> analyzeExpenses(
-      List<ExpenseModel> expenses) async {
+    List<ExpenseModel> expenses,
+  ) async {
     if (expenses.isEmpty) return [];
 
     final expenseData = expenses
-        .map((e) => {
-              'vendor': e.vendorName,
-              'amount': e.amount,
-              'date': e.date.toIso8601String(),
-              'category': e.category?.displayName ?? 'other',
-            })
+        .map(
+          (e) => {
+            'vendor': e.vendorName,
+            'amount': e.amount,
+            'date': e.date.toIso8601String(),
+            'category': e.category?.displayName ?? 'other',
+          },
+        )
         .toList();
 
     final context = '''

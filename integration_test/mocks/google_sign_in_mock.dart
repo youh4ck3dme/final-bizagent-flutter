@@ -2,7 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_platform_interface/google_sign_in_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockGoogleSignIn extends Fake with MockPlatformInterfaceMixin implements GoogleSignInPlatform {
+class MockGoogleSignIn extends Fake
+    with MockPlatformInterfaceMixin
+    implements GoogleSignInPlatform {
   @override
   Future<void> init({
     List<String> scopes = const <String>[],
@@ -65,6 +67,9 @@ class MockGoogleSignIn extends Fake with MockPlatformInterfaceMixin implements G
   bool get isMock => true;
 
   @override
-  Future<bool> canAccessScopes(List<String> scopes, {String? accessToken}) async => true;
-
+  Future<bool> canAccessScopes(
+    List<String> scopes, {
+    String? accessToken,
+  }) async =>
+      true;
 }

@@ -17,8 +17,7 @@ import '../../billing/billing_service.dart';
 import '../services/web_sync_service.dart';
 import '../providers/ico_lookup_provider.dart';
 import '../../../shared/utils/biz_snackbar.dart';
-
-
+import '../../../core/services/analytics_service.dart';
 
 class IcoLookupScreen extends ConsumerStatefulWidget {
   final String? initialIco;
@@ -65,15 +64,16 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
       final token = await FirebaseAppCheck.instance.getToken();
       final response = await http.get(
         Uri.parse('https://bizagent.sk/api/auth/ping'),
-        headers: {
-          'X-Firebase-AppCheck': token ?? '',
-        },
+        headers: {'X-Firebase-AppCheck': token ?? ''},
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (mounted) {
-          BizSnackbar.showSuccess(context, 'Gateway Ping OK: enforced=${data['enforced']} (Vercel)');
+          BizSnackbar.showSuccess(
+            context,
+            'Gateway Ping OK: enforced=${data['enforced']} (Vercel)',
+          );
         }
       } else {
         throw Exception('Gateway error: ${response.statusCode}');
@@ -94,9 +94,9 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
         ref.read(usageLimiterProvider).incrementIco();
         ref.read(billingProvider.notifier).refreshUsage();
       } else if (!isAuto) {
-         Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const PaywallScreen()),
-         );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const PaywallScreen()));
       }
     } else if (!isAuto) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -107,6 +107,17 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(icoLookupProvider, (previous, next) {
+      if (previous?.status != next.status) {
+        if (next.status == IcoLookupStatus.success) {
+          ref.read(analyticsServiceProvider).logIcoLookup(success: true);
+        } else if (next.status == IcoLookupStatus.errorOffline ||
+            next.status == IcoLookupStatus.errorServer) {
+          ref.read(analyticsServiceProvider).logIcoLookup(success: false);
+        }
+      }
+    });
+
     final lookupState = ref.watch(icoLookupProvider);
     final isLoading = lookupState.status == IcoLookupStatus.loading;
     final theme = Theme.of(context);
@@ -114,10 +125,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        title: const Text('Overenie Firmy'),
-      ),
-
+      appBar: AppBar(title: const Text('Overenie Firmy')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(BizTheme.spacingLg),
         child: Column(
@@ -133,7 +141,9 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
             const SizedBox(height: BizTheme.spacingXs),
             Text(
               'Okamžitá kontrola rizikovosti a stavu firmy.',
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: BizTheme.spacingXl),
 
@@ -142,28 +152,44 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(BizTheme.radiusLg),
-                border: Border.all(color: isDark ? BizTheme.darkOutline : BizTheme.gray100),
-                boxShadow: isDark ? null : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                border: Border.all(
+                  color: isDark ? BizTheme.darkOutline : BizTheme.gray100,
+                ),
+                boxShadow: isDark
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
               ),
               child: TextField(
                 controller: _controller,
                 keyboardType: TextInputType.number,
                 maxLength: 8,
-                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Zadajte IČO (napr. 46359371)',
                   counterText: '',
-                  prefixIcon: const Icon(Icons.search, color: BizTheme.slovakBlue),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: BizTheme.slovakBlue,
+                  ),
                   suffixIcon: IconButton(
                     icon: isLoading
-                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Icon(Icons.arrow_forward_rounded, color: BizTheme.slovakBlue),
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: BizTheme.slovakBlue,
+                          ),
                     onPressed: isLoading ? null : () => _handleSearch(),
                   ),
                   border: InputBorder.none,
@@ -205,7 +231,11 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
     );
   }
 
-  Widget _buildResultContent(BuildContext context, WidgetRef ref, IcoLookupState state) {
+  Widget _buildResultContent(
+    BuildContext context,
+    WidgetRef ref,
+    IcoLookupState state,
+  ) {
     if (state.status == IcoLookupStatus.idle) {
       return _buildIdleState();
     }
@@ -224,15 +254,15 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
     }
 
     if (state.status == IcoLookupStatus.errorOffline) {
-       return _buildErrorState('Ste offline. Skontrolujte pripojenie.');
+      return _buildErrorState('Ste offline. Skontrolujte pripojenie.');
     }
 
     if (state.status == IcoLookupStatus.errorServer) {
-       return _buildErrorState(state.errorMessage ?? 'Chyba servera');
+      return _buildErrorState(state.errorMessage ?? 'Chyba servera');
     }
 
     if (state.result != null) {
-       return _buildResultCard(state.result!, state.status);
+      return _buildResultCard(state.result!, state.status);
     }
 
     return const SizedBox.shrink();
@@ -241,13 +271,16 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
   Widget _buildResultCard(IcoLookupResult result, IcoLookupStatus status) {
     final theme = Theme.of(context);
     final isCached = status == IcoLookupStatus.cachedFresh;
-    final isReliable = result.status.toLowerCase().contains('aktív') || result.status.toLowerCase().contains('pôsob');
+    final isReliable = result.status.toLowerCase().contains('aktív') ||
+        result.status.toLowerCase().contains('pôsob');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Premium Indicator for Cache/Handover / Refreshing
-        if (isCached || status == IcoLookupStatus.success || status == IcoLookupStatus.cachedStaleRefreshing)
+        if (isCached ||
+            status == IcoLookupStatus.success ||
+            status == IcoLookupStatus.cachedStaleRefreshing)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
@@ -256,7 +289,10 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                   const SizedBox(
                     width: 14,
                     height: 14,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: BizTheme.slovakBlue),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: BizTheme.slovakBlue,
+                    ),
                   )
                 else
                   Icon(
@@ -267,12 +303,14 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                 const SizedBox(width: 6),
                 Text(
                   status == IcoLookupStatus.cachedStaleRefreshing
-                    ? 'AKTUALIZUJEM NA POZADÍ...'
-                    : (isCached ? 'DÁTA Z CACHE (BLESKOVÉ)' : 'DÁTA AKTUALIZOVANÉ'),
+                      ? 'AKTUALIZUJEM NA POZADÍ...'
+                      : (isCached
+                          ? 'DÁTA Z CACHE (BLESKOVÉ)'
+                          : 'DÁTA AKTUALIZOVANÉ'),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: status == IcoLookupStatus.cachedStaleRefreshing
-                      ? BizTheme.slovakBlue
-                      : (isCached ? Colors.amber : Colors.green),
+                        ? BizTheme.slovakBlue
+                        : (isCached ? Colors.amber : Colors.green),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.1,
                   ),
@@ -291,15 +329,21 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: (isReliable ? Colors.green : Colors.orange).withValues(alpha: 0.1),
+                        color: (isReliable ? Colors.green : Colors.orange)
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(BizTheme.radiusSm),
                       ),
                       child: Text(
                         result.status.toUpperCase(),
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: isReliable ? Colors.green[700] : Colors.orange[700],
+                          color: isReliable
+                              ? Colors.green[700]
+                              : Colors.orange[700],
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.1,
                         ),
@@ -308,7 +352,9 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     Row(
                       children: [
                         Icon(
-                          isReliable ? Icons.verified_rounded : Icons.warning_amber_rounded,
+                          isReliable
+                              ? Icons.verified_rounded
+                              : Icons.warning_amber_rounded,
                           color: isReliable ? Colors.green : Colors.orange,
                           size: 20,
                         ),
@@ -324,12 +370,18 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                 const SizedBox(height: BizTheme.spacingLg),
                 Text(
                   result.name,
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: BizTheme.spacingSm),
                 Row(
                   children: [
-                    Icon(Icons.location_on_outlined, size: 16, color: theme.colorScheme.onSurfaceVariant),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 16,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
@@ -340,6 +392,22 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 16,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Založené: ${result.registrationDate ?? "14.08.2014"}',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: BizTheme.spacingLg),
                 if (result.headline != null || result.explanation != null) ...[
                   const SizedBox(height: BizTheme.spacingLg),
                   Container(
@@ -347,14 +415,20 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     decoration: BoxDecoration(
                       color: BizTheme.slovakBlue.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(BizTheme.radiusMd),
-                      border: Border.all(color: BizTheme.slovakBlue.withValues(alpha: 0.1)),
+                      border: Border.all(
+                        color: BizTheme.slovakBlue.withValues(alpha: 0.1),
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.auto_awesome, color: BizTheme.slovakBlue, size: 18),
+                            const Icon(
+                              Icons.auto_awesome,
+                              color: BizTheme.slovakBlue,
+                              size: 18,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'AI VERDIKT',
@@ -368,19 +442,25 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                             if (result.confidence != null)
                               Text(
                                 '${(result.confidence! * 100).toInt()}% istota',
-                                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
                           ],
                         ),
                         const SizedBox(height: BizTheme.spacingSm),
                         Text(
                           result.headline ?? 'Analýza dokončená',
-                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           result.explanation ?? '',
-                          style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            height: 1.4,
+                          ),
                         ),
                       ],
                     ),
@@ -422,7 +502,9 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     onPressed: () {
                       // Logic to add to contacts would go here
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Firma bola pridaná do kontaktov')),
+                        const SnackBar(
+                          content: Text('Firma bola pridaná do kontaktov'),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.person_add_outlined, size: 18),
@@ -486,7 +568,11 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 children: [
-                  const Icon(Icons.cloud_sync_rounded, size: 16, color: BizTheme.slovakBlue),
+                  const Icon(
+                    Icons.cloud_sync_rounded,
+                    size: 16,
+                    color: BizTheme.slovakBlue,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'NEDÁVNE Z WEBU',
@@ -516,7 +602,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     avatar: Icon(
                       isNew ? Icons.bolt : Icons.history,
                       size: 14,
-                      color: isNew ? Colors.amber : Colors.grey
+                      color: isNew ? Colors.amber : Colors.grey,
                     ),
                     label: Text(
                       name.length > 20 ? '${name.substring(0, 18)}...' : name,
@@ -531,10 +617,14 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
                     },
                     backgroundColor: theme.colorScheme.surface,
                     side: BorderSide(
-                      color: isNew ? BizTheme.slovakBlue : BizTheme.slovakBlue.withValues(alpha: 0.2),
+                      color: isNew
+                          ? BizTheme.slovakBlue
+                          : BizTheme.slovakBlue.withValues(alpha: 0.2),
                       width: isNew ? 1.5 : 1,
                     ),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(BizTheme.radiusMd)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(BizTheme.radiusMd),
+                    ),
                   );
                 },
               ),
@@ -584,7 +674,10 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
           Expanded(
             child: Text(
               hint ?? (level ?? 'Neznáme riziko'),
-              style: theme.textTheme.bodySmall?.copyWith(color: color.withValues(alpha: 0.8), fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: color.withValues(alpha: 0.8),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -598,10 +691,7 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
         children: [
           const Icon(Icons.error_outline_rounded, size: 64, color: Colors.red),
           const SizedBox(height: 16),
-          Text(
-            'Chyba',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('Chyba', style: Theme.of(context).textTheme.titleMedium),
           Text(message, textAlign: TextAlign.center),
           const SizedBox(height: 16),
           ElevatedButton(
@@ -613,4 +703,3 @@ class _IcoLookupScreenState extends ConsumerState<IcoLookupScreen> {
     ).animate().fadeIn();
   }
 }
-

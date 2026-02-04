@@ -24,20 +24,26 @@ class InvoiceSummaryBox extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    '${context.t(AppStr.summaryBase)}: ${Money.eur(totals.baseTotal)} €'),
+                  '${context.t(AppStr.summaryBase)}: ${Money.eur(totals.baseTotal)} €',
+                ),
                 const SizedBox(height: 4),
                 Text(
-                    '${context.t(AppStr.summaryVat)}: ${Money.eur(totals.vatTotal)} €'),
+                  '${context.t(AppStr.summaryVat)}: ${Money.eur(totals.vatTotal)} €',
+                ),
               ],
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(context.t(AppStr.summaryTotal),
-                  style: Theme.of(context).textTheme.labelMedium),
-              Text('${Money.eur(totals.grandTotal)} €',
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                context.t(AppStr.summaryTotal),
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              Text(
+                '${Money.eur(totals.grandTotal)} €',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ],
           ),
         ],

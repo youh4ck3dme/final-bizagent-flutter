@@ -6,34 +6,50 @@ Tento dokument obsahuje **presné odpovede a texty**, ktoré budeš potrebovať 
 
 ## 1. Store Listing (Záznam v obchode)
 
-Toto vidia používatelia v obchode.
+Toto vidia používatelia v obchode. Texty sú optimalizované pre ASO (App Store Optimization) a SK kľúčové slová.
 
-*   **App Name:** `BizAgent - Faktúry a Výdavky`
-*   **Short Description:** `AI asistent pre slovenských podnikateľov. Faktúry, skenovanie bločkov a daňové prehľady.`
-*   **Full Description:**
+*   **App Name (max 30 znakov):** `BizAgent - AI Účtovný Asistent`  
+    *Alternatíva:* `BizAgent: Faktúry & Bločky AI`
+*   **Short Description (max 80 znakov):** `Skenuj bločky, spravuj výdavky a faktúry s AI. Pre SZČO a firmy na Slovensku.`
+*   **Full Description (max 4000 znakov):**
     ```text
-    BizAgent je inteligentný nástroj pre slovenských SZČO a malé firmy, ktorý šetrí čas pri fakturácii a evidencii nákladov.
+    Skenuj bločky, spravuj výdavky a faktúry s AI. BizAgent je účtovný asistent pre SZČO a firmy na Slovensku.
 
-    🚀 HLAVNÉ FUNKCIE:
-    • Vystavovanie faktúr do 10 sekúnd (PDF generovanie)
-    • Magic Scan: Odfotografujte bloček a AI automaticky vyčíta sumu, dátum a obchodníka
-    • Daňový teplomer: Sledujte svoj obrat voči limitu pre registráciu DPH (49 790 €)
-    • QR Platby: Automatické generovanie PAY by square kódov na faktúrach
-    • Prehľadný Dashboard: Príjmy, výdavky a zisk na jednom mieste
-    • Upozornenia na splatnosť: Nikdy nezabudnite na nezaplatenú faktúru
+    ✨ PREČO BIZAGENT?
+    • Skenovanie bločkov pomocou AI – vyčítanie sumy, dátumu a obchodníka za sekundy
+    • Evidencia výdavkov a faktúr na jednom mieste
+    • Daňové priznanie a DPH prehľad – limit 49 790 €
+    • Živnostníci a podnikanie bez zbytočnej papierovej práce
 
-    🔒 BEZPEČNOSŤ:
-    • Vaše dáta sú bezpečne šifrované v cloude
-    • Prihlásenie cez Google
-    • Čiastočná podpora offline režimu (prehliadanie dát bez pripojenia)
+    📄 FAKTÚRY A ÚČTOVNÍCTVO
+    • Vystavovanie faktúr do 10 sekúnd (PDF)
+    • QR platba (PAY by square) na faktúrach
+    • Export pre účtovníka – Pohoda, evidencia, daňové priznanie
 
-    Aplikácia je navrhnutá špeciálne pre slovenskú legislatívu a potreby lokálnych podnikateľov.
+    🤖 AI SKENOVANIE A OCR
+    • Skener účteniek – foť bloček, AI vyčíta údaje
+    • Automatická evidencia výdavkov
+    • Podpora slovenských bločkov a faktúr
+
+    📊 DASHBOARD A PREHĽAD
+    • Príjmy, výdavky a zisk na jednom mieste
+    • Upozornenia na splatnosť faktúr
+    • Tmavý režim a prehľadné rozhranie
+
+    🔒 BEZPEČNOSŤ A OCHRANA DÁT
+    • Dáta šifrované v cloude
+    • Prihlásenie cez Google, biometria (otlačok / Face ID)
+    • Žiadne zdieľanie s tretími stranami – GDPR
+
+    Kľúčové slová: účtovníctvo, faktúry, bločky, SZČO, výdavky, daňové priznanie, skener účteniek, OCR, živnostník, evidencia, DPH, podnikanie.
+
+    Čo hovoria používatelia: Jednoduché, rýchle, špeciálne pre Slovensko.
     ```
 
 *   **Graphics:**
-    *   **App Icon:** 512x512 PNG (máš v `assets/icon/app_icon_1024.png` - zmenši na 512)
-    *   **Feature Graphic:** 1024x500 PNG (Treba vyrobiť - jednoduché logo na modrom pozadí)
-    *   **Screenshots:** Nahraj screenshoty z Dashboardu, Faktúry a Skenovania.
+    *   **App Icon:** 512x512 PNG (máš v `assets/icon/app_icon_1024.png` – zmenši na 512)
+    *   **Feature Graphic:** 1024x500 PNG (logo na modrom pozadí, brand farby)
+    *   **Screenshots (odporúčaných 5):** 1) Hero + hlavný benefit | 2) AI skenovanie bločkov | 3) Dashboard a prehľad | 4) Faktúry a export | 5) Bezpečnosť a biometria. Použi slovenské texty v UI – lokalizované screenshoty zvyšujú konverziu.
 
 ---
 

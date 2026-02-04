@@ -16,13 +16,15 @@ class TaxService {
         nextVatDate = DateTime(now.year, now.month + 1, 25);
       }
 
-      deadlines.add(TaxDeadlineModel(
-        title: 'DPH & KV DPH',
-        date: nextVatDate,
-        description:
-            'Podanie a úhrada DPH za ${DateFormat('MMMM', 'sk').format(nextVatDate.subtract(const Duration(days: 20)))}',
-        isMajor: true,
-      ));
+      deadlines.add(
+        TaxDeadlineModel(
+          title: 'DPH & KV DPH',
+          date: nextVatDate,
+          description:
+              'Podanie a úhrada DPH za ${DateFormat('MMMM', 'sk').format(nextVatDate.subtract(const Duration(days: 20)))}',
+          isMajor: true,
+        ),
+      );
     }
 
     // 2. Income Tax (Daň z príjmov) - 31.3.
@@ -30,12 +32,14 @@ class TaxService {
     if (now.isAfter(incomeTaxDate)) {
       incomeTaxDate = DateTime(now.year + 1, 3, 31);
     }
-    deadlines.add(TaxDeadlineModel(
-      title: 'Daň z príjmov',
-      date: incomeTaxDate,
-      description: 'Podanie DP FO/PO a úhrada dane',
-      isMajor: true,
-    ));
+    deadlines.add(
+      TaxDeadlineModel(
+        title: 'Daň z príjmov',
+        date: incomeTaxDate,
+        description: 'Podanie DP FO/PO a úhrada dane',
+        isMajor: true,
+      ),
+    );
 
     // 3. Social & Health Insurance (Odvody) - 8th / 18th (Simplified as monthly reminder for 8th)
     // Only if not strictly just invoicing app, but good reminder
@@ -43,11 +47,13 @@ class TaxService {
     if (now.day > 8) {
       nextSocialDate = DateTime(now.year, now.month + 1, 8);
     }
-    deadlines.add(TaxDeadlineModel(
-      title: 'Odvody do SP',
-      date: nextSocialDate,
-      description: 'Splatnosť odvodov pre SZČO',
-    ));
+    deadlines.add(
+      TaxDeadlineModel(
+        title: 'Odvody do SP',
+        date: nextSocialDate,
+        description: 'Splatnosť odvodov pre SZČO',
+      ),
+    );
 
     // Sort
     deadlines.sort((a, b) => a.date.compareTo(b.date));

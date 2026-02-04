@@ -12,48 +12,51 @@ class TutorialService {
     required GlobalKey invoiceKey,
     required GlobalKey botKey,
     required VoidCallback onFinish,
+    bool showWelcome = true,
   }) {
     final List<TargetFocus> targets = [];
 
-    // 1. Dashboard Checklist (Smart Empty State)
-    targets.add(
-      TargetFocus(
-        identify: "dashboard_empty_state",
-        keyTarget: dashboardKey,
-        alignSkip: Alignment.topRight,
-        contents: [
-          TargetContent(
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.t(AppStr.tutorialWelcomeTitle),
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 22,
+    // 1. Dashboard Checklist (Smart Empty State) - Only if visible
+    if (showWelcome) {
+      targets.add(
+        TargetFocus(
+          identify: "dashboard_empty_state",
+          keyTarget: dashboardKey,
+          alignSkip: Alignment.topRight,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom,
+              builder: (context, controller) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.t(AppStr.tutorialWelcomeTitle),
+                      style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 22,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    context.t(AppStr.tutorialWelcomeBody),
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontSize: 16,
+                    const SizedBox(height: 10),
+                    Text(
+                      context.t(AppStr.tutorialWelcomeBody),
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-        shape: ShapeLightFocus.RRect,
-        radius: 12,
-      ),
-    );
+                  ],
+                );
+              },
+            ),
+          ],
+          shape: ShapeLightFocus.RRect,
+          radius: 12,
+        ),
+      );
+    }
 
     // 2. Scan Receipt
     targets.add(
@@ -80,9 +83,7 @@ class TutorialService {
                   const SizedBox(height: 10),
                   Text(
                     context.t(AppStr.magicScanSubtitle),
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                    ),
+                    style: GoogleFonts.inter(color: Colors.white),
                   ),
                 ],
               );
@@ -119,9 +120,7 @@ class TutorialService {
                   const SizedBox(height: 10),
                   Text(
                     "Vytvorte profesionálnu faktúru s QR kódom pre klienta za pár sekúnd.",
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                    ),
+                    style: GoogleFonts.inter(color: Colors.white),
                   ),
                 ],
               );
@@ -158,9 +157,7 @@ class TutorialService {
                   const SizedBox(height: 10),
                   Text(
                     context.t(AppStr.tutorialBotBody),
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                    ),
+                    style: GoogleFonts.inter(color: Colors.white),
                   ),
                 ],
               );
@@ -353,7 +350,7 @@ class TutorialService {
       ),
     );
 
-     // 3. Analytics
+    // 3. Analytics
     targets.add(
       TargetFocus(
         identify: "expense_analytics",

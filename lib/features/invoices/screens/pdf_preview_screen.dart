@@ -16,9 +16,7 @@ class PdfPreviewScreen extends ConsumerWidget {
     final pdfService = ref.read(pdfServiceProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Náhľad faktúry ${invoice.number}'),
-      ),
+      appBar: AppBar(title: Text('Náhľad faktúry ${invoice.number}')),
       body: settingsAsync.when(
         data: (settings) => PdfPreview(
           build: (format) => pdfService.generateInvoice(invoice, settings),

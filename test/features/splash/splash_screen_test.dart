@@ -5,9 +5,12 @@ import 'package:bizagent/core/services/initialization_service.dart';
 import '../../helpers/test_app.dart';
 
 class TestInitializationService extends InitializationService {
-  TestInitializationService(super.ref) {
-    state = const InitState(progress: 0.42, message: 'Inicializácia...', isCompleted: false);
-  }
+  final InitState _initialState;
+
+  TestInitializationService(this._initialState);
+
+  @override
+  InitState build() => _initialState;
 
   @override
   Future<void> initializeApp() async {}
@@ -23,8 +26,13 @@ void main() {
       await tester.pumpWidget(
         testApp(
           overrides: [
-            initializationServiceProvider
-                .overrideWith((ref) => TestInitializationService(ref)),
+            initializationServiceProvider.overrideWith(
+              () => TestInitializationService(const InitState(
+                progress: 0.42,
+                message: 'Inicializácia...',
+                isCompleted: false,
+              )),
+            ),
           ],
           child: const SplashScreen(),
         ),

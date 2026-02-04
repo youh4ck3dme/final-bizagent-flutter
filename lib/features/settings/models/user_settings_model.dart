@@ -17,6 +17,7 @@ class UserSettingsModel {
   final bool pinEnabled;
   final String language;
   final String currency;
+  final String? companyLogoUrl;
 
   UserSettingsModel({
     required this.companyName,
@@ -37,6 +38,7 @@ class UserSettingsModel {
     this.pinEnabled = false,
     this.language = 'sk',
     this.currency = 'EUR',
+    this.companyLogoUrl,
   });
 
   factory UserSettingsModel.fromMap(Map<String, dynamic> map) {
@@ -59,6 +61,7 @@ class UserSettingsModel {
       pinEnabled: map['pinEnabled'] ?? false,
       language: map['language'] ?? 'sk',
       currency: map['currency'] ?? 'EUR',
+      companyLogoUrl: map['companyLogoUrl'],
     );
   }
 
@@ -82,6 +85,7 @@ class UserSettingsModel {
       'pinEnabled': pinEnabled,
       'language': language,
       'currency': currency,
+      'companyLogoUrl': companyLogoUrl,
     };
   }
 
@@ -104,6 +108,7 @@ class UserSettingsModel {
     bool? pinEnabled,
     String? language,
     String? currency,
+    String? companyLogoUrl,
   }) {
     return UserSettingsModel(
       companyName: companyName ?? this.companyName,
@@ -124,6 +129,7 @@ class UserSettingsModel {
       pinEnabled: pinEnabled ?? this.pinEnabled,
       language: language ?? this.language,
       currency: currency ?? this.currency,
+      companyLogoUrl: companyLogoUrl ?? this.companyLogoUrl,
     );
   }
 
@@ -144,5 +150,6 @@ class UserSettingsModel {
         pinEnabled: false,
         language: 'sk',
         currency: 'EUR',
+        companyLogoUrl: null,
       );
 }

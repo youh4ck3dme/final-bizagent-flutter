@@ -26,11 +26,14 @@ Future<ProfitMetrics> profitMetrics(Ref ref) async {
   final now = DateTime.now();
   final thisMonthStart = DateTime(now.year, now.month, 1);
 
-  final totalExpenses = expenses.fold(0.0, (sum, exp) => sum + exp.amount);
+  final totalExpenses = expenses.fold(0.0, (sum, exp) => sum + exp.amountInEur);
   final thisMonthExpenses = expenses
-      .where((exp) =>
-          exp.date.isAfter(thisMonthStart.subtract(const Duration(seconds: 1))))
-      .fold(0.0, (sum, exp) => sum + exp.amount);
+      .where(
+        (exp) => exp.date.isAfter(
+          thisMonthStart.subtract(const Duration(seconds: 1)),
+        ),
+      )
+      .fold(0.0, (sum, exp) => sum + exp.amountInEur);
 
   final profit = revenueAsync.totalRevenue - totalExpenses;
   final profitMargin =

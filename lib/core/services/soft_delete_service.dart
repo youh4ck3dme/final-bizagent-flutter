@@ -7,29 +7,72 @@ class SoftDeleteService {
 
   SoftDeleteService(this._firestore);
 
-  /// Soft delete an item by marking it as deleted
-  Future<void> softDeleteItem(
-    String collection,
+  /// Move an item to the trash collection (Soft Delete)
+  Future<void> moveToTrash(
+    String trashCollection,
     String userId,
-    String itemId, {
+    String itemId,
+    Map<String, dynamic> data, {
     String? reason,
+    required String originalCollectionPath,
   }) async {
-    final docRef = _firestore.collection(collection).doc(userId).collection('items').doc(itemId);
+    final trashRef = _firestore
+        .collection(trashCollection)
+        .doc(userId)
+        .collection('items')
+        .doc(itemId);
 
-    await docRef.update({
+    // Add metadata for restoration
+    final trashData = {
+      ...data,
       'deletedAt': FieldValue.serverTimestamp(),
       'deleteReason': reason,
-    });
+      'originalCollectionPath':
+          originalCollectionPath, // Save where it came from
+      'originalId': itemId,
+    };
+
+    await trashRef.set(trashData);
   }
 
-  /// Restore a soft deleted item
-  Future<void> restoreItem(String collection, String userId, String itemId) async {
-    final docRef = _firestore.collection(collection).doc(userId).collection('items').doc(itemId);
+  /// Restore an item from trash back to its original location
+  Future<void> restoreItem(
+    String trashCollection,
+    String userId,
+    String itemId,
+  ) async {
+    final trashRef = _firestore
+        .collection(trashCollection)
+        .doc(userId)
+        .collection('items')
+        .doc(itemId);
+    final trashDoc = await trashRef.get();
 
-    await docRef.update({
-      'deletedAt': FieldValue.delete(),
-      'deleteReason': FieldValue.delete(),
-    });
+    if (!trashDoc.exists) {
+      throw Exception('Item not found in trash');
+    }
+
+    final data = trashDoc.data()!;
+    final originalPath = data['originalCollectionPath'] as String?;
+
+    if (originalPath == null) {
+      throw Exception('Cannot restore: Original path missing');
+    }
+
+    // Clean up trash metadata before restoring
+    final restoreData = Map<String, dynamic>.from(data);
+    restoreData.remove('deletedAt');
+    restoreData.remove('deleteReason');
+    restoreData.remove('originalCollectionPath');
+    restoreData.remove('originalId');
+
+    // Write back to original location
+    // Note: originalPath should be full collection path e.g. "users/123/invoices"
+    // We assume the ID is consistent
+    await _firestore.collection(originalPath).doc(itemId).set(restoreData);
+
+    // Remove from trash
+    await trashRef.delete();
   }
 
   /// Permanently delete items that are older than 7 days
@@ -54,37 +97,47 @@ class SoftDeleteService {
   }
 
   /// Get all soft deleted items that can still be restored
-  Stream<List<Map<String, dynamic>>> getTrashItems(String collection, String userId) {
-    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
-
+  Stream<List<Map<String, dynamic>>> getTrashItems(
+    String collection,
+    String userId,
+  ) {
+    // We list EVERYTHING in the trash, regardless of age (cleanup job handles expiration)
+    // But we can filter by deletedAt if needed.
     return _firestore
         .collection(collection)
         .doc(userId)
         .collection('items')
-        .where('deletedAt', isGreaterThan: sevenDaysAgo)
+        .orderBy('deletedAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => {
-              'id': doc.id,
-              'data': doc.data(),
-              'collection': collection,
-            }).toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => {
+                  'id': doc.id,
+                  'data': doc.data(),
+                  'collection': collection,
+                },
+              )
+              .toList(),
+        );
   }
 
   /// Get count of items in trash
   Stream<int> getTrashCount(String collection, String userId) {
-    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
-
     return _firestore
         .collection(collection)
         .doc(userId)
         .collection('items')
-        .where('deletedAt', isGreaterThan: sevenDaysAgo)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
   }
 
   /// Permanently delete a specific item (admin function)
-  Future<void> permanentDeleteItem(String collection, String userId, String itemId) async {
+  Future<void> permanentDeleteItem(
+    String collection,
+    String userId,
+    String itemId,
+  ) async {
     await _firestore
         .collection(collection)
         .doc(userId)
@@ -95,12 +148,8 @@ class SoftDeleteService {
 
   /// Empty trash - permanently delete all soft deleted items
   Future<void> emptyTrash(String collection, String userId) async {
-    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
-    final query = _firestore
-        .collection(collection)
-        .doc(userId)
-        .collection('items')
-        .where('deletedAt', isGreaterThan: sevenDaysAgo);
+    final query =
+        _firestore.collection(collection).doc(userId).collection('items');
 
     final snapshot = await query.get();
     final batch = _firestore.batch();

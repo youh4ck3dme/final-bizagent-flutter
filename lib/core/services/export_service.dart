@@ -22,7 +22,10 @@ class InvoiceExportItem {
     required this.clientName,
     required this.totalEur,
     required this.vatEur,
-    this.pdfLocalPath, 
+    required this.currency,
+    required this.exchangeRate,
+    required this.amountOriginal,
+    this.pdfLocalPath,
     this.pdfData,
   });
 
@@ -32,6 +35,9 @@ class InvoiceExportItem {
   final String clientName;
   final double totalEur;
   final double vatEur;
+  final String currency;
+  final double exchangeRate;
+  final double amountOriginal;
   final String? pdfLocalPath;
   final Uint8List? pdfData;
 }
@@ -42,6 +48,9 @@ class ExpenseExportItem {
     required this.date,
     required this.vendor,
     required this.totalEur,
+    required this.amountOriginal,
+    required this.currency,
+    required this.exchangeRate,
     required this.category,
     this.attachmentLocalPaths = const [],
     this.attachmentDatas = const [],
@@ -51,6 +60,9 @@ class ExpenseExportItem {
   final DateTime date;
   final String vendor;
   final double totalEur;
+  final double amountOriginal;
+  final String currency;
+  final double exchangeRate;
   final String category;
   final List<String> attachmentLocalPaths;
   final List<Uint8List> attachmentDatas;
@@ -79,7 +91,7 @@ class ExportService {
     var prog = ExportProgress.empty();
 
     final now = DateTime.now();
-    
+
     // Prepare Output Path (Only on Native)
     String? zipPath;
     if (!kIsWeb) {
@@ -117,18 +129,30 @@ class ExportService {
 
     // Root meta
     archive.addFile(
-        ArchiveFile('README.txt', 0, utf8.encode(_readme(period, now))));
+      ArchiveFile('README.txt', 0, utf8.encode(_readme(period, now))),
+    );
     archive.addFile(ArchiveFile('missing_report.txt', 0, utf8.encode('')));
 
     // CSV
-    archive.addFile(ArchiveFile(
-        'summary/invoices.csv', invoiceCsv.length, utf8.encode(invoiceCsv)));
-    archive.addFile(ArchiveFile(
-        'summary/expenses.csv', expenseCsv.length, utf8.encode(expenseCsv)));
+    archive.addFile(
+      ArchiveFile(
+        'summary/invoices.csv',
+        invoiceCsv.length,
+        utf8.encode(invoiceCsv),
+      ),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'summary/expenses.csv',
+        expenseCsv.length,
+        utf8.encode(expenseCsv),
+      ),
+    );
 
     // JSON
-    archive.addFile(ArchiveFile(
-        'data/raw_dump.json', jsonStr.length, utf8.encode(jsonStr)));
+    archive.addFile(
+      ArchiveFile('data/raw_dump.json', jsonStr.length, utf8.encode(jsonStr)),
+    );
 
     // PDFs
     onStep?.call('Pridávam PDF faktúry…');
@@ -136,7 +160,7 @@ class ExportService {
     for (final inv in invoices) {
       final fileName = FileNames.safe('${inv.number}_${inv.clientName}.pdf');
       final zipEntryPath = 'invoices/$fileName';
-      
+
       List<int>? bytes;
       if (inv.pdfData != null) {
         bytes = inv.pdfData;
@@ -151,12 +175,14 @@ class ExportService {
         missing.add('PDF missing for invoice ${inv.number} (${inv.id})');
         continue;
       }
-      
+
       archive.addFile(ArchiveFile(zipEntryPath, bytes.length, bytes));
       pdfOk++;
     }
     prog = prog.copyWith(
-        pdfDone: true, message: 'PDF hotové ($pdfOk/${invoices.length})');
+      pdfDone: true,
+      message: 'PDF hotové ($pdfOk/${invoices.length})',
+    );
     onProgress?.call(prog);
 
     // Expense attachments
@@ -166,7 +192,7 @@ class ExportService {
     for (final ex in expenses) {
       final baseFolder =
           'expenses/${FileNames.safe(_yyyymmdd(ex.date))}_${FileNames.safe(ex.vendor)}/${ex.id}';
-      
+
       // Process explicit data first (Web)
       for (int i = 0; i < ex.attachmentDatas.length; i++) {
         attTotal++;
@@ -192,34 +218,50 @@ class ExportService {
       }
     }
     prog = prog.copyWith(
-        photosDone: true, message: 'Prílohy hotové ($attOk/$attTotal)');
+      photosDone: true,
+      message: 'Prílohy hotové ($attOk/$attTotal)',
+    );
     onProgress?.call(prog);
 
     // Missing report
     final missingText = missing.isEmpty
         ? 'OK - nič nechýba.\n'
         : '${missing.map((e) => '- $e').join('\n')}\n';
-    archive.addFile(ArchiveFile(
-        'missing_report.txt', missingText.length, utf8.encode(missingText)));
+    archive.addFile(
+      ArchiveFile(
+        'missing_report.txt',
+        missingText.length,
+        utf8.encode(missingText),
+      ),
+    );
 
     // Save ZIP
     final outBytes = ZipEncoder().encode(archive);
-    
+
     if (!kIsWeb && zipPath != null) {
       final outFile = File(zipPath);
       await outFile.writeAsBytes(outBytes, flush: true);
     }
 
     return ExportResult(
-      zipPath: zipPath ?? '', 
-      missingItems: missing, 
+      zipPath: zipPath ?? '',
+      missingItems: missing,
       zipBytes: kIsWeb ? Uint8List.fromList(outBytes) : null,
     );
   }
 
   String _buildInvoicesCsv(List<InvoiceExportItem> invoices) {
     final rows = <List<String>>[];
-    rows.add(['number', 'issued_at', 'client', 'total_eur', 'vat_eur']);
+    rows.add([
+      'number',
+      'issued_at',
+      'client',
+      'total_eur',
+      'vat_eur',
+      'currency',
+      'exchange_rate',
+      'amount_original',
+    ]);
     for (final i in invoices) {
       rows.add([
         i.number,
@@ -227,6 +269,9 @@ class ExportService {
         i.clientName,
         i.totalEur.toStringAsFixed(2),
         i.vatEur.toStringAsFixed(2),
+        i.currency,
+        i.exchangeRate.toString(),
+        i.amountOriginal.toStringAsFixed(2),
       ]);
     }
     return Csv.encode(rows);
@@ -234,13 +279,25 @@ class ExportService {
 
   String _buildExpensesCsv(List<ExpenseExportItem> expenses) {
     final rows = <List<String>>[];
-    rows.add(['date', 'vendor', 'category', 'total_eur', 'attachments_count']);
+    rows.add([
+      'date',
+      'vendor',
+      'category',
+      'total_eur',
+      'currency',
+      'exchange_rate',
+      'amount_original',
+      'attachments_count',
+    ]);
     for (final e in expenses) {
       rows.add([
         _yyyymmdd(e.date),
         e.vendor,
         e.category,
         e.totalEur.toStringAsFixed(2),
+        e.currency,
+        e.exchangeRate.toString(),
+        e.amountOriginal.toStringAsFixed(2),
         (e.attachmentLocalPaths.length + e.attachmentDatas.length).toString(),
       ]);
     }
