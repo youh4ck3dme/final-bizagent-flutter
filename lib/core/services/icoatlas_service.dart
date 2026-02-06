@@ -13,8 +13,8 @@ final icoAtlasServiceProvider = Provider<IcoAtlasService>((ref) {
   final dio = Dio(
     BaseOptions(
       baseUrl: _icoatlasBaseUrl,
-      connectTimeout: null,
-      receiveTimeout: null,
+      connectTimeout: const Duration(seconds: 8),
+      receiveTimeout: const Duration(seconds: 8),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -75,8 +75,8 @@ class IcoAtlasService {
     _gatewayDio ??= Dio(
       BaseOptions(
         baseUrl: _gatewayBaseUrl,
-        connectTimeout: null,
-        receiveTimeout: null,
+        connectTimeout: const Duration(seconds: 8),
+        receiveTimeout: const Duration(seconds: 8),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -87,19 +87,40 @@ class IcoAtlasService {
   }
 
   /// Company lookup: single source of truth is icoatlas.sk.
+  /// Fail-soft: timeout 8s, content-type validation, status code handling.
   Future<IcoLookupResult?> publicLookup(String ico) async {
     try {
       final endpoint = '/api/company/${ico.trim()}';
       final response = await _dio.get(
         endpoint,
-        options: Options(headers: {'X-ICO-LOOKUP-CONTRACT': '1.0.0'}),
+        options: Options(headers: {'X-ICO-LOOKUP-CONTRACT': 'bizagent_app_v1'}),
       );
 
-      if (response.statusCode == 200 && response.data != null) {
-        return IcoLookupResult.fromMap(response.data);
+      // Validate content-type is JSON
+      final contentType =
+          (response.headers.value('content-type') ?? '').toLowerCase();
+      if (!contentType.contains('application/json')) {
+        debugPrint(
+            'IcoAtlas: unexpected content-type: $contentType for ICO $ico');
+        return null;
       }
-      return null;
+
+      // Validate status code
+      if (response.statusCode != 200) {
+        debugPrint(
+            'IcoAtlas: unexpected status ${response.statusCode} for ICO $ico');
+        return null;
+      }
+
+      if (response.data == null) return null;
+
+      return IcoLookupResult.fromMap(response.data);
     } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        debugPrint('IcoAtlas: timeout for ICO $ico');
+        return IcoLookupResult.offline();
+      }
       if (e.response?.statusCode == 404) return null;
       if (e.response?.statusCode == 429) {
         final resetIn = e.response?.data?['resetIn'];
@@ -107,8 +128,16 @@ class IcoAtlasService {
           resetIn: resetIn != null ? int.tryParse(resetIn.toString()) : null,
         );
       }
+      if (e.response?.statusCode == 500 || e.response?.statusCode == 502 ||
+          e.response?.statusCode == 503) {
+        debugPrint(
+            'IcoAtlas: server error ${e.response?.statusCode} for ICO $ico');
+        return IcoLookupResult.offline();
+      }
+      debugPrint('IcoAtlas: DioException for ICO $ico: $e');
       return null;
     } catch (e) {
+      debugPrint('IcoAtlas: unexpected error for ICO $ico: $e');
       return null;
     }
   }
