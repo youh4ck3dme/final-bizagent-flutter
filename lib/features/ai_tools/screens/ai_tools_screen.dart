@@ -127,10 +127,7 @@ class _AiToolsScreenState extends ConsumerState<AiToolsScreen> {
                 subtitle: 'Rýchla kontrola IČO cez zabezpečený register.',
                 icon: Icons.business,
                 color: BizTheme.slovakBlue,
-                onTap: () => context.pushNamed(
-                  'icoLookup',
-                  pathParameters: {'initialIco': 'new'},
-                ),
+                onTap: () => context.push('/ai-tools/ico-lookup'),
                 isProminent: true,
                 delay: 400.ms,
               ),

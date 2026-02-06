@@ -1,0 +1,355 @@
+Analyzing BizAgent-main...                                      
+
+  error • Classes can only extend other classes • integration_test/app_test.dart:70:41 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • integration_test/app_test.dart:73:15 • extra_positional_arguments
+  error • Undefined name 'mounted' • integration_test/app_test.dart:79:9 • undefined_identifier
+  error • Undefined name 'state' • integration_test/app_test.dart:80:7 • undefined_identifier
+  error • Undefined name 'state' • integration_test/app_test.dart:80:15 • undefined_identifier
+  error • Classes can only extend other classes • integration_test/app_test.dart:89:38 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • integration_test/app_test.dart:91:36 • extra_positional_arguments
+  error • Undefined name 'mounted' • integration_test/app_test.dart:97:9 • undefined_identifier
+  error • Undefined name 'state' • integration_test/app_test.dart:98:7 • undefined_identifier
+  error • Undefined name 'state' • integration_test/app_test.dart:107:5 • undefined_identifier
+warning • Unused import: 'package:bizagent/core/ui/biz_theme.dart' • integration_test/ui_ux_theme_test.dart:1:8 • unused_import
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • integration_test/ui_ux_theme_test.dart:24:26 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • integration_test/ui_ux_theme_test.dart:32:28 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • integration_test/ui_ux_theme_test.dart:50:15 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • integration_test/ui_ux_theme_test.dart:63:36 • deprecated_member_use
+  error • The function 'StateNotifierProvider' isn't defined • lib/core/providers/theme_provider.dart:5:23 • undefined_function
+  error • Classes can only extend other classes • lib/core/providers/theme_provider.dart:9:29 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/core/providers/theme_provider.dart:10:27 • extra_positional_arguments
+  error • Undefined name 'mounted' • lib/core/providers/theme_provider.dart:17:10 • undefined_identifier
+  error • Undefined name 'state' • lib/core/providers/theme_provider.dart:18:27 • undefined_identifier
+  error • Undefined name 'state' • lib/core/providers/theme_provider.dart:19:26 • undefined_identifier
+  error • Undefined name 'state' • lib/core/providers/theme_provider.dart:23:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/core/router/app_router.dart:86:36 • undefined_getter
+   info • Statements in an if should be enclosed in a block • lib/core/router/app_router.dart:99:42 • curly_braces_in_flow_control_structures
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/core/router/app_router.dart:194:57 • undefined_getter
+  error • The named parameter 'options' isn't defined • lib/core/services/biometric_service.dart:22:9 • undefined_named_parameter
+  error • The name 'AuthenticationOptions' isn't a class • lib/core/services/biometric_service.dart:22:24 • creation_with_non_type
+   info • Statements in an if should be enclosed in a block • lib/core/services/gemini_service.dart:99:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/core/services/gemini_service.dart:101:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/core/services/gemini_service.dart:103:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/core/services/gemini_service.dart:105:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/core/services/gemini_service.dart:219:7 • curly_braces_in_flow_control_structures
+  error • Classes can only extend other classes • lib/core/services/initialization_service.dart:27:37 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/core/services/initialization_service.dart:29:15 • extra_positional_arguments
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:35:5 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:39:5 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:39:13 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:50:5 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:50:13 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:56:5 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:56:13 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:60:5 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:60:13 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:67:5 • undefined_identifier
+  error • Undefined name 'state' • lib/core/services/initialization_service.dart:67:13 • undefined_identifier
+  error • The function 'StateNotifierProvider' isn't defined • lib/core/services/initialization_service.dart:76:5 • undefined_function
+  error • The named parameter 'options' isn't defined • lib/core/services/security_service.dart:31:9 • undefined_named_parameter
+  error • The name 'AuthenticationOptions' isn't a class • lib/core/services/security_service.dart:31:24 • creation_with_non_type
+  error • The function 'StateProvider' isn't defined • lib/core/services/security_service.dart:68:33 • undefined_function
+warning • Unused import: '../../expenses/models/expense_category.dart' • lib/features/ai_tools/services/biz_bot_service.dart:6:8 • unused_import
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/ai_tools/services/biz_bot_service.dart:75:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<InvoiceModel>>' • lib/features/ai_tools/services/biz_bot_service.dart:76:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<ExpenseModel>>' • lib/features/ai_tools/services/biz_bot_service.dart:77:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/ai_tools/services/biz_bot_service.dart:116:49 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/ai_tools/services/biz_bot_service.dart:141:49 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/auth/providers/auth_provider.dart:5:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/auth/providers/auth_provider.dart:9:30 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/auth/providers/auth_provider.dart:12:48 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:15:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:16:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:22:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:23:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:29:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:30:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:34:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:35:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/auth/providers/auth_provider.dart:39:5 • undefined_identifier
+   info • Statements in an if should be enclosed in a block • lib/features/auth/screens/pin_auth_screen.dart:87:11 • curly_braces_in_flow_control_structures
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/billing/billing_service.dart:39:25 • undefined_function
+  error • Classes can only extend other classes • lib/features/billing/billing_service.dart:46:30 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/billing/billing_service.dart:52:15 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:59:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:59:15 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:73:9 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:73:17 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:89:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:89:13 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:90:21 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:98:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:98:13 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:115:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:115:15 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:120:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:120:15 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:144:9 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:144:17 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:147:11 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:147:19 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:182:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:182:13 • undefined_identifier
+  error • Undefined name 'state' • lib/features/billing/billing_service.dart:184:21 • undefined_identifier
+warning • The method doesn't override an inherited method • lib/features/billing/billing_service.dart:193:8 • override_on_non_overriding_member
+  error • The method 'dispose' isn't defined in a superclass of 'BillingService' • lib/features/billing/billing_service.dart:195:11 • undefined_super_member
+   info • Statements in an if should be enclosed in a block • lib/features/billing/subscription_guard.dart:41:11 • curly_braces_in_flow_control_structures
+  error • The property 'totalRevenue' can't be unconditionally accessed because the receiver can be 'null' • lib/features/dashboard/providers/profit_provider.dart:38:31 • unchecked_use_of_nullable_value
+  error • The property 'totalRevenue' can't be unconditionally accessed because the receiver can be 'null' • lib/features/dashboard/providers/profit_provider.dart:40:20 • unchecked_use_of_nullable_value
+  error • The property 'totalRevenue' can't be unconditionally accessed because the receiver can be 'null' • lib/features/dashboard/providers/profit_provider.dart:40:68 • unchecked_use_of_nullable_value
+  error • The property 'thisMonthRevenue' can't be unconditionally accessed because the receiver can be 'null' • lib/features/dashboard/providers/profit_provider.dart:41:40 • unchecked_use_of_nullable_value
+  error • The name 'AutoDisposeFutureProvider' isn't a class • lib/features/dashboard/providers/profit_provider.g.dart:13:31 • creation_with_non_type
+  error • Undefined class 'AutoDisposeFutureProviderRef' • lib/features/dashboard/providers/profit_provider.g.dart:25:28 • undefined_class
+  error • The name 'AutoDisposeFutureProvider' isn't a class • lib/features/dashboard/providers/revenue_provider.g.dart:14:5 • creation_with_non_type
+  error • Undefined class 'AutoDisposeFutureProviderRef' • lib/features/dashboard/providers/revenue_provider.g.dart:26:29 • undefined_class
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/dashboard/screens/dashboard_screen.dart:55:46 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<InvoiceModel>>' • lib/features/dashboard/screens/dashboard_screen.dart:68:51 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<ExpenseModel>>' • lib/features/dashboard/screens/dashboard_screen.dart:69:51 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/dashboard/screens/dashboard_screen.dart:90:47 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/dashboard/widgets/smart_dashboard_empty_state.dart:13:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<InvoiceModel>>' • lib/features/dashboard/widgets/smart_dashboard_empty_state.dart:14:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<ExpenseModel>>' • lib/features/dashboard/widgets/smart_dashboard_empty_state.dart:15:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/documents/providers/notepad_provider.dart:9:45 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/documents/providers/notepad_provider.dart:15:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/documents/providers/notepad_provider.dart:19:33 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/documents/providers/notepad_provider.dart:22:40 • extra_positional_arguments
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/documents/providers/notepad_provider.dart:30:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/documents/providers/notepad_provider.dart:33:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/documents/providers/notepad_provider.dart:34:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/documents/providers/notepad_provider.dart:67:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/documents/providers/notepad_provider.dart:70:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/documents/providers/notepad_provider.dart:71:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/expenses/providers/expenses_provider.dart:7:45 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/expenses/providers/expenses_provider.dart:13:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/expenses/providers/expenses_provider.dart:17:34 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/expenses/providers/expenses_provider.dart:20:41 • extra_positional_arguments
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/expenses/providers/expenses_provider.dart:23:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/expenses/providers/expenses_provider.dart:26:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/expenses/providers/expenses_provider.dart:27:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/expenses/providers/expenses_provider.dart:33:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/expenses/providers/expenses_provider.dart:36:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/expenses/providers/expenses_provider.dart:37:5 • undefined_identifier
+   info • Statements in an if should be enclosed in a block • lib/features/expenses/screens/create_expense_screen.dart:97:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/features/expenses/screens/create_expense_screen.dart:109:11 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/features/expenses/screens/create_expense_screen.dart:111:11 • curly_braces_in_flow_control_structures
+  error • The function 'StateProvider' isn't defined • lib/features/expenses/screens/expenses_screen.dart:21:31 • undefined_function
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/expenses/screens/expenses_screen.dart:46:46 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/export/providers/export_provider.dart:7:24 • undefined_function
+  error • Classes can only extend other classes • lib/features/export/providers/export_provider.dart:15:32 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/export/providers/export_provider.dart:16:30 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:19:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:19:13 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:40:11 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:40:19 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:41:23 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:45:11 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:45:19 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:49:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:49:15 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:51:19 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:55:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:55:15 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/export_provider.dart:60:5 • undefined_identifier
+  error • Classes can only extend other classes • lib/features/export/providers/report_provider.dart:10:32 • extends_non_class
+warning • The method doesn't override an inherited method • lib/features/export/providers/report_provider.dart:12:27 • override_on_non_overriding_member
+  error • Undefined name 'state' • lib/features/export/providers/report_provider.dart:17:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/export/providers/report_provider.dart:19:5 • undefined_identifier
+  error • Undefined name 'ref' • lib/features/export/providers/report_provider.dart:20:24 • undefined_identifier
+  error • Undefined name 'ref' • lib/features/export/providers/report_provider.dart:21:24 • undefined_identifier
+  error • The name 'AutoDisposeNotifierProvider' isn't a class • lib/features/export/providers/report_provider.g.dart:13:34 • creation_with_non_type
+  error • Undefined class 'AutoDisposeNotifier' • lib/features/export/providers/report_provider.g.dart:24:30 • undefined_class
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/intro/providers/onboarding_provider.dart:6:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/intro/providers/onboarding_provider.dart:10:34 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/intro/providers/onboarding_provider.dart:11:40 • extra_positional_arguments
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/intro/providers/onboarding_provider.dart:16:15 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:25:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:27:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:35:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:37:7 • undefined_identifier
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/intro/providers/onboarding_provider.dart:43:32 • undefined_function
+  error • Classes can only extend other classes • lib/features/intro/providers/onboarding_provider.dart:49:13 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/intro/providers/onboarding_provider.dart:50:44 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:55:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:109:7 • undefined_identifier
+  error • Undefined name 'state' • lib/features/intro/providers/onboarding_provider.dart:113:7 • undefined_identifier
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/invoices/providers/invoice_draft_provider.dart:19:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/invoices/providers/invoice_draft_provider.dart:23:38 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/invoices/providers/invoice_draft_provider.dart:24:45 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:30:19 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:35:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:35:13 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:35:39 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:39:23 • undefined_identifier
+warning • Dead code • lib/features/invoices/providers/invoice_draft_provider.dart:41:5 • dead_code
+  error • A value of type 'InvoiceItemModel' can't be assigned to a variable of type 'Never' • lib/features/invoices/providers/invoice_draft_provider.dart:41:20 • invalid_assignment
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:46:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:46:13 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:50:23 • undefined_identifier
+warning • Dead code • lib/features/invoices/providers/invoice_draft_provider.dart:52:5 • dead_code
+  error • A value of type 'InvoiceItemModel' can't be assigned to a variable of type 'Never' • lib/features/invoices/providers/invoice_draft_provider.dart:52:20 • invalid_assignment
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:57:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoice_draft_provider.dart:57:13 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/providers/invoices_provider.dart:8:45 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/invoices/providers/invoices_provider.dart:14:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/invoices/providers/invoices_provider.dart:18:34 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/invoices/providers/invoices_provider.dart:21:41 • extra_positional_arguments
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/providers/invoices_provider.dart:24:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:27:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:28:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/providers/invoices_provider.dart:34:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:37:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:38:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/providers/invoices_provider.dart:45:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:48:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:49:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/providers/invoices_provider.dart:57:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:60:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:61:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/providers/invoices_provider.dart:83:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:86:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/invoices/providers/invoices_provider.dart:87:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/invoices/screens/create_invoice_screen.dart:392:36 • undefined_getter
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/invoices/screens/create_invoice_screen.dart:624:29 • deprecated_member_use
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/invoices/screens/invoices_screen.dart:40:46 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/notifications/providers/notifications_provider.dart:18:45 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<BizNotification>>' • lib/features/notifications/providers/notifications_provider.dart:27:46 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/notifications/providers/notifications_provider.dart:33:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/notifications/providers/notifications_provider.dart:37:39 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/notifications/providers/notifications_provider.dart:40:46 • extra_positional_arguments
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/notifications/providers/notifications_provider.dart:43:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/notifications/providers/notifications_provider.dart:46:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/notifications/providers/notifications_provider.dart:47:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/notifications/providers/notifications_provider.dart:55:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/notifications/providers/notifications_provider.dart:58:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/notifications/providers/notifications_provider.dart:59:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/notifications/providers/notifications_provider.dart:65:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/notifications/providers/notifications_provider.dart:68:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/notifications/providers/notifications_provider.dart:69:5 • undefined_identifier
+  error • The named parameter 'settings' is required, but there's no corresponding argument • lib/features/notifications/services/notification_service.dart:41:32 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/notifications/services/notification_service.dart:42:7 • extra_positional_arguments_could_be_named
+  error • The named parameter 'id' is required, but there's no corresponding argument • lib/features/notifications/services/notification_service.dart:88:32 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 4 found • lib/features/notifications/services/notification_service.dart:89:7 • extra_positional_arguments_could_be_named
+  error • The named parameter 'id' is required, but there's no corresponding argument • lib/features/notifications/services/notification_service.dart:104:32 • missing_required_argument
+  error • The named parameter 'notificationDetails' is required, but there's no corresponding argument • lib/features/notifications/services/notification_service.dart:104:32 • missing_required_argument
+  error • The named parameter 'scheduledDate' is required, but there's no corresponding argument • lib/features/notifications/services/notification_service.dart:104:32 • missing_required_argument
+  error • Too many positional arguments: 0 expected, but 5 found • lib/features/notifications/services/notification_service.dart:105:7 • extra_positional_arguments_could_be_named
+  error • The named parameter 'uiLocalNotificationDateInterpretation' isn't defined • lib/features/notifications/services/notification_service.dart:118:7 • undefined_named_parameter
+  error • Undefined name 'UILocalNotificationDateInterpretation' • lib/features/notifications/services/notification_service.dart:119:11 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<TaxThermometerResult>' • lib/features/proactive/providers/proactive_alerts_provider.dart:25:38 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<List<ExpenseModel>>' • lib/features/receipt_detective/screens/receipt_detective_screen.dart:51:52 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/settings/providers/settings_provider.dart:13:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/settings/providers/settings_provider.dart:17:34 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/settings/providers/settings_provider.dart:20:41 • extra_positional_arguments
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:26:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:27:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:42:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:43:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:60:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:61:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:76:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:77:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:92:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:93:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:108:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:109:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:124:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/settings/providers/settings_provider.dart:125:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/screens/business_profile_screen.dart:36:36 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/screens/business_profile_screen.dart:96:38 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/screens/business_profile_screen.dart:123:37 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/settings/screens/feedback_screen.dart:31:48 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/screens/settings_screen.dart:43:36 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/screens/settings_screen.dart:69:36 • undefined_getter
+   info • Statements in an if should be enclosed in a block • lib/features/settings/screens/trash_screen.dart:97:11 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/features/settings/screens/trash_screen.dart:301:17 • curly_braces_in_flow_control_structures
+warning • The value of the field '_currentUser' isn't used • lib/features/settings/widgets/google_backup_settings_widget.dart:21:24 • unused_field
+   info • Statements in an if should be enclosed in a block • lib/features/settings/widgets/google_backup_settings_widget.dart:45:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/features/settings/widgets/google_backup_settings_widget.dart:64:9 • curly_braces_in_flow_control_structures
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/settings/widgets/logo_upload_widget.dart:24:46 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/widgets/logo_upload_widget.dart:74:58 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/widgets/logo_upload_widget.dart:126:56 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/settings/widgets/logo_upload_widget.dart:137:50 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/splash/screens/splash_screen.dart:41:19 • undefined_getter
+  error • The property 'isCompleted' can't be unconditionally accessed because the receiver can be 'null' • lib/features/splash/screens/splash_screen.dart:58:16 • unchecked_use_of_nullable_value
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserSettingsModel>' • lib/features/tax/providers/tax_estimation_service.dart:40:48 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/ico_lookup_provider.dart:56:46 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:7:45 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:17:45 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:27:45 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:37:45 • undefined_getter
+  error • The function 'StateNotifierProvider' isn't defined • lib/features/tools/providers/trash_provider.dart:59:5 • undefined_function
+  error • Classes can only extend other classes • lib/features/tools/providers/trash_provider.dart:63:31 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • lib/features/tools/providers/trash_provider.dart:65:38 • extra_positional_arguments
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:68:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/tools/providers/trash_provider.dart:71:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/tools/providers/trash_provider.dart:72:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:80:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/tools/providers/trash_provider.dart:83:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/tools/providers/trash_provider.dart:84:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/providers/trash_provider.dart:92:47 • undefined_getter
+  error • Undefined name 'state' • lib/features/tools/providers/trash_provider.dart:95:5 • undefined_identifier
+  error • Undefined name 'state' • lib/features/tools/providers/trash_provider.dart:96:5 • undefined_identifier
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/services/company_repository.dart:67:47 • undefined_getter
+  error • The getter 'valueOrNull' isn't defined for the type 'AsyncValue<UserModel?>' • lib/features/tools/services/web_sync_service.dart:8:45 • undefined_getter
+   info • 'webProvider' is deprecated and shouldn't be used. Use providerWeb instead. This parameter will be removed in a future major release • lib/main.dart:38:9 • deprecated_member_use
+   info • 'androidProvider' is deprecated and shouldn't be used. Use providerAndroid instead. This parameter will be removed in a future major release • lib/main.dart:52:9 • deprecated_member_use
+   info • 'appleProvider' is deprecated and shouldn't be used. Use providerApple instead. This parameter will be removed in a future major release • lib/main.dart:59:9 • deprecated_member_use
+  error • The name 'Override' isn't a type, so it can't be used as a type argument • lib/main.dart:72:28 • non_type_as_type_argument
+   info • Statements in an if should be enclosed in a block • lib/shared/widgets/watched_company_button.dart:102:7 • curly_braces_in_flow_control_structures
+  error • Undefined name 'state' • test/core/router/app_router_test.dart:61:5 • undefined_identifier
+warning • The getter doesn't override an inherited getter • test/core/services/soft_delete_service_test.mocks.dart:119:14 • override_on_non_overriding_member
+warning • The setter doesn't override an inherited setter • test/core/services/soft_delete_service_test.mocks.dart:149:7 • override_on_non_overriding_member
+warning • The method doesn't override an inherited method • test/core/services/soft_delete_service_test.mocks.dart:198:20 • override_on_non_overriding_member
+warning • The method doesn't override an inherited method • test/core/services/soft_delete_service_test.mocks.dart:375:20 • override_on_non_overriding_member
+warning • The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored • test/core/services/soft_delete_service_test.mocks.dart:400:12 • duplicate_ignore
+warning • The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored • test/core/services/soft_delete_service_test.mocks.dart:776:12 • duplicate_ignore
+warning • The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored • test/core/services/soft_delete_service_test.mocks.dart:895:12 • duplicate_ignore
+  error • The name 'Override' isn't a type, so it can't be used as a type argument • test/e2e/ai_accountant_e2e_test.dart:14:10 • non_type_as_type_argument
+  error • The property 'profit' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/profit_provider_test.dart:81:20 • unchecked_use_of_nullable_value
+  error • The property 'profitMargin' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/profit_provider_test.dart:84:20 • unchecked_use_of_nullable_value
+  error • The property 'thisMonthProfit' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/profit_provider_test.dart:120:20 • unchecked_use_of_nullable_value
+  error • The property 'profitMargin' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/profit_provider_test.dart:146:22 • unchecked_use_of_nullable_value
+  error • The property 'totalRevenue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:60:22 • unchecked_use_of_nullable_value
+  error • The property 'thisMonthRevenue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:61:22 • unchecked_use_of_nullable_value
+  error • The property 'lastMonthRevenue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:62:22 • unchecked_use_of_nullable_value
+  error • The property 'unpaidAmount' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:63:22 • unchecked_use_of_nullable_value
+  error • The property 'overdueCount' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:64:22 • unchecked_use_of_nullable_value
+  error • The property 'averageInvoiceValue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:65:22 • unchecked_use_of_nullable_value
+  error • The property 'totalRevenue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:121:22 • unchecked_use_of_nullable_value
+  error • The property 'thisMonthRevenue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:122:22 • unchecked_use_of_nullable_value
+  error • The property 'lastMonthRevenue' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:123:22 • unchecked_use_of_nullable_value
+  error • The property 'unpaidAmount' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:193:22 • unchecked_use_of_nullable_value
+  error • The property 'overdueCount' can't be unconditionally accessed because the receiver can be 'null' • test/features/dashboard/providers/revenue_provider_test.dart:197:22 • unchecked_use_of_nullable_value
+warning • The getter doesn't override an inherited getter • test/features/documents/providers/notepad_repository_test.mocks.dart:119:14 • override_on_non_overriding_member
+warning • The setter doesn't override an inherited setter • test/features/documents/providers/notepad_repository_test.mocks.dart:149:7 • override_on_non_overriding_member
+warning • The method doesn't override an inherited method • test/features/documents/providers/notepad_repository_test.mocks.dart:198:20 • override_on_non_overriding_member
+warning • The method doesn't override an inherited method • test/features/documents/providers/notepad_repository_test.mocks.dart:375:20 • override_on_non_overriding_member
+warning • The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored • test/features/documents/providers/notepad_repository_test.mocks.dart:400:12 • duplicate_ignore
+warning • The diagnostic 'must_be_immutable' doesn't need to be ignored here because it's already being ignored • test/features/documents/providers/notepad_repository_test.mocks.dart:776:12 • duplicate_ignore
+  error • Target of URI doesn't exist: 'package:flutter_local_notifications/src/platform_specifics/ios/enums.dart' • test/features/notifications/services/notification_service_test.mocks.dart:16:8 • uri_does_not_exist
+  error • 'MockFlutterLocalNotificationsPlugin.initialize' ('Future<bool?> Function(InitializationSettings?, {void Function(NotificationResponse)? onDidReceiveBackgroundNotificationResponse, void Function(NotificationResponse)? onDidReceiveNotificationResponse})') isn't a valid override of 'FlutterLocalNotificationsPlugin.initialize' ('Future<bool?> Function({void Function(NotificationResponse)? onDidReceiveBackgroundNotificationResponse, void Function(NotificationResponse)? onDidReceiveNotificationResponse, required InitializationSettings settings})') • test/features/notifications/services/notification_service_test.mocks.dart:48:21 • invalid_override
+  error • 'MockFlutterLocalNotificationsPlugin.show' ('Future<void> Function(int?, String?, String?, NotificationDetails?, {String? payload})') isn't a valid override of 'FlutterLocalNotificationsPlugin.show' ('Future<void> Function({String? body, required int id, NotificationDetails? notificationDetails, String? payload, String? title})') • test/features/notifications/services/notification_service_test.mocks.dart:76:20 • invalid_override
+  error • 'MockFlutterLocalNotificationsPlugin.cancel' ('Future<void> Function(int?, {String? tag})') isn't a valid override of 'FlutterLocalNotificationsPlugin.cancel' ('Future<void> Function({required int id, String? tag})') • test/features/notifications/services/notification_service_test.mocks.dart:94:20 • invalid_override
+  error • 'MockFlutterLocalNotificationsPlugin.zonedSchedule' ('Future<void> Function(int?, String?, String?, TZDateTime?, NotificationDetails?, {required AndroidScheduleMode? androidScheduleMode, DateTimeComponents? matchDateTimeComponents, String? payload, required InvalidType uiLocalNotificationDateInterpretation})') isn't a valid override of 'FlutterLocalNotificationsPlugin.zonedSchedule' ('Future<void> Function({required AndroidScheduleMode androidScheduleMode, String? body, required int id, DateTimeComponents? matchDateTimeComponents, required NotificationDetails notificationDetails, String? payload, required TZDateTime scheduledDate, String? title})') • test/features/notifications/services/notification_service_test.mocks.dart:108:20 • invalid_override
+  error • 'MockFlutterLocalNotificationsPlugin.periodicallyShow' ('Future<void> Function(int?, String?, String?, RepeatInterval?, NotificationDetails?, {required AndroidScheduleMode? androidScheduleMode, String? payload})') isn't a valid override of 'FlutterLocalNotificationsPlugin.periodicallyShow' ('Future<void> Function({required AndroidScheduleMode androidScheduleMode, String? body, required int id, required NotificationDetails notificationDetails, String? payload, required RepeatInterval repeatInterval, String? title})') • test/features/notifications/services/notification_service_test.mocks.dart:137:20 • invalid_override
+  error • 'MockFlutterLocalNotificationsPlugin.periodicallyShowWithDuration' ('Future<void> Function(int?, String?, String?, Duration?, NotificationDetails?, {AndroidScheduleMode? androidScheduleMode, String? payload})') isn't a valid override of 'FlutterLocalNotificationsPlugin.periodicallyShowWithDuration' ('Future<void> Function({AndroidScheduleMode androidScheduleMode, String? body, required int id, required NotificationDetails notificationDetails, String? payload, required Duration repeatDurationInterval, String? title})') • test/features/notifications/services/notification_service_test.mocks.dart:157:20 • invalid_override
+  error • Undefined name 'state' • test/features/splash/splash_screen_test.dart:9:5 • undefined_identifier
+   info • Use 'const' with the constructor to improve performance • test/features/theme/theme_test.dart:20:57 • prefer_const_constructors
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • test/features/theme/theme_test.dart:38:37 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • test/features/theme/theme_test.dart:45:33 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • test/features/theme/theme_test.dart:54:70 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • test/features/theme/theme_test.dart:61:35 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use component accessors like .r or .g, or toARGB32 for an explicit conversion • test/features/theme/theme_test.dart:67:31 • deprecated_member_use
+  error • Missing concrete implementation of 'class BillingService.dispose' • test/features/tools/ico_lookup_broad_test.dart:36:7 • non_abstract_class_inherits_abstract_member
+  error • Classes can only extend other classes • test/features/tools/ico_lookup_broad_test.dart:36:34 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • test/features/tools/ico_lookup_broad_test.dart:39:15 • extra_positional_arguments
+  error • Missing concrete implementation of 'class BillingService.dispose' • test/features/tools/screens/ico_lookup_simulation_test.dart:37:7 • non_abstract_class_inherits_abstract_member
+  error • Classes can only extend other classes • test/features/tools/screens/ico_lookup_simulation_test.dart:37:34 • extends_non_class
+  error • Too many positional arguments: 0 expected, but 1 found • test/features/tools/screens/ico_lookup_simulation_test.dart:40:15 • extra_positional_arguments
+   info • Don't invoke 'print' in production code • test/fixtures/record_fixture.dart:6:5 • avoid_print
+   info • Don't invoke 'print' in production code • test/fixtures/record_fixture.dart:12:3 • avoid_print
+   info • Don't invoke 'print' in production code • test/fixtures/record_fixture.dart:21:7 • avoid_print
+   info • Don't invoke 'print' in production code • test/fixtures/record_fixture.dart:34:5 • avoid_print
+   info • Don't invoke 'print' in production code • test/fixtures/record_fixture.dart:36:5 • avoid_print
+  error • The name 'Override' isn't a type, so it can't be used as a type argument • test/helpers/test_app.dart:6:45 • non_type_as_type_argument
+

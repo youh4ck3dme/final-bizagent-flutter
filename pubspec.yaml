@@ -40,16 +40,8 @@ dependencies:
   morphable_shape: ^1.2.0
   flutter_animate: ^4.0.0
 
-  # Sensors (New Design)
+  # Sensors
   sensors_plus: ^7.0.0
-  # Let's check if I can just use `flutter pub add`? No I don't have that tool.
-  # I will use the versions specified in the prompt BUT updated for modern flutter if I know them.
-  # The prompt says "COPY THIS EXACTLY" for pubspec.yaml but the file content in the prompt has versions like sensors_plus ^2.0.0.
-  # However, I should try to be compatible with the existing dependencies.
-  # `sensors_plus` is currently at 6.1.0. `device_orientation` is likely old.
-  # I will add them without versions to let `flutter pub get` resolve them? No, I need to specify something.
-  # I'll stick to adding them.
-
 
   # Navigation
   go_router: ^17.0.1
@@ -85,9 +77,6 @@ dependencies:
   receive_sharing_intent: ^1.8.1
   package_info_plus: ^9.0.0
   riverpod_annotation: ^4.0.0
-  # Add for code generation
-  riverpod_generator: ^4.0.0+1
-  build_runner: ^2.10.5
   csv: ^6.0.0
   flutter_local_notifications: ^20.0.0
   timezone: ^0.10.1
@@ -130,18 +119,30 @@ dev_dependencies:
   mockito: ^5.4.4
   flutter_local_notifications_platform_interface: any
   mocktail: ^1.0.0
+  build_runner: ^2.10.5
+  riverpod_generator: ^4.0.0+1
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/brand/
     - assets/icons/
 
 flutter_launcher_icons:
   android: true
   ios: true
+
+  # Fallback icon (iOS + old Android)
+  image_path: "assets/images/icon.png"
+  remove_alpha_ios: true
+
+  # Android Adaptive (Android 8.0+)
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/icon_fg.png"
+
+  # Web favicon/PWA icons
   web:
     generate: true
     image_path: "assets/images/icon.png"
-    background_color: "#ffffff"
-    theme_color: "#ffffff"
-  image_path: "assets/images/icon.png"
+    background_color: "#0B4EA2"
+    theme_color: "#0B4EA2"

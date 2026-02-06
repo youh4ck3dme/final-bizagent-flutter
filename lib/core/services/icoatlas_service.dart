@@ -93,7 +93,7 @@ class IcoAtlasService {
       final endpoint = '/api/company/${ico.trim()}';
       final response = await _dio.get(
         endpoint,
-        options: Options(headers: {'X-ICO-LOOKUP-CONTRACT': 'bizagent_app_v1'}),
+        options: Options(headers: {'X-ICO-LOOKUP-CONTRACT': 'flutter_default'}),
       );
 
       // Validate content-type is JSON

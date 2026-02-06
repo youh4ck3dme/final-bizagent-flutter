@@ -46,66 +46,137 @@
     <meta name="theme-color" content="#F0F4F8">
 
     <!-- Google Sign-In -->
-    <!-- Google Sign-In -->
     <meta name="google-signin-client_id" content="542280140779-c5m14rqpih1j9tmf9km52aq1684l9qjd.apps.googleusercontent.com">
 
     <!-- ReCaptcha Enterprise -->
     <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lf7dFQsAAAAALJbTSS5yaomUSvSNTpP4nr6GzlA"></script>
 
     <script>
-      // Enable App Check Debug Token for Localhost
-      self.FIREBASE_APPCHECK_DEBUG_TOKEN = "3659b401-b1f9-435d-abe7-4f056cff70cc";
+      // App Check Debug Token – only for localhost development
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+      }
     </script>
 
-    <script src="flutter.js" defer></script>
-  </head>
-  <body style="background-color: #F0F4F8;">
-    <!-- Loading Indicator -->
-    <div id="loading-indicator" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: #F0F4F8; z-index: 9999; transition: opacity 0.5s ease;">
-      <div style="width: 50px; height: 50px; border: 3px solid #e2e8f0; border-top: 3px solid #2563EB; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-    </div>
     <style>
+      body {
+        background-color: #F0F4F8;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Loading Indicator */
+      #loading-indicator {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #F0F4F8;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #2563EB;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
+
+      /* PWA Update Toast */
+      #pwa-update-toast {
+        display: none;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background-color: #1F2937;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        z-index: 10000;
+        align-items: center;
+        gap: 16px;
+        font-family: 'Inter', sans-serif;
+        max-width: 90vw;
+        flex-direction: row;
+      }
+
+      #pwa-update-toast > div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      #pwa-update-toast span:first-child {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      #pwa-update-toast span:last-child {
+        font-size: 12px;
+        color: #9CA3AF;
+      }
+
+      #pwa-update-button {
+        background-color: #2563EB;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        transition: background-color 0.2s;
+      }
+
+      #pwa-update-button:hover {
+        background-color: #1D4ED8;
+      }
     </style>
 
-    <!-- Custom PWA Update Toast -->
-    <div id="pwa-update-toast" style="display: none; position: fixed; bottom: 24px; right: 24px; background-color: #1F2937; color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 10000; align-items: center; gap: 16px; font-family: 'Inter', sans-serif; max-width: 90vw;">
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-weight: 600; font-size: 14px;">Nová verzia je dostupná</span>
-        <span style="font-size: 12px; color: #9CA3AF;">Kliknutím aktualizujete aplikáciu</span>
-      </div>
-      <button id="pwa-update-button" style="background-color: #2563EB; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: background-color 0.2s;">
-        Aktualizovať
-      </button>
+  </head>
+  <body>
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" role="status" aria-label="Loading application">
+      <div class="spinner"></div>
     </div>
 
+    <!-- Custom PWA Update Toast -->
+    <div id="pwa-update-toast" role="alert" aria-live="assertive">
+      <div>
+        <span>Nová verzia je dostupná</span>
+        <span>Kliknutím aktualizujete aplikáciu</span>
+      </div>
+      <button id="pwa-update-button">Aktualizovať</button>
+    </div>
+
+    <!-- Flutter Bootstrap (generated at build time) -->
+    <script src="flutter_bootstrap.js" async></script>
+
     <script>
-      window.addEventListener('load', function(ev) {
-        // Modern Flutter Loader API
-        _flutter.loader.load({
-          serviceWorker: {
-            serviceWorkerVersion: null,
-          },
-          onEntrypointLoaded: function(engineInitializer) {
-            engineInitializer.initializeEngine().then(function(appRunner) {
-              appRunner.runApp();
+      // Wait for Flutter to load, then set up custom SW logic
+      window.addEventListener('load', function() {
+        // Hide loading indicator after Flutter loads
+        setTimeout(function() {
+          const loading = document.getElementById('loading-indicator');
+          if (loading) loading.style.display = 'none';
+        }, 2000);
 
-              // Fade out loading indicator
-              var loader = document.querySelector('#loading-indicator');
-              if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(function() { loader.remove(); }, 500);
-              }
-            });
-          }
-        });
-
-        // Custom "Na Mieru" Service Worker Logic
+        // Custom "Na Mieru" Service Worker Logic for BizAgent
         if ('serviceWorker' in navigator) {
-          // Register BizAgent extended offline SW first
+          // Register BizAgent extended offline SW
           navigator.serviceWorker.register('bizagent-sw.js')
             .then(function(reg) {
               console.log('✅ [PWA] BizAgent offline SW registered');
@@ -114,46 +185,44 @@
               console.warn('[PWA] BizAgent SW failed:', err);
             });
 
-          // Then register Flutter's service worker
-          navigator.serviceWorker.register('flutter_service_worker.js')
-            .then(function(reg) {
+          // Listen for SW updates from Flutter's service worker
+          navigator.serviceWorker.ready.then(function(reg) {
+            function showUpdateToast(worker) {
+              const toast = document.getElementById('pwa-update-toast');
+              const btn = document.getElementById('pwa-update-button');
+              if (!toast || !btn) return;
+              toast.style.display = 'flex';
 
-              function showUpdateToast(worker) {
-                const toast = document.getElementById('pwa-update-toast');
-                const btn = document.getElementById('pwa-update-button');
-                toast.style.display = 'flex';
-
-                btn.onclick = function() {
-                  btn.innerText = 'Inštalujem...';
-                  btn.style.opacity = '0.7';
-                  worker.postMessage({ type: 'SKIP_WAITING' });
-                };
-              }
-
-              if (reg.waiting) {
-                showUpdateToast(reg.waiting);
-                return;
-              }
-
-              reg.onupdatefound = function () {
-                const installingWorker = reg.installing;
-                installingWorker.onstatechange = function () {
-                  if (installingWorker.state === 'installed') {
-                    if (navigator.serviceWorker.controller) {
-                      console.log('✨ [PWA] Update installed. Waiting for user...');
-                      showUpdateToast(installingWorker);
-                    } else {
-                      console.log('✅ [PWA] Initial cache complete.');
-                    }
-                  }
-                };
+              btn.onclick = function() {
+                btn.innerText = 'Inštalujem...';
+                btn.style.opacity = '0.7';
+                worker.postMessage({ type: 'SKIP_WAITING' });
               };
-            })
-            .catch(function(err) {
-              console.error('❌ [PWA] Registration failed:', err);
-            });
+            }
 
-          navigator.serviceWorker.addEventListener('controllerchange', function () {
+            if (reg.waiting) {
+              showUpdateToast(reg.waiting);
+              return;
+            }
+
+            reg.addEventListener('updatefound', function() {
+              const installingWorker = reg.installing;
+              if (!installingWorker) return;
+
+              installingWorker.addEventListener('statechange', function() {
+                if (installingWorker.state === 'installed') {
+                  if (navigator.serviceWorker.controller) {
+                    console.log('✨ [PWA] Update installed. Waiting for user...');
+                    showUpdateToast(installingWorker);
+                  } else {
+                    console.log('✅ [PWA] Initial cache complete.');
+                  }
+                }
+              });
+            });
+          });
+
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
             window.location.reload();
           });
         }

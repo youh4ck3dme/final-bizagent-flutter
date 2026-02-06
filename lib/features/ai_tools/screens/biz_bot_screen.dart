@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/biz_bot_service.dart';
+import '../../../core/services/enhanced_ai_service.dart';
 import '../../../core/ui/biz_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -79,7 +79,7 @@ class _BizBotScreenState extends ConsumerState<BizBotScreen> {
     _scrollToBottom();
 
     try {
-      final response = await ref.read(bizBotServiceProvider).ask(text);
+      final response = await ref.read(enhancedAIServiceProvider).askBizBot(text);
       if (mounted) {
         setState(() {
           _messages.add(

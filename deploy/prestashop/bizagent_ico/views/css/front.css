@@ -1,0 +1,17 @@
+/* BizAgent Loading */
+.bizagent-loading-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    animation: bizagent-spin 1s linear infinite;
+}
+
+@keyframes bizagent-spin {
+    to { transform: rotate(360deg); }
+}
+
+.bizagent-success {
+    border-color: #28a745 !important;
+    background-color: #f0fff4 !important;
+}

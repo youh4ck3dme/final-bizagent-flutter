@@ -1,0 +1,48 @@
+group 'com.it_nomads.fluttersecurestorage'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace("com.it_nomads.fluttersecurestorage")
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileSdk 36
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        minSdkVersion 24
+    }
+    
+}
+
+dependencies {
+    implementation("com.google.crypto.tink:tink-android:1.19.0")
+}

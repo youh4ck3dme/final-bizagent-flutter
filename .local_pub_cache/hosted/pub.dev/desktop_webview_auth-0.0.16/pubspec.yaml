@@ -1,0 +1,45 @@
+name: desktop_webview_auth
+description: This package enables Firebase OAuth on desktop via webview
+version: 0.0.16
+homepage: https://github.com/invertase/flutter_desktop_webview_auth
+
+environment:
+  sdk: ">=2.12.0 <4.0.0"
+  flutter: ">=1.20.0"
+
+dependencies:
+  crypto: ^3.0.3
+  flutter:
+    sdk: flutter
+  http: ^1.0.0
+  flutter_web_plugins:
+    sdk: flutter
+  plugin_platform_interface: ^2.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+flutter:
+  plugin:
+    platforms:
+      macos:
+        pluginClass: DesktopWebviewAuthPlugin
+      linux:
+        pluginClass: DesktopWebviewAuthPlugin
+      windows:
+        pluginClass: DesktopWebviewAuthPlugin
+      ios:
+        pluginClass: DesktopWebviewAuthPlugin
+      android:
+        package: com.example.desktop_webview_auth
+        pluginClass: DesktopWebviewAuthPlugin
+      web:
+        pluginClass: DesktopWebviewAuthWeb
+        fileName: desktop_webview_auth_web.dart
+
+false_secrets:
+  - /README.md
+  - /example/lib/main.dart
+  - /example/macos/Runner/GoogleService-Info.plist

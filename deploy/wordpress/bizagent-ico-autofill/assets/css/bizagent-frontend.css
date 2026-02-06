@@ -1,0 +1,30 @@
+/* BizAgent Loading State */
+.bizagent-loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.bizagent-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    border: 2px solid #ddd;
+    border-top-color: #0073aa; /* WP Blue */
+    border-radius: 50%;
+    animation: bizagent-spin 0.8s linear infinite;
+    z-index: 100;
+}
+
+@keyframes bizagent-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Optional: Highlight valid field */
+input#billing_ico.bizagent-valid {
+    border-color: #46b450;
+}

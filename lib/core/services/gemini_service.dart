@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
@@ -247,6 +248,73 @@ class GeminiService {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
     yield full;
+  }
+
+  Future<Map<String, dynamic>> analyzeReceiptImage(File imageFile) async {
+    final startTime = DateTime.now();
+    try {
+      final imageBytes = await imageFile.readAsBytes();
+      final base64Image = base64Encode(imageBytes);
+
+      const gatewayUrl = 'https://bizagent.sk/api/ai/vision';
+
+      String? appCheckToken;
+      try {
+        appCheckToken = await FirebaseAppCheck.instance.getToken();
+      } catch (e) {
+        debugPrint('AppCheck Token Error: $e');
+      }
+
+      // If backend is not available, we can mock the response slightly more intelligently
+      // or just fail if it's strictly dependent on the backend.
+      // For now, let's keep the pattern of trying the backend first.
+
+      /*
+      // TODO: Uncomment when backend endpoint is ready
+      final response = await http.post(
+        Uri.parse(gatewayUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Firebase-AppCheck': appCheckToken ?? '',
+        },
+        body: jsonEncode({
+          'image': base64Image,
+          'prompt': 'Analyze this receipt and extract: vendor, date, total amount, and tax. Return strictly JSON.',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+         return jsonDecode(response.body);
+      }
+      */
+
+      // FALLBACK TO MOCK VISION for Dev/Demo
+      _recordAnalytics(
+        model: 'vision-mock',
+        fromCache: false,
+        responseTime: DateTime.now().difference(startTime)
+      );
+
+      // Simulate network delay
+      await Future.delayed(const Duration(seconds: 2));
+
+      return {
+        "vendor": "Tesco Stores SR",
+        "date": "2026-02-04",
+        "total": 45.80,
+        "vat": 7.63,
+        "items": [
+          {"name": "Chlieb", "price": 2.50},
+          {"name": "Mlieko", "price": 1.80},
+          {"name": "Jablká", "price": 3.20}
+        ],
+        "confidence": 0.95
+      };
+
+    } catch (e) {
+      debugPrint('Vision Error: $e');
+      return {'error': 'Failed to analyze receipt'};
+    }
   }
 
   Future<String> generateText(String prompt) => generateContent(prompt);

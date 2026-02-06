@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../../../../core/utils/platform_image_provider.dart';
 import '../../../../shared/utils/biz_snackbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import '../../../core/services/enhanced_ai_service.dart';
 import '../../../core/services/ocr_service.dart';
-import '../../../core/services/ai_ocr_service.dart';
 
 import '../models/expense_model.dart';
 import '../models/expense_category.dart';
@@ -84,7 +85,7 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
     final path = widget.sharedImagePath;
     if (path == null || path.isEmpty || !mounted) return;
     final ocrService = ref.read(ocrServiceProvider);
-    final aiOcrService = ref.read(aiOcrServiceProvider);
+    final enhancedAiService = ref.read(enhancedAIServiceProvider);
     final analytics = ref.read(analyticsServiceProvider);
     analytics.logScanStarted();
     final result = await ocrService.scanReceiptFromPath(path);
@@ -104,20 +105,17 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
       }
     });
     BizSnackbar.showInfo(context, 'Upravujeme údaje pomocou AI...');
-    final refined = await aiOcrService.refineWithAi(
-      result.originalText,
-      imagePath: result.imagePath,
-    );
-    if (refined != null && mounted) {
+    final refined = await enhancedAiService.analyzeReceipt(File(result.imagePath!));
+    if (mounted) {
       setState(() {
-        if (refined.totalAmount != null) {
-          _amountController.text = refined.totalAmount!;
+        if (refined['total'] != null) {
+          _amountController.text = refined['total'].toString();
         }
-        if (refined.vendorId != null) {
-          _vendorController.text = refined.vendorId!;
+        if (refined['vendor'] != null) {
+          _vendorController.text = refined['vendor'].toString();
         }
-        if (refined.date != null) {
-          _tryParseDate(refined.date!);
+        if (refined['date'] != null) {
+          _tryParseDate(refined['date'].toString());
         }
         _onVendorChanged();
       });
@@ -215,7 +213,6 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
 
   Future<void> _scanReceipt() async {
     final ocrService = ref.read(ocrServiceProvider);
-    final aiOcrService = ref.read(aiOcrServiceProvider);
     final analytics = ref.read(analyticsServiceProvider);
 
     // Track start
@@ -224,46 +221,48 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
     final result = await ocrService.scanReceipt(ImageSource.camera);
 
     if (result != null && mounted) {
-      analytics.logScanSuccess(result.vendorId ?? 'unknown');
 
       setState(() {
-        _scannedReceiptPath = result.imagePath; // Save image path
+        _scannedReceiptPath = result.imagePath;
         _descController.text = result.originalText;
-
-        // Initial quick regex parse
-        if (result.totalAmount != null) {
-          _amountController.text = result.totalAmount!;
-        }
+        if (result.totalAmount != null) _amountController.text = result.totalAmount!;
         if (result.vendorId != null) _vendorController.text = result.vendorId!;
         if (result.date != null) _tryParseDate(result.date!);
       });
 
-      // Show "Refining with AI" feedback
-      // Show "Refining with AI" feedback
-      BizSnackbar.showInfo(context, 'Upravujeme údaje pomocou AI...');
+      // Show "Analyzujem cez Vision 2.5" feedback
+      BizSnackbar.showInfo(context, 'Analyzujem účtenku cez Gemini Vision 2.5...');
 
-      // AI Refinement
-      final refined = await aiOcrService.refineWithAi(
-        result.originalText,
-        imagePath: result.imagePath,
-      );
+      // AI Vision Analysis
+      try {
+        final refined = await ref.read(enhancedAIServiceProvider).analyzeReceipt(File(result.imagePath!));
 
-      if (refined != null && mounted) {
-        setState(() {
-          if (refined.totalAmount != null) {
-            _amountController.text = refined.totalAmount!;
-          }
-          if (refined.vendorId != null) {
-            _vendorController.text = refined.vendorId!;
-          }
-          if (refined.date != null) _tryParseDate(refined.date!);
-          _onVendorChanged();
-        });
+        if (mounted) {
+          // Vision AI can return JSON map, need to map to UI
+          // Expected: {vendor, total, date, vat, items, confidence}
 
-        BizSnackbar.showSuccess(
-          context,
-          'Údaje úspešne spracované cez Gemini AI',
-        );
+          setState(() {
+            if (refined['total'] != null) {
+              _amountController.text = refined['total'].toString();
+            }
+            if (refined['vendor'] != null) {
+              _vendorController.text = refined['vendor'].toString();
+            }
+            if (refined['date'] != null) {
+              _tryParseDate(refined['date'].toString());
+            }
+             // Auto-categorize based on vendor
+            _onVendorChanged();
+          });
+
+          BizSnackbar.showSuccess(
+            context,
+            'Účtenka spracovaná! (Confidence: ${(refined['confidence'] * 100).toInt()}%)',
+          );
+        }
+      } catch (e) {
+        debugPrint('Vision Error: $e');
+        if (mounted) BizSnackbar.showError(context, 'AI analýza zlyhala. Používam OCR dáta.');
       }
     }
   }

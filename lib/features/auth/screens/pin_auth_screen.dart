@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 import '../../../core/services/security_service.dart';
@@ -58,7 +57,7 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
     if (_mode == PinMode.verify) {
       final success = await security.verifyPin(_currentPin);
       if (success) {
-        if (mounted) context.pop(true);
+        if (mounted) Navigator.of(context).pop(true);
       } else {
         setState(() => _currentPin = '');
         if (mounted) BizSnackbar.showError(context, 'Nesprávny PIN kód');
@@ -75,7 +74,7 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
         await security.savePin(_currentPin);
         if (mounted) {
           BizSnackbar.showSuccess(context, 'PIN kód úspešne nastavený');
-          context.pop(_currentPin);
+          Navigator.of(context).pop(_currentPin);
         }
       } else {
         setState(() {
@@ -186,7 +185,7 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
 
                 // Cancel
                 TextButton(
-                  onPressed: () => context.pop(null),
+                  onPressed: () => Navigator.of(context).pop(null),
                   child: Text(
                     'ZRUŠIŤ',
                     style: TextStyle(

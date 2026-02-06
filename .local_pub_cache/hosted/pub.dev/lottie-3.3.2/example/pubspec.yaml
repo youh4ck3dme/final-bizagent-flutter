@@ -1,0 +1,70 @@
+name: lottie_example
+description: A sample app for the Lottie player
+publish_to: none
+
+version: 2.7.0+1
+
+environment:
+  sdk: "^3.9.0"
+
+dependencies:
+  collection:
+  flutter:
+    sdk: flutter
+  flutter_colorpicker:
+  http:
+  logging:
+  lottie:
+    path: ../
+  path:
+  path_provider:
+
+dev_dependencies:
+  flutter_lints:
+  flutter_test:
+    sdk: flutter
+  shelf:
+  shelf_static:
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/lottiefiles/
+    - assets/Mobilo/
+    - assets/Tests/
+    - assets/Tests/images/
+    - assets/Logo/
+    - assets/Images/
+    - assets/Images/WeAccept/
+    - assets/weather/
+    - assets/example_with_images/
+    - assets/example_with_images/images/
+
+  fonts:
+    - family: Comic Neue
+      fonts:
+        - asset: assets/fonts/Comic-Neue.ttf
+    - family: Helvetica
+      fonts:
+        - asset: assets/fonts/Helvetica.ttf
+    - family: Helvetica Neue
+      fonts:
+        - asset: assets/fonts/Helvetica-Neue.ttf
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/Open-Sans.ttf
+    - family: PT Serif
+      fonts:
+        - asset: assets/fonts/PT-Serif.ttf
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto.ttf
+    - family: Noto Emoji
+      fonts:
+        - asset: assets/fonts/Noto-Emoji.ttf

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../../../core/ui/biz_theme.dart';
 import '../providers/onboarding_provider.dart';
 import '../../../core/services/analytics_service.dart';
+import '../../../core/demo_mode/demo_mode_service.dart';
+import '../../../core/demo_mode/demo_scenarios.dart';
 
+/// PILIER #1: Onboarding – 3 kroky k "AHA MOMENTU"
+/// Step 1: PROBLÉM → Step 2: RIEŠENIE → Step 3: VÝSLEDOK
 class ModernOnboardingScreen extends ConsumerStatefulWidget {
   const ModernOnboardingScreen({super.key});
 
@@ -19,40 +22,6 @@ class _ModernOnboardingScreenState
     extends ConsumerState<ModernOnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  String _selectedBusinessType = 'IT služby';
-
-  final List<ModernOnboardingStep> _steps = [
-    ModernOnboardingStep(
-      title: 'Vitajte v BizAgent',
-      subtitle: 'AI Business Asistent pre SZČO a malé firmy',
-      type: OnboardingStepType.welcome,
-    ),
-    ModernOnboardingStep(
-      title: 'Vytvorte faktúru za sekundy',
-      subtitle: 'AI vám pomôže s profesionálnymi faktúrami',
-      type: OnboardingStepType.welcome,
-    ),
-    ModernOnboardingStep(
-      title: 'Sledujte výdavky inteligentne',
-      subtitle: 'AI analýza a automatické rozpočty',
-      type: OnboardingStepType.welcome,
-    ),
-    ModernOnboardingStep(
-      title: 'Vyberte typ podnikania',
-      subtitle: 'Aby sme vám ukázali relevantné príklady',
-      type: OnboardingStepType.businessType,
-    ),
-    ModernOnboardingStep(
-      title: 'Vaša ukážková faktúra',
-      subtitle: 'Takto jednoducho to funguje',
-      type: OnboardingStepType.demo,
-    ),
-    ModernOnboardingStep(
-      title: 'Začnite používať BizAgent',
-      subtitle: 'Objavte všetky možnosti AI asistenta',
-      type: OnboardingStepType.finish,
-    ),
-  ];
 
   @override
   void initState() {
@@ -69,31 +38,31 @@ class _ModernOnboardingScreenState
   }
 
   void _nextPage() {
-    if (_currentPage < _steps.length - 1) {
+    if (_currentPage < 2) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOutCubic,
       );
     } else {
       _completeOnboarding();
     }
   }
 
-  void _skipToDemo() {
-    _pageController.animateToPage(
-      2,
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.fastOutSlowIn,
-    );
+  void _skipToLogin() {
+    _completeOnboarding();
+  }
+
+  void _tryDemo() {
+    DemoModeService.instance.activateDemoMode(DemoScenario.standard);
+    ref.read(onboardingProvider.notifier).completeOnboarding();
+    ref.read(analyticsServiceProvider).logOnboardingCompleted();
+    if (mounted) context.go('/dashboard');
   }
 
   Future<void> _completeOnboarding() async {
     await ref.read(onboardingProvider.notifier).completeOnboarding();
     ref.read(analyticsServiceProvider).logOnboardingCompleted();
-
-    if (mounted) {
-      context.go('/dashboard');
-    }
+    if (mounted) context.go('/login');
   }
 
   @override
@@ -105,6 +74,7 @@ class _ModernOnboardingScreenState
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // Background gradient
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -112,44 +82,41 @@ class _ModernOnboardingScreenState
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.white,
-                  BizTheme.slovakBlue.withValues(alpha: 0.02),
+                  BizTheme.slovakBlue.withValues(alpha: 0.03),
                 ],
               ),
             ),
           ),
-          PageView.builder(
+
+          // Pages
+          PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (index) {
-              setState(() => _currentPage = index);
-            },
-            itemCount: _steps.length,
-            itemBuilder: (context, index) => _OnboardingPage(
-              step: _steps[index],
-              selectedBusinessType: _selectedBusinessType,
-              onBusinessTypeChanged: (type) =>
-                  setState(() => _selectedBusinessType = type),
-              onGenerateDemo: () => ref
-                  .read(onboardingDemoProvider.notifier)
-                  .generateDemoInvoice(_selectedBusinessType),
-            ),
+            onPageChanged: (index) => setState(() => _currentPage = index),
+            children: const [
+              _StepProblem(),
+              _StepSolution(),
+              _StepResult(),
+            ],
           ),
+
+          // Bottom Controls
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(32, 0, 32, 40),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.white.withValues(alpha: 0.95),
-                    Colors.white.withValues(alpha: 0.8),
+                    Colors.white,
+                    Colors.white.withValues(alpha: 0.9),
                     Colors.transparent,
                   ],
-                  stops: const [0.0, 0.5, 1.0],
+                  stops: const [0.0, 0.6, 1.0],
                 ),
               ),
               child: SafeArea(
@@ -157,60 +124,70 @@ class _ModernOnboardingScreenState
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Progress dots
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        _steps.length,
-                        (index) => _ProgressDot(
-                          isActive: index == _currentPage,
-                          isCompleted: index < _currentPage,
+                      children: List.generate(3, (i) => _Dot(
+                        isActive: i == _currentPage,
+                        isCompleted: i < _currentPage,
+                      )),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // CTA Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _currentPage == 2 ? _tryDemo : _nextPage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: BizTheme.slovakBlue,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          _currentPage == 0
+                              ? 'Ukážte mi ako'
+                              : _currentPage == 1
+                                  ? 'Vyskúšajte naozaj'
+                                  : 'Vyskúšať na reálnych dátach',
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        if (_currentPage == 0) ...[
-                          TextButton(
-                            onPressed: _skipToDemo,
-                            child: Text(
-                              'Preskočiť',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                        ] else ...[
-                          const Spacer(),
-                        ],
-                        ElevatedButton(
-                          onPressed: _nextPage,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: BizTheme.slovakBlue,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            _currentPage == _steps.length - 1
-                                ? 'Začať používať'
-                                : 'Pokračovať',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+
+                    const SizedBox(height: 12),
+
+                    // Secondary action
+                    if (_currentPage == 2)
+                      TextButton(
+                        onPressed: _skipToLogin,
+                        child: const Text(
+                          'Mám účet – prihlásiť sa',
+                          style: TextStyle(
+                            color: BizTheme.slovakBlue,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ],
-                    ),
+                      )
+                    else
+                      TextButton(
+                        onPressed: _skipToLogin,
+                        child: Text(
+                          'Preskočiť',
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -222,566 +199,364 @@ class _ModernOnboardingScreenState
   }
 }
 
-class _OnboardingPage extends ConsumerWidget {
-  const _OnboardingPage({
-    required this.step,
-    required this.selectedBusinessType,
-    required this.onBusinessTypeChanged,
-    required this.onGenerateDemo,
-  });
+// ═══════════════════════════════════════════
+// STEP 1: PROBLÉM
+// ═══════════════════════════════════════════
+class _StepProblem extends StatelessWidget {
+  const _StepProblem();
 
-  final ModernOnboardingStep step;
-  final String selectedBusinessType;
-  final ValueChanged<String> onBusinessTypeChanged;
-  final VoidCallback onGenerateDemo;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        children: [
-          const Spacer(flex: 2),
-          Text(
-            step.title,
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF1F2937),
-              height: 1.2,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            step.subtitle,
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.grey[600],
-              height: 1.4,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const Spacer(flex: 1),
-          Expanded(flex: 4, child: _buildStepContent(ref)),
-          const Spacer(flex: 3),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStepContent(WidgetRef ref) {
-    switch (step.type) {
-      case OnboardingStepType.welcome:
-        return step.image != null
-            ? _ImageContent(imagePath: step.image!)
-            : _WelcomeContent();
-      case OnboardingStepType.features:
-        return step.image != null
-            ? _ImageContent(imagePath: step.image!)
-            : _WelcomeContent();
-      case OnboardingStepType.businessType:
-        return _BusinessTypeSelector(
-          selectedType: selectedBusinessType,
-          onChanged: onBusinessTypeChanged,
-        );
-      case OnboardingStepType.demo:
-        return _DemoPreview(
-          businessType: selectedBusinessType,
-          onGenerateDemo: onGenerateDemo,
-        );
-      case OnboardingStepType.finish:
-        return _FinishContent();
-    }
-  }
-}
-
-class _WelcomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Logo instead of circle
-          Image.asset(
-            'assets/images/icon.png',
-            width: 140,
-            height: 140,
-            fit: BoxFit.contain,
+          const Spacer(flex: 3),
+          // Emoji icon
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: BizTheme.nationalRed.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: const Center(
+              child: Text('😩', style: TextStyle(fontSize: 48)),
+            ),
           ),
           const SizedBox(height: 32),
-          Text(
-            'BizAgent používa umelú inteligenciu na automatizáciu vašich faktúr a sledovanie výdavkov.',
+          const Text(
+            'Účtovníctvo\nvám kradne čas',
             style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[700],
+              fontSize: 34,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF111827),
+              height: 1.15,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Faktúry, bločky, výdavky, IČO...\nVšetko ručne. Každý mesiac hodiny stratené.',
+            style: TextStyle(
+              fontSize: 17,
+              color: Colors.grey[600],
               height: 1.5,
             ),
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 40),
+          // Pain points
+          _PainPoint(icon: Icons.timer_off, text: '15 min na 1 faktúru'),
+          const SizedBox(height: 12),
+          _PainPoint(icon: Icons.error_outline, text: 'Chyby v údajoch'),
+          const SizedBox(height: 12),
+          _PainPoint(icon: Icons.money_off, text: 'Zabudnuté platby'),
+          const Spacer(flex: 5),
         ],
       ),
     );
   }
 }
 
-class _ImageContent extends StatelessWidget {
-  const _ImageContent({required this.imagePath});
-
-  final String imagePath;
+class _PainPoint extends StatelessWidget {
+  const _PainPoint({required this.icon, required this.text});
+  final IconData icon;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 300, maxHeight: 300),
-      child: Image.asset(imagePath, fit: BoxFit.contain),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: BizTheme.nationalRed, size: 22),
+        const SizedBox(width: 12),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF374151),
+          ),
+        ),
+      ],
     );
   }
 }
 
-class _BusinessTypeSelector extends StatefulWidget {
-  const _BusinessTypeSelector({
-    required this.selectedType,
-    required this.onChanged,
-  });
-
-  final String selectedType;
-  final ValueChanged<String> onChanged;
-
-  @override
-  State<_BusinessTypeSelector> createState() => _BusinessTypeSelectorState();
-}
-
-class _BusinessTypeSelectorState extends State<_BusinessTypeSelector> {
-  final List<Map<String, dynamic>> _businessTypes = [
-    {
-      'type': 'IT služby',
-      'icon': Icons.computer,
-      'description': 'Webové stránky, aplikácie, digitálne služby',
-    },
-    {
-      'type': 'Obchod',
-      'icon': Icons.store,
-      'description': 'Predaj tovaru, veľkoobchod, maloobchod',
-    },
-    {
-      'type': 'Remeslo',
-      'icon': Icons.build,
-      'description': 'Inštalatérstvo, elektrika, stavebníctvo',
-    },
-    {
-      'type': 'Iné',
-      'icon': Icons.business,
-      'description': 'Konzultácie, služby, voľná živnosť',
-    },
-  ];
+// ═══════════════════════════════════════════
+// STEP 2: RIEŠENIE
+// ═══════════════════════════════════════════
+class _StepSolution extends StatelessWidget {
+  const _StepSolution();
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _businessTypes.length,
-      itemBuilder: (context, index) {
-        final type = _businessTypes[index];
-        final isSelected = type['type'] == widget.selectedType;
-
-        return GestureDetector(
-          onTap: () => widget.onChanged(type['type']),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
+      child: Column(
+        children: [
+          const Spacer(flex: 3),
+          Container(
+            width: 100,
+            height: 100,
             decoration: BoxDecoration(
-              color: isSelected
-                  ? BizTheme.slovakBlue.withValues(alpha: 0.1)
-                  : Colors.white,
-              border: Border.all(
-                color: isSelected ? BizTheme.slovakBlue : Colors.grey[300]!,
-                width: isSelected ? 2 : 1,
-              ),
-              borderRadius: BorderRadius.circular(12),
+              color: BizTheme.slovakBlue.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
             ),
-            child: Row(
+            child: const Center(
+              child: Text('🤖', style: TextStyle(fontSize: 48)),
+            ),
+          ),
+          const SizedBox(height: 32),
+          const Text(
+            'BizAgent to robí\nza vás s AI',
+            style: TextStyle(
+              fontSize: 34,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF111827),
+              height: 1.15,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Umelá inteligencia spracuje faktúry,\nbločky a firmy automaticky.',
+            style: TextStyle(
+              fontSize: 17,
+              color: Colors.grey[600],
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 40),
+          _SolutionCard(
+            icon: Icons.document_scanner,
+            title: 'OCR skenovanie',
+            subtitle: 'Ofoťte bloček → AI ho spracuje',
+          ),
+          const SizedBox(height: 12),
+          _SolutionCard(
+            icon: Icons.auto_awesome,
+            title: 'AI kategorizácia',
+            subtitle: 'Automatické triedenie výdavkov',
+          ),
+          const SizedBox(height: 12),
+          _SolutionCard(
+            icon: Icons.search,
+            title: 'IČO lookup',
+            subtitle: 'Údaje firmy za 1 sekundu',
+          ),
+          const Spacer(flex: 5),
+        ],
+      ),
+    );
+  }
+}
+
+class _SolutionCard extends StatelessWidget {
+  const _SolutionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: BizTheme.slovakBlue.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: BizTheme.slovakBlue.withValues(alpha: 0.12),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: BizTheme.slovakBlue.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: BizTheme.slovakBlue, size: 22),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? BizTheme.slovakBlue : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    type['icon'] as IconData,
-                    color: isSelected ? Colors.white : Colors.grey[600],
-                    size: 24,
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF111827),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        type['type'] as String,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color:
-                              isSelected ? BizTheme.slovakBlue : Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        type['description'] as String,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
+                Text(
+                  subtitle,
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                 ),
-                if (isSelected)
-                  const Icon(
-                    Icons.check_circle,
-                    color: BizTheme.slovakBlue,
-                    size: 24,
-                  ),
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-}
-
-class _DemoPreview extends ConsumerWidget {
-  const _DemoPreview({
-    required this.businessType,
-    required this.onGenerateDemo,
-  });
-
-  final String businessType;
-  final VoidCallback onGenerateDemo;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final demoAsync = ref.watch(onboardingDemoProvider);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (demoAsync.value == null && !demoAsync.isLoading) {
-        onGenerateDemo();
-      }
-    });
-
-    return demoAsync.when(
-      loading: () => _LoadingDemo(),
-      error: (error, stack) => _ErrorDemo(onRetry: onGenerateDemo),
-      data: (demoData) => demoData != null
-          ? _InvoiceDemo(invoiceData: demoData.generatedInvoice)
-          : _LoadingDemo(),
-    );
-  }
-}
-
-class _LoadingDemo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
+          const Icon(Icons.check_circle, color: BizTheme.successGreen, size: 22),
         ],
       ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════
+// STEP 3: VÝSLEDOK
+// ═══════════════════════════════════════════
+class _StepResult extends StatelessWidget {
+  const _StepResult();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(
-            width: 60,
-            height: 60,
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(BizTheme.slovakBlue),
-              strokeWidth: 3,
+          const Spacer(flex: 3),
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: BizTheme.successGreen.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Center(
+              child: Text('🚀', style: TextStyle(fontSize: 48)),
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            'Generujem ukážkovú faktúru...',
+          const SizedBox(height: 32),
+          const Text(
+            'Ušetríte 10–20\nhodín mesačne',
             style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[700],
-              fontWeight: FontWeight.w500,
+              fontSize: 34,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF111827),
+              height: 1.15,
             ),
             textAlign: TextAlign.center,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorDemo extends StatelessWidget {
-  const _ErrorDemo({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 48, color: Colors.orange),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Text(
-            'Nepodarilo sa načítať demo',
+            'Žiadne chyby. Žiadne zabudnuté platby.\nVšetko na jednom mieste.',
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[800],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Použijeme predvolené údaje',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(onPressed: onRetry, child: const Text('Skúsiť znova')),
-        ],
-      ),
-    );
-  }
-}
-
-class _InvoiceDemo extends StatelessWidget {
-  const _InvoiceDemo({required this.invoiceData});
-
-  final Map<String, dynamic> invoiceData;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = invoiceData['items'] as List<dynamic>? ?? [];
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                invoiceData['invoiceNumber'] ?? 'FA-XXXXXX',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF1F2937),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'Návrh',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: BizTheme.slovakBlue,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            invoiceData['clientName'] ?? 'Klient s.r.o.',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-          Text(
-            'IČO: ${invoiceData['clientIco'] ?? 'XXXXXXXX'}',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-          ),
-          const SizedBox(height: 24),
-          ...items.map((item) {
-            final description = item['description'] ?? '';
-            final quantity = item['quantity'] ?? 1;
-            final price = item['price'] ?? 0.0;
-            final total = quantity * price;
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      description,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-                  Text(
-                    '${quantity}x ${NumberFormat.currency(symbol: '€').format(price)}',
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    NumberFormat.currency(symbol: '€').format(total),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-          const Divider(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                'Spolu: ${NumberFormat.currency(symbol: '€').format(_calculateTotal(items))}',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF1F2937),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            children: [
-              Icon(Icons.auto_awesome, size: 16, color: BizTheme.slovakBlue),
-              SizedBox(width: 8),
-              Text(
-                'Vygenerované AI pre váš typ podnikania',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: BizTheme.slovakBlue,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  double _calculateTotal(List<dynamic> items) {
-    return items.fold(0.0, (total, item) {
-      final quantity = item['quantity'] ?? 1;
-      final price = item['price'] ?? 0.0;
-      return total + (quantity * price);
-    });
-  }
-}
-
-class _FinishContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final features = [
-      {'icon': Icons.document_scanner, 'text': 'AI skenovanie bločkov'},
-      {'icon': Icons.notifications_active, 'text': 'Automatické pripomienky'},
-      {'icon': Icons.analytics, 'text': 'Daňové predpovede'},
-      {'icon': Icons.show_chart, 'text': 'Real-time prehľady'},
-    ];
-
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          // Logo instead of circle
-          Image.asset(
-            'assets/images/icon.png',
-            width: 120,
-            height: 120,
-            fit: BoxFit.contain,
-          ),
-          const SizedBox(height: 32),
-          Text(
-            'Čo ešte môžete robiť s BizAgent?',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[700],
+              fontSize: 17,
+              color: Colors.grey[600],
               height: 1.5,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
-          ...features.map(
-            (feature) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: BizTheme.slovakBlue.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      feature['icon'] as IconData,
-                      color: BizTheme.slovakBlue,
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      feature['text'] as String,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
+          const SizedBox(height: 40),
+          _ResultStat(
+            number: '30s',
+            label: 'na vytvorenie faktúry',
+            color: BizTheme.slovakBlue,
+          ),
+          const SizedBox(height: 12),
+          _ResultStat(
+            number: '0',
+            label: 'chýb v údajoch',
+            color: BizTheme.successGreen,
+          ),
+          const SizedBox(height: 12),
+          _ResultStat(
+            number: '100%',
+            label: 'platby pod kontrolou',
+            color: BizTheme.warningAmber,
+          ),
+          const SizedBox(height: 28),
+          // Free trial badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFFD700), Color(0xFFFF8C00)],
               ),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.star_rounded, color: Colors.white, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'Začnite zadarmo – 5 faktúr/mesiac',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
+          const Spacer(flex: 5),
         ],
       ),
     );
   }
 }
 
-class _ProgressDot extends StatelessWidget {
-  const _ProgressDot({required this.isActive, required this.isCompleted});
+class _ResultStat extends StatelessWidget {
+  const _ResultStat({
+    required this.number,
+    required this.label,
+    required this.color,
+  });
+  final String number;
+  final String label;
+  final Color color;
 
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 56,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              number,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: color,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 14),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF374151),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Dot extends StatelessWidget {
+  const _Dot({required this.isActive, required this.isCompleted});
   final bool isActive;
   final bool isCompleted;
 
@@ -789,32 +564,12 @@ class _ProgressDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
-      width: isActive ? 24 : 8,
+      width: isActive ? 28 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isCompleted
-            ? BizTheme.slovakBlue
-            : isActive
-                ? BizTheme.slovakBlue
-                : Colors.grey[300],
+        color: (isCompleted || isActive) ? BizTheme.slovakBlue : Colors.grey[300],
         borderRadius: BorderRadius.circular(4),
       ),
     );
   }
-}
-
-enum OnboardingStepType { welcome, features, businessType, demo, finish }
-
-class ModernOnboardingStep {
-  final String title;
-  final String subtitle;
-  final String? image;
-  final OnboardingStepType type;
-
-  ModernOnboardingStep({
-    required this.title,
-    required this.subtitle,
-    this.image,
-    required this.type,
-  });
 }

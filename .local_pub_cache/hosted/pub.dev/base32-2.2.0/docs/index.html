@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="base32 API docs, for the Dart programming language.">
+  <title>base32 - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/Daegalus/dart-base32">base32 package</a></li>
+  </ol>
+  <div class="self-name">base32</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <p><a href="https://github.com/Daegalus/dart-base32/actions"><img src="https://github.com/Daegalus/dart-base32/workflows/Dart/badge.svg" alt="Dart"></a></p>
+<h1 id="dart-base32">dart-base32</h1>
+<p>Simple base32 encode/decode following RFC4648. Can handle base32 for OTP secrets also.</p>
+<p>Features:</p>
+<ul>
+<li>Encodes and Decodes Base32 strings.</li>
+<li><a href="https://daegalus.github.io/dart-base32/">Documentation</a></li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="pubspec">Pubspec</h3>
+<p>pub.dev: (you can use 'any' instead of a version if you just want the latest always)</p>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  base32: 2.1.3
+</code></pre>
+<pre class="language-dart"><code class="language-dart">import 'package:base32/base32.dart';
+</code></pre>
+<p>Start encoding/decoding ...</p>
+<pre class="language-dart"><code class="language-dart">// Encode a hex string to base32
+base32.encodeHexString('48656c6c6f21deadbeef'); // -&gt; 'JBSWY3DPEHPK3PXP'
+
+// base32 decoding to original string.
+base32.decodeAsHexString("JBSWY3DPEHPK3PXP"); // -&gt; '48656c6c6f21deadbeef'
+</code></pre>
+<h2 id="api">API</h2>
+<h3 id="base32encodelistint-bytelist-encoding-encoding--encodingstandardrfc4648"><code>base32.encode(List&lt;int&gt; byteList, {Encoding encoding = Encoding.standardRFC4648})</code></h3>
+<p>Generate and return a RFC4648 base32 string from a list of bytes.</p>
+<ul>
+<li><code>byteList</code> - (<code>List&lt;int&gt;</code>) A list of bytes representing your input.</li>
+</ul>
+<p>Returns <code>String</code> representation of the encoded base32.</p>
+<h3 id="base32encodehexstringstring-hex-encoding-encoding--encodingstandardrfc4648"><code>base32.encodeHexString(String hex, {Encoding encoding = Encoding.standardRFC4648})</code></h3>
+<p>Generate and return a RFC4648 base32 string from a hex string.</p>
+<ul>
+<li><code>hexString</code> - (<code>String</code>) A string of hex values intended to be converted to bytes and encoded.</li>
+</ul>
+<p>Returns <code>String</code> representation of the encoded base32</p>
+<p>Example: Encode a hex string.</p>
+<pre class="language-dart"><code class="language-dart">base32.encodeHexString('48656c6c6f21deadbeef'); // -&gt; 'JBSWY3DPEHPK3PXP'
+</code></pre>
+<h3 id="base32encodestringstring-base32str-encoding-encoding--encodingstandardrfc4648"><code>base32.encodeString(String base32str, {Encoding encoding = Encoding.standardRFC4648})</code></h3>
+<p>Generate and return a RFC4648 base32 string from a plain string.</p>
+<ul>
+<li><code>base32str</code> - (<code>String</code>) A string intended to be converted to bytes and encoded.</li>
+</ul>
+<p>Returns <code>String</code> representation of the encoded base32</p>
+<p>Example: Encode a hex string.</p>
+<pre class="language-dart"><code class="language-dart">base32.encodeString('foobar'); // -&gt; 'MZXW6YTBOI======'
+</code></pre>
+<h3 id="base32decodestring-base32-encoding-encoding--encodingstandardrfc4648"><code>base32.decode(String base32, {Encoding encoding = Encoding.standardRFC4648})</code></h3>
+<p>Decodes a base32 string back to its original byte values.</p>
+<ul>
+<li><code>base32</code> - (<code>String</code>) The base32 string you wish to decode.</li>
+</ul>
+<p>Returns <code>Uint8List</code> of the decoded data.</p>
+<p>Example: Decode a base32 string, then output it in hex format</p>
+<pre class="language-dart"><code class="language-dart">import "package:convert/convert.dart"
+var decoded = base32.decode("JBSWY3DPEHPK3PXP");
+var decodedHex = hex.encode(decoded); // -&gt; '48656c6c6f21deadbeef'
+</code></pre>
+<h3 id="base32decodeashexstringstring-base32-encoding-encoding--encodingstandardrfc4648"><code>base32.decodeAsHexString(String base32, {Encoding encoding = Encoding.standardRFC4648})</code></h3>
+<p>Decodes a base32 string back to its original byte values in hex string format.</p>
+<ul>
+<li><code>base32</code> - (<code>String</code>) The base32 string you wish to decode.</li>
+</ul>
+<p>Returns <code>String</code> of the decoded data.</p>
+<p>Example: Decode a base32 string to a hex string.</p>
+<pre class="language-dart"><code class="language-dart">import "package:convert/convert.dart"
+var decoded = base32.decodeAsHexString("JBSWY3DPEHPK3PXP"); // -&gt; '48656c6c6f21deadbeef'
+</code></pre>
+<h3 id="base32decodeasstringstring-base32-encoding-encoding--encodingstandardrfc4648"><code>base32.decodeAsString(String base32, {Encoding encoding = Encoding.standardRFC4648})</code></h3>
+<p>Decodes a base32 string back to its original byte values.</p>
+<ul>
+<li><code>base32</code> - (<code>String</code>) The base32 string you wish to decode.</li>
+</ul>
+<p>Returns <code>String</code> of the decoded data.</p>
+<p>Example: Decode a base32 string to a string.</p>
+<pre class="language-dart"><code class="language-dart">var decoded = base32.decodeAsString("MZXW6YTBOI======"); // -&gt; 'foobar'
+</code></pre>
+<h3 id="enum-encoding"><code>enum Encoding</code></h3>
+<p>This is a list of supported variants and their different encodings.</p>
+<ul>
+<li>StandardRFC4648 - the default standard encoding
+<ul>
+<li><code>ABCDEFGHIJKLMNOPQRSTUVWXYZ234567</code></li>
+<li>Padded with <code>=</code></li>
+</ul>
+</li>
+<li>base32Hex
+<ul>
+<li><code>0123456789ABCDEFGHIJKLMNOPQRSTUV</code></li>
+<li>Padded with <code>=</code></li>
+</ul>
+</li>
+<li>crockford
+<ul>
+<li><code>0123456789ABCDEFGHJKMNPQRSTVWXYZ</code></li>
+<li>Not Padded</li>
+</ul>
+</li>
+<li>z-base-32
+<ul>
+<li><code>ybndrfg8ejkmcpqxot1uwisza345h769</code></li>
+<li>Not Padded</li>
+</ul>
+</li>
+<li>geohash
+<ul>
+<li><code>0123456789bcdefghjkmnpqrstuvwxyz</code></li>
+<li>Padded with <code>=</code></li>
+</ul>
+</li>
+<li>NonStandardRFC4648 - Same as StandardRFC4648, but lowercase, not supported by the spec.
+<ul>
+<li><code>abcdefghijklmnopqrstuvwxyz234567</code></li>
+<li>Padded with <code>=</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="testing">Testing</h2>
+<pre class="language-bash"><code class="language-bash">dart test/base32_test.dart
+</code></pre>
+<h2 id="changelog">Changelog</h2>
+<p>See CHANGELOG.md</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="base32">
+  <span class="name"><a href="base32/">base32</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="encodings">
+  <span class="name"><a href="encodings/">encodings</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://github.com/Daegalus/dart-base32">base32 package</a></li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">base32</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="base32/">base32</a></li>
+      <li><a href="encodings/">encodings</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    base32
+      2.2.0
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

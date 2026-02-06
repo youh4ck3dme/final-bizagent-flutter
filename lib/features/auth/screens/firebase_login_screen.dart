@@ -7,6 +7,9 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_repository.dart';
 import '../../../core/ui/biz_theme.dart';
+import '../../../core/demo_mode/demo_mode_service.dart';
+import '../../../core/demo_mode/demo_scenarios.dart';
+import '../../../core/ui/biz_logo_mark.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 class FirebaseLoginScreen extends ConsumerStatefulWidget {
@@ -95,6 +98,11 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
     );
   }
 
+  void _startDemoMode() {
+    DemoModeService.instance.activateDemoMode(DemoScenario.standard);
+    context.go('/dashboard');
+  }
+
   String _getFirebaseErrorMessage(String code) {
     switch (code) {
       case 'user-not-found':
@@ -153,15 +161,8 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Logo Section (Simplified to only the new icon)
-                    SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: Image.asset(
-                        'assets/images/icon.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                    // Logo Section (Brand logo - centralized widget)
+                    const BizLogoMark(size: 120),
 
                     const SizedBox(height: 24),
 
@@ -283,6 +284,45 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // PILIER #2: Demo Button – bez registrácie
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: OutlinedButton(
+                        onPressed: () => _startDemoMode(),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                            color: BizTheme.slovakBlue,
+                            width: 2,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.play_circle_outline,
+                              color: BizTheme.slovakBlue,
+                              size: 22,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Vyskúšať bez registrácie',
+                              style: GoogleFonts.inter(
+                                color: BizTheme.slovakBlue,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 

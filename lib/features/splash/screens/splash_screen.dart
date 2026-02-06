@@ -6,6 +6,7 @@ import 'package:bizagent/features/auth/providers/auth_repository.dart';
 import 'package:bizagent/features/intro/providers/onboarding_provider.dart';
 import 'package:bizagent/core/services/initialization_service.dart';
 import 'package:bizagent/core/ui/biz_theme.dart';
+import 'package:bizagent/core/ui/biz_logo_mark.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -65,16 +66,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 1. Branding Image (Centered logo instead of old fullscreen image)
-          Center(
-            child: SizedBox(
-              width: 180,
-              height: 180,
-              child: Image.asset(
-                'assets/images/splash_branding.png',
-                fit: BoxFit.contain,
-              ),
-            ),
+          // 1. Branding Image (Centralized brand logo widget)
+          const Center(
+            child: BizLogoMark(size: 180),
           ),
 
           // 2. Overlay Gradient for readability
