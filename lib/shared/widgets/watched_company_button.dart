@@ -21,7 +21,9 @@ class WatchedCompanyButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (icoNorm.isEmpty) return const SizedBox.shrink();
+    if (icoNorm.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     final watchedService = ref.watch(watchedCompaniesServiceProvider);
 
@@ -61,7 +63,9 @@ class WatchedCompanyButton extends ConsumerWidget {
       if (canWatch) {
         await service.watch(icoNorm, name);
       } else {
-        if (!context.mounted) return;
+        if (!context.mounted) {
+          return;
+        }
         _showPaywall(context);
       }
     }
@@ -78,7 +82,9 @@ class WatchedCompanyButton extends ConsumerWidget {
         .read(subscriptionGuardProvider)
         .canAccess(BizFeature.watchedCompanies);
 
-    if (canAccess) return true;
+    if (canAccess) {
+      return true;
+    }
 
     // If not global access (not Pro), check count limit manually here (as failover) or assume
     // canAccess logic handles it (it returned false, so we check specific count).

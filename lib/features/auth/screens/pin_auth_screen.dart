@@ -57,10 +57,14 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
     if (_mode == PinMode.verify) {
       final success = await security.verifyPin(_currentPin);
       if (success) {
-        if (mounted) Navigator.of(context).pop(true);
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
       } else {
         setState(() => _currentPin = '');
-        if (mounted) BizSnackbar.showError(context, 'Nesprávny PIN kód');
+        if (mounted) {
+          BizSnackbar.showError(context, 'Nesprávny PIN kód');
+        }
       }
     } else if (_mode == PinMode.setup) {
       // First step of setup
@@ -98,8 +102,12 @@ class _PinAuthScreenState extends ConsumerState<PinAuthScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     String title = 'Zadajte PIN';
-    if (_mode == PinMode.setup) title = 'Nastavte si PIN';
-    if (_mode == PinMode.confirm) title = 'Potvrďte PIN';
+    if (_mode == PinMode.setup) {
+      title = 'Nastavte si PIN';
+    }
+    if (_mode == PinMode.confirm) {
+      title = 'Potvrďte PIN';
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,

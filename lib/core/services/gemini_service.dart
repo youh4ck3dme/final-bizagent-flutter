@@ -161,7 +161,9 @@ class GeminiService {
   String _generateCacheKey(String prompt) => prompt.hashCode.toString();
 
   void _addToCache(String key, String value) {
-    if (_cache.length >= _maxCacheSize) _cache.remove(_cache.keys.first);
+    if (_cache.length >= _maxCacheSize) {
+      _cache.remove(_cache.keys.first);
+    }
     _cache[key] = value;
   }
 

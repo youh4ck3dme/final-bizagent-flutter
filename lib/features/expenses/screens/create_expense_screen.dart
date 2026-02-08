@@ -83,13 +83,17 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
 
   Future<void> _processSharedImage() async {
     final path = widget.sharedImagePath;
-    if (path == null || path.isEmpty || !mounted) return;
+    if (path == null || path.isEmpty || !mounted) {
+      return;
+    }
     final ocrService = ref.read(ocrServiceProvider);
     final enhancedAiService = ref.read(enhancedAIServiceProvider);
     final analytics = ref.read(analyticsServiceProvider);
     analytics.logScanStarted();
     final result = await ocrService.scanReceiptFromPath(path);
-    if (result == null || !mounted) return;
+    if (result == null || !mounted) {
+      return;
+    }
     analytics.logScanSuccess(result.vendorId ?? 'unknown');
     setState(() {
       _scannedReceiptPath = result.imagePath;
@@ -129,7 +133,9 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
   void _onVendorChanged() async {
     if (_vendorController.text.length >= 3) {
       final user = ref.read(authStateProvider).value;
-      if (user == null) return;
+      if (user == null) {
+        return;
+      }
 
       final (category, confidence) = await ref
           .read(categorizationServiceProvider)
@@ -169,7 +175,9 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
   }
 
   Future<void> _updateCurrency(String? newValue) async {
-    if (newValue == null) return;
+    if (newValue == null) {
+      return;
+    }
 
     setState(() {
       _selectedCurrency = newValue;
@@ -225,9 +233,15 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
       setState(() {
         _scannedReceiptPath = result.imagePath;
         _descController.text = result.originalText;
-        if (result.totalAmount != null) _amountController.text = result.totalAmount!;
-        if (result.vendorId != null) _vendorController.text = result.vendorId!;
-        if (result.date != null) _tryParseDate(result.date!);
+        if (result.totalAmount != null) {
+          _amountController.text = result.totalAmount!;
+        }
+        if (result.vendorId != null) {
+          _vendorController.text = result.vendorId!;
+        }
+        if (result.date != null) {
+          _tryParseDate(result.date!);
+        }
       });
 
       // Show "Analyzujem cez Vision 2.5" feedback
@@ -262,7 +276,9 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
         }
       } catch (e) {
         debugPrint('Vision Error: $e');
-        if (mounted) BizSnackbar.showError(context, 'AI analýza zlyhala. Používam OCR dáta.');
+        if (mounted) {
+          BizSnackbar.showError(context, 'AI analýza zlyhala. Používam OCR dáta.');
+        }
       }
     }
   }
@@ -313,7 +329,9 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
   bool _isSaving = false;
 
   Future<void> _saveExpense() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     setState(() {
       _isSaving = true;
@@ -574,7 +592,9 @@ class _CreateExpenseScreenState extends ConsumerState<CreateExpenseScreen> {
                       decimal: true,
                     ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) return 'Povinné pole';
+                      if (v == null || v.isEmpty) {
+                        return 'Povinné pole';
+                      }
                       if (double.tryParse(v.replaceAll(',', '.')) == null) {
                         return 'Neplatná suma';
                       }

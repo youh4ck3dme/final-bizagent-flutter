@@ -269,7 +269,9 @@ class TrashScreen extends ConsumerWidget {
               await ref
                   .read(trashControllerProvider.notifier)
                   .permanentDeleteItem(collection, id);
-              if (context.mounted) BizSnackbar.showInfo(context, 'Odstránené.');
+              if (context.mounted) {
+                BizSnackbar.showInfo(context, 'Odstránené.');
+              }
             },
             style: FilledButton.styleFrom(
               backgroundColor: BizTheme.nationalRed,

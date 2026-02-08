@@ -44,7 +44,9 @@ class _GoogleBackupSettingsWidgetState
       }
       setState(() => _isConnected = true);
     } else {
-      if (mounted) BizSnackbar.showError(context, 'Pripojenie zlyhalo');
+      if (mounted) {
+        BizSnackbar.showError(context, 'Pripojenie zlyhalo');
+      }
       setState(() => _isConnected = false);
     }
     setState(() => _isLoading = false);
@@ -53,7 +55,9 @@ class _GoogleBackupSettingsWidgetState
   Future<void> _handleBackup() async {
     if (!_isConnected) {
       await _handleConnect();
-      if (!_isConnected) return;
+      if (!_isConnected) {
+        return;
+      }
     }
 
     setState(() => _isLoading = true);
@@ -63,16 +67,22 @@ class _GoogleBackupSettingsWidgetState
         BizSnackbar.showSuccess(context, 'Záloha úspešne vytvorená!');
       }
     } catch (e) {
-      if (mounted) BizSnackbar.showError(context, 'Chyba zálohovania: $e');
+      if (mounted) {
+        BizSnackbar.showError(context, 'Chyba zálohovania: $e');
+      }
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
   Future<void> _handleRestore() async {
     if (!_isConnected) {
       await _handleConnect();
-      if (!_isConnected) return;
+      if (!_isConnected) {
+        return;
+      }
     }
 
     setState(() => _isLoading = true);
@@ -144,9 +154,13 @@ class _GoogleBackupSettingsWidgetState
         );
       }
     } catch (e) {
-      if (mounted) BizSnackbar.showError(context, 'Chyba obnovy: $e');
+      if (mounted) {
+        BizSnackbar.showError(context, 'Chyba obnovy: $e');
+      }
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -169,7 +183,9 @@ class _GoogleBackupSettingsWidgetState
               : Switch(
                   value: _isConnected,
                   onChanged: (val) {
-                    if (val) _handleConnect();
+                    if (val) {
+                      _handleConnect();
+                    }
                     // Disconnect logic not fully implemented in UI but service has disconnect()
                   },
                 ),

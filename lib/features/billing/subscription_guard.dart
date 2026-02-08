@@ -19,18 +19,24 @@ class SubscriptionGuard {
 
   bool canAccess(BizFeature feature) {
     // DEV BYPASS: Allow everything on localhost/debug
-    if (kDebugMode) return true;
+    if (kDebugMode) {
+      return true;
+    }
 
     final billingState = ref.read(billingProvider);
     final isPro = billingState.entitlements.isPro;
     final isBusiness = billingState.entitlements.isBusiness;
     final remoteConfig = BizRemoteConfig();
 
-    if (isBusiness) return true; // Business has everything
+    if (isBusiness) {
+      return true; // Business has everything
+    }
 
     switch (feature) {
       case BizFeature.createInvoice:
-        if (isPro) return true;
+        if (isPro) {
+          return true;
+        }
         // Check local usage limit (mocked for now, needs persistent storage)
         // ideally usage is tracked in a separate provider
         return billingState.entitlements.invoiceCount <
@@ -43,8 +49,12 @@ class SubscriptionGuard {
         return billingState.entitlements.icoLookupsCount < 5;
 
       case BizFeature.aiAnalysis:
-        if (isBusiness) return true;
-        if (isPro) return billingState.entitlements.aiRequestsCount < 50;
+        if (isBusiness) {
+          return true;
+        }
+        if (isPro) {
+          return billingState.entitlements.aiRequestsCount < 50;
+        }
         return billingState.entitlements.aiRequestsCount < 1;
 
       case BizFeature.exportExcel:
@@ -54,7 +64,9 @@ class SubscriptionGuard {
         return isPro;
 
       case BizFeature.watchedCompanies:
-        if (isBusiness || isPro) return true;
+        if (isBusiness || isPro) {
+          return true;
+        }
         // Limit for Free tier is 3.
         // We rely on the button/UI to check current count against this entitlement.
         // BUT wait, the pattern here is checking if they are allowed to do X.
