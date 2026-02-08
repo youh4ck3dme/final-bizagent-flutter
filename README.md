@@ -48,6 +48,28 @@
 
 ## 📦 Build & Release (Production)
 
+### 🔧 Production Toolkit Scripts
+
+BizAgent now includes comprehensive production scripts to streamline deployment:
+
+```bash
+# 1. Setup Android keystore (first time only)
+./scripts/setup_keystore.sh
+
+# 2. Verify keystore and signing configuration
+./scripts/verify_keystore.sh
+
+# 3. Run complete test suite
+./scripts/test_full_suite.sh
+
+# 4. Validate Google Play assets
+./scripts/validate_assets.sh
+```
+
+📖 **[Full documentation in scripts/README.md](scripts/README.md)**
+
+---
+
 ### 🤖 Android (Google Play)
 
 Toto vytvorí optimalizovaný, obfuskovaný `.aab` balíček pripravený na upload.
