@@ -3,13 +3,13 @@ import 'dart:io';
 
 void main(List<String> args) async {
   if (args.isEmpty) {
-    print('Usage: dart run test/fixtures/record_fixture.dart <ICO>');
+    stderr.writeln('Usage: dart run test/fixtures/record_fixture.dart <ICO>');
     exit(1);
   }
 
   final ico = args[0];
   final url = Uri.parse('https://icoatlas.sk/api/company/$ico');
-  print('Fetching data from $url...');
+  stdout.writeln('Fetching data from $url...');
 
   final client = HttpClient();
 
@@ -18,7 +18,7 @@ void main(List<String> args) async {
     final response = await request.close();
 
     if (response.statusCode != 200) {
-      print('Failed to fetch data. Status code: ${response.statusCode}');
+      stderr.writeln('Failed to fetch data. Status code: ${response.statusCode}');
       exit(1);
     }
 
@@ -31,9 +31,9 @@ void main(List<String> args) async {
     final file = File('test/fixtures/ico_$ico.json');
     await file.writeAsString(formattedJson);
 
-    print('Fixture saved to ${file.path}');
+    stdout.writeln('Fixture saved to ${file.path}');
   } catch (e) {
-    print('Error: $e');
+    stderr.writeln('Error: $e');
     exit(1);
   } finally {
     client.close();
