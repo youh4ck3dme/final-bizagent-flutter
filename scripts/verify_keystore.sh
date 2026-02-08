@@ -29,8 +29,11 @@ if [ ! -f "android/key.properties" ]; then
 else
     echo -e "${GREEN}✅ key.properties exists${NC}"
     
-    # Parse key.properties
-    source android/key.properties
+    # Parse key.properties safely without executing code
+    storePassword=$(grep "^storePassword=" android/key.properties | cut -d'=' -f2-)
+    keyPassword=$(grep "^keyPassword=" android/key.properties | cut -d'=' -f2-)
+    keyAlias=$(grep "^keyAlias=" android/key.properties | cut -d'=' -f2-)
+    storeFile=$(grep "^storeFile=" android/key.properties | cut -d'=' -f2-)
     
     # Check if all required properties are set
     if [ -z "$storePassword" ]; then

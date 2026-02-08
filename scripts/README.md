@@ -102,7 +102,27 @@ Runs full test suite including cleaning, analysis, formatting, and tests.
 
 **Usage:**
 ```bash
+./scripts/test_full_suite.sh [options]
+```
+
+**Options:**
+- `--run-integration` - Always run integration tests (skip prompt)
+- `--skip-integration` - Skip integration tests (useful for CI/CD)
+- No flag - Prompt user in interactive mode, skip in non-interactive mode
+
+**Examples:**
+```bash
+# Interactive mode (prompts for integration tests)
 ./scripts/test_full_suite.sh
+
+# CI/CD mode - skip integration tests
+./scripts/test_full_suite.sh --skip-integration
+
+# Run all tests including integration
+./scripts/test_full_suite.sh --run-integration
+
+# Environment variable alternative
+SKIP_INTEGRATION=true ./scripts/test_full_suite.sh
 ```
 
 **Steps:**

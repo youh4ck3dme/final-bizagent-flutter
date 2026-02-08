@@ -59,17 +59,33 @@ fi
 
 # Integration Tests (optional - can be slow)
 echo -e "${BLUE}🔗 Step 6/6: Running integration tests...${NC}"
-read -p "Run integration tests? (may take several minutes) [y/N]: " RUN_INTEGRATION
 
-if [ "$RUN_INTEGRATION" == "y" ] || [ "$RUN_INTEGRATION" == "Y" ]; then
+# Check if we should run integration tests (env var or command line flag)
+if [ "${SKIP_INTEGRATION}" = "true" ] || [ "$1" = "--skip-integration" ]; then
+    echo -e "${YELLOW}⏭️  Integration tests skipped (use --run-integration to enable)${NC}\n"
+elif [ "$1" = "--run-integration" ]; then
     if flutter test integration_test/; then
         echo -e "${GREEN}✅ Integration tests passed${NC}\n"
     else
         echo -e "${RED}❌ Integration tests failed${NC}\n"
         FAILED=1
     fi
+elif [ -t 0 ]; then
+    # Only prompt if running in interactive terminal
+    read -p "Run integration tests? (may take several minutes) [y/N]: " RUN_INTEGRATION
+    if [ "$RUN_INTEGRATION" == "y" ] || [ "$RUN_INTEGRATION" == "Y" ]; then
+        if flutter test integration_test/; then
+            echo -e "${GREEN}✅ Integration tests passed${NC}\n"
+        else
+            echo -e "${RED}❌ Integration tests failed${NC}\n"
+            FAILED=1
+        fi
+    else
+        echo -e "${YELLOW}⏭️  Integration tests skipped${NC}\n"
+    fi
 else
-    echo -e "${YELLOW}⏭️  Integration tests skipped${NC}\n"
+    # Non-interactive mode (CI/CD) - skip by default
+    echo -e "${YELLOW}⏭️  Integration tests skipped (non-interactive, use --run-integration to enable)${NC}\n"
 fi
 
 # Calculate duration

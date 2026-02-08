@@ -56,7 +56,7 @@ check_image() {
         fi
         
         # Check file size
-        size_bytes=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
+        size_bytes=$(stat -f %z "$file" 2>/dev/null || stat -c %s "$file" 2>/dev/null)
         size_mb=$(echo "scale=2; $size_bytes / 1024 / 1024" | bc)
         max_bytes=$(echo "$max_size_mb * 1024 * 1024" | bc)
         
