@@ -40,8 +40,8 @@ Future<void> _initFirebaseAppCheck() async {
 
   // Modern activation API for native platforms
   await FirebaseAppCheck.instance.activate(
-    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
+    androidProvider: kDebugMode ? AndroidDebugProvider() : AndroidPlayIntegrityProvider(),
+    appleProvider: kDebugMode ? AppleDebugProvider() : AppleAppAttestProvider(),
   );
 }
 
