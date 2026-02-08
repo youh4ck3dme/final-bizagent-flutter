@@ -21,7 +21,8 @@ service cloud.firestore {
     }
     
     function isValidEmail(email) {
-      return email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+      return email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*\\.[a-zA-Z]{2,}$')
+        && !email.matches('.*\\.\\..*'); // No consecutive dots
     }
     
     function hasValidTimestamp(data) {

@@ -69,5 +69,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release-bundle-${{ github.event.inputs.flavor || 'production' }}
-          path: build/app/outputs/bundle/*Release/*.aab
+          path: build/app/outputs/bundle/*/*Release/*.aab
           retention-days: 7

@@ -95,6 +95,7 @@ service firebase.storage {
     
     match /users/{userId}/backups/{fileName} {
       allow read, write: if isOwner(userId) 
+        && isJSONFile()
         && isValidBackupSize();
       
       allow delete: if isOwner(userId);
