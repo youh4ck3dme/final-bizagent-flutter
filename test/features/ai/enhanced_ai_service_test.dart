@@ -25,19 +25,6 @@ void main() {
       final dummyFile = File('test_receipt.jpg');
 
       // We expect the mock/fallback behavior from GeminiService
-      // Since we mocked GeminiService, we need to stub the method or use the real one.
-      // Let's use the REAL GeminiService to test the actual fallback logic we wrote.
-      final realGeminiService = GeminiService();
-      final realEnhancedService = EnhancedAIService(realGeminiService);
-
-      // Act
-      // We create a dummy file just to pass the file existence check if any,
-      // but readAsBytes in the service will fail if file doesn't exist.
-      // The service catches the error and returns {'error': ...} OR the mock data depending on implementation.
-      // Looking at my implementation: it tries readAsBytes inside try-catch.
-      // So I need a real file or I need to mock the file reading.
-      // Actually, verifying the *Service* logic is better done with Mocks to not depend on filesystem/network.
-
       when(mockGeminiService.analyzeReceiptImage(any)).thenAnswer((_) async => {
         "vendor": "Tesco Stores SR",
         "total": 45.80,

@@ -253,17 +253,16 @@ class GeminiService {
   Future<Map<String, dynamic>> analyzeReceiptImage(File imageFile) async {
     final startTime = DateTime.now();
     try {
-      final imageBytes = await imageFile.readAsBytes();
-      final base64Image = base64Encode(imageBytes);
-
-      const gatewayUrl = 'https://bizagent.sk/api/ai/vision';
-
-      String? appCheckToken;
-      try {
-        appCheckToken = await FirebaseAppCheck.instance.getToken();
-      } catch (e) {
-        debugPrint('AppCheck Token Error: $e');
-      }
+      // Variables for future backend integration
+      // final imageBytes = await imageFile.readAsBytes();
+      // final base64Image = base64Encode(imageBytes);
+      // const gatewayUrl = 'https://bizagent.sk/api/ai/vision';
+      // String? appCheckToken;
+      // try {
+      //   appCheckToken = await FirebaseAppCheck.instance.getToken();
+      // } catch (e) {
+      //   debugPrint('AppCheck Token Error: $e');
+      // }
 
       // If backend is not available, we can mock the response slightly more intelligently
       // or just fail if it's strictly dependent on the backend.
