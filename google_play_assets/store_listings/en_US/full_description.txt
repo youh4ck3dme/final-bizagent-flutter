@@ -1,0 +1,158 @@
+🚀 BizAgent - Your Intelligent Accounting Assistant
+
+Are you a sole proprietor or entrepreneur in Slovakia? BizAgent simplifies your accounting with artificial intelligence!
+
+✨ KEY FEATURES
+
+📸 Scan Receipts & Invoices
+• Automatic text recognition from photos using AI
+• Extract company registration numbers, VAT, amounts
+• Instant company data lookup via Finstat API
+• Smart expense categorization
+
+💰 Manage Expenses & Income
+• Clear dashboard with real-time statistics
+• Visual charts for income and expenses
+• Filter by category, date, currency
+• Export to PDF, Excel, or CSV
+
+📄 Easy Invoicing
+• Create an invoice in less than 60 seconds
+• Automatic VAT and total calculations
+• Professional PDF templates
+• Instant sharing via email or WhatsApp
+• Track unpaid invoices
+
+🤖 AI Accountant - Your Tax Advisor
+• Intelligent tax tips tailored to you
+• Tax liability predictions
+• Note analysis and savings recommendations
+• Tax deadline reminders
+
+💱 Multi-Currency Support
+• Invoice in EUR, USD, CZK, GBP and more
+• Automatic exchange rate calculations
+• Exchange rate history
+• Dashboard in your chosen currency
+
+☁️ Secure Backup
+• Automatic backups to Google Drive
+• End-to-end data encryption
+• Easy restore on new device
+• GDPR compliant
+
+🎨 Modern Design
+• "Deep Space" UI with glassmorphism effects
+• "Blue Magic" dark mode
+• Smooth animations and transitions
+• Responsive for tablets
+
+📊 Clear Reports
+• Monthly, quarterly, and annual summaries
+• Charts for income, expenses, and profit
+• Expense categorization
+• Export reports to PDF
+
+🔒 Security & Privacy
+• Firebase authentication (Google, Email)
+• PIN app protection
+• Biometric login
+• We never sell your data to third parties
+
+---
+
+🇸🇰 SPECIAL FOR SLOVAKIA
+
+• Company ID/VAT lookup via Finstat API
+• Slovak VAT calculator (20%, 10%, 0%)
+• Tax rates according to SK legislation
+• Invoices in Slovak with IBAN
+• Support for sole proprietors and LLCs
+
+---
+
+📱 SUPPORTED PLATFORMS
+
+• Android 7.0+ (API 24+)
+• Phones and tablets
+• Web app (bizagent.app)
+• Desktop (Windows, macOS, Linux)
+
+---
+
+🆓 FREE FOR EVERYONE
+
+• Unlimited invoices
+• Unlimited expenses and income
+• Unlimited AI assistant
+• Cloud backups
+• All future updates
+• No hidden fees
+• No ads
+
+---
+
+👨‍💼 WHO IS BIZAGENT FOR?
+
+✅ Sole proprietors
+✅ Small and medium businesses
+✅ Freelancers
+✅ Online stores
+✅ Craftsmen
+✅ Consultants
+✅ IT professionals
+✅ Anyone who needs simple invoicing
+
+---
+
+💡 WHY BIZAGENT?
+
+⏱️ Save time - Automate accounting tasks
+🎯 Accuracy - AI minimizes input errors
+📱 Mobility - Work from anywhere
+💸 Save money - No accountant fees
+🔐 Security - Bank-level security
+🇸🇰 Made for Slovakia - Follows SK legislation
+
+---
+
+🔔 COMING SOON
+
+• Automatic payment reminders
+• Bank integrations (API)
+• Project time tracker
+• QR code invoices (Pay by Square)
+• Social security calculation for sole proprietors
+• Payment calendar
+• Payroll module
+• Cash register integrations
+
+---
+
+📧 SUPPORT & CONTACT
+
+• Email: support@bizagent.app
+• Web: https://bizagent.app
+• FAQ: https://bizagent.app/faq
+• Instagram: @bizagent_app
+• Facebook: /bizagentapp
+
+Quick response within 24 hours!
+
+---
+
+⭐ RATINGS
+
+If you like BizAgent, leave us a 5-star rating! Every review helps us improve the app.
+
+---
+
+🔒 DATA PROTECTION
+
+Your data is protected according to GDPR and Slovak data protection laws. We never sell your data to third parties. More info: bizagent.app/privacy
+
+---
+
+📥 DOWNLOAD BIZAGENT NOW AND START SAVING TIME!
+
+#Accounting #Invoicing #SoleProprietor #Business #Slovakia #AI

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ochrana osobných údajov - BizAgent</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-secondary);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            background-color: var(--bg-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-height: 100vh;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .meta {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h3 {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        strong {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+        
+        .important-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.75rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ochrana osobných údajov - BizAgent</h1>
+            <div class="meta">
+                <strong>Platnosť od:</strong> 8. február 2026<br>
+                <strong>Posledná aktualizácia:</strong> 8. február 2026
+            </div>
+        </header>
+
+        <section>
+            <h2>1. Úvod</h2>
+            <p>BizAgent ("my", "nás", "naša aplikácia") rešpektuje vaše súkromie a zaväzuje sa chrániť vaše osobné údaje v súlade s nariadením GDPR (General Data Protection Regulation) a zákonom č. 18/2018 Z.z. o ochrane osobných údajov.</p>
+            <p>Táto politika ochrany osobných údajov vás informuje o tom, ako zaobchádzame s vašimi osobnými údajmi pri používaní našej mobilnej aplikácie BizAgent.</p>
+        </section>
+
+        <section>
+            <h2>2. Správca osobných údajov</h2>
+            <p><strong>Názov:</strong> EB-EU s.r.o.<br>
+            <strong>IČO:</strong> 51226511<br>
+            <strong>Sídlo:</strong> Kukučínova 22, Banská Bystrica, 974 01, Slovensko<br>
+            <strong>Email:</strong> <a href="mailto:support@bizagent.app">support@bizagent.app</a><br>
+            <strong>Telefón:</strong> +421 944 637 232</p>
+        </section>
+
+        <section>
+            <h2>3. Aké osobné údaje zbierame</h2>
+            <p>Pri používaní aplikácie BizAgent môžeme zbierať nasledujúce kategórie osobných údajov:</p>
+            
+            <h3>3.1 Identifikačné údaje</h3>
+            <ul>
+                <li>Meno a priezvisko</li>
+                <li>Emailová adresa</li>
+                <li>Telefónne číslo (voliteľné)</li>
+                <li>Profilová fotografia (voliteľné)</li>
+            </ul>
+
+            <h3>3.2 Účtovné a obchodné údaje</h3>
+            <ul>
+                <li>Faktúry (čísla faktúr, sumy, dátumy)</li>
+                <li>Výdavky a príjmy</li>
+                <li>IČO a DIČ firiem (vaše a vašich klientov)</li>
+                <li>Poznámky a tagy</li>
+                <li>Kategórie výdavkov</li>
+            </ul>
+
+            <h3>3.3 Technické údaje</h3>
+            <ul>
+                <li>IP adresa</li>
+                <li>Typ a verzia zariadenia</li>
+                <li>Operačný systém a jeho verzia</li>
+                <li>Jedinečný identifikátor zariadenia</li>
+                <li>Logy aplikácie (pre crash reporting)</li>
+            </ul>
+
+            <h3>3.4 Údaje o používaní aplikácie</h3>
+            <ul>
+                <li>Analytics dáta (aké funkcie používate, ako často)</li>
+                <li>Crash reports (informácie o pádoch aplikácie)</li>
+                <li>Performance metrics (výkon aplikácie)</li>
+            </ul>
+
+            <h3>3.5 Fotografie a obrázky (voliteľné)</h3>
+            <ul>
+                <li>Fotografie bločkov a faktúr (ak používate skenovaciu funkciu)</li>
+                <li>Logo vašej firmy (ak ho nahráte)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>4. Ako používame vaše osobné údaje</h2>
+            <p>Vaše osobné údaje používame na nasledujúce účely:</p>
+
+            <h3>4.1 Poskytovanie služieb</h3>
+            <ul>
+                <li>Vytvorenie a správa vášho účtu</li>
+                <li>Fungovanie základných funkcií aplikácie (fakturácia, výdavky, reporty)</li>
+                <li>AI asistent a daňové predikcie</li>
+                <li>Automatické vyhľadávanie IČO firiem cez Finstat API</li>
+            </ul>
+
+            <h3>4.2 Zálohovanie a synchronizácia</h3>
+            <ul>
+                <li>Zálohovanie vašich dát do Google Drive (ak aktivujete)</li>
+                <li>Synchronizácia medzi zariadeniami</li>
+                <li>Obnovenie dát po preinštalácii</li>
+            </ul>
+
+            <h3>4.3 Zlepšovanie služieb</h3>
+            <ul>
+                <li>Analýza používania aplikácie (anonymizované dáta)</li>
+                <li>Identifikácia a oprava chýb (crash reports)</li>
+                <li>Meranie výkonu aplikácie</li>
+                <li>Vývoj nových funkcií</li>
+            </ul>
+
+            <h3>4.4 Komunikácia</h3>
+            <ul>
+                <li>Odosielanie dôležitých oznámení o aplikácii</li>
+                <li>Odpovede na vaše otázky a podporu</li>
+                <li>Push notifikácie (ak ich povolíte)</li>
+            </ul>
+
+            <h3>4.5 Právne povinnosti</h3>
+            <ul>
+                <li>Plnenie zákonných povinností</li>
+                <li>Ochrana našich zákonných práv</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>5. Právny základ pre spracovanie</h2>
+            <p>Vaše osobné údaje spracovávame na základe:</p>
+
+            <h3>5.1 Súhlas (čl. 6 ods. 1 písm. a) GDPR)</h3>
+            <ul>
+                <li>Použitie fotoaparátu na skenovanie bločkov</li>
+                <li>Push notifikácie</li>
+                <li>Analytics a performance monitoring</li>
+                <li>Zálohovanie do Google Drive</li>
+            </ul>
+
+            <h3>5.2 Plnenie zmluvy (čl. 6 ods. 1 písm. b) GDPR)</h3>
+            <ul>
+                <li>Poskytovanie služieb aplikácie</li>
+                <li>Vytvorenie a správa účtu</li>
+                <li>Fakturácia a výdavky</li>
+            </ul>
+
+            <h3>5.3 Oprávnený záujem (čl. 6 ods. 1 písm. f) GDPR)</h3>
+            <ul>
+                <li>Zlepšovanie služieb</li>
+                <li>Bezpečnosť aplikácie</li>
+                <li>Crash reporting a bug fixing</li>
+            </ul>
+
+            <h3>5.4 Zákonná povinnosť (čl. 6 ods. 1 písm. c) GDPR)</h3>
+            <ul>
+                <li>Uchovávanie faktúr podľa daňových predpisov</li>
+                <li>Spolupráca s orgánmi pri vyšetrovaní</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>6. Zdieľanie osobných údajov</h2>
+            <p>Vaše osobné údaje môžeme zdieľať s nasledujúcimi tretími stranami:</p>
+
+            <h3>6.1 Firebase (Google LLC)</h3>
+            <ul>
+                <li><strong>Účel:</strong> Autentifikácia, databáza, storage, analytics, crashlytics</li>
+                <li><strong>Umiestnenie:</strong> EÚ (europe-west3) a USA (s Privacy Shield)</li>
+                <li><strong>Viac info:</strong> <a href="https://firebase.google.com/support/privacy">https://firebase.google.com/support/privacy</a></li>
+            </ul>
+
+            <h3>6.2 Google Drive</h3>
+            <ul>
+                <li><strong>Účel:</strong> Zálohovanie vašich dát (len ak aktivujete)</li>
+                <li><strong>Kontrola:</strong> Máte plnú kontrolu, môžete kedykoľvek vymazať</li>
+                <li><strong>Viac info:</strong> <a href="https://policies.google.com/privacy">https://policies.google.com/privacy</a></li>
+            </ul>
+
+            <h3>6.3 Finstat API</h3>
+            <ul>
+                <li><strong>Účel:</strong> Vyhľadávanie údajov firiem podľa IČO</li>
+                <li><strong>Zdieľané dáta:</strong> Len IČO, ktoré zadáte</li>
+                <li><strong>Umiestnenie:</strong> Slovensko</li>
+                <li><strong>Viac info:</strong> <a href="https://www.finstat.sk">https://www.finstat.sk</a></li>
+            </ul>
+
+            <h3>6.4 OpenAI (AI asistent)</h3>
+            <ul>
+                <li><strong>Účel:</strong> Generovanie daňových tipov a odporúčaní</li>
+                <li><strong>Zdieľané dáta:</strong> Anonymizované finančné údaje (bez mien, IČO)</li>
+                <li><strong>Umiestnenie:</strong> USA</li>
+                <li><strong>Viac info:</strong> <a href="https://openai.com/privacy">https://openai.com/privacy</a></li>
+            </ul>
+
+            <div class="important-box">
+                <strong>DÔLEŽITÉ:</strong> Nikdy nepredávame ani neprenajímame vaše osobné údaje tretím stranám na marketingové účely.
+            </div>
+        </section>
+
+        <section>
+            <h2>7. Medzinárodný prenos údajov</h2>
+            <p>Niektorí naši poskytovatelia služieb majú sídlo mimo EÚ (napr. Firebase, OpenAI). V takýchto prípadoch zabezpečujeme:</p>
+            <ul>
+                <li>Štandardné zmluvné doložky schválené EÚ</li>
+                <li>Adekvátnu úroveň ochrany údajov</li>
+                <li>Privacy Shield certifikáciu (kde je to možné)</li>
+            </ul>
+            <p>Máte právo získať informácie o zárukách a kópie zmluvných doložiek.</p>
+        </section>
+
+        <section>
+            <h2>8. Uchovávanie osobných údajov</h2>
+            <p>Vaše osobné údaje uchováme po dobu:</p>
+            <ul>
+                <li><strong>Aktívny účet:</strong> Po dobu, kým máte aktívny účet v aplikácii</li>
+                <li><strong>Faktúry:</strong> 10 rokov (podľa zákona o účtovníctve)</li>
+                <li><strong>Výdavky:</strong> 10 rokov (daňové predpisy)</li>
+                <li><strong>Analytics dáta:</strong> 14 mesiacov (anonymizované)</li>
+                <li><strong>Crash logs:</strong> 90 dní</li>
+                <li><strong>Záložné kópie:</strong> 30 dní po vymazaní účtu</li>
+            </ul>
+            <p>Po uplynutí lehôt automaticky vymažeme alebo anonymizujeme vaše údaje.</p>
+
+            <h3>Vymazanie účtu</h3>
+            <p>Ak vymažete svoj účet:</p>
+            <ol>
+                <li>Všetky vaše osobné údaje budú vymazané do 30 dní</li>
+                <li>Faktúry a účtovné dáta môžu byť uchovávané po dobu zákonnej lehoty (10 rokov)</li>
+                <li>Anonymizované analytics dáta môžu zostať</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>9. Vaše práva (GDPR)</h2>
+            <p>Ako používateľ máte nasledujúce práva:</p>
+
+            <h3>9.1 Právo na prístup (čl. 15 GDPR)</h3>
+            <ul>
+                <li>Požiadať o kópiu všetkých vašich osobných údajov</li>
+                <li>Získať informácie o spracovaní údajov</li>
+            </ul>
+
+            <h3>9.2 Právo na opravu (čl. 16 GDPR)</h3>
+            <ul>
+                <li>Opraviť nesprávne alebo neúplné údaje</li>
+                <li>Aktualizovať vaše údaje priamo v aplikácii</li>
+            </ul>
+
+            <h3>9.3 Právo na vymazanie - "právo byť zabudnutý" (čl. 17 GDPR)</h3>
+            <ul>
+                <li>Požiadať o vymazanie vašich osobných údajov</li>
+                <li>Vymazať účet priamo v aplikácii (Nastavenia → Účet → Vymazať účet)</li>
+            </ul>
+
+            <h3>9.4 Právo na obmedzenie spracovania (čl. 18 GDPR)</h3>
+            <ul>
+                <li>Obmedziť spracovanie vašich údajov za určitých okolností</li>
+            </ul>
+
+            <h3>9.5 Právo na prenosnosť údajov (čl. 20 GDPR)</h3>
+            <ul>
+                <li>Získať vaše údaje v strojovo čitateľnom formáte (CSV, JSON)</li>
+                <li>Preniesť údaje k inému poskytovateľovi</li>
+                <li>Export dostupný v aplikácii (Nastavenia → Export údajov)</li>
+            </ul>
+
+            <h3>9.6 Právo namietať (čl. 21 GDPR)</h3>
+            <ul>
+                <li>Namietať proti spracovaniu na základe oprávneného záujmu</li>
+                <li>Namietať proti direct marketingu (ktory nepoužívame)</li>
+            </ul>
+
+            <h3>9.7 Právo odvolať súhlas (čl. 7 ods. 3 GDPR)</h3>
+            <ul>
+                <li>Kedykoľvek odvolať súhlas so spracovaním</li>
+                <li>Vypnúť analytics, notifikácie, zálohovanie v nastaveniach</li>
+            </ul>
+
+            <h3>9.8 Právo podať sťažnosť</h3>
+            <ul>
+                <li>Podať sťažnosť na dohľadový orgán (viď bod 13)</li>
+            </ul>
+
+            <p><strong>Ako uplatniť vaše práva:</strong></p>
+            <ul>
+                <li>Email: <a href="mailto:support@bizagent.app">support@bizagent.app</a></li>
+                <li>V aplikácii: Nastavenia → Ochrana údajov → Uplatniť práva</li>
+                <li>Odpovieme do 30 dní</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>10. Bezpečnosť osobných údajov</h2>
+            <p>Na ochranu vašich osobných údajov používame nasledujúce opatrenia:</p>
+
+            <h3>10.1 Technické opatrenia</h3>
+            <ul>
+                <li><strong>Šifrovanie:</strong> End-to-end šifrovanie pri prenose (TLS 1.3)</li>
+                <li><strong>Šifrovanie databázy:</strong> Firebase Firestore encryption at rest</li>
+                <li><strong>Autentifikácia:</strong> Firebase Authentication (multi-factor support)</li>
+                <li><strong>App Check:</strong> Ochrana proti neoprávnenému prístupu k API</li>
+                <li><strong>Security Rules:</strong> Firestore a Storage pravidlá (user isolation)</li>
+            </ul>
+
+            <h3>10.2 Organizačné opatrenia</h3>
+            <ul>
+                <li>Prístup k údajom len pre autorizovaných zamestnancov</li>
+                <li>Pravidelné bezpečnostné audity</li>
+                <li>Školenia o GDPR a ochrane údajov</li>
+                <li>Incident response plán</li>
+            </ul>
+
+            <h3>10.3 Vaše opatrenia</h3>
+            <ul>
+                <li>Používajte silné heslo</li>
+                <li>Aktivujte 2FA (dvojfaktorovú autentifikáciu)</li>
+                <li>Nastavte PIN kód v aplikácii</li>
+                <li>Aktivujte biometrické prihlásenie</li>
+                <li>Nevydieľajte svoj účet s inými</li>
+            </ul>
+
+            <div class="important-box">
+                <strong>DÔLEŽITÉ:</strong> Napriek našim opatreniam nemôžeme garantovať 100% bezpečnosť pri prenose údajov cez internet.
+            </div>
+        </section>
+
+        <section>
+            <h2>11. Súbory Cookies a sledovacie technológie</h2>
+
+            <h3>11.1 Mobilná aplikácia</h3>
+            <p>Mobilná aplikácia <strong>nepoužíva cookies</strong>, ale používa:</p>
+            <ul>
+                <li><strong>Firebase Analytics:</strong> Sledovanie používania (anonymizované)</li>
+                <li><strong>Crashlytics:</strong> Zber crash reportov</li>
+                <li><strong>Performance Monitoring:</strong> Meranie výkonu</li>
+            </ul>
+            <p>Môžete vypnúť v: Nastavenia → Súkromie → Analytics</p>
+
+            <h3>11.2 Web aplikácia</h3>
+            <p>Web verzia používa:</p>
+            <ul>
+                <li><strong>Session cookies:</strong> Pre autentifikáciu (nevyhnutné)</li>
+                <li><strong>Analytics cookies:</strong> Google Analytics (voliteľné)</li>
+            </ul>
+            <p>Spravujete v cookie banneri na webe.</p>
+        </section>
+
+        <section>
+            <h2>12. Zmeny tejto politiky</h2>
+            <p>Môžeme aktualizovať túto politiku ochrany osobných údajov. O významných zmenách vás budeme informovať:</p>
+            <ul>
+                <li>Notifikácia v aplikácii</li>
+                <li>Email (ak máme vašu adresu)</li>
+                <li>Oznámenie na webe bizagent.app</li>
+            </ul>
+            <p>Odporúčame pravidelne kontrolovať túto stránku.</p>
+            <p><strong>Verzia:</strong> 1.0<br>
+            <strong>Dátum:</strong> 8. február 2026</p>
+        </section>
+
+        <section>
+            <h2>13. Dohľadový orgán</h2>
+            <p>Máte právo podať sťažnosť na dohľadový orgán:</p>
+            <p><strong>Úrad na ochranu osobných údajov Slovenskej republiky</strong><br>
+            Hraničná 12<br>
+            820 07 Bratislava 27<br>
+            Slovenská republika</p>
+            <p><strong>Web:</strong> <a href="https://dataprotection.gov.sk">https://dataprotection.gov.sk</a><br>
+            <strong>Email:</strong> <a href="mailto:statny.dozor@pdp.gov.sk">statny.dozor@pdp.gov.sk</a><br>
+            <strong>Tel.:</strong> +421 2 3231 3214</p>
+        </section>
+
+        <section>
+            <h2>14. Kontakt</h2>
+            <p>Pre otázky ohľadom tejto politiky alebo uplatnenia vašich práv nás kontaktujte:</p>
+            <p><strong>Email:</strong> <a href="mailto:support@bizagent.app">support@bizagent.app</a><br>
+            <strong>Telefón:</strong> +421 944 637 232<br>
+            <strong>Poštová adresa:</strong> EB-EU s.r.o., Kukučínova 22, 974 01 Banská Bystrica, Slovensko</p>
+            <p><strong>Zodpovedná osoba:</strong> Data Protection Officer (DPO)<br>
+            <strong>Email DPO:</strong> <a href="mailto:dpo@bizagent.app">dpo@bizagent.app</a></p>
+            <p>Odpovieme do 30 dní od prijatia vašej žiadosti.</p>
+        </section>
+
+        <footer>
+            <p><strong>Posledná aktualizácia:</strong> 8. február 2026</p>
+            <p>© 2026 EB-EU s.r.o. Všetky práva vyhradené.</p>
+        </footer>
+    </div>
+</body>
+</html>

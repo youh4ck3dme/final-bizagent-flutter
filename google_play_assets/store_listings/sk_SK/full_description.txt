@@ -1,0 +1,158 @@
+🚀 BizAgent - Váš inteligentný účtovný asistent
+
+Ste SZČO alebo podnikateľ na Slovensku? BizAgent vám zjednoduší účtovníctvo pomocou umelej inteligencie!
+
+✨ HLAVNÉ FUNKCIE
+
+📸 Skenuj bločky a faktúry
+• Automatické rozpoznanie textu z fotiek pomocou AI
+• Extrakcia IČO, DIČ, DPH a súm
+• Okamžité vyhľadanie firemných údajov cez Finstat
+• Inteligentná kategorizácia výdavkov
+
+💰 Spravuj výdavky a príjmy
+• Prehľadný dashboard s real-time štatistikami
+• Grafické vizualizácie príjmov a výdavkov
+• Filtrovanie podľa kategórií, dátumu, meny
+• Export do PDF, Excel alebo CSV
+
+📄 Jednoduchá fakturácia
+• Vytvorte faktúru za menej ako 60 sekúnd
+• Automatické výpočty DPH a súm
+• Profesionálne PDF šablóny
+• Okamžité zdieľanie cez email alebo WhatsApp
+• Sledovanie neuhradených faktúr
+
+🤖 AI Accountant - Váš daňový poradca
+• Inteligentné daňové tipy šité na mieru
+• Predikcia daňovej povinnosti
+• Analýza poznámok a odporúčania úspor
+• Upozornenia na daňové lehoty
+
+💱 Multi-Currency podpora
+• Fakturácia v EUR, USD, CZK, GBP a ďalších
+• Automatické prepočty kurzov
+• História výmenných kurzov
+• Dashboard v zvolené mene
+
+☁️ Bezpečné zálohovanie
+• Automatické zálohy do Google Drive
+• End-to-end šifrovanie dát
+• Jednoduché obnovenie na novom zariadení
+• GDPR compliant
+
+🎨 Moderný dizajn
+• "Deep Space" UI s glassmorphism efektmi
+• Tmavý režim "Blue Magic"
+• Plynulé animácie a prechody
+• Responzívne pre tablety
+
+📊 Prehľadné reporty
+• Mesačné, štvrťročné a ročné súhrny
+• Grafy príjmov, výdavkov a zisku
+• Kategorizácia výdavkov
+• Export reportov do PDF
+
+🔒 Bezpečnosť a súkromie
+• Firebase autentifikácia (Google, Email)
+• PIN ochrana aplikácie
+• Biometrické prihlásenie
+• Vaše dáta nikdy nepredávame tretím stranám
+
+---
+
+🇸🇰 ŠPECIÁLNE PRE SLOVENSKO
+
+• IČO/DIČ lookup cez Finstat API
+• Slovenská DPH kalkulačka (20%, 10%, 0%)
+• Daňové sadzby podľa SK legislatívy
+• Faktúry v slovenčine s IBAN
+• Podpora pre SZČO aj s.r.o.
+
+---
+
+📱 PODPOROVANÉ PLATFORMY
+
+• Android 7.0+ (API 24+)
+• Telefóny aj tablety
+• Web app (bizagent.app)
+• Desktop (Windows, macOS, Linux)
+
+---
+
+🆓 ZADARMO PRE VŠETKÝCH
+
+• Neomedzené faktúry
+• Neomedzené výdavky a príjmy
+• AI asistent bez limitov
+• Cloud zálohy
+• Všetky budúce aktualizácie
+• Žiadne skryté poplatky
+• Bez reklám
+
+---
+
+👨‍💼 PRE KOHO JE BIZAGENT?
+
+✅ SZČO (živnostníci)
+✅ Malé a stredné firmy (s.r.o.)
+✅ Freelanceri
+✅ Online obchody
+✅ Remeselníci
+✅ Konzultanti
+✅ IT profesionáli
+✅ Každý kto potrebuje jednoduchú fakturáciu
+
+---
+
+💡 PREČO PRÁVE BIZAGENT?
+
+⏱️ Úspora času - Automatizácia účtovných úloh
+🎯 Presnosť - AI minimalizuje chyby pri zadávaní
+📱 Mobilita - Pracujte odkiaľkoľvek
+💸 Úspora peňazí - Neplatíte za účtovníka
+🔐 Bezpečnosť - Bank-level security
+🇸🇰 Made for Slovakia - Zohľadňuje SK legislatívu
+
+---
+
+🔔 PRIPRAVUJEME
+
+• Automatické platobné pripomienky
+• Integrácia s bankami (API banky)
+• Časový tracker pre projekty
+• Faktúry s QR kódom na platbu (Pay by Square)
+• Výpočet odvodov pre SZČO
+• Splatný kalendár
+• Mzdový modul
+• Integrácia s pokladnicami
+
+---
+
+📧 PODPORA A KONTAKT
+
+• Email: support@bizagent.app
+• Web: https://bizagent.app
+• FAQ: https://bizagent.app/faq
+• Instagram: @bizagent_app
+• Facebook: /bizagentapp
+
+Rýchla odpoveď do 24 hodín!
+
+---
+
+⭐ HODNOTENIA
+
+Ak sa vám BizAgent páči, zanechajte nám 5-hviezdičkové hodnotenie! Každá recenzia nám pomáha zlepšovať aplikáciu.
+
+---
+
+🔒 OCHRANA ÚDAJOV
+
+Vaše údaje sú chránené podľa GDPR a slovenských zákonov o ochrane osobných údajov. Nikdy nepredávame vaše dáta tretím stranám. Viac info: bizagent.app/privacy
+
+---
+
+📥 STIAHNITE BIZAGENT TERAZ A ZAČNITE ŠETRIŤ ČAS!
+
+#Účtovníctvo #Fakturácia #SZČO #Podnikanie #Slovensko #AI
