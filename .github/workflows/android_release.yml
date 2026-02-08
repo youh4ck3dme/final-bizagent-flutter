@@ -5,6 +5,15 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      flavor:
+        description: 'Build flavor (production or staging)'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
 
 jobs:
   build:
@@ -48,12 +57,17 @@ jobs:
         run: |
           echo "$KEY_PROPS" > android/key.properties
 
-      - name: Build App Bundle
-        run: flutter build appbundle --release
+      - name: Build App Bundle (Production)
+        if: github.event.inputs.flavor == 'production' || github.event.inputs.flavor == ''
+        run: flutter build appbundle --release --flavor production
+
+      - name: Build App Bundle (Staging)
+        if: github.event.inputs.flavor == 'staging'
+        run: flutter build appbundle --release --flavor staging
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          name: app-release-bundle-${{ github.event.inputs.flavor || 'production' }}
+          path: build/app/outputs/bundle/*Release/*.aab
           retention-days: 7
