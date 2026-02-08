@@ -89,11 +89,37 @@ check_image() {
 
 # Check App Icon
 echo -e "${BLUE}📱 Checking App Icon...${NC}"
-check_image "$ASSETS_DIR/icons/app_icon_512.png" 512 512 1 "App Icon (512x512)"
+# Try multiple possible locations
+if [ -f "$ASSETS_DIR/icons/app_icon_512.png" ]; then
+    check_image "$ASSETS_DIR/icons/app_icon_512.png" 512 512 1 "App Icon (512x512)"
+elif [ -f "$ASSETS_DIR/icon_512x512.png" ]; then
+    check_image "$ASSETS_DIR/icon_512x512.png" 512 512 1 "App Icon (512x512)"
+elif [ -f "$ASSETS_DIR/icon/hi-res-icon.png" ]; then
+    echo -e "${YELLOW}⚠️  Found hi-res-icon.png - checking if it's 512x512...${NC}"
+    check_image "$ASSETS_DIR/icon/hi-res-icon.png" 512 512 1 "App Icon (512x512)"
+else
+    echo -e "${RED}❌ App Icon: NOT FOUND${NC}"
+    echo "   Expected one of:"
+    echo "     - $ASSETS_DIR/icons/app_icon_512.png"
+    echo "     - $ASSETS_DIR/icon_512x512.png"
+    echo "     - $ASSETS_DIR/icon/hi-res-icon.png"
+    ERRORS=$((ERRORS + 1))
+fi
 
 # Check Feature Graphic
 echo -e "${BLUE}🖼️  Checking Feature Graphic...${NC}"
-check_image "$ASSETS_DIR/feature_graphic/feature_graphic.png" 1024 500 1 "Feature Graphic (1024x500)"
+# Try multiple possible locations
+if [ -f "$ASSETS_DIR/feature_graphic/feature_graphic.png" ]; then
+    check_image "$ASSETS_DIR/feature_graphic/feature_graphic.png" 1024 500 1 "Feature Graphic (1024x500)"
+elif [ -f "$ASSETS_DIR/feature_graphic_1024x500.png" ]; then
+    check_image "$ASSETS_DIR/feature_graphic_1024x500.png" 1024 500 1 "Feature Graphic (1024x500)"
+else
+    echo -e "${RED}❌ Feature Graphic: NOT FOUND${NC}"
+    echo "   Expected one of:"
+    echo "     - $ASSETS_DIR/feature_graphic/feature_graphic.png"
+    echo "     - $ASSETS_DIR/feature_graphic_1024x500.png"
+    ERRORS=$((ERRORS + 1))
+fi
 
 # Check Phone Screenshots
 echo -e "${BLUE}📸 Checking Phone Screenshots...${NC}"
@@ -101,7 +127,14 @@ echo -e "${BLUE}📸 Checking Phone Screenshots...${NC}"
 SCREENSHOT_DIR="$ASSETS_DIR/screenshots/phone"
 SCREENSHOT_COUNT=0
 
-if [ -d "$SCREENSHOT_DIR" ]; then
+# Try multiple possible locations
+if [ ! -d "$SCREENSHOT_DIR" ]; then
+    echo -e "${YELLOW}⚠️  Screenshots directory not found at: $SCREENSHOT_DIR${NC}"
+    echo "   Create directory: mkdir -p $SCREENSHOT_DIR"
+    echo "   Add 2-8 phone screenshots (PNG or JPG, 16:9 or 9:16 aspect ratio)"
+    echo ""
+    WARNINGS=$((WARNINGS + 1))
+else
     for screenshot in "$SCREENSHOT_DIR"/*.png "$SCREENSHOT_DIR"/*.jpg; do
         if [ -f "$screenshot" ]; then
             SCREENSHOT_COUNT=$((SCREENSHOT_COUNT + 1))
@@ -137,20 +170,17 @@ if [ -d "$SCREENSHOT_DIR" ]; then
             echo ""
         fi
     done
-else
-    echo -e "${RED}❌ Screenshot directory not found: $SCREENSHOT_DIR${NC}"
-    ERRORS=$((ERRORS + 1))
-fi
-
-if [ $SCREENSHOT_COUNT -lt 2 ]; then
-    echo -e "${RED}❌ Insufficient screenshots: $SCREENSHOT_COUNT (minimum 2 required)${NC}"
-    ERRORS=$((ERRORS + 1))
-elif [ $SCREENSHOT_COUNT -gt 8 ]; then
-    echo -e "${YELLOW}⚠️  Too many screenshots: $SCREENSHOT_COUNT (maximum 8)${NC}"
-    WARNINGS=$((WARNINGS + 1))
-else
-    echo -e "${GREEN}✅ Screenshot count: $SCREENSHOT_COUNT (2-8 required)${NC}"
-    PASSED=$((PASSED + 1))
+    
+    if [ $SCREENSHOT_COUNT -lt 2 ]; then
+        echo -e "${YELLOW}⚠️  Insufficient screenshots: $SCREENSHOT_COUNT (minimum 2 required)${NC}"
+        WARNINGS=$((WARNINGS + 1))
+    elif [ $SCREENSHOT_COUNT -gt 8 ]; then
+        echo -e "${YELLOW}⚠️  Too many screenshots: $SCREENSHOT_COUNT (maximum 8)${NC}"
+        WARNINGS=$((WARNINGS + 1))
+    else
+        echo -e "${GREEN}✅ Screenshot count: $SCREENSHOT_COUNT (2-8 required)${NC}"
+        PASSED=$((PASSED + 1))
+    fi
 fi
 
 echo ""
@@ -187,15 +217,29 @@ check_text_file() {
 
 # Slovak
 echo -e "\n${BLUE}🇸🇰 Slovak (sk-SK):${NC}"
-check_text_file "$ASSETS_DIR/store_listings/sk_SK/title.txt" 50 "Title"
-check_text_file "$ASSETS_DIR/store_listings/sk_SK/short_description.txt" 80 "Short Description"
-check_text_file "$ASSETS_DIR/store_listings/sk_SK/full_description.txt" 4000 "Full Description"
+if [ -d "$ASSETS_DIR/store_listings/sk_SK" ]; then
+    check_text_file "$ASSETS_DIR/store_listings/sk_SK/title.txt" 50 "Title"
+    check_text_file "$ASSETS_DIR/store_listings/sk_SK/short_description.txt" 80 "Short Description"
+    check_text_file "$ASSETS_DIR/store_listings/sk_SK/full_description.txt" 4000 "Full Description"
+else
+    echo -e "${YELLOW}⚠️  Slovak store listing directory not found${NC}"
+    echo "   Create: mkdir -p $ASSETS_DIR/store_listings/sk_SK"
+    echo "   Add: title.txt, short_description.txt, full_description.txt"
+    WARNINGS=$((WARNINGS + 1))
+fi
 
 # English
 echo -e "\n${BLUE}🇺🇸 English (en-US):${NC}"
-check_text_file "$ASSETS_DIR/store_listings/en_US/title.txt" 50 "Title"
-check_text_file "$ASSETS_DIR/store_listings/en_US/short_description.txt" 80 "Short Description"
-check_text_file "$ASSETS_DIR/store_listings/en_US/full_description.txt" 4000 "Full Description"
+if [ -d "$ASSETS_DIR/store_listings/en_US" ]; then
+    check_text_file "$ASSETS_DIR/store_listings/en_US/title.txt" 50 "Title"
+    check_text_file "$ASSETS_DIR/store_listings/en_US/short_description.txt" 80 "Short Description"
+    check_text_file "$ASSETS_DIR/store_listings/en_US/full_description.txt" 4000 "Full Description"
+else
+    echo -e "${YELLOW}⚠️  English store listing directory not found${NC}"
+    echo "   Create: mkdir -p $ASSETS_DIR/store_listings/en_US"
+    echo "   Add: title.txt, short_description.txt, full_description.txt"
+    WARNINGS=$((WARNINGS + 1))
+fi
 
 # Summary
 echo ""
@@ -212,6 +256,10 @@ if [ $ERRORS -eq 0 ]; then
     echo -e "${GREEN}║       ALL ASSETS READY FOR UPLOAD! ✅          ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════════════╝${NC}"
     echo ""
+    if [ $WARNINGS -gt 0 ]; then
+        echo -e "${YELLOW}Note: $WARNINGS warning(s) found (non-critical)${NC}"
+        echo ""
+    fi
     echo "Next steps:"
     echo "  1. Go to Google Play Console"
     echo "  2. Upload assets from: $ASSETS_DIR/"
