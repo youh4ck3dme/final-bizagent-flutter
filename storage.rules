@@ -1,12 +1,134 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Users can only access their own files in the receipts folder
+    
+    // ========================================
+    // HELPER FUNCTIONS
+    // ========================================
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isImageFile() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    function isPDFFile() {
+      return request.resource.contentType == 'application/pdf';
+    }
+    
+    function isJSONFile() {
+      return request.resource.contentType == 'application/json';
+    }
+    
+    function isValidSize(maxSizeMB) {
+      return request.resource.size < maxSizeMB * 1024 * 1024;
+    }
+    
+    function isValidImageSize() {
+      return isImageFile() && isValidSize(10); // 10 MB max
+    }
+    
+    function isValidPDFSize() {
+      return isPDFFile() && isValidSize(10); // 10 MB max
+    }
+    
+    function isValidBackupSize() {
+      return isValidSize(100); // 100 MB max for backups
+    }
+    
+    // ========================================
+    // USER PROFILE PICTURES
+    // ========================================
+    
+    match /users/{userId}/profile/{fileName} {
+      allow read: if isSignedIn();
+      
+      allow write: if isOwner(userId) 
+        && isValidImageSize();
+      
+      allow delete: if isOwner(userId);
+    }
+    
+    // ========================================
+    // RECEIPT IMAGES (Scanned receipts)
+    // ========================================
+    
+    match /users/{userId}/receipts/{fileName} {
+      allow read, write: if isOwner(userId) 
+        && isValidImageSize();
+      
+      allow delete: if isOwner(userId);
+    }
+    
+    // ========================================
+    // INVOICE PDFs
+    // ========================================
+    
+    match /users/{userId}/invoices/{fileName} {
+      allow read, write: if isOwner(userId) 
+        && isValidPDFSize();
+      
+      allow delete: if isOwner(userId);
+    }
+    
+    // ========================================
+    // COMPANY LOGOS
+    // ========================================
+    
+    match /users/{userId}/logos/{fileName} {
+      allow read, write: if isOwner(userId) 
+        && isImageFile() 
+        && isValidSize(5); // 5 MB max for logos
+      
+      allow delete: if isOwner(userId);
+    }
+    
+    // ========================================
+    // BACKUPS (JSON exports)
+    // ========================================
+    
+    match /users/{userId}/backups/{fileName} {
+      allow read, write: if isOwner(userId) 
+        && isValidBackupSize();
+      
+      allow delete: if isOwner(userId);
+    }
+    
+    // ========================================
+    // TEMP UPLOADS (24 hour expiration)
+    // ========================================
+    
+    match /temp/{userId}/{fileName} {
+      allow write: if isOwner(userId) 
+        && isValidSize(20);
+      
+      allow read: if isOwner(userId);
+      
+      // Auto-delete after 24 hours (handled by Cloud Functions)
+    }
+    
+    // ========================================
+    // LEGACY: General users path (backwards compatibility)
+    // ========================================
+    
     match /users/{userId}/{allPaths=**} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && request.auth.uid == userId
-                   && request.resource.size < 10 * 1024 * 1024 // Max 10MB
-                   && request.resource.contentType.matches('image/.*'); // Images only
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId)
+                   && isValidSize(10); // Max 10MB
+    }
+    
+    // ========================================
+    // DEFAULT DENY ALL
+    // ========================================
+    
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }
