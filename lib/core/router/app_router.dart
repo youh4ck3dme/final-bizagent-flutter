@@ -72,13 +72,17 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 1. Loading states
       if (authState.isLoading || onboardingState.isLoading) {
-        if (kDebugMode && path.contains('ico-lookup')) return null;
+        if (kDebugMode && path.contains('ico-lookup')) {
+          return null;
+        }
         return path == '/splash' ? null : '/splash';
       }
 
       // 1b. Initialization (Force Splash)
       if (!init.isCompleted) {
-        if (kDebugMode && path.contains('ico-lookup')) return null;
+        if (kDebugMode && path.contains('ico-lookup')) {
+          return null;
+        }
         return path == '/splash' ? null : '/splash';
       }
 
@@ -92,7 +96,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 3. Onboarding Flow
       if (!seenOnboarding) {
-        if (kDebugMode && path.contains('ico-lookup')) return null;
+        if (kDebugMode && path.contains('ico-lookup')) {
+          return null;
+        }
         return path == '/onboarding' ? null : '/onboarding';
       }
 
@@ -108,7 +114,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 5. Already Logged In
       if (path == '/login' || path == '/splash' || path == '/onboarding') {
-        if (kDebugMode && kIsWeb) return null;
+        if (kDebugMode && kIsWeb) {
+          return null;
+        }
         return '/dashboard';
       }
 

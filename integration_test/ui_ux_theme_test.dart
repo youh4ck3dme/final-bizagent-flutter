@@ -1,4 +1,3 @@
-import 'package:bizagent/core/ui/biz_theme.dart';
 import 'package:bizagent/main.dart' as app;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,7 +20,7 @@ void main() {
       // Check if background color matches Blue Magic Deep Space (#0A0D14)
       final backgroundColor = scaffold.backgroundColor;
       expect(
-        backgroundColor?.value,
+        backgroundColor?.toARGB32(),
         0xFF0A0D14,
         reason: 'Scaffold background should be Deep Space (#0A0D14)',
       );
@@ -29,7 +28,7 @@ void main() {
       // 2. Verify Primary Color (Neon Blue)
       final theme = Theme.of(tester.element(scaffoldFinder));
       expect(
-        theme.primaryColor.value,
+        theme.primaryColor.toARGB32(),
         0xFF00B4D8,
         reason: 'Primary color should be Neon Blue (#00B4D8)',
       );
@@ -47,7 +46,7 @@ void main() {
 
         // It might be using primary color
         expect(
-          bg?.value,
+          bg?.toARGB32(),
           0xFF00B4D8,
           reason: 'ElevatedButton background should be Neon Blue',
         );
@@ -60,7 +59,7 @@ void main() {
       if (textFinder.evaluate().isNotEmpty) {
         final Text textWidget = tester.widget(textFinder);
         expect(
-          textWidget.style?.color?.value,
+          textWidget.style?.color?.toARGB32(),
           0xFFFFFFFF,
           reason: 'Headline text should be Pure White (#FFFFFF)',
         );
