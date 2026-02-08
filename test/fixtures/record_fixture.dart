@@ -1,16 +1,17 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 
 void main(List<String> args) async {
   if (args.isEmpty) {
-    debugPrint('Usage: dart run test/fixtures/record_fixture.dart <ICO>');
+    print('Usage: dart run test/fixtures/record_fixture.dart <ICO>');
     exit(1);
   }
 
   final ico = args[0];
   final url = Uri.parse('https://icoatlas.sk/api/company/$ico');
-  debugPrint('Fetching data from $url...');
+  print('Fetching data from $url...');
 
   final client = HttpClient();
 
@@ -19,7 +20,7 @@ void main(List<String> args) async {
     final response = await request.close();
 
     if (response.statusCode != 200) {
-      debugPrint('Failed to fetch data. Status code: ${response.statusCode}');
+      print('Failed to fetch data. Status code: ${response.statusCode}');
       exit(1);
     }
 
@@ -32,9 +33,9 @@ void main(List<String> args) async {
     final file = File('test/fixtures/ico_$ico.json');
     await file.writeAsString(formattedJson);
 
-    debugPrint('Fixture saved to ${file.path}');
+    print('Fixture saved to ${file.path}');
   } catch (e) {
-    debugPrint('Error: $e');
+    print('Error: $e');
     exit(1);
   } finally {
     client.close();
