@@ -621,7 +621,7 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                         Expanded(
                           flex: 2,
                           child: DropdownButtonFormField<String>(
-                            value: _selectedCurrency,
+                            initialValue: _selectedCurrency,
                             decoration: const InputDecoration(
                               labelText: 'Mena',
                             ),

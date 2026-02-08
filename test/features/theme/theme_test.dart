@@ -35,14 +35,14 @@ void main() {
     final context = tester.element(find.byType(Scaffold));
     final theme = Theme.of(context);
     expect(
-      theme.scaffoldBackgroundColor.value,
+      theme.scaffoldBackgroundColor.toARGB32(),
       0xFF0A0D14,
       reason: 'Scaffold background should be Deep Space',
     );
 
     // 2. Verify ColorScheme Primary (Neon Blue #00B4D8)
     expect(
-      theme.colorScheme.primary.value,
+      theme.colorScheme.primary.toARGB32(),
       0xFF00B4D8,
       reason: 'Primary color should be Neon Blue',
     );
@@ -51,20 +51,20 @@ void main() {
     // Note: ElevatedButton uses primary color in BizTheme
     // We check the button's style if possible, or assume Theme data is enough.
     expect(
-      theme.elevatedButtonTheme.style?.backgroundColor?.resolve({})?.value,
+      theme.elevatedButtonTheme.style?.backgroundColor?.resolve({})?.toARGB32(),
       0xFF00B4D8,
       reason: 'ElevatedButton default background should be Neon Blue',
     );
 
     // 4. Verify Secondary/Error Colors
     expect(
-      theme.colorScheme.secondary.value,
+      theme.colorScheme.secondary.toARGB32(),
       0xFFEE1C25,
       reason: 'Secondary (Accent) color should be Crimson Glow',
     );
 
     expect(
-      theme.colorScheme.error.value,
+      theme.colorScheme.error.toARGB32(),
       0xFFFF6B6B,
       reason: 'Error color should be correct',
     );
