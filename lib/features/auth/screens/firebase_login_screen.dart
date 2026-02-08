@@ -307,7 +307,7 @@ class _FirebaseLoginScreenState extends ConsumerState<FirebaseLoginScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.play_circle_outline,
                               color: BizTheme.slovakBlue,
                               size: 22,

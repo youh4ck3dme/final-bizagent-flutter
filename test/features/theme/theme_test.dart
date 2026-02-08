@@ -17,7 +17,7 @@ void main() {
           body: Center(
             child: Column(
               children: [
-                ElevatedButton(onPressed: () {}, child: Text('Elevated')),
+                ElevatedButton(onPressed: () {}, child: const Text('Elevated')),
                 Text(
                   'Headline',
                   style: GoogleFonts.roboto(fontSize: 57, color: Colors.white),
