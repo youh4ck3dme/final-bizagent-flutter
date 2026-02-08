@@ -185,6 +185,19 @@ flutter build appbundle --release
 
 These are already in `.gitignore` but always verify!
 
+### 🔐 Password Security Note
+
+The setup and verification scripts pass passwords as command-line arguments to `keytool`, which may be briefly visible in process listings (via `ps`). This is:
+- **Standard practice** in Flutter/Android development tooling
+- **Safe for local development** on personal machines
+- **Acceptable risk** for initial setup scripts
+
+For enhanced security in shared/production environments:
+- Run scripts in a private session
+- Use a dedicated machine for keystore operations
+- Clear bash history after setup: `history -c`
+- Always store keystore passwords in a secure password manager
+
 ### ✅ Backup Your Keystore:
 ```bash
 # Backup location

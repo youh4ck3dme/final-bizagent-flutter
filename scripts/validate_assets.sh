@@ -57,8 +57,14 @@ check_image() {
         
         # Check file size
         size_bytes=$(stat -f %z "$file" 2>/dev/null || stat -c %s "$file" 2>/dev/null)
-        size_mb=$(echo "scale=2; $size_bytes / 1024 / 1024" | bc)
-        max_bytes=$(echo "$max_size_mb * 1024 * 1024" | bc)
+        
+        # Validate size_bytes was successfully retrieved
+        if [ -z "$size_bytes" ] || [ "$size_bytes" = "" ]; then
+            echo -e "${YELLOW}   ⚠️  Could not determine file size (install coreutils)${NC}"
+            WARNINGS=$((WARNINGS + 1))
+        else
+            size_mb=$(echo "scale=2; $size_bytes / 1024 / 1024" | bc)
+            max_bytes=$(echo "$max_size_mb * 1024 * 1024" | bc)
         
         if (( $(echo "$size_bytes > $max_bytes" | bc -l) )); then
             echo -e "${RED}   ❌ Size: ${size_mb}MB (max ${max_size_mb}MB)${NC}"
@@ -67,6 +73,7 @@ check_image() {
             echo -e "${GREEN}   ✅ Size: ${size_mb}MB${NC}"
             PASSED=$((PASSED + 1))
         fi
+        fi  # End of size_bytes validation
         
         # Check format
         format=$(identify -format "%m" "$file" 2>/dev/null)
