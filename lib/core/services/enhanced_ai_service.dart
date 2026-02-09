@@ -1,8 +1,6 @@
 import 'package:bizagent/core/services/gemini_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:io';
 
 // Placeholder for future Vercel API base URL - currently using direct GeminiService as fallback

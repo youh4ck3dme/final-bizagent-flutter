@@ -165,8 +165,8 @@ class PaywallBottomSheet extends StatelessWidget {
             Container(
               width: 72,
               height: 72,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E0),
+              decoration: const BoxDecoration(
+                color: Color(0xFFFFF3E0),
                 shape: BoxShape.circle,
               ),
               child: const Center(
@@ -200,15 +200,15 @@ class PaywallBottomSheet extends StatelessWidget {
             const SizedBox(height: 28),
 
             // PRO features
-            _ProFeature(icon: Icons.all_inclusive, text: 'Neobmedzené faktúry'),
+            const _ProFeature(icon: Icons.all_inclusive, text: 'Neobmedzené faktúry'),
             const SizedBox(height: 10),
-            _ProFeature(icon: Icons.auto_awesome, text: '50+ AI akcií mesačne'),
+            const _ProFeature(icon: Icons.auto_awesome, text: '50+ AI akcií mesačne'),
             const SizedBox(height: 10),
-            _ProFeature(icon: Icons.search, text: 'Neobmedzené IČO lookups'),
+            const _ProFeature(icon: Icons.search, text: 'Neobmedzené IČO lookups'),
             const SizedBox(height: 10),
-            _ProFeature(icon: Icons.picture_as_pdf, text: 'PDF bez watermarku'),
+            const _ProFeature(icon: Icons.picture_as_pdf, text: 'PDF bez watermarku'),
             const SizedBox(height: 10),
-            _ProFeature(icon: Icons.speed, text: 'Prioritné spracovanie'),
+            const _ProFeature(icon: Icons.speed, text: 'Prioritné spracovanie'),
             const SizedBox(height: 28),
 
             // CTA

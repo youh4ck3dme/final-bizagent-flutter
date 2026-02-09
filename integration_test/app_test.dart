@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:bizagent/features/limits/usage_limiter.dart';
-import 'package:bizagent/core/router/app_router.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:bizagent/features/invoices/providers/invoices_repository.dart';
 import 'package:bizagent/features/expenses/providers/expenses_repository.dart';
