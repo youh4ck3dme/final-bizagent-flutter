@@ -1,0 +1,18 @@
+# Android Signing Configuration
+# IMPORTANT: Copy this file to key.properties and fill in your values
+# DO NOT commit key.properties to git! (already in .gitignore)
+
+storePassword=YOUR_KEYSTORE_PASSWORD_HERE
+keyPassword=YOUR_KEY_PASSWORD_HERE
+keyAlias=bizagent-release
+storeFile=/path/to/your/bizagent-release.keystore
+
+# Instructions:
+# 1. Generate keystore (if you don't have one):
+#    keytool -genkey -v -keystore bizagent-release.keystore \
+#      -alias bizagent-release -keyalg RSA -keysize 2048 \
+#      -validity 10000 -storepass YOUR_PASSWORD -keypass YOUR_PASSWORD
+#
+# 2. Store keystore securely (backup to cloud)
+# 3. Never share passwords publicly
+# 4. Update storeFile path to absolute path of your keystore

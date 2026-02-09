@@ -247,11 +247,11 @@ class _StepProblem extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           // Pain points
-          _PainPoint(icon: Icons.timer_off, text: '15 min na 1 faktúru'),
+          const _PainPoint(icon: Icons.timer_off, text: '15 min na 1 faktúru'),
           const SizedBox(height: 12),
-          _PainPoint(icon: Icons.error_outline, text: 'Chyby v údajoch'),
+          const _PainPoint(icon: Icons.error_outline, text: 'Chyby v údajoch'),
           const SizedBox(height: 12),
-          _PainPoint(icon: Icons.money_off, text: 'Zabudnuté platby'),
+          const _PainPoint(icon: Icons.money_off, text: 'Zabudnuté platby'),
           const Spacer(flex: 5),
         ],
       ),
@@ -330,19 +330,19 @@ class _StepSolution extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
-          _SolutionCard(
+          const _SolutionCard(
             icon: Icons.document_scanner,
             title: 'OCR skenovanie',
             subtitle: 'Ofoťte bloček → AI ho spracuje',
           ),
           const SizedBox(height: 12),
-          _SolutionCard(
+          const _SolutionCard(
             icon: Icons.auto_awesome,
             title: 'AI kategorizácia',
             subtitle: 'Automatické triedenie výdavkov',
           ),
           const SizedBox(height: 12),
-          _SolutionCard(
+          const _SolutionCard(
             icon: Icons.search,
             title: 'IČO lookup',
             subtitle: 'Údaje firmy za 1 sekundu',
@@ -458,19 +458,19 @@ class _StepResult extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
-          _ResultStat(
+          const _ResultStat(
             number: '30s',
             label: 'na vytvorenie faktúry',
             color: BizTheme.slovakBlue,
           ),
           const SizedBox(height: 12),
-          _ResultStat(
+          const _ResultStat(
             number: '0',
             label: 'chýb v údajoch',
             color: BizTheme.successGreen,
           ),
           const SizedBox(height: 12),
-          _ResultStat(
+          const _ResultStat(
             number: '100%',
             label: 'platby pod kontrolou',
             color: BizTheme.warningAmber,
