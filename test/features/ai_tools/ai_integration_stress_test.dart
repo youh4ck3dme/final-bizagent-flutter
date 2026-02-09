@@ -3,17 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
 import 'package:bizagent/features/ai_tools/screens/biz_bot_screen.dart';
-import 'package:bizagent/features/ai_tools/services/biz_bot_service.dart';
+import 'package:bizagent/core/services/enhanced_ai_service.dart';
 import 'package:bizagent/features/invoices/providers/invoices_provider.dart';
 import 'package:bizagent/features/invoices/models/invoice_model.dart';
 
 import 'screens/biz_bot_screen_test.mocks.dart';
 
 void main() {
-  late MockBizBotService mockBizBotService;
+  late MockEnhancedAIService mockAIService;
 
   setUp(() {
-    mockBizBotService = MockBizBotService();
+    mockAIService = MockEnhancedAIService();
   });
 
   // Pomocná funkcia na vytvorenie fiktívnych faktúr
@@ -38,7 +38,7 @@ void main() {
   Widget createWidgetWithLoad(List<InvoiceModel> invoices) {
     return ProviderScope(
       overrides: [
-        bizBotServiceProvider.overrideWithValue(mockBizBotService),
+        enhancedAIServiceProvider.overrideWithValue(mockAIService),
         invoicesProvider.overrideWith((ref) => Stream.value(invoices)),
       ],
       child: const MaterialApp(home: BizBotScreen()),
@@ -50,7 +50,7 @@ void main() {
   ) async {
     final massiveData = generateInvoices(100);
 
-    when(mockBizBotService.ask(any)).thenAnswer(
+    when(mockAIService.askBizBot(any)).thenAnswer(
       (_) async =>
           'Analyzoval som vašich 100 faktúr. Celková suma je obrovská.',
     );
@@ -68,7 +68,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('100 faktúr'), findsOneWidget);
-    verify(mockBizBotService.ask(any)).called(1);
+    verify(mockAIService.askBizBot(any)).called(1);
   });
 
   testWidgets('LONG CONVERSATION: BizBot handles sequence of 10 messages', (
@@ -76,7 +76,7 @@ void main() {
   ) async {
     var responseCount = 0;
     // We use a Future.delayed to simulate real async gap and ensure pumpAndSettle works
-    when(mockBizBotService.ask(any)).thenAnswer((_) async {
+    when(mockAIService.askBizBot(any)).thenAnswer((_) async {
       await Future.delayed(const Duration(milliseconds: 10));
       responseCount++;
       return 'Odpoveď č. $responseCount';

@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bizagent/features/ai_tools/screens/biz_bot_screen.dart';
-import 'package:bizagent/features/ai_tools/services/biz_bot_service.dart';
+import 'package:bizagent/core/services/enhanced_ai_service.dart';
 import 'package:mockito/mockito.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 // Generate Mocks (Manual implementation for simplicity in one file)
-class MockBizBotService extends Mock implements BizBotService {
+class MockEnhancedAIService extends Mock implements EnhancedAIService {
   @override
-  Future<String> ask(String prompt) async {
+  Future<String> askBizBot(String prompt, {List<Map<String, dynamic>>? context}) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 50));
 
     if (prompt.contains('chyba')) {
-      throw Exception('Simulated Network Error');
+      throw Exception('network error');
     }
     return 'Toto je testovacia odpoveď na: $prompt';
   }
@@ -26,9 +26,9 @@ void main() {
     await initializeDateFormatting('sk', null);
   });
 
-  Widget createWidgetUnderTest(MockBizBotService mockService) {
+  Widget createWidgetUnderTest(MockEnhancedAIService mockService) {
     return ProviderScope(
-      overrides: [bizBotServiceProvider.overrideWithValue(mockService)],
+      overrides: [enhancedAIServiceProvider.overrideWithValue(mockService)],
       child: const MaterialApp(home: BizBotScreen()),
     );
   }
@@ -36,7 +36,7 @@ void main() {
   testWidgets('BizBot Strict UI Test: Initial State', (
     WidgetTester tester,
   ) async {
-    final mockService = MockBizBotService();
+    final mockService = MockEnhancedAIService();
     await tester.pumpWidget(createWidgetUnderTest(mockService));
     await tester.pumpAndSettle();
 
@@ -58,7 +58,7 @@ void main() {
   testWidgets('BizBot Strict Flow: Send Message & Receive Reply', (
     WidgetTester tester,
   ) async {
-    final mockService = MockBizBotService();
+    final mockService = MockEnhancedAIService();
     await tester.pumpWidget(createWidgetUnderTest(mockService));
     await tester.pumpAndSettle();
 
@@ -90,7 +90,7 @@ void main() {
   testWidgets('BizBot Strict Flow: Error Handling', (
     WidgetTester tester,
   ) async {
-    final mockService = MockBizBotService();
+    final mockService = MockEnhancedAIService();
     await tester.pumpWidget(createWidgetUnderTest(mockService));
     await tester.pumpAndSettle();
 
