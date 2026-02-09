@@ -30,7 +30,7 @@ Future<void> _initFirebaseAppCheck() async {
 
     try {
       await FirebaseAppCheck.instance.activate(
-        webProvider: ReCaptchaEnterpriseProvider(webSiteKey),
+        providerWeb: ReCaptchaEnterpriseProvider(webSiteKey),
       );
     } catch (e) {
       debugPrint('⚠️ App Check Warning: Failed to activate on Web: $e');
@@ -40,8 +40,8 @@ Future<void> _initFirebaseAppCheck() async {
 
   // Modern activation API for native platforms
   await FirebaseAppCheck.instance.activate(
-    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
+    providerAndroid: kDebugMode ? AndroidDebugProvider() : AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode ? AppleDebugProvider() : AppleAppAttestProvider(),
   );
 }
 
