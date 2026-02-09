@@ -63,7 +63,32 @@ void main() {
     });
 
     test('should handle expenses with categories', () async {
-      final service = ExpenseInsightsService(FakeGeminiService('not json'));
+      final service = ExpenseInsightsService(FakeGeminiService('''
+[
+  {
+    "id": "demo1",
+    "title": "Optimalizácia palivových nákladov",
+    "description": "Sledujeme nadmerné výdavky na palivo",
+    "icon": "local_gas_station",
+    "color": "orange",
+    "potentialSavings": 50,
+    "priority": "medium",
+    "category": "optimization",
+    "createdAt": "2026-01-24T00:00:00.000Z"
+  },
+  {
+    "id": "demo2",
+    "title": "Kancelárske potreby - úspora možná",
+    "description": "Zvážte bulk objednávky",
+    "icon": "shopping_cart",
+    "color": "blue",
+    "potentialSavings": 100,
+    "priority": "low",
+    "category": "optimization",
+    "createdAt": "2026-01-24T00:00:00.000Z"
+  }
+]
+'''));
       final expenses = [
         ExpenseModel(
           id: '1',
@@ -88,12 +113,26 @@ void main() {
       final insights = await service.analyzeExpenses(expenses);
 
       expect(insights, isNotEmpty);
-      // Invalid AI response should fall back to demo insights
+      // Valid AI response should be parsed correctly
       expect(insights.length, 2);
     });
 
     test('should process expenses without categories', () async {
-      final service = ExpenseInsightsService(FakeGeminiService('not json'));
+      final service = ExpenseInsightsService(FakeGeminiService('''
+[
+  {
+    "id": "unknown1",
+    "title": "Neznámy výdavok detekovaný",
+    "description": "Skontrolujte túto transakciu",
+    "icon": "help_outline",
+    "color": "grey",
+    "potentialSavings": 0,
+    "priority": "low",
+    "category": "alert",
+    "createdAt": "2026-01-24T00:00:00.000Z"
+  }
+]
+'''));
       final expenses = [
         ExpenseModel(
           id: '1',
@@ -109,7 +148,7 @@ void main() {
       final insights = await service.analyzeExpenses(expenses);
 
       expect(insights, isNotEmpty);
-      expect(insights.length, 2); // Demo insights
+      expect(insights.length, 1); // Valid JSON response
     });
 
     test('should limit expenses to last 50 for analysis', () async {

@@ -4,21 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:bizagent/features/ai_tools/screens/biz_bot_screen.dart';
-import 'package:bizagent/features/ai_tools/services/biz_bot_service.dart';
+import 'package:bizagent/core/services/enhanced_ai_service.dart';
 
-@GenerateNiceMocks([MockSpec<BizBotService>()])
+@GenerateNiceMocks([MockSpec<EnhancedAIService>()])
 import 'biz_bot_screen_test.mocks.dart';
 
 void main() {
-  late MockBizBotService mockBizBotService;
+  late MockEnhancedAIService mockAIService;
 
   setUp(() {
-    mockBizBotService = MockBizBotService();
+    mockAIService = MockEnhancedAIService();
   });
 
   Widget createWidgetUnderTest() {
     return ProviderScope(
-      overrides: [bizBotServiceProvider.overrideWithValue(mockBizBotService)],
+      overrides: [enhancedAIServiceProvider.overrideWithValue(mockAIService)],
       child: const MaterialApp(home: BizBotScreen()),
     );
   }
@@ -38,7 +38,7 @@ void main() {
   ) async {
     // Arrange
     when(
-      mockBizBotService.ask(any),
+      mockAIService.askBizBot(any),
     ).thenAnswer((_) async => 'Odpoveď AI na test');
 
     await tester.pumpWidget(createWidgetUnderTest());
@@ -63,7 +63,7 @@ void main() {
 
     // Assert
     expect(find.text('Odpoveď AI na test'), findsOneWidget);
-    verify(mockBizBotService.ask('Testovacia otázka')).called(1);
+    verify(mockAIService.askBizBot('Testovacia otázka')).called(1);
   });
 
   testWidgets('Suggested prompts populate input and send message', (
@@ -72,7 +72,7 @@ void main() {
     // Arrange
     const suggestion = 'Ako vystavím faktúru?';
     when(
-      mockBizBotService.ask(any),
+      mockAIService.askBizBot(any),
     ).thenAnswer((_) async => 'Takto vystavíš faktúru...');
 
     await tester.pumpWidget(createWidgetUnderTest());
@@ -93,14 +93,14 @@ void main() {
       find.text('Takto vystavíš faktúru...'),
       findsOneWidget,
     ); // AI response
-    verify(mockBizBotService.ask(suggestion)).called(1);
+    verify(mockAIService.askBizBot(suggestion)).called(1);
   });
 
   testWidgets('Shows error message when service fails', (
     WidgetTester tester,
   ) async {
     // Arrange
-    when(mockBizBotService.ask(any)).thenThrow(Exception('Network error'));
+    when(mockAIService.askBizBot(any)).thenThrow(Exception('network error'));
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();

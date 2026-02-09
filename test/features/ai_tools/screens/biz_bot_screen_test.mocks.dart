@@ -4,11 +4,11 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
+import 'dart:io' as _i4;
 
-import 'package:bizagent/features/ai_tools/services/biz_bot_service.dart'
-    as _i2;
+import 'package:bizagent/core/services/enhanced_ai_service.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i4;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,75 +25,64 @@ import 'package:mockito/src/dummies.dart' as _i4;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-/// A class which mocks [BizBotService].
+/// A class which mocks [EnhancedAIService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBizBotService extends _i1.Mock implements _i2.BizBotService {
+class MockEnhancedAIService extends _i1.Mock implements _i2.EnhancedAIService {
   @override
-  _i3.Future<String> ask(String? question) => (super.noSuchMethod(
+  _i3.Future<String> askBizBot(
+    String? query, {
+    List<Map<String, dynamic>>? context,
+  }) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #ask,
-          [question],
+          #askBizBot,
+          [query],
+          {#context: context},
         ),
-        returnValue: _i3.Future<String>.value(_i4.dummyValue<String>(
+        returnValue: _i3.Future<String>.value(_i5.dummyValue<String>(
           this,
           Invocation.method(
-            #ask,
-            [question],
+            #askBizBot,
+            [query],
+            {#context: context},
           ),
         )),
         returnValueForMissingStub:
-            _i3.Future<String>.value(_i4.dummyValue<String>(
+            _i3.Future<String>.value(_i5.dummyValue<String>(
           this,
           Invocation.method(
-            #ask,
-            [question],
+            #askBizBot,
+            [query],
+            {#context: context},
           ),
         )),
       ) as _i3.Future<String>);
 
   @override
-  _i3.Stream<String> askStream(String? question) => (super.noSuchMethod(
-        Invocation.method(
-          #askStream,
-          [question],
-        ),
-        returnValue: _i3.Stream<String>.empty(),
-        returnValueForMissingStub: _i3.Stream<String>.empty(),
-      ) as _i3.Stream<String>);
-
-  @override
-  _i3.Future<void> softDeleteConversation({String? reason}) =>
+  _i3.Future<Map<String, dynamic>> analyzeReceipt(_i4.File? imageFile) =>
       (super.noSuchMethod(
         Invocation.method(
-          #softDeleteConversation,
-          [],
-          {#reason: reason},
+          #analyzeReceipt,
+          [imageFile],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+        returnValue: _i3.Future<Map<String, dynamic>>.value(
+            <String, dynamic>{}),
+        returnValueForMissingStub: _i3.Future<Map<String, dynamic>>.value(
+            <String, dynamic>{}),
+      ) as _i3.Future<Map<String, dynamic>>);
 
   @override
-  _i3.Future<void> restoreConversation() => (super.noSuchMethod(
-        Invocation.method(
-          #restoreConversation,
-          [],
-        ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
-
-  @override
-  _i3.Future<List<Map<String, dynamic>>> analyzeNote(String? content) =>
+  _i3.Future<Map<String, dynamic>> generateRevenueForecast(
+          List<dynamic>? historicalData) =>
       (super.noSuchMethod(
         Invocation.method(
-          #analyzeNote,
-          [content],
+          #generateRevenueForecast,
+          [historicalData],
         ),
-        returnValue: _i3.Future<List<Map<String, dynamic>>>.value(
-            <Map<String, dynamic>>[]),
-        returnValueForMissingStub: _i3.Future<List<Map<String, dynamic>>>.value(
-            <Map<String, dynamic>>[]),
-      ) as _i3.Future<List<Map<String, dynamic>>>);
+        returnValue: _i3.Future<Map<String, dynamic>>.value(
+            <String, dynamic>{}),
+        returnValueForMissingStub: _i3.Future<Map<String, dynamic>>.value(
+            <String, dynamic>{}),
+      ) as _i3.Future<Map<String, dynamic>>);
 }
